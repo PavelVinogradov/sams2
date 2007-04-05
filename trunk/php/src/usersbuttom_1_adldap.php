@@ -94,8 +94,8 @@ function AddUsersFromAdLDAPForm()
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 Active Directory ");
   
@@ -208,8 +208,8 @@ function AddUsersFromAdLDAPForm()
     print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_4 \n");
     print("<TD>\n");
     print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 >\n");
-    db_connect("squidctrl") or exit();
-    mysql_select_db("squidctrl")
+    db_connect($SAMSConf->MYSQLDATABASE) or exit();
+    mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
     $result=mysql_query("SELECT * FROM shablons");
     while($row=mysql_fetch_array($result))

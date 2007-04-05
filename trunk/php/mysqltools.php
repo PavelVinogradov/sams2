@@ -136,7 +136,7 @@ class SAMSCONFIG
     }
   function ReadSAMSSettings()
     {
-      $result=mysql_query("SELECT * FROM squidctrl.sams");
+      $result=mysql_query("SELECT * FROM ".$this->MYSQLDATABASE.".sams");
       $row=mysql_fetch_array($result);
       
       $this->REDIRECTOR=$row['redirector'];
@@ -149,7 +149,7 @@ class SAMSCONFIG
       $this->SQUIDBASE=$row['squidbase'];
       $this->SEPARATOR=$row['separator'];
  
-      $result=mysql_query("SELECT * FROM squidctrl.globalsettings");
+      $result=mysql_query("SELECT * FROM ".$this->MYSQLDATABASE.".globalsettings");
       $row=mysql_fetch_array($result);
       $this->LANG=$row['lang'];
       $this->ICONSET="icon/$row[iconset]";
@@ -162,7 +162,7 @@ class SAMSCONFIG
       $this->SHOWGRAPH=$row['showgraph'];
       $this->PDFLIB=$row['createpdf'];
 
-      $result=mysql_query("SELECT MAX(id) FROM squidctrl.proxyes ");
+      $result=mysql_query("SELECT MAX(id) FROM ".$this->MYSQLDATABASE.".proxyes ");
       $row=mysql_fetch_array($result);
       $this->PROXYCOUNT=$row[0]+1;
       
@@ -171,7 +171,7 @@ class SAMSCONFIG
         $this->SWITCHTO=0;
       else  
         $this->SWITCHTO=1;
-      mysql_query("USE squidctrl");
+      mysql_query("USE ".$this->MYSQLDATABASE);
     }
   function SAMSCONFIG()
     {
@@ -273,9 +273,11 @@ function PrintTrafficSize($size)
  
 function ReturnGroupNick($groupname)
 {
-//  db_connect("squidlog") or exit();
-//  mysql_select_db("squidctrl");
-  $result=mysql_query("SELECT * FROM squidctrl.groups WHERE name=\"$groupname\"");
+    global $SAMSConf;
+    
+//  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+//  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".groups WHERE name=\"$groupname\"");
   $row=mysql_fetch_array($result);
   return($row['nick']);
 }

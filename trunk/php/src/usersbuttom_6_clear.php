@@ -15,8 +15,8 @@ function ClearUsersTrafficCounter()
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access==2)
     {
-      db_connect("squidctrl") or exit();
-      mysql_select_db("squidctrl");
+      db_connect($SAMSConf->MYSQLDATABASE) or exit();
+      mysql_select_db($SAMSConf->MYSQLDATABASE);
       $result=mysql_query("UPDATE squidusers SET size=\"0\",hit=\"0\" ");
       UpdateLog("$SAMSConf->adminname","$usersbuttom_6_clear_ClearUsersTrafficCounter","01");
     }  

@@ -20,8 +20,8 @@ function SaveSquidLog()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog")
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
 
   $tablecount=0;
@@ -29,7 +29,7 @@ function SaveSquidLog()
 
   $fout=gzopen("data/$filename","w9");
   gzwrite($fout,"# SQUIDLOG DUMP FOR MYSQL DATABASE\n\n");
-  gzwrite($fout," USE squidlog; \n");
+  gzwrite($fout," USE ".$SAMSConf->SQUIDCTRLDATABASE."; \n");
   
   //записываем squidlog.cache
   $result2=mysql_query("SHOW COLUMNS FROM cache"); //берем количество

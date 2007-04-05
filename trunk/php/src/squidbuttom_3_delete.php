@@ -18,8 +18,8 @@ function ClearSquidLog()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog")
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("DELETE FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\"");
   $result=mysql_query("DELETE FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\"");

@@ -33,8 +33,8 @@ function ChUser()
 
   PageTop("user.jpg"," $dbbuttom_7_chname_ChUser_1 <BR><FONT COLOR=\"BLUE\">$olddomain/$olduser -> $newdomain/$newuser</FONT><BR> $sdate - $edate");
   //print("<h3>  </h3>");
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog")
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("UPDATE cache SET user=\"$newuser\",domain=\"$newdomain\" WHERE user=\"$olduser\"&&domain=\"$olddomain\"&&date>=\"$sdate\"&&date<=\"$edate\" ");
   $result=mysql_query("UPDATE cachesum SET user=\"$newuser\",domain=\"$newdomain\" WHERE user=\"$olduser\"&&domain=\"$olddomain\"&&date>=\"$sdate\"&&date<=\"$edate\" ");
@@ -54,8 +54,8 @@ function ChUserForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   PageTop("user.jpg","$dbbuttom_7_chname_ChUserForm_1");
 
@@ -74,10 +74,10 @@ function ChUserForm()
   print("<TD WIDTH=\"70%\">\n");
   print("<SELECT NAME=\"fromuser\" ID=\"fromuser\" SIZE=1 TABINDEX=30 >\n");
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
-  $result=mysql_query("SELECT user,domain FROM squidlog.cachesum GROUP BY user,domain ORDER BY user");
+  $result=mysql_query("SELECT user,domain FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum GROUP BY user,domain ORDER BY user");
   while($row=mysql_fetch_array($result))
       {
            print("<OPTION VALUE=$row[user]+$row[domain] SELECTED> $row[user]+$row[domain]");
@@ -90,8 +90,8 @@ function ChUserForm()
   print("<TD WIDTH=\"70%\">\n");
   print("<SELECT NAME=\"touser\" ID=\"touser\" SIZE=1 TABINDEX=30 >\n");
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   $result=mysql_query("SELECT nick,domain FROM squidusers ORDER BY nick");
   while($row=mysql_fetch_array($result))

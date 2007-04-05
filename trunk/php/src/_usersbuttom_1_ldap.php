@@ -81,6 +81,7 @@ function AddUsersFromLDAPForm()
   global $NTLMDOMAIN;
   global $WBINFOPATH;
   global $LANG;
+  global $SAMSConf;
   $lang="./lang/lang.$LANG";
   require($lang);
 
@@ -89,8 +90,8 @@ function AddUsersFromLDAPForm()
     
    PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $server = "127.0.0.1"; // имя контролера домена
   $ldapuser = "admin";  // существующий пользователь (если запрещен анонимный  просмотр)

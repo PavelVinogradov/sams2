@@ -69,8 +69,8 @@ function NotUsersTreeUserAuth()
 	   else
              $SAMSConf->domainusername=$userdomain;
        
-           db_connect("squidctrl") or exit();
-           mysql_select_db("squidctrl");
+           db_connect($SAMSConf->MYSQLDATABASE) or exit();
+           mysql_select_db($SAMSConf->MYSQLDATABASE);
            $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE nick=\"$SAMSConf->domainusername\" ");
            $row=mysql_fetch_array($result);
            $SAMSConf->domainusername="$row[nick]";
@@ -81,8 +81,8 @@ function NotUsersTreeUserAuth()
     }
   if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
-       db_connect("squidctrl") or exit();
-       mysql_select_db("squidctrl");
+       db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$password\" ");
        $row=mysql_fetch_array($result);
        //$gauditor=$row['gauditor'];
@@ -207,8 +207,8 @@ function UserAuth()
              }
           }
 	 
-       db_connect("squidctrl") or exit();
-       mysql_select_db("squidctrl");
+       db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE id=\"$id\" ");
        $row=mysql_fetch_array($result);
        $gauditor=$row['gauditor'];
@@ -218,8 +218,8 @@ function UserAuth()
     }
   if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
-      db_connect("squidctrl") or exit();
-       mysql_select_db("squidctrl");
+      db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        
        $result2=mysql_query("SELECT nick,id FROM squidusers WHERE id=\"$id\" ");
        $row2=mysql_fetch_array($result2);
@@ -424,8 +424,8 @@ function UserTray($userid,$usergroup)
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\"&&squidusers.group=\"$usergroup\" ");
   $row=mysql_fetch_array($result);

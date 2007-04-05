@@ -18,10 +18,10 @@ function ClearLog()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
-  $result=mysql_query("DELETE FROM squidctrl.log WHERE date>=\"$sdate\"&&date<=\"$edate\"");
+  $result=mysql_query("DELETE FROM ".$SAMSConf->MYSQLDATABASE.".log WHERE date>=\"$sdate\"&&date<=\"$edate\"");
   print("<H3>Удалены логи</H3> $traffic_2 $bdate $traffic_3 $eddate ");
 //  UpdateLog("$SAMSConf->adminname","$squidbuttom_3_delete_ClearSquidLog_1 $traffic_2 $sday.$smon.$syea $traffic_3 $eday.$emon.$eyea","03");
 }

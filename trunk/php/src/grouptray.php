@@ -40,16 +40,16 @@ function DisableGroupUsers()
 
 function UserGroupForm()
 {
-  
   global $SAMSConf;
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   $SAMSConf->access=UserAccess();
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   $ga=0;
   $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
@@ -173,8 +173,8 @@ function GroupTray($groupname,$groupnick)
   print("        parent.basefrm.location.href=\"main.php?show=exe&function=usergroupform&groupname=$groupname\";\n");
   print("</SCRIPT> \n");
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");

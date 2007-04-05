@@ -26,8 +26,8 @@ function ShowListsLog()
        print("</FORM>\n");
 
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM log WHERE code=\"02\"&&date>=\"$sdate\"&&date<=\"$edate\" ");
 

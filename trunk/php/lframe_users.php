@@ -47,7 +47,7 @@ function lframe_users()
 	}  
       else
         {
-          $result=mysql_query("SELECT * FROM squidctrl.groups ORDER BY nick");
+          $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".groups ORDER BY nick");
 	}  
       while($row=mysql_fetch_array($result))
          {

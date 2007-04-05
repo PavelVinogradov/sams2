@@ -15,8 +15,8 @@ function Monitor_2()
   printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_1.php'};\n");
   printf("setTimeout('Refr();',5000);\n");
   printf("</SCRIPT>\n");
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM squidusers ORDER BY size DESC");
   $count=0;

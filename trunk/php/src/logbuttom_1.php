@@ -23,8 +23,8 @@ function ShowAllLog()
    if($SAMSConf->access!=2)     {       exit;     }
   
   PageTop("log_48.jpg","$log_1");
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   if($username=="on")
                  $v1="01";

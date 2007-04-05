@@ -23,8 +23,8 @@ if(isset($_GET["url"])) $url=$_GET["url"];
 
   require('../../mysqltools.php');
   LoadConfig();
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT denied_to FROM sams ");
   $row=mysql_fetch_array($result);
   $start=strpos($row['denied_to'],"messages");

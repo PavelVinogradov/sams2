@@ -49,8 +49,8 @@ function AddGroupsFromAdLDAPForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   PageTop("user.jpg"," $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1");
   

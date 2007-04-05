@@ -23,8 +23,8 @@ function LoadLocalList()
   copy($_FILES['userfile']['tmp_name'], "data/urllist.txt");
 
   $finp=fopen("data/urllist.txt","r");
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   while(feof($finp)==0)
     {
