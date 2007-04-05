@@ -1,0 +1,213 @@
+<?php
+
+class DATE
+{
+  var $sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou;
+  function DATE($mas)
+    {
+       list($this->sday,$this->smon,$this->syea,$this->shou,$this->eday,$this->emon,$this->eyea,$this->ehou)=$mas;
+    }
+  function BeginDate()
+    {
+       return("$this->sday.$this->smon.$this->syea"); 
+    }
+  function EndDate()
+    {
+       return("$this->eday.$this->emon.$this->eyea");
+    }
+  function sdate()
+    {
+       return("$this->syea-$this->smon-$this->sday");
+    }
+  function edate()
+    {
+       return("$this->eyea-$this->emon-$this->eday");
+    }
+}
+
+
+function UsersTrafficPeriodPDF()
+{
+  //define('FPDF_FONTPATH','lib/font/');
+  //require('lib/fpdf.php');
+  
+  global $SAMSConf;
+  global $DATE;
+  global $pdfFile;
+  
+  if($SAMSConf->LANG=="KOI8-R")
+    $lang="./lang/lang.WIN1251";
+  else
+    $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $sdate=$DATE->sdate();
+  $edate=$DATE->edate();
+  $bdate=$DATE->BeginDate();
+  $eddate=$DATE->EndDate();
+
+  $sdate="2005-11-1";
+  $edate="2005-11-31";
+  
+  db_connect("squidlog") or exit();
+  mysql_select_db("squidlog");
+
+  //$pdfFile = new FPDF();
+  //$pdfFile->Open();
+
+  $pdfFile->AddPage();
+  $imagefile = "$SAMSConf->ICONSET/usergroup_48.jpg";
+  $pdfFile->Image($imagefile,20,10,20,20);
+
+  $pdfFile->SetFont('Times','B',16);
+  $pdfFile->SetXY(50, 15);
+  $pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1 ");
+  $pdfFile->SetXY(50, 25);
+  $pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_2 ");
+
+
+  $pdfFile->SetFont('Times','B',11);
+  $ycount=40;
+  $pdfFile->SetXY(30, $ycount);
+  $pdfFile->Write(0, "N");
+  $pdfFile->SetXY(40, $ycount);
+  $pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_4");
+  $pdfFile->SetXY(130, $ycount);
+  $pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_7");
+  
+ 
+  $pdfFile->SetFont('Times','',11);
+  $ycount=50;
+  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
+  while($row=mysql_fetch_array($result))
+       {
+         $result_2=mysql_query("SELECT * FROM squidctrl.squidusers WHERE squidctrl.squidusers.nick=\"$row[user]\"&&squidctrl.squidusers.domain=\"$row[domain]\"");
+         $row_2=mysql_fetch_array($result_2);
+         
+	 $pdfFile->SetXY(30, $ycount);
+         $pdfFile->Write(10, $count+1);
+         $pdfFile->SetXY(40, $ycount);
+         $pdfFile->Write(0, "$row[user]");
+         $pdfFile->SetXY(80, $ycount);
+         $pdfFile->Write(0, "$row_2[family] $row_2[name]");
+         $pdfFile->SetXY(130, $ycount);
+         $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
+	 $pdfFile->Write(0, $aaa);
+	 
+	 $count=$count+1;
+         $size2=$size2+$row[0];
+         $hitsize=$hitsize+$row[1];
+         $traf=$traf+$row[0]-$row[1];
+         $ycount+=7;
+       }
+  
+} 
+
+
+function AllUsersTrafficPDF()
+{
+  //define('FPDF_FONTPATH','lib/font/');
+  //require('lib/fpdf.php');
+  
+  global $SAMSConf;
+  global $DATE;
+  global $pdfFile;
+  
+  if($SAMSConf->LANG=="KOI8-R")
+    $lang="./lang/lang.WIN1251";
+  else
+    $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $sdate=$DATE->sdate();
+  $edate=$DATE->edate();
+  $bdate=$DATE->BeginDate();
+  $eddate=$DATE->EndDate();
+
+  $sdate="2005-11-1";
+  $edate="2005-11-31";
+  
+  db_connect("squidctrl") or exit();
+  mysql_select_db("squidctrl");
+
+  $result=mysql_query("SELECT * FROM squidctrl.squidusers ");
+  while($row=mysql_fetch_array($result))
+       {
+          $pdfFile->AddPage();
+          $imagefile = "$SAMSConf->ICONSET/usergroup_48.jpg";
+          $pdfFile->Image($imagefile,20,10,20,20);
+
+          $pdfFile->SetFont('Times','B',16);
+          $pdfFile->SetXY(50, 15);
+          $pdfFile->Write(0, " User $row[nick] ");
+ 
+          $ycount=50;
+          $pdfFile->SetFont('Times','',11);
+          $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM squidlog.cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
+          //printf("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM squidctrl.cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date\n");
+	  while($row2=mysql_fetch_array($result2))
+            {
+	       $pdfFile->SetXY(30, $ycount);
+	       $aaa=ReturnDate($row2['date']);
+               $pdfFile->Write(0, $aaa);
+               
+	       $pdfFile->SetXY(60, $ycount);
+               $pdfFile->Write(0, $row2[0]);
+               $pdfFile->SetXY(90, $ycount);
+               $pdfFile->Write(0, $row2[4]);
+               $pdfFile->SetXY(130, $ycount);
+               $aaa=ReturnTrafficFormattedSize($row2[0]-$row2[4]);
+	       $pdfFile->Write(0, " $aaa");
+               
+               $count=$count+1;
+               $size=$size+$row[0];
+	       $cache=$cache+$row[4];
+               $ycount+=7;
+            }
+} 
+
+  
+  define('FPDF_FONTPATH','lib/font/');
+  require('lib/fpdf.php');
+  global $pdfFile;
+  global $SAMSConf;
+  global $DATE;
+  require('./mysqltools.php');
+
+  $year=strftime("%Y");
+  $mon=strftime("%m");
+  $day=strftime("%d");
+
+  $DATE=new DATE(Array( 1, $mon, $year, 0, 31, $mon, $year, 23), $sdate, $edate);
+  $SAMSConf=new SAMSCONFIG();
+
+
+  $pdfFile = new FPDF();
+  $pdfFile->Open();
+  
+  UsersTrafficPeriodPDF();
+//  AllUsersTrafficPDF();
+  
+  $pdfFile->Output();
+
+?>
+
+
+	  
+//          $ycount+=20;
+//          $query="select trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url,sum(size) as url_size,sum(hit) as hit_size from cache where user=\"$row[nick]\"&&domain=\"$row[domain]\"&&date>=\"$sdate\"&&date<=\"$edate\" group by norm_url order by url_size desc limit 25000";
+//          $result3=mysql_query($query);
+//          $cache=0; 
+//          while($row3=mysql_fetch_array($result3))
+//            {
+//	       $pdfFile->SetXY(30, $ycount);
+//               $pdfFile->Write(0, $row3['url_size']);
+//               $pdfFile->SetXY(60, $ycount);
+//               $pdfFile->Write(0, $row3['hit_size']);
+//	       $pdfFile->SetXY(90, $ycount);
+//               $pdfFile->Write(0, $row3['norm_url']);
+//	  
+//	  
+//	        
+//            }
+  

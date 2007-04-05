@@ -1,0 +1,4 @@
+#!/bin/sh
+
+iconv -f KOI8-R -t cp1251 lang.KOI8-R > lang.WIN1251
+
