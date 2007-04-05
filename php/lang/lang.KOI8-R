@@ -142,6 +142,10 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
+  $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
+  $redir_filetypesform2="Удалить";
+  $redir_filetypesform3="Изменить";
+  $redir_filetypesform4="Добавить";
 
   $alltraffic_1="Статистика пользователей";
 

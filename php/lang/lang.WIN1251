@@ -1,9 +1,9 @@
 <?
-#LANGUAGE:Russian KOI8-R
-#NTLMCHARSETENCODER:"iconv -f KOI8-R -t 866"
+#LANGUAGE:Russian cp1251
+#NTLMCHARSETENCODER:"iconv -f CP1251 -t 866"
 
  $CHARSET="WIN1251";
- $langtest="WN1251";
+ $langtest="WIN1251";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
@@ -142,6 +142,10 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
+  $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
+  $redir_filetypesform2="Удалить";
+  $redir_filetypesform3="Изменить";
+  $redir_filetypesform4="Добавить";
 
   $alltraffic_1="Статистика пользователей";
 

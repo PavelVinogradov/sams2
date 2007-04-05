@@ -47,7 +47,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"deletedurl\" VALUE=\"\"> \n");
   print("</BR>\n");
   print("\n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Удалить\" OnClick=DeleteURL(table)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform2\" OnClick=DeleteURL(table)>\n");
   print("</FORM>\n");
 
   print("<script language=JAVASCRIPT>\n");
@@ -106,7 +106,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"oldvalue\" VALUE=\"\"> \n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"editurl\" VALUE=\"\"> \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"editurlstr\" SIZE=30> \n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Change\" OnClick=ChangeURL(EDITURL)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform3\" OnClick=ChangeURL(EDITURL)>\n");
   print("</FORM>\n");
 
   
@@ -118,7 +118,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"urllistfunction.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"type\" VALUE=\"$id\"> \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"addurl\" SIZE=30> \n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Добавить \"  OnClick=AddURL(ADDURL)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform4\"  OnClick=AddURL(ADDURL)>\n");
   print("</FORM>\n");
 
   print("<P>\n");
@@ -164,7 +164,7 @@ function AddFileListForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  PageTop("redirect_48.jpg","Запрет доступа. <BR>Создание нового списка расширений файлов");
+  PageTop("redirect_48.jpg","$redir_filetypesform1");
   print("<BR>\n");
   print("<FORM NAME=\"REDIRECT\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
