@@ -579,6 +579,7 @@
   $lframe_sams_UserFolder_1="Пользователи";
   $lframe_sams_UserGroupsFolder_1="Группы пользователей";
   $lframe_sams_UserShablonFolder_1="Шаблоны пользователей";
+  $lframe_sams_FileDenied_1="Расширения файлов"; 
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
 
