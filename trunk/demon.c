@@ -114,7 +114,7 @@ long GetNewEndValue()
 void SaveNewEndFileValue(MYSQL *conn,long count)
 {
   int flag;
-  sprintf(&str[0],"UPDATE squidctrl.sams SET endvalue=\'%ld\'",count);
+  sprintf(&str[0],"UPDATE %s.sams SET endvalue=\'%ld\'",conf.samsdb,count);
   flag=send_mysql_query(conn,&str[0]);
   if(flag!=0)
     {
@@ -304,13 +304,13 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                                 if(DEBUG!=0||PRINT!=0)
                                   printf("User %s/%s disabled.  traffic %f usertraffic %12.0f < %12.0f\n",users[samsuser-1].domain,users[samsuser-1].user, size, users[samsuser-1].traffic,users[samsuser-1].quote);
 
-			        sprintf(&str[0],"UPDATE squidctrl.squidusers SET enabled='0' WHERE id='%s'",users[samsuser-1].id);
+			        sprintf(&str[0],"UPDATE %s.squidusers SET enabled='0' WHERE id='%s'",conf.samsdb,users[samsuser-1].id);
                                 flag=send_mysql_query(conn2,&str[0]);
 			        if(UDSCRIPT>0)
 				  {
 				    exec_script(UDSCRIPTFILE, users[samsuser-1].user);
 				  }  
-				sprintf(&str[0],"INSERT INTO squidctrl.reconfig SET number='0',action='reconfig',service='squid'");
+				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='0',action='reconfig',service='squid'",conf.samsdb);
                                 flag=send_mysql_query(conn2,&str[0]);
 				if(flag==0)
 				  {
@@ -332,7 +332,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                     ReplaceURL(STR[6],user,domain);
                     TestURL(&path[0]);
 
-                    sprintf(&str[0],"INSERT INTO squidlog.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
+                    sprintf(&str[0],"INSERT INTO %s.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
 
                     flag=send_mysql_query(conn,&str[0]);
                     if(PRINT!=0||DEBUG!=0)
@@ -345,7 +345,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                          SaveNewEndFileValue(conn2, NEWENDVALUE);
                          for(i=0;i<samsuserscount;i++)
                             {
-  	                      sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='%20.0f',hit='%20.0f' WHERE id='%s'",users[i].size,users[i].hit,users[i].id);
+  	                      sprintf(&str[0],"UPDATE %s.squidusers SET size='%20.0f',hit='%20.0f' WHERE id='%s'",conf.samsdb,users[i].size,users[i].hit,users[i].id);
                               flag=send_mysql_query(conn2,&str[0]);
                               if(DEBUG!=0)
                                 printf("update user traffic size: %s/%s %20.0f %20.0f\n",users[i].domain,users[i].user,users[i].size,users[i].hit);
@@ -356,19 +356,19 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 
 		     if(strcmp(&str[0],users[samsuser-1].date)!=0)
 		       {
-                         sprintf(&str[0],"SELECT count(*) FROM squidlog.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                         sprintf(&str[0],"SELECT count(*) FROM %s.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                          flag=send_mysql_query(conn,&str[0]);
                          res=mysql_store_result(conn);
                          row=mysql_fetch_row(res);
                          if(atoi(row[0])==0)
                            {
 			     strncpy(users[samsuser-1].date,&str[0],10);
-                             sprintf(&str[0],"INSERT squidlog.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                             sprintf(&str[0],"INSERT %s.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);
 			   }  
 			 else
 			   {
-                             sprintf(&str[0],"UPDATE squidlog.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                             sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);
 			   }  
                          mysql_free_result(res);
@@ -376,7 +376,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 		       }
                      else
 		       {
-                         sprintf(&str[0],"UPDATE squidlog.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                         sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                          flag=send_mysql_query(conn,&str[0]);
 		      
 		       } 
@@ -401,7 +401,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
          {
             if(users[i].updated>0)
 	      {
-  	         sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='%.0f',hit='%.0f' WHERE id='%s'",users[i].size,users[i].hit,users[i].id);
+  	         sprintf(&str[0],"UPDATE %s.squidusers SET size='%.0f',hit='%.0f' WHERE id='%s'",conf.samsdb,users[i].size,users[i].hit,users[i].id);
                  flag=send_mysql_query(conn2,&str[0]);
                  if(PRINT!=0)
                    printf("flag=%d %s\n",flag,&str[0]);
@@ -532,7 +532,7 @@ void LoadFile(MYSQL *conn,char *filename)
                       printf(" %s/%s, ip=%s traffic size=%10f \n",users[samsuser-1].domain,users[samsuser-1].user,(char*)users[samsuser-1].ip,size);
 
                     ReplaceURL(STR[6],user,domain);
-                    sprintf(&str[0],"INSERT INTO squidlog.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
+                    sprintf(&str[0],"INSERT INTO %s.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
                     flag=send_mysql_query(conn,&str[0]);
                     if(PRINT!=0||DEBUG!=0)
                        printf("%ld: %d-%d-%d %d:%d:%d %s/%s %s %s\n",count,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,user,domain,STR[4],&path[0]);
@@ -546,7 +546,7 @@ void LoadFile(MYSQL *conn,char *filename)
                     sprintf(&str[0],"%d-%d-%d",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
 		    if(strcmp(&str[0],users[samsuser-1].date)!=0)
 		      {
-                         sprintf(&str[0],"SELECT count(*) FROM squidlog.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                         sprintf(&str[0],"SELECT count(*) FROM %s.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                          flag=send_mysql_query(conn,&str[0]);
                          res=mysql_store_result(conn);
                          row=mysql_fetch_row(res);
@@ -554,12 +554,12 @@ void LoadFile(MYSQL *conn,char *filename)
                          if(atoi(row[0])==0)
                            {
 			     strncpy(users[samsuser-1].date,&str[0],10);
-                             sprintf(&str[0],"INSERT squidlog.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                             sprintf(&str[0],"INSERT %s.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);
 			   }  
 			 else
 			   {
-                             sprintf(&str[0],"UPDATE squidlog.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                             sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);
 			   }  
                          mysql_free_result(res);
@@ -567,7 +567,7 @@ void LoadFile(MYSQL *conn,char *filename)
 		      }
                     else
 		      {
-                         sprintf(&str[0],"UPDATE squidlog.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                         sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                          flag=send_mysql_query(conn,&str[0]);
 		      
 		      } 
@@ -682,7 +682,7 @@ int main (int argc, char *argv[])
                     exit(1);
   if(CLEAR==1)
      {
-       sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'");
+       sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'",conf.samsdb);
        flag=send_mysql_query(conn2,&str[0]);
        if(flag!=0)
          {
@@ -690,7 +690,7 @@ int main (int argc, char *argv[])
          }
        else
          {
-           sprintf(&str[0],"UPDATE squidctrl.reconfig SET action='reconfig',service='squid'");
+           sprintf(&str[0],"UPDATE %s.reconfig SET action='reconfig',service='squid'",conf.samsdb);
            flag=send_mysql_query(conn2,&str[0]);
            printf("SAMS: users traffic counter is cleaned\n");
          }
@@ -702,7 +702,7 @@ int main (int argc, char *argv[])
        tc=0;
        tt=time(NULL);
        t=localtime(&tt);
-       sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE clrdate<='%d-%d-%d'&&clrdate>'0000-00-00'&&period!='M'&&period!='W'",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE clrdate<='%d-%d-%d'&&clrdate>'0000-00-00'&&period!='M'&&period!='W'",conf.samsdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday);
        flag=send_mysql_query(conn2,&str[0]);
        res=mysql_store_result(conn2);
        for(i=0;i<mysql_num_rows(res);i++)
@@ -711,18 +711,18 @@ int main (int argc, char *argv[])
 	     tc++;
 	     if(DEBUG>0)
 	        printf("Perod %d: %d days. Traffic cleaned\n", i, atoi(row[0]));
-             sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
              flag=send_mysql_query(conn2,&str[0]);
 
              tt2=tt+60*60*24*atoi(row[0]);
              t2=localtime(&tt2);
 
-	     sprintf(&str[0],"UPDATE squidctrl.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
+	     sprintf(&str[0],"UPDATE %s.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",conf.samsdb,t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
 	     flag=send_mysql_query(conn2,&str[0]);
              sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 	     AddLog(conn2,0,"samsdaemon",&str[0]);
 	  }
-       sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE period='W'&&clrdate<='%d-%d-%d'",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='W'&&clrdate<='%d-%d-%d'",conf.samsdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday);
        flag=send_mysql_query(conn2,&str[0]);
        res=mysql_store_result(conn2);
        for(i=0;i<mysql_num_rows(res);i++)
@@ -731,7 +731,7 @@ int main (int argc, char *argv[])
 	     tc++;
 	     if(DEBUG>0)
 	        printf("Perod %d: Week. Traffic cleaned\n", i);
-             sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
              flag=send_mysql_query(conn2,&str[0]);
 
              k=t->tm_wday;
@@ -740,13 +740,13 @@ int main (int argc, char *argv[])
 	     tt2=tt+60*60*24*(8-k);
              t2=localtime(&tt2);
 
-	     sprintf(&str[0],"UPDATE squidctrl.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
+	     sprintf(&str[0],"UPDATE %s.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",conf.samsdb,t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
 	     flag=send_mysql_query(conn2,&str[0]);
              sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 	     AddLog(conn2,0,"samsdaemon",&str[0]);
           }
 
-       sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE period='M'&&clrdate<='%d-%d-%d'",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='M'&&clrdate<='%d-%d-%d'",conf.samsdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday);
        flag=send_mysql_query(conn2,&str[0]);
        res=mysql_store_result(conn2);
        for(i=0;i<mysql_num_rows(res);i++)
@@ -755,7 +755,7 @@ int main (int argc, char *argv[])
 	     tc++;
 	     if(DEBUG>0)
 	        printf("Perod %d: Month. Traffic cleaned\n", i);
-             sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
              flag=send_mysql_query(conn2,&str[0]);
 
              j=0;
@@ -766,7 +766,7 @@ int main (int argc, char *argv[])
 	         k=1;  
 		 j=1;
 	       } 
-	     sprintf(&str[0],"UPDATE squidctrl.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",t->tm_year+1900+j,k,1,row[1]);
+	     sprintf(&str[0],"UPDATE %s.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",conf.samsdb,t->tm_year+1900+j,k,1,row[1]);
 	     flag=send_mysql_query(conn2,&str[0]);
              sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 	     AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -774,7 +774,7 @@ int main (int argc, char *argv[])
 
        if(tc>0)
          {
-	   sprintf(&str[0],"INSERT INTO squidctrl.reconfig SET number='0',action='reconfig',service='squid'");
+	   sprintf(&str[0],"INSERT INTO %s.reconfig SET number='0',action='reconfig',service='squid'",conf.samsdb);
            flag=send_mysql_query(conn2,&str[0]);
 	 
 	 }
@@ -803,7 +803,7 @@ int main (int argc, char *argv[])
   /* Чтение конфигурации SAMS */
   if(CLEAR==0)
     {
-      sprintf(&str[0],"SELECT endvalue,auth,ntlmdomain,realsize,checkdns,loglevel,udscript,adminaddr FROM squidctrl.sams");
+      sprintf(&str[0],"SELECT endvalue,auth,ntlmdomain,realsize,checkdns,loglevel,udscript,adminaddr FROM %s.sams",conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       row=mysql_fetch_row(res);
@@ -866,7 +866,7 @@ int main (int argc, char *argv[])
 
       mysql_free_result(res);
 
-      sprintf(&str[0],"SELECT kbsize,mbsize FROM squidctrl.globalsettings");
+      sprintf(&str[0],"SELECT kbsize,mbsize FROM %s.globalsettings",conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       row=mysql_fetch_row(res);
@@ -891,7 +891,7 @@ int main (int argc, char *argv[])
   /* Получаем количество пользователей SAMS */
   samsuserscount=0;
 
-  sprintf(&str[0],"SELECT count(nick) FROM squidctrl.squidusers");
+  sprintf(&str[0],"SELECT count(nick) FROM %s.squidusers",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -909,8 +909,8 @@ int main (int argc, char *argv[])
      }
 
   /* Загружаем пользователей SAMS в массив */
-  //sprintf(&str[0],"SELECT nick,domain,ip,ipmask,enabled,size,quotes,id,hit FROM squidctrl.squidusers");
-  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name");
+  //sprintf(&str[0],"SELECT nick,domain,ip,ipmask,enabled,size,quotes,id,hit FROM %s.squidusers",conf.samsdb);
+  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name",conf.samsdb,conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   for(i=0;i<samsuserscount;i++)
@@ -994,7 +994,7 @@ int main (int argc, char *argv[])
      }
 
 /*список локальных хостов*/
-  sprintf(&str[0],"SELECT count(*) FROM squidctrl.urls WHERE type='local'");
+  sprintf(&str[0],"SELECT count(*) FROM %s.urls WHERE type='local'",conf.samsdb);
   flag=send_mysql_query(conn2,&str[0]);
   res=mysql_store_result(conn2);
   row=mysql_fetch_row(res);
@@ -1008,7 +1008,7 @@ int main (int argc, char *argv[])
        printf("Not enought memory to allocate buffer\n");
        exit(1);
      }
-  sprintf(&str[0],"SELECT * FROM squidctrl.urls WHERE type='local'");
+  sprintf(&str[0],"SELECT * FROM %s.urls WHERE type='local'",conf.samsdb);
   flag=send_mysql_query(conn2,&str[0]);
   res=mysql_store_result(conn2);
   for(i=0;i<LCOUNT;i++)
@@ -1034,7 +1034,7 @@ int main (int argc, char *argv[])
   mysql_free_result(res);
 /*список локальных хостов*/
 
-  sprintf(&str[0],"SELECT count(*) FROM squidctrl.urlreplace");
+  sprintf(&str[0],"SELECT count(*) FROM %s.urlreplace",conf.samsdb);
   if(PRINT>0||DEBUG>0)
     printf("2. %s \n",&str[0]);
   flag=send_mysql_query(conn2,&str[0]);
@@ -1048,7 +1048,7 @@ int main (int argc, char *argv[])
        printf("Not enought memory to allocate buffer\n");
        exit(1);
      }
-  sprintf(&str[0],"SELECT * FROM squidctrl.urlreplace");
+  sprintf(&str[0],"SELECT * FROM %s.urlreplace",conf.samsdb);
   flag=send_mysql_query(conn2,&str[0]);
   res=mysql_store_result(conn2);
   for(i=0;i<RUC;i++)

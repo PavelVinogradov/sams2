@@ -95,14 +95,14 @@ int chSquidGuardConf(MYSQL *conn)
            strcpy(&str[0],"\0");
         }
       fclose(finp);
-      sprintf(&str[0],"SELECT shablons.name,shablons.days,shablons.shour,shablons.smin,shablons.ehour,shablons.emin FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.nick!='NULL' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.days,shablons.shour,shablons.smin,shablons.ehour,shablons.emin FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.nick!='NULL' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
          {
             row=mysql_fetch_row(res);
 
-            sprintf(&str[0],"SELECT squidusers.ip,squidusers.nick,shablons.auth FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.shablon='%s'&&squidusers.enabled='1'",row[0]);
+            sprintf(&str[0],"SELECT squidusers.ip,squidusers.nick,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.shablon='%s'&&squidusers.enabled='1'",conf.samsdb,conf.samsdb,row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
             if(mysql_num_rows(res2)>0)
@@ -169,7 +169,7 @@ int chSquidGuardConf(MYSQL *conn)
 
 
             fprintf(fout,"src sams_disabled { #sams\n");
-            sprintf(&str[0],"SELECT squidusers.ip,squidusers.nick,shablons.auth FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled!='1' ");
+            sprintf(&str[0],"SELECT squidusers.ip,squidusers.nick,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled!='1' ",conf.samsdb,conf.samsdb);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
             for(j=0;j<mysql_num_rows(res2);j++)
@@ -183,7 +183,7 @@ int chSquidGuardConf(MYSQL *conn)
             mysql_free_result(res2);
             fprintf(fout,"} %50s#sams\n"," ");
 
-      sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE (type='redir'||type='denied'||type='regex'||type='allow')&&redirect.filename=sconfig.set GROUP BY redirect.filename");
+      sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (type='redir'||type='denied'||type='regex'||type='allow')&&redirect.filename=sconfig.set GROUP BY redirect.filename",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       //count=mysql_num_rows(res);
@@ -202,7 +202,7 @@ int chSquidGuardConf(MYSQL *conn)
        mysql_free_result(res);
 
       fprintf(fout,"acl {  %30s#sams\n"," ");
-      sprintf(&str[0],"SELECT shablons.name,shablons.shour,shablons.ehour FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.nick!='NULL'&&squidusers.enabled>'0' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.shour,shablons.ehour FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.nick!='NULL'&&squidusers.enabled>'0' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
@@ -211,7 +211,7 @@ int chSquidGuardConf(MYSQL *conn)
 	    if(atoi(row[2])>atoi(row[1]))
 	      {
                 fprintf(fout,"sams_%s  within sams_%s_time {  %30s#sams\n pass ", row[0], row[0]," ");
-                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM squidctrl.sconfig LEFT JOIN squidctrl.redirect ON sconfig.set = redirect.filename LEFT JOIN squidctrl.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",row[0]);
+                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM %s.sconfig LEFT JOIN %s.redirect ON sconfig.set = redirect.filename LEFT JOIN %s.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
                 flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
 		deny=0;
@@ -244,7 +244,7 @@ int chSquidGuardConf(MYSQL *conn)
 	    else //если период времени задан с вечера до утра
 	      {
                 fprintf(fout,"sams_%s  within sams_%s_time_1 {  %30s#sams\n pass ", row[0], row[0]," ");
-                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM squidctrl.sconfig LEFT JOIN squidctrl.redirect ON sconfig.set = redirect.filename LEFT JOIN squidctrl.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",row[0]);
+                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM %s.sconfig LEFT JOIN %s.redirect ON sconfig.set = redirect.filename LEFT JOIN %s.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
                 flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
                 for(j=0;j<mysql_num_rows(res2);j++)
@@ -274,7 +274,7 @@ int chSquidGuardConf(MYSQL *conn)
                 mysql_free_result(res2);
 
                 fprintf(fout,"sams_%s  within sams_%s_time_2 {  %30s#sams\n pass ", row[0], row[0]," ");
-                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM squidctrl.sconfig LEFT JOIN squidctrl.redirect ON sconfig.set = redirect.filename LEFT JOIN squidctrl.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",row[0]);
+                sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM %s.sconfig LEFT JOIN %s.redirect ON sconfig.set = redirect.filename LEFT JOIN %s.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
                 flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
                 for(j=0;j<mysql_num_rows(res2);j++)
@@ -374,14 +374,14 @@ int chRejikConf(MYSQL *conn)
         }
       fclose(finp);
 
-      sprintf(&str[0],"SELECT shablons.name,shablons.nick,shablons.auth,shablons.alldenied FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.nick,shablons.auth,shablons.alldenied FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
          {
             row=mysql_fetch_row(res);
 
-            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='redir'", row[0]);
+            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='redir'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
 	    if(mysql_num_rows(res2)>0)
@@ -398,7 +398,7 @@ int chRejikConf(MYSQL *conn)
 
             if(atoi(row[3])==0)
 	      {
-	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='denied'", row[0]);
+	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='denied'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
                 flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
 	        if(mysql_num_rows(res2)>0)
@@ -412,7 +412,7 @@ int chRejikConf(MYSQL *conn)
                     fprintf(fout,"url %s/%s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath, conf.lang);
 	          }
                 mysql_free_result(res2);
-	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='regex'", row[0]);
+	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='regex'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
                 flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
 	        if(mysql_num_rows(res2)>0)
@@ -429,7 +429,7 @@ int chRejikConf(MYSQL *conn)
 	      }
 	    else  
 	      {
-	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='allow'", row[0]);
+	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='allow'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
 		flag=send_mysql_query(conn,&str[0]);
                 res2=mysql_store_result(conn);
 	        if(mysql_num_rows(res2)>0)
@@ -537,7 +537,7 @@ int SaveBackUp(int sm, MYSQL *conn)
               printf("Don't create file %s\n",filename);
               return(1);
          }
-       fprintf(fout,"USE squidlog;\n\n");
+       fprintf(fout,"USE %s;\n\n",conf.logdb);
        fprintf(fout,"\n### CACHESUM table\n");
        sprintf(&str[0],"SELECT * FROM %s.cachesum WHERE date<='%d-%d-31' ORDER BY date",conf.logdb,year,month);
        send_mysql_query(conn,&str[0]);
@@ -559,7 +559,7 @@ int SaveBackUp(int sm, MYSQL *conn)
          }
        mysql_free_result(res);
        if(DEBUG>0)
-         printf("Empty squidlog base to %d-%d-31 \n",year,month);
+         printf("Empty %s base to %d-%d-31 \n",conf.logdb,year,month);
        sprintf(&str[0],"DELETE FROM %s.cachesum WHERE cachesum.date<='%d-%d-31'",conf.logdb,year,month);
        send_mysql_query(conn,&str[0]);
        sprintf(&str[0],"DELETE FROM %s.cache WHERE cache.date<='%d-%d-31'",conf.logdb,year,month);
@@ -736,9 +736,9 @@ int ChangeSQUIDconf(MYSQL *conn)
              printf("TAG: acl found... START\n");
            
 	   if(ADLD==1)
-	     sprintf(&str[0],"SELECT * FROM squidctrl.shablons ORDER BY auth DESC");
+	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
            else
-	     sprintf(&str[0],"SELECT * FROM squidctrl.shablons ORDER BY auth");
+	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
 
 	   flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
@@ -746,9 +746,9 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     {
                count=0;
                if(RSAMS==1||RGUARD==1||RREJIK==1)
-                  sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers WHERE shablon='%s'",row[0]);
+                  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'",conf.samsdb,row[0]);
                else   
-		  sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers WHERE shablon='%s'&&enabled>'0'",row[0]);
+		  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -782,13 +782,13 @@ int ChangeSQUIDconf(MYSQL *conn)
            mysql_free_result(res);
 
            // списки расширений файлов 
-           sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set ");
+           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set ",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
 	     {
                count=0;
-               sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE redirect.type='files'&&redirect.filename='%s'",row[1]);
+               sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE redirect.type='files'&&redirect.filename='%s'",conf.samsdb,conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -804,14 +804,14 @@ int ChangeSQUIDconf(MYSQL *conn)
            mysql_free_result(res);
 
            // списки запрета доступа 
-           //sprintf(&str[0],"SELECT * FROM squidctrl.redirect WHERE type='denied' ");
-           sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set ");
+           //sprintf(&str[0],"SELECT * FROM %s.redirect WHERE type='denied' ",conf.samsdb);
+           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set ",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
 	     {
                count=0;
-               sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE redirect.type='denied'&&redirect.filename='%s'",row[1]);
+               sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE redirect.type='denied'&&redirect.filename='%s'",conf.samsdb,conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -826,14 +826,14 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-           sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE type='regex'&&redirect.filename=sconfig.set GROUP BY redirect.filename ");
+           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE type='regex'&&redirect.filename=sconfig.set GROUP BY redirect.filename ",conf.samsdb,conf.samsdb);
            //printf("str=%s\n",&str[0]);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
 	     {
                count=0;
-               sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls left join squidctrl.redirect ON urls.type=redirect.filename WHERE redirect.type = 'regex'&&redirect.filename='%s'",row[1]);
+               sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls left join %s.redirect ON urls.type=redirect.filename WHERE redirect.type = 'regex'&&redirect.filename='%s'",conf.samsdb,conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -852,14 +852,14 @@ int ChangeSQUIDconf(MYSQL *conn)
            mysql_free_result(res);
 
            // списки разрешения доступа
-           sprintf(&str[0],"SELECT * FROM squidctrl.redirect WHERE type='allow'");
+           sprintf(&str[0],"SELECT * FROM %s.redirect WHERE type='allow'",conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
 	     {
                count=0;
-//               sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls left join squidctrl.redirect ON urls.type=redirect.filename WHERE redirect.type = 'allow'&&redirect.filename='%s'",row[1]);
-               sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls LEFT JOIN squidctrl.sconfig ON urls.type=sconfig.set WHERE sconfig.set='%s'",row[1]);
+//               sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls left join %s.redirect ON urls.type=redirect.filename WHERE redirect.type = 'allow'&&redirect.filename='%s'",conf.samsdb,conf.samsdb,row[1]);
+               sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls LEFT JOIN %s.sconfig ON urls.type=sconfig.set WHERE sconfig.set='%s'",conf.samsdb,conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -927,18 +927,18 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
 	   
 	   if(ADLD==1)
-	     sprintf(&str[0],"SELECT * FROM squidctrl.shablons ORDER BY auth DESC");
+	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
            else
-	     sprintf(&str[0],"SELECT * FROM squidctrl.shablons ORDER BY auth");
+	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
 	     {
                count=0;
                if(RSAMS==1||RGUARD==1||RREJIK==1)   
-		  sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers WHERE shablon='%s'",row[0]);
+		  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'",conf.samsdb,row[0]);
 	       else
-	          sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers WHERE shablon='%s'&&enabled>'0'",row[0]);
+	          sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                row2=mysql_fetch_row(res2);
@@ -976,7 +976,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 			 }  
 		     }  
 		     
-                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&redirect.type='files' GROUP BY sconfig.set",row[0]);
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&redirect.type='files' GROUP BY sconfig.set",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
                            flag=send_mysql_query(conn,&str[0]);
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
@@ -987,7 +987,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 		      
                    if(RSQUID==1||RNONE==1)
 		     {
-                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, redirect.filename, redirect.type FROM squidctrl.sconfig left join squidctrl.redirect ON sconfig.set = redirect.filename WHERE sname = '%s'&&redirect.type='allow'\n",row[0]);
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, redirect.filename, redirect.type FROM %s.sconfig left join %s.redirect ON sconfig.set = redirect.filename WHERE sname = '%s'&&redirect.type='allow'\n",conf.samsdb,conf.samsdb,row[0]);
                            flag=send_mysql_query(conn,&str[0]);
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
@@ -1000,7 +1000,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            mysql_free_result(res2);
                        if(acount==0)
 		         {
-                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&(redirect.type='denied'||redirect.type='regex') GROUP BY sconfig.set",row[0]);
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&(redirect.type='denied'||redirect.type='regex') GROUP BY sconfig.set",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
                            flag=send_mysql_query(conn,&str[0]);
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
@@ -1057,7 +1057,7 @@ int ChangeSQUIDconf(MYSQL *conn)
              printf("TAG: delay_class found\n");
 
            count=0;
-           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon");
+           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
@@ -1068,7 +1068,7 @@ int ChangeSQUIDconf(MYSQL *conn)
            //if(DEBUG==1)
            //  printf("delay_pools %d\n",count);
            mysql_free_result(res);
-           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon");
+           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            count=1;
@@ -1081,7 +1081,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon");
+           sprintf(&str[0],"SELECT squidusers.nick,squidusers.shablon,shablons.name,shablons.shablonpool,shablons.userpool FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled>0 GROUP BY squidusers.shablon",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            count=1;
@@ -1133,7 +1133,7 @@ int MakeACLFiles(MYSQL *conn)
   BIGD=0;
   NTLMDOMAIN=0;
   
-  sprintf(&str[0],"SELECT redirect_to,bigd,bigu,ntlmdomain FROM squidctrl.sams");
+  sprintf(&str[0],"SELECT redirect_to,bigd,bigu,ntlmdomain FROM %s.sams",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -1171,7 +1171,7 @@ int MakeACLFiles(MYSQL *conn)
       fprintf(fout,"@banners    = (");
 
       count=0;
-      sprintf(&str[0],"SELECT count(urls.url) FROM squidctrl.urls left join squidctrl.redirect ON urls.type = redirect.filename WHERE redirect.type = 'redir'");
+      sprintf(&str[0],"SELECT count(urls.url) FROM %s.urls left join %s.redirect ON urls.type = redirect.filename WHERE redirect.type = 'redir'",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       row=mysql_fetch_row(res);
@@ -1179,7 +1179,7 @@ int MakeACLFiles(MYSQL *conn)
 //?
       mysql_free_result(res);
       
-      sprintf(&str[0],"SELECT urls.url, urls.type, redirect.filename, redirect.type FROM squidctrl.urls left join squidctrl.redirect ON urls.type = redirect.filename WHERE redirect.type = 'redir'");
+      sprintf(&str[0],"SELECT urls.url, urls.type, redirect.filename, redirect.type FROM %s.urls left join %s.redirect ON urls.type = redirect.filename WHERE redirect.type = 'redir'",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<count;i++)
@@ -1240,7 +1240,7 @@ int MakeACLFiles(MYSQL *conn)
        {
           return(0);
        }
-     sprintf(&str[0],"SELECT * FROM squidctrl.urls where type='local'");
+     sprintf(&str[0],"SELECT * FROM %s.urls where type='local'",conf.samsdb);
      flag=send_mysql_query(conn,&str[0]);
      res2=mysql_store_result(conn);
      for(j=0;j<mysql_num_rows(res2);j++)
@@ -1259,7 +1259,7 @@ int MakeACLFiles(MYSQL *conn)
   /***************************************************************************************/
   /*                   Создаем списки расширений файлов                                  */
   /***************************************************************************************/
-      sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set");
+      sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
@@ -1267,7 +1267,7 @@ int MakeACLFiles(MYSQL *conn)
            row=mysql_fetch_row(res);
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
 
-           sprintf(&str[0],"SELECT count(*) FROM squidctrl.urls where type='%s'",row[1]);
+           sprintf(&str[0],"SELECT count(*) FROM %s.urls where type='%s'",conf.samsdb,row[1]);
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
            row2=mysql_fetch_row(res2);
@@ -1280,7 +1280,7 @@ int MakeACLFiles(MYSQL *conn)
                     //printf("Don't open file %s\n",&shablonname[0]);
                     return(0);
                   }
-               sprintf(&str[0],"SELECT * FROM squidctrl.urls where type='%s'",row[1]);
+               sprintf(&str[0],"SELECT * FROM %s.urls where type='%s'",conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                for(j=0;j<ucount;j++)
@@ -1303,14 +1303,14 @@ int MakeACLFiles(MYSQL *conn)
   /***************************************************************************************/
   if(RREJIK==1)
     {
-      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
          {
             row=mysql_fetch_row(res);
 
-            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='redir'", row[0]);
+            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='redir'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
 	    
@@ -1340,7 +1340,7 @@ int MakeACLFiles(MYSQL *conn)
     }
   else 
     {
-      sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='redir'&&redirect.filename=sconfig.set");
+      sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='redir'&&redirect.filename=sconfig.set",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
@@ -1360,7 +1360,7 @@ int MakeACLFiles(MYSQL *conn)
 	     }  
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
-           sprintf(&str[0],"SELECT count(*) FROM squidctrl.urls where type='%s'",row[1]);
+           sprintf(&str[0],"SELECT count(*) FROM %s.urls where type='%s'",conf.samsdb,row[1]);
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
            row2=mysql_fetch_row(res2);
@@ -1373,7 +1373,7 @@ int MakeACLFiles(MYSQL *conn)
                     //printf("Don't open file %s\n",&shablonname[0]);
                     return(0);
                   }
-               sprintf(&str[0],"SELECT * FROM squidctrl.urls where type='%s'",row[1]);
+               sprintf(&str[0],"SELECT * FROM %s.urls where type='%s'",conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                for(j=0;j<ucount;j++)
@@ -1397,14 +1397,14 @@ int MakeACLFiles(MYSQL *conn)
 
   if(RREJIK==1)
     {
-      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
          {
             row=mysql_fetch_row(res);
 
-            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='denied'", row[0]);
+            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='denied'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
 	    if(mysql_num_rows(res2)>0)
@@ -1429,7 +1429,7 @@ int MakeACLFiles(MYSQL *conn)
 	      }
             mysql_free_result(res2);
 
-            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='regex'", row[0]);
+            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='regex'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
 	    if(mysql_num_rows(res2)>0)
@@ -1458,7 +1458,7 @@ int MakeACLFiles(MYSQL *conn)
     }
   else 
     {
-      sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set");
+      sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
@@ -1478,7 +1478,7 @@ int MakeACLFiles(MYSQL *conn)
 	     }  
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
-           sprintf(&str[0],"SELECT count(*) FROM squidctrl.urls where type='%s'",row[1]);
+           sprintf(&str[0],"SELECT count(*) FROM %s.urls where type='%s'",conf.samsdb,row[1]);
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
            row2=mysql_fetch_row(res2);
@@ -1491,7 +1491,7 @@ int MakeACLFiles(MYSQL *conn)
                     //printf("Don't open file %s\n",&shablonname[0]);
                     return(0);
                   }
-               sprintf(&str[0],"SELECT * FROM squidctrl.urls where type='%s'",row[1]);
+               sprintf(&str[0],"SELECT * FROM %s.urls where type='%s'",conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                for(j=0;j<ucount;j++)
@@ -1514,14 +1514,14 @@ int MakeACLFiles(MYSQL *conn)
 
   if(RREJIK==1)
     {
-      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM squidctrl.shablons LEFT JOIN squidctrl.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name");
+      sprintf(&str[0],"SELECT shablons.name,shablons.nick FROM %s.shablons LEFT JOIN %s.squidusers ON shablons.name=squidusers.shablon WHERE squidusers.enabled='1' GROUP BY shablons.name",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
          {
             row=mysql_fetch_row(res);
 
-            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM squidctrl.sconfig LEFT JOIN squidctrl.urls ON sconfig.set=urls.type LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='allow'", row[0]);
+            sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='allow'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
 	    
@@ -1552,7 +1552,7 @@ int MakeACLFiles(MYSQL *conn)
   else 
     {
 
-      sprintf(&str[0],"SELECT * FROM squidctrl.redirect LEFT JOIN squidctrl.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='allow'&&redirect.filename=sconfig.set");
+      sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='allow'&&redirect.filename=sconfig.set",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(i=0;i<mysql_num_rows(res);i++)
@@ -1573,7 +1573,7 @@ int MakeACLFiles(MYSQL *conn)
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
            //printf("found denied list: %s %s %s\n",row[0],row[1],&shablonname[0]);
-           sprintf(&str[0],"SELECT count(*) FROM squidctrl.urls where type='%s'",row[1]);
+           sprintf(&str[0],"SELECT count(*) FROM %s.urls where type='%s'",conf.samsdb,row[1]);
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
            row2=mysql_fetch_row(res2);
@@ -1587,7 +1587,7 @@ int MakeACLFiles(MYSQL *conn)
                     //printf("Don't open file %s\n",&shablonname[0]);
                     return(0);
                   }
-               sprintf(&str[0],"SELECT * FROM squidctrl.urls where type='%s'",row[1]);
+               sprintf(&str[0],"SELECT * FROM %s.urls where type='%s'",conf.samsdb,row[1]);
                flag=send_mysql_query(conn,&str[0]);
                res2=mysql_store_result(conn);
                for(j=0;j<ucount;j++)
@@ -1613,7 +1613,7 @@ int MakeACLFiles(MYSQL *conn)
    {
       local_ip=0;
       local_url=0;
-      sprintf(&str[0],"SELECT * FROM squidctrl.urls WHERE type='local'");
+      sprintf(&str[0],"SELECT * FROM %s.urls WHERE type='local'",conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       for(j=0;j<mysql_num_rows(res);j++)
@@ -1686,8 +1686,8 @@ int MakeACLFiles(MYSQL *conn)
   /* создаем списки пользователей      */
   ncsacount=0;
   ucount=0; 
-//  sprintf(&str[0],"SELECT * FROM squidctrl.shablons");
-  sprintf(&str[0],"SELECT name,auth FROM squidctrl.shablons");
+//  sprintf(&str[0],"SELECT * FROM %s.shablons",conf.samsdb);
+  sprintf(&str[0],"SELECT name,auth FROM %s.shablons",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   for(i=0;i<mysql_num_rows(res);i++)
@@ -1695,9 +1695,9 @@ int MakeACLFiles(MYSQL *conn)
        row=mysql_fetch_row(res);
        
        if(RSAMS==1||RREJIK==1||RGUARD==1)
-         sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers where shablon='%s'",row[0]);
+         sprintf(&str[0],"SELECT count(*) FROM %s.squidusers where shablon='%s'",conf.samsdb,row[0]);
        else
-         sprintf(&str[0],"SELECT count(*) FROM squidctrl.squidusers where shablon='%s'&&enabled>'0'",row[0]);
+         sprintf(&str[0],"SELECT count(*) FROM %s.squidusers where shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
        flag=send_mysql_query(conn,&str[0]);
        res2=mysql_store_result(conn);
        row2=mysql_fetch_row(res2);
@@ -1728,9 +1728,9 @@ int MakeACLFiles(MYSQL *conn)
               }
 
            if(RSAMS==1||RREJIK==1||RGUARD==1)
-             sprintf(&str[0],"SELECT * FROM squidctrl.squidusers WHERE shablon='%s'",row[0]);
+             sprintf(&str[0],"SELECT * FROM %s.squidusers WHERE shablon='%s'",conf.samsdb,row[0]);
            else
-             sprintf(&str[0],"SELECT * FROM squidctrl.squidusers WHERE shablon='%s'&&enabled>'0'",row[0]);
+             sprintf(&str[0],"SELECT * FROM %s.squidusers WHERE shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
            for(j=0;j<ucount;j++)
@@ -1873,7 +1873,7 @@ int MakeACLFiles(MYSQL *conn)
       /* создаем списки отключенных пользователей IP     */
       ncsacount=0;
       disabled_ip=0; 
-      sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth='ip' ");
+      sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth='ip' ",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       disabled_ip=mysql_num_rows(res);
@@ -1906,7 +1906,7 @@ int MakeACLFiles(MYSQL *conn)
       /* создаем списки отключенных пользователей NCSA, NTLM     */
       ncsacount=0;
       disabled_id=0; 
-      sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth!='ip' ");
+      sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth!='ip' ",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
       res=mysql_store_result(conn);
       disabled_id=mysql_num_rows(res);
@@ -1983,7 +1983,7 @@ void ReadSAMSFlags(MYSQL *conn2)
   int flag;
   char temp[32];
   
-  sprintf(&str[0],"SELECT endvalue,auth,ntlmdomain,sleep,redirector,parser_time,parser,count_clean,nameencode,delaypool,sams.separator,loglevel,squidbase,redirect_to,denied_to FROM squidctrl.sams");
+  sprintf(&str[0],"SELECT endvalue,auth,ntlmdomain,sleep,redirector,parser_time,parser,count_clean,nameencode,delaypool,sams.separator,loglevel,squidbase,redirect_to,denied_to FROM %s.sams",conf.samsdb);
   flag=send_mysql_query(conn2,&str[0]);
   res=mysql_store_result(conn2);
   row=mysql_fetch_row(res);
@@ -2155,7 +2155,7 @@ void ReadSAMSFlags(MYSQL *conn2)
   conf.deniedpath=MallocMemory(row[14]);
   mysql_free_result(res);
 
-  sprintf(&str[0],"SELECT lang,createpdf FROM squidctrl.globalsettings");
+  sprintf(&str[0],"SELECT lang,createpdf FROM %s.globalsettings",conf.samsdb);
   flag=send_mysql_query(conn2,&str[0]);
   res=mysql_store_result(conn2);
   row=mysql_fetch_row(res);
@@ -2404,14 +2404,14 @@ int main (int argc, char *argv[])
 		     {
 		       if(DEBUG>0)
 		         printf("Perod: Month. Traffic cleaned\n");
-		       sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE period='M' ");
+		       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='M' ",conf.samsdb);
                        flag=send_mysql_query(conn2,&str[0]);
                        res=mysql_store_result(conn2);
                        //printf("MONTH shablons count = %d\n",mysql_num_rows(res));
 		       for(i=0;i<mysql_num_rows(res);i++)
                          {
                            row=mysql_fetch_row(res);
-                           sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
                            sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2424,14 +2424,14 @@ int main (int argc, char *argv[])
 		     {
 		       if(DEBUG>0)
 		         printf("Perod: Week. Traffic cleaned\n");
-		       sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE period='W' ");
+		       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='W' ",conf.samsdb);
                        flag=send_mysql_query(conn2,&str[0]);
                        res=mysql_store_result(conn2);
                        //printf("WEEK shablons count = %d\n",mysql_num_rows(res));
 		       for(i=0;i<mysql_num_rows(res);i++)
                          {
                            row=mysql_fetch_row(res);
-                           sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
                            sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2441,7 +2441,7 @@ int main (int argc, char *argv[])
 		     
 		     }
 
-		   sprintf(&str[0],"SELECT period,name,nick FROM squidctrl.shablons WHERE clrdate<='%d-%d-%d'&&clrdate>'0000-00-00'&&period!='M'&&period!='W'",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+		   sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE clrdate<='%d-%d-%d'&&clrdate>'0000-00-00'&&period!='M'&&period!='W'",conf.samsdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday);
                    flag=send_mysql_query(conn2,&str[0]);
                    res=mysql_store_result(conn2);
 		   for(i=0;i<mysql_num_rows(res);i++)
@@ -2449,13 +2449,13 @@ int main (int argc, char *argv[])
                         row=mysql_fetch_row(res);
 		        if(DEBUG>0)
 		          printf("Perod %d: %d days. Traffic cleaned\n", i, atoi(row[0]));
-                        sprintf(&str[0],"UPDATE squidctrl.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",row[1]);
+                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
                         flag=send_mysql_query(conn2,&str[0]);
 
 			    tt2=tt+60*60*24*atoi(row[0]);
                             t2=localtime(&tt2);
 
-		        sprintf(&str[0],"UPDATE squidctrl.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
+		        sprintf(&str[0],"UPDATE %s.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",conf.samsdb,t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
 			flag=send_mysql_query(conn2,&str[0]);
                         sprintf(&str[0],"Traffic clean. Template %s",row[2]);
 			AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2483,14 +2483,14 @@ int main (int argc, char *argv[])
                  }
              }
 
-           sprintf(&str[0],"SELECT action,service FROM squidctrl.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.cachenum);
+           sprintf(&str[0],"SELECT action,service FROM %s.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.samsdb,conf.cachenum);
 	   flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
            //Если сигнал на shutdown
            
 	   if(mysql_num_rows(res)>0)
 	     {
-               sprintf(&str[0],"DELETE FROM squidctrl.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.cachenum);
+               sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.samsdb,conf.cachenum);
                flag=send_mysql_query(conn,&str[0]);
 //               if(flag!=0)
 //                 {
@@ -2504,7 +2504,7 @@ int main (int argc, char *argv[])
 	     }  
            mysql_free_result(res);
 
-	   sprintf(&str[0],"SELECT action,service FROM squidctrl.reconfig WHERE service='squid'&&action='reconfig'&&number='%d'",conf.cachenum);
+	   sprintf(&str[0],"SELECT action,service FROM %s.reconfig WHERE service='squid'&&action='reconfig'&&number='%d'",conf.samsdb,conf.cachenum);
            flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
            //Если сигнал на рекофигурирование SQUID
@@ -2512,7 +2512,7 @@ int main (int argc, char *argv[])
              {
 	       clearflag=0;
 
-               sprintf(&str[0],"DELETE FROM squidctrl.reconfig WHERE service='squid'&&action='reconfig'&&number='%d'",conf.cachenum);
+               sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='squid'&&action='reconfig'&&number='%d'",conf.samsdb,conf.cachenum);
                flag=send_mysql_query(conn,&str[0]);
                if(flag!=0)
                  {
