@@ -145,6 +145,10 @@
   $redir_addredirectform3=" Set up "; 
   $redir_addredirectform4=" The list contains URL, the user demands to which ... would  be redirected "; 
 
+  $redir_filetypesform1="The access is forbidden.<br>Set up new file types list";
+  $redir_filetypesform2="Delete";
+  $redir_filetypesform3="Change";
+  $redir_filetypesform4="Add";
 
   $alltraffic_1=" User statistics "; 
 
