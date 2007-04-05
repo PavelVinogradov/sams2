@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-      print("   denied = insFld($sams, gFld(\"Расширения файлов\", \"main.php?show=exe&function=addfilelistform\", \"stop.gif\"))\n");
+      print("   denied = insFld($sams, gFld(\"$lframe_sams_FileDenied_1\", \"main.php?show=exe&function=addfilelistform\", \"stop.gif\"))\n");
       $result=mysql_query("SELECT * FROM redirect WHERE type=\"files\"");
       while($row=mysql_fetch_array($result))
          {

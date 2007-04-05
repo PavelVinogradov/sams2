@@ -580,6 +580,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $lframe_sams_UserFolder_1=" Users "; 
   $lframe_sams_UserGroupsFolder_1=" Users groups "; 
   $lframe_sams_UserShablonFolder_1=" Users templates "; 
+  $lframe_sams_FileDenied_1=" File types "; 
   $lframe_sams_FolderDenied_1=" URL access forbidden "; 
   $lframe_sams_FolderRedirect_1=" Redirection ";
 
