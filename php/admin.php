@@ -37,10 +37,12 @@ function ShowDomainUserName()
 
 //function UserAuthenticate($user,$passwd)
 //{
+//  global $SAMSConf;
+//
 //  print("<h1>UserAuthenticate</h1>");
-  //$newpasswd=crypt($passwd,"00");
-//  db_connect("squidctrl") or exit();
-//  mysql_select_db("squidctrl");
+//  $newpasswd=crypt($passwd,"00");
+//  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+//  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
 //  $result=mysql_query("SELECT * FROM passwd WHERE user=\"$user\"&&pass=\"$passwd\" ");
 //  $row=mysql_fetch_array($result);
@@ -127,8 +129,10 @@ function ShowCookieInfo($user,$passwd)
 
 function CheckUserPassword($user,$passwd)
 {
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  global $SAMSConf;
+  
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM passwd WHERE user=\"$user\"&&pass=\"$passwd\" ");
   $row=mysql_fetch_array($result);
@@ -162,11 +166,12 @@ function GetPasswordForm()
 
 function SaveUserName($passwd,$number)
 {
-  global $adminname;
+  global $adminname, $SAMSConf;
+  
   $newpasswd=crypt($passwd,"00");
   print("passwd=$newpasswd=");
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM passwd WHERE pass=\"$newpasswd\" ");
   $row=mysql_fetch_array($result);
@@ -193,9 +198,11 @@ function GetAdminPasswordForm()
 
 function UserPasswordTest($username,$passwd)
 {
+  global $SAMSConf;
+  
   $newpasswd=crypt($passwd,"00");
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM passwd  WHERE user=\"$username\" ");
   $row=mysql_fetch_array($result);

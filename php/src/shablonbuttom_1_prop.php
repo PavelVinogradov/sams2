@@ -63,8 +63,8 @@ function UpdateShablon()
   if($emin<0&&emin>60)
      $emin="00";
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("DELETE FROM sconfig WHERE sname=\"$sname\" ");
 
   $result=mysql_query("SELECT * FROM redirect");

@@ -38,8 +38,8 @@ function GroupFileSizePeriod()
 
 
   $filesize=($filesize*$SAMSConf->KBSIZE)-1;
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   print("<TABLE CLASS=samstable>");
   print("<TH>No");
@@ -49,7 +49,7 @@ function GroupFileSizePeriod()
   print("<TH>URL");
   $count=0;
 
-  $query="SELECT cache.user,cache.date,cache.size,cache.url, tu.name, tu.family, cache.domain FROM cache , squidctrl.squidusers AS tu WHERE tu.nick=cache.user&&tu.domain=cache.domain&&tu.group=\"$groupname\"&&date>=\"$sdate\"&&date<=\"$edate\"&&cache.size>=\"$filesize\" order by cache.size desc limit 250";
+  $query="SELECT cache.user,cache.date,cache.size,cache.url, tu.name, tu.family, cache.domain FROM cache , ".$SAMSConf->MYSQLDATABASE.".squidusers AS tu WHERE tu.nick=cache.user&&tu.domain=cache.domain&&tu.group=\"$groupname\"&&date>=\"$sdate\"&&date<=\"$edate\"&&cache.size>=\"$filesize\" order by cache.size desc limit 250";
   $result=mysql_query($query);
   while($row=mysql_fetch_array($result))
      {
@@ -90,8 +90,8 @@ function GroupFileSizeForm()
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
 

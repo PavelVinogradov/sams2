@@ -26,14 +26,14 @@ function CountUserTraffic()
 
   PageTop("usergroup_48.jpg","$backupbuttom_2_loadbase_CountUserTraffic_1 1.$smon.$syea - $eday.$smon.$syea $backupbuttom_2_loadbase_CountUserTraffic_2");
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT sum(size),user,domain FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\" GROUP BY user,domain");
   $result=mysql_query("SELECT * FROM cache_ ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("UPDATE squidctrl.squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
+         $result2=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
        }
   UpdateLog("$SAMSConf->adminname","$backupbuttom_2_loadbase_CountUserTraffic_3","01");
 
@@ -42,17 +42,18 @@ function CountUserTraffic()
 
 function RestoreBackUp()
 {
-
-if(isset($_GET["groups"]))    $groups=$_GET["groups"];
-if(isset($_GET["users"]))      $users=$_GET["users"];
-if(isset($_GET["lists"]))        $lists=$_GET["lists"];
-if(isset($_GET["shablons"])) $shablons=$_GET["shablons"];
+  global $SAMSConf;
+  
+  if(isset($_GET["groups"]))    $groups=$_GET["groups"];
+  if(isset($_GET["users"]))      $users=$_GET["users"];
+  if(isset($_GET["lists"]))        $lists=$_GET["lists"];
+  if(isset($_GET["shablons"])) $shablons=$_GET["shablons"];
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-   db_connect("squidctrl") or exit();
-   mysql_select_db("squidctrl");
+   db_connect($SAMSConf->MYSQLDATABASE) or exit();
+   mysql_select_db($SAMSConf->MYSQLDATABASE);
   if(($finp=gzopen("data/loadsamsdb.sql.gz","r"))!=NULL)
     {
        while(gzeof($finp)==0)

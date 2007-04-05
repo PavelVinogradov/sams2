@@ -26,8 +26,8 @@ function UserFileSizePeriod()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_3_file_UserFileSizePeriod_1 $filesize kb");
 
@@ -79,8 +79,8 @@ function UserFileSizeForm()
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

@@ -23,8 +23,8 @@ function UserTrafficPeriodGB()
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   $stime=gmmktime (0, 0, 1, $DATE->smon, $DATE->sday, $DATE->syea);
   $etime=gmmktime (23, 59, 59, $DATE->emon, $DATE->eday, $DATE->eyea);
@@ -83,8 +83,8 @@ function UserTrafficPeriod()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $username</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
@@ -167,8 +167,8 @@ function UserTrafficForm()
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

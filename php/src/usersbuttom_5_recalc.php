@@ -26,8 +26,8 @@ function RecalcUsersTraffic()
 
   PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 1.$smon.$syea по $eday.$smon.$syea $usersbuttom_5_recalc_RecalcUsersTraffic_");
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   
   $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT sum(size),user,domain,sum(hit) FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\" GROUP BY user,domain");
   $result=mysql_query("SELECT * FROM cache_ ");
@@ -39,7 +39,7 @@ function RecalcUsersTraffic()
 	    $tsize=$row[0];
 	 if($row[3]>0)
 	    $thit=$row[3];
-	 $result2=mysql_query("UPDATE squidctrl.squidusers SET size=\"$tsize\",hit=\"$thit\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
+	 $result2=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET size=\"$tsize\",hit=\"$thit\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
        }
   UpdateLog("$SAMSConf->adminname","$usersbuttom_5_recalc_RecalcUsersTraffic_3","01");
 

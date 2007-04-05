@@ -14,8 +14,8 @@ function EditLocalListForm()
 
   $count=0;
 
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
 
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"local\" ");

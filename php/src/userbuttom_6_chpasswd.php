@@ -22,9 +22,9 @@ function ChUserPasswd()
     exit(0);
   
   PageTop("userpasswd_48.jpg"," $userbuttom_6_chpasswd_ChUserPasswd_1 <BR><FONT COLOR=\"BLUE\">$row[nick]</FONT>");
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
-  $result=mysql_query("UPDATE squidctrl.squidusers SET passwd=\"$newpasswd\" WHERE id=\"$userid\" ");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  $result=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET passwd=\"$newpasswd\" WHERE id=\"$userid\" ");
   if($SAMSConf->AUTH=="ncsa")
          $result=mysql_query("INSERT INTO reconfig SET service=\"squid\",action=\"reconfig\" ");
 
@@ -39,8 +39,8 @@ function ChUserPasswdForm()
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
    
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

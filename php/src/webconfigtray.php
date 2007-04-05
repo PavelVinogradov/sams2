@@ -109,6 +109,8 @@ function FileSystemUsage()
 
 function SysInfo()
 {
+   global $SAMSConf;
+   
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
@@ -144,7 +146,7 @@ function SysInfo()
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM squidlog.cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This month\n");
@@ -156,7 +158,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM squidlog.cachesum WHERE date=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This day\n");

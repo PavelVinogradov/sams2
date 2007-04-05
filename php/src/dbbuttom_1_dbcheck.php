@@ -68,8 +68,8 @@ function dbcheck()
 	   }
   print("</TABLE> ");
 
-  db_connect("squidlog") or exit();
-  mysql_select_db("squidlog");
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   //$result=mysql_query("check table cache");
 
   print("<P><TABLE WIDTH=\"90%\" BORDER=0> ");

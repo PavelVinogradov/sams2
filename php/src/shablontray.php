@@ -17,8 +17,8 @@ function ShablonUsers()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect("squidctrl") or exit();
-  mysql_select_db("squidctrl")
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
   $row=mysql_fetch_array($result);
@@ -74,8 +74,8 @@ function ShablonTray()
 
   if($SAMSConf->access==2)
     {
-      db_connect("squidctrl") or exit();
-      mysql_select_db("squidctrl");
+      db_connect($SAMSConf->MYSQLDATABASE) or exit();
+      mysql_select_db($SAMSConf->MYSQLDATABASE);
       $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
       $row=mysql_fetch_array($result);
 
