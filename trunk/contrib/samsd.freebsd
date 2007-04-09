@@ -1,0 +1,27 @@
+#!/bin/sh
+# $FreeBSD:  $
+#
+# PROVIDE: samsdaemon
+#
+# Define these samsdaemon_* variables in one of these files:
+#       /etc/rc.conf
+#       /etc/rc.conf.d/samsd
+#       /etc/rc.conf.d/
+#
+# DO NOT CHANGE THESE DEFAULT VALUES HERE
+samsdaemon_enable=${samsdaemon_enable-"NO"}
+samsdaemon_pidfile=${samsdaemon_pidfile-"/var/run/samsdaemon.pid"}
+
+. /etc/rc.subr
+
+name="samsdaemon"
+rcvar=`set_rcvar`
+command="/usr/local/bin/samsdaemon"
+
+load_rc_config $name
+
+pidfile="${samsdaemon_pidfile}"
+
+start_cmd="echo \"Starting ${name}.\"; ${command}"
+
+run_rc_command "$1" 
