@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -23,8 +23,8 @@ function LoadLocalList()
   copy($_FILES['userfile']['tmp_name'], "data/urllist.txt");
 
   $finp=fopen("data/urllist.txt","r");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   while(feof($finp)==0)
     {
@@ -65,7 +65,7 @@ function LoadLocalListForm()
 
 
 
-function localbuttom_2_loadlist($access)
+function localbuttom_2_loadlist()
 {
   global $SAMSConf;
   

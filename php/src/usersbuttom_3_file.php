@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -35,8 +35,8 @@ function UsersFileSizePeriod()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   if($_GET["check"]==1)
     {
@@ -52,7 +52,7 @@ function UsersFileSizePeriod()
       print("</THEAD>");
       $count=0;
 //      $result=mysql_query("SELECT user,date,size,url FROM cache WHERE cache.date>=\"$sdate\"&&cache.date<=\"$edate\"&&size>\"$filesize\" ORDER BY size DESC limit 250");
-      $result=mysql_query("SELECT cache.user,cache.date,cache.size,cache.url,squidusers.name,squidusers.family,cache.domain FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".squidusers ON cache.user=squidusers.nick WHERE cache.date>=\"$sdate\"&&cache.date<=\"$edate\"&&cache.size>\"$filesize\" ORDER BY size DESC limit 250");
+      $result=mysql_query("SELECT cache.user,cache.date,cache.size,cache.url,squidusers.name,squidusers.family,cache.domain FROM $SAMSConf->MYSQLDATABASE.cache LEFT JOIN $SAMSConf->SQUIDCTRLDATABASE.squidusers ON cache.user=squidusers.nick WHERE cache.date>=\"$sdate\"&&cache.date<=\"$edate\"&&cache.size>\"$filesize\" ORDER BY size DESC limit 250");
       while($row=mysql_fetch_array($result))
          {
              print("\n<TR>");
@@ -127,8 +127,8 @@ function  UsersFileSizeForm()
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

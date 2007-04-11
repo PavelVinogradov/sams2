@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -29,11 +29,11 @@ function BackUpTray()
   require($lang);
 
   print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=helpbackupform\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpbackupform\";\n");
   print("</SCRIPT> \n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
+//  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
+//  $row=mysql_fetch_array($result);
   if($SAMSConf->access==2)
     {
       print("<TABLE border=0 WIDTH=\"100%\">\n");
@@ -41,26 +41,9 @@ function BackUpTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\" COLOR=\"BLUE\">$backuptray_BackUpTray_1</FONT></B>\n");
 
-
-      $filelist=`ls src/backupbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
+      ExecuteFunctions("./src", "backupbuttom","");
      }
+
   print("<TD>\n");
   print("</TABLE>\n");
 

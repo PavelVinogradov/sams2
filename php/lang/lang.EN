@@ -1,4 +1,4 @@
-<?
+<?php
 #LANGUAGE:English 
 
  $CHARSET="";
@@ -145,10 +145,6 @@
   $redir_addredirectform3=" Set up "; 
   $redir_addredirectform4=" The list contains URL, the user demands to which ... would  be redirected "; 
 
-  $redir_filetypesform1="The access is forbidden.<br>Set up new file types list";
-  $redir_filetypesform2="Delete";
-  $redir_filetypesform3="Change";
-  $redir_filetypesform4="Add";
 
   $alltraffic_1=" User statistics "; 
 
@@ -584,7 +580,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $lframe_sams_UserFolder_1=" Users "; 
   $lframe_sams_UserGroupsFolder_1=" Users groups "; 
   $lframe_sams_UserShablonFolder_1=" Users templates "; 
-  $lframe_sams_FileDenied_1=" File types "; 
   $lframe_sams_FolderDenied_1=" URL access forbidden "; 
   $lframe_sams_FolderRedirect_1=" Redirection ";
 
@@ -775,6 +770,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   
   $shablonnew_NewShablonForm_17="select default authorisation method into SAMS settings";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_21=" Access allowed lists to file extensions";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";

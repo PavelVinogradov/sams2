@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -17,8 +17,8 @@ function ShablonUsers()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
   $row=mysql_fetch_array($result);
@@ -74,8 +74,8 @@ function ShablonTray()
 
   if($SAMSConf->access==2)
     {
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE);
+      db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+      mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
       $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
       $row=mysql_fetch_array($result);
 
@@ -88,23 +88,7 @@ function ShablonTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$row[nick]</FONT></B>\n");
 
-      $filelist=`ls src/shablonbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access,$row['name']);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access,$row['name']);
-           $len=$len+strlen($filename)+1;
-        }
+      ExecuteFunctions("./src", "shablonbuttom","");
     }
   print("<TD>\n");
   print("</TABLE>\n");

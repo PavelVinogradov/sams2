@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -26,14 +26,14 @@ function CountUserTraffic()
 
   PageTop("usergroup_48.jpg","$backupbuttom_2_loadbase_CountUserTraffic_1 1.$smon.$syea - $eday.$smon.$syea $backupbuttom_2_loadbase_CountUserTraffic_2");
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT sum(size),user,domain FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\" GROUP BY user,domain");
   $result=mysql_query("SELECT * FROM cache_ ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
+         $result2=mysql_query("UPDATE $SAMSConf->SQUIDCTRLDATABASE.squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
        }
   UpdateLog("$SAMSConf->adminname","$backupbuttom_2_loadbase_CountUserTraffic_3","01");
 
@@ -43,17 +43,18 @@ function CountUserTraffic()
 function RestoreBackUp()
 {
   global $SAMSConf;
-  
-  if(isset($_GET["groups"]))    $groups=$_GET["groups"];
-  if(isset($_GET["users"]))      $users=$_GET["users"];
-  if(isset($_GET["lists"]))        $lists=$_GET["lists"];
-  if(isset($_GET["shablons"])) $shablons=$_GET["shablons"];
+
+if(isset($_GET["groups"]))    $groups=$_GET["groups"];
+if(isset($_GET["users"]))      $users=$_GET["users"];
+if(isset($_GET["lists"]))        $lists=$_GET["lists"];
+if(isset($_GET["shablons"])) $shablons=$_GET["shablons"];
+if(isset($_GET["tmp_name"])) $tmp_name=$_GET["tmp_name"];
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
-  
-   db_connect($SAMSConf->MYSQLDATABASE) or exit();
-   mysql_select_db($SAMSConf->MYSQLDATABASE);
+   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+   mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+
   if(($finp=gzopen("data/loadsamsdb.sql.gz","r"))!=NULL)
     {
        while(gzeof($finp)==0)
@@ -130,6 +131,7 @@ function LoadBackUp()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"restorebackup\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"backupbuttom_2_loadbase.php\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"tmp_name\" value=\"backupbuttom_2_loadbase.php\">\n");
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD><B>$backupbuttom_2_loadbase_LoadBackUp_5</B>\n");
@@ -169,7 +171,7 @@ function LoadBackUpForm()
 
 
 
-function backupbuttom_2_loadbase($access)
+function backupbuttom_2_loadbase()
 {
   global $SAMSConf;
   

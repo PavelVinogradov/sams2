@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -19,10 +19,9 @@ function DeleteAdmin()
 
   if(strstr("Admin",$SAMSConf->adminname)||strstr("auditor",$SAMSConf->adminname))
     {
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE) 
-    	  or print("Error\n");
-      
+      db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+      mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+          or print("Error\n");
       $result=mysql_query("DELETE FROM passwd WHERE user=\"$username\" ");
       PageTop("user_48.jpg","$adminbuttom_5_deladmin_DeleteAdmin_1 $username $adminbuttom_5_deladmin_DeleteAdmin_2");
     }
@@ -52,8 +51,8 @@ function DeleteAdminForm()
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"deleteadmin\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"adminbuttom_5_deladmin.php\">\n");
       print("<SELECT NAME=\"username\" >\n");
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE)
+      db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+      mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
           or print("Error\n");
       $result2=mysql_query("SELECT * FROM passwd WHERE user!=\"Admin\"&&user!=\"auditor\"");
       while($row=mysql_fetch_array($result2))

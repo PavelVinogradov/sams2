@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -109,8 +109,6 @@ function FileSystemUsage()
 
 function SysInfo()
 {
-   global $SAMSConf;
-   
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
@@ -146,7 +144,7 @@ function SysInfo()
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM $SAMSConf->MYSQLDATABASE.cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This month\n");
@@ -158,7 +156,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM $SAMSConf->MYSQLDATABASE.cachesum WHERE date=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This day\n");
@@ -211,26 +209,7 @@ function WebConfigTray()
   
   print("<B>$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1</B>\n");
 
-  $filelist=`ls src/webconfigbuttom*`;
-  
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $funcname=str_replace("src/","",$filename);
-  $funcname=str_replace(".php","",$funcname);
-  //print(" $filename  $funcname ");
-  require($filename);
-  $funcname($SAMSConf->access,$row[name]);
-  $len=$len+strlen($filename)+1;
-  while($len<$filelen)
-    {
- 	   $filename=strtok(chr(0x0a));
-       $funcname=str_replace("src/","",$filename);
-       $funcname=str_replace(".php","",$funcname);
-       //print(" $filename  $funcname ");
-       require($filename);
-       $funcname($SAMSConf->access,$row[name]);
-       $len=$len+strlen($filename)+1;
-    }
+      ExecuteFunctions("./src", "webconfigbuttom","");
 
   print("<TD>\n");
   print("</TABLE>\n");

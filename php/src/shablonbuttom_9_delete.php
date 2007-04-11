@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -35,7 +35,7 @@ function DeleteShablon()
 }
 
 
-function shablonbuttom_9_delete($access,$id)
+function shablonbuttom_9_delete()
 {
   global $SAMSConf;
   

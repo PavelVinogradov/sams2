@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -13,8 +13,8 @@ function GetDomainUsersList()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   if($SAMSConf->AUTH=="ntlm")
       $userslist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
@@ -148,8 +148,8 @@ function AddUser()
   $userid=TempName();
   $usergroup=trim($usergroup);
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
       $pass=$_GET["passwd"];
@@ -292,8 +292,8 @@ function NewUserForm()
        print("<TD>\n");
        print("<SELECT NAME=\"usergroup\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
 
-       db_connect($SAMSConf->MYSQLDATABASE) or exit();
-       mysql_select_db($SAMSConf->MYSQLDATABASE)
+       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
             or print("Error\n");
        $result=mysql_query("SELECT name,nick FROM groups");
        while($row=mysql_fetch_array($result))
@@ -339,8 +339,8 @@ function NewUserForm()
        print("<B>$userstray_NewUserForm_15: \n");
        print("<TD>\n");
        print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 onChange=\"SetQuote()\">\n");
-       db_connect($SAMSConf->MYSQLDATABASE) or exit();
-       mysql_select_db($SAMSConf->MYSQLDATABASE)
+       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
             or print("Error\n");
        $result=mysql_query("SELECT * FROM shablons");
        while($row=mysql_fetch_array($result))

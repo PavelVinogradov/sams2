@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -23,8 +23,8 @@ function ShowAllLog()
    if($SAMSConf->access!=2)     {       exit;     }
   
   PageTop("log_48.jpg","$log_1");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   if($username=="on")
                  $v1="01";
@@ -110,7 +110,7 @@ function ShowAllLogForm()
        print("</FORM>\n");
 }
 
-function logbuttom_1($access)
+function logbuttom_1()
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -23,8 +23,8 @@ function DeleteUser()
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
   $result=mysql_query("DELETE FROM squidusers WHERE id=\"$userid\" ");
@@ -34,7 +34,7 @@ function DeleteUser()
 
 
 
-function userbuttom_9_delete($access,$userid)
+function userbuttom_9_delete($userid)
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -47,7 +47,7 @@ function lframe_users()
 	}  
       else
         {
-          $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".groups ORDER BY nick");
+          $result=mysql_query("SELECT * FROM $SAMSConf->SQUIDCTRLDATABASE.groups ORDER BY nick");
 	}  
       while($row=mysql_fetch_array($result))
          {

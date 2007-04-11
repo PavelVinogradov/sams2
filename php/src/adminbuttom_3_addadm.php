@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -19,10 +19,10 @@ function AddAdmin()
    if($SAMSConf->access!=2)     {       exit;     }
   
   $passwd=crypt($newpasswd,"00");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
-  $result=mysql_query("INSERT INTO ".$SAMSConf->MYSQLDATABASE.".passwd VALUES('$newuser','$passwd','1') ");
+  $result=mysql_query("INSERT INTO $SAMSConf->SQUIDCTRLDATABASE.passwd VALUES('$newuser','$passwd','1') ");
   UpdateLog("$SAMSConf->adminname","$adminbuttom_3_addadm_AddAdmin_1 $newuser","04");
   PageTop("puser_open.gif","$adminbuttom_3_addadm_AddAdmin_2 $newuser");
 

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -20,8 +20,8 @@ function SaveSquidLog()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
 
   $tablecount=0;
@@ -29,7 +29,7 @@ function SaveSquidLog()
 
   $fout=gzopen("data/$filename","w9");
   gzwrite($fout,"# SQUIDLOG DUMP FOR MYSQL DATABASE\n\n");
-  gzwrite($fout," USE ".$SAMSConf->SQUIDCTRLDATABASE."; \n");
+  gzwrite($fout," USE squidlog; \n");
   
   //записываем squidlog.cache
   $result2=mysql_query("SHOW COLUMNS FROM cache"); //берем количество
@@ -87,7 +87,7 @@ function SaveSquidLogForm()
 }
 
 
-function squidbuttom_1_savebase($access)
+function squidbuttom_1_savebase()
 {
   global $SAMSConf;
   

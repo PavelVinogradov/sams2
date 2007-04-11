@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -20,8 +20,8 @@ function UsersPercentTrafficGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+db_connect($SAMSConf->MYSQLDATABASE) or exit();
+mysql_select_db($SAMSConf->MYSQLDATABASE);
 
 $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
 $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
@@ -62,8 +62,8 @@ function GroupsPercentTrafficGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
 $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
 $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
@@ -72,7 +72,7 @@ $all=$row[0];
 if($all==0) $all=1;
 $percent=$all/100;
   
-  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM ".$SAMSConf->MYSQLDATABASE.".squidusers,".$SAMSConf->MYSQLDATABASE.".groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers,$SAMSConf->SQUIDCTRLDATABASE.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
   $count=0;
   while($row=mysql_fetch_array($result))
     {
@@ -117,8 +117,8 @@ function UsersPercentTraffic()
   if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=userspercenttrafficgb&filename=usersbuttom_4_percent.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
   
-db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+db_connect($SAMSConf->MYSQLDATABASE) or exit();
+mysql_select_db($SAMSConf->MYSQLDATABASE);
 
 $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
 $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
@@ -137,7 +137,7 @@ print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
 print("<TH>%");
 
 //$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent from cache_ order by cache_.user_size desc");
-$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,cache_.domain from cache_  LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
+$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,cache_.domain from cache_  LEFT JOIN $SAMSConf->SQUIDCTRLDATABASE.squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
 $ap=0;
 $count=1;
 while($row=mysql_fetch_array($result))
@@ -194,7 +194,7 @@ print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_5");
 print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
 print("<TH>%");
 
-$result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM ".$SAMSConf->MYSQLDATABASE.".squidusers,".$SAMSConf->MYSQLDATABASE.".groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+$result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers,$SAMSConf->SQUIDCTRLDATABASE.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
 $count=1;
 while($row=mysql_fetch_array($result))
   {
