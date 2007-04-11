@@ -1,9 +1,9 @@
-<?
-#LANGUAGE:Russian cp1251
+<?php
+#LANGUAGE:Russian CP1251
 #NTLMCHARSETENCODER:"iconv -f CP1251 -t 866"
 
- $CHARSET="WIN1251";
- $langtest="WIN1251";
+ $CHARSET="CP1251";
+ $langtest="CP1251";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
@@ -142,10 +142,6 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
-  $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
-  $redir_filetypesform2="Удалить";
-  $redir_filetypesform3="Изменить";
-  $redir_filetypesform4="Добавить";
 
   $alltraffic_1="Статистика пользователей";
 
@@ -583,7 +579,6 @@
   $lframe_sams_UserFolder_1="Пользователи";
   $lframe_sams_UserGroupsFolder_1="Группы пользователей";
   $lframe_sams_UserShablonFolder_1="Шаблоны пользователей";
-  $lframe_sams_FileDenied_1="Расширения файлов"; 
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
 

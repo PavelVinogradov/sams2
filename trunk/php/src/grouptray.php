@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -40,16 +40,16 @@ function DisableGroupUsers()
 
 function UserGroupForm()
 {
-  global $SAMSConf;
   
+  global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   $SAMSConf->access=UserAccess();
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $ga=0;
   $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
@@ -119,7 +119,7 @@ function UserGroupForm()
          if($SAMSConf->access==2)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[id]] ");
-             if($row[enabled]==1)
+             if($row['enabled']==1)
 	       print(" CHECKED ");
 	     print("> \n ");
            }
@@ -138,7 +138,7 @@ function UserGroupForm()
 	        $traffic=$row['size'];
 	     PrintFormattedSize($traffic);
              
-	     if($row[quotes]>0)
+	     if($row['quotes']>0)
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
 	     else  
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
@@ -173,8 +173,8 @@ function GroupTray($groupname,$groupnick)
   print("        parent.basefrm.location.href=\"main.php?show=exe&function=usergroupform&groupname=$groupname\";\n");
   print("</SCRIPT> \n");
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
@@ -182,25 +182,7 @@ function GroupTray($groupname,$groupnick)
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
   print("<B>$grouptray_GroupTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[nick]</FONT></B>\n");
 
-
-  $filelist=`ls src/groupbuttom*`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $funcname=str_replace("src/","",$filename);
-  $funcname=str_replace(".php","",$funcname);
-  require($filename);
-  $funcname($SAMSConf->access,$row[name]);
-  $len=$len+strlen($filename)+1;
-  while($len<$filelen)
-    {
-       //print("$len = $filelen");
-	   $filename=strtok(chr(0x0a));
-       $funcname=str_replace("src/","",$filename);
-       $funcname=str_replace(".php","",$funcname);
-       require($filename);
-       $funcname($SAMSConf->access,$row[name]);
-       $len=$len+strlen($filename)+1;
-    }
+      ExecuteFunctions("./src", "groupbuttom",$groupname);
 
   print("<TD>\n");
   print("</TABLE>\n");

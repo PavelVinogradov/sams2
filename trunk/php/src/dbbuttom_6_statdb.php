@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -14,54 +14,54 @@ function DBStat()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  PageTop("stat_48.jpg","$dbbuttom_6_statdb_DBStat_1 ");
+  PageTop("stat_48.jpg","$dbbuttom_6_statdb_DBStat_1");
   print("<TABLE width=\"90%\">");
   print("<TR>");
   print("<TD ALIGN=\"CENTER\" bgcolor=beige width=80%><font size=-1><b>$dbbuttom_6_statdb_DBStat_2</b></TD>");
   print("<TD width=20% bgcolor=beige align=right><font size=-1><b>$dbbuttom_6_statdb_DBStat_3</b></TD>");
 
-  $result=mysql_query("SELECT count(size) FROM ".$SAMSConf->MYSQLDATABASE.".squidusers ");
+  $result=mysql_query("SELECT count(size) FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers ");
   $row=mysql_fetch_array($result);
   print("<TR>");
   TableCell("<B>$dbbuttom_6_statdb_DBStat_4</B>");
   TableCell("$row[0]");
-
-  $result=mysql_query("select * FROM ".$SAMSConf->MYSQLDATABASE.".groups ");
+//$SAMSConf->SQUIDCTRLDATABASE
+  $result=mysql_query("select * FROM $SAMSConf->SQUIDCTRLDATABASE.groups ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("SELECT count(size) FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE squidusers.group=\"$row[name]\" ");
+         $result2=mysql_query("SELECT count(size) FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers WHERE squidusers.group=\"$row[name]\" ");
          $row2=mysql_fetch_array($result2);
          print("<TR>");
          TableCell("$dbbuttom_6_statdb_DBStat_5 $row[nick]:");
          TableCell("$row2[0]");
        }
 
-  $result=mysql_query("SELECT count(url) FROM ".$SAMSConf->MYSQLDATABASE.".urls ");
+  $result=mysql_query("SELECT count(url) FROM $SAMSConf->SQUIDCTRLDATABASE.urls ");
   $row=mysql_fetch_array($result);
   print("<TR>");
   TableCell("<B>$dbbuttom_6_statdb_DBStat_6</B>");
   TableCell("$row[0]");
 
-  $result=mysql_query("select * FROM ".$SAMSConf->MYSQLDATABASE.".redirect ");
+  $result=mysql_query("select * FROM $SAMSConf->SQUIDCTRLDATABASE.redirect ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("select count(url) FROM ".$SAMSConf->MYSQLDATABASE.".urls WHERE type=\"$row[filename]\"");
+         $result2=mysql_query("select count(url) FROM $SAMSConf->SQUIDCTRLDATABASE.urls WHERE type=\"$row[filename]\"");
          $row2=mysql_fetch_array($result2);
          print("<TR>");
          TableCell("$dbbuttom_6_statdb_DBStat_7 $row[name]:");
          TableCell("$row2[0]");
        }
 
-  $result=mysql_query("SELECT count(size) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache ");
+  $result=mysql_query("SELECT count(size) FROM $SAMSConf->MYSQLDATABASE.cache ");
   $row=mysql_fetch_array($result);
   print("<TR>");
   TableCell("<B>$dbbuttom_6_statdb_DBStat_8</B>");
   TableCell("$row[0]");
 
-  $result=mysql_query("select * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers ORDER BY nick");
+  $result=mysql_query("select * FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers ORDER BY nick");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("SELECT count(size) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE cache.user=\"$row[nick]\"&&cache.domain=\"$row[domain]\" ");
+         $result2=mysql_query("SELECT count(size) FROM $SAMSConf->MYSQLDATABASE.cache WHERE cache.user=\"$row[nick]\"&&cache.domain=\"$row[domain]\" ");
          $row2=mysql_fetch_array($result2);
          print("<TR>");
          TableCell("$dbbuttom_6_statdb_DBStat_9 <B>$row[nick]</B>:");
@@ -117,9 +117,9 @@ function ShowReplaceURLTable()
        print("<TD  width=25%><font size=-1><b>$dbbuttom_6_statdb_ShowReplaceURLTable_2<BR>$dbbuttom_6_statdb_ShowReplaceURLTable_3");
        print("<TD> \n");
        print("<SELECT NAME=\"username\" SIZE=1 TABINDEX=30 >\n");
-       db_connect($SAMSConf->MYSQLDATABASE) or exit();
-       mysql_select_db($SAMSConf->MYSQLDATABASE)
-            or print("Error\n");
+       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+    
        $result=mysql_query("SELECT nick,domain FROM squidusers");
        while($row=mysql_fetch_array($result))
            {
@@ -145,9 +145,9 @@ function ShowReplaceURLTable()
        print("<TD  width=20%><font size=-1><b>$dbbuttom_6_statdb_ShowReplaceURLTable_5");
        print("<TD> \n");
        print("<SELECT NAME=\"username\" SIZE=1 TABINDEX=30 >\n");
-       db_connect($SAMSConf->MYSQLDATABASE) or exit();
-       mysql_select_db($SAMSConf->MYSQLDATABASE)
-            or print("Error\n");
+
+       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
        $result=mysql_query("SELECT * FROM urlreplace");
        while($row=mysql_fetch_array($result))
            {
@@ -164,7 +164,7 @@ function ShowReplaceURLTable()
        print("<TD ALIGN=\"CENTER\" bgcolor=beige width=15%><font size=-1><b>$dbbuttom_6_statdb_ShowReplaceURLTable_7</b></TD>");
        print("<TD ALIGN=\"CENTER\" bgcolor=beige width=35%><font size=-1><b>URL</b></TD>");
        print("<TD ALIGN=\"CENTER\" bgcolor=beige width=35%><font size=-1><b>$dbbuttom_6_statdb_ShowReplaceURLTable_8 URL</b></TD>");
-       $result=mysql_query("select * FROM ".$SAMSConf->MYSQLDATABASE.".urlreplace ");
+       $result=mysql_query("select * FROM $SAMSConf->SQUIDCTRLDATABASE.urlreplace ");
        while($row=mysql_fetch_array($result))
             {
               print("<TR>");

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -14,8 +14,8 @@ function EditLocalListForm()
 
   $count=0;
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
 
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"local\" ");
@@ -163,25 +163,8 @@ function LocalTrafTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B> $localtraf_localtraftray1<BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
+        ExecuteFunctions("./src", "localbuttom","");
 
-      $filelist=`ls src/localbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -49,8 +49,8 @@ function AddGroupsFromAdLDAPForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   PageTop("user.jpg"," $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1");
   

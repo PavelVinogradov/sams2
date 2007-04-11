@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -120,8 +120,8 @@ function SelectNCSAUsersForm()
   print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_4 \n");
   print("<TD>\n");
   print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 >\n");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM shablons");
   while($row=mysql_fetch_array($result))

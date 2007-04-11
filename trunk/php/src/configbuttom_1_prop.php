@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -16,7 +16,8 @@ function TestPDC()
   
   if($auth=="ntlm")
     {
-      $userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
+      //$userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
+      exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
       $finp=fopen("data/userlist","r");
       if($finp==FALSE)
         {
@@ -115,8 +116,8 @@ function SamsReConfig()
     $delaypool="Y";
   if($checkdns=="on")
     $checkdns="Y";
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("UPDATE sams SET loglevel=\"$loglevel\",sams.separator=\"0$plus$at$slashe$slashe\",checkdns=\"$checkdns\", realsize=\"$traffic\",nameencode=\"$nameencode\",sleep=\"$sleep\",count_clean=\"$count_clean\",parser_on=\"$parser_on\",parser=\"$parser\",parser_time=\"$parser_time\",bigd=\"$bigdomain\",bigu=\"$bigusername\",ntlmdomain=\"$ntlmdomain\",delaypool=\"$delaypool\",redirect_to=\"$redirect_to\",denied_to=\"$denied_to\",redirector=\"$redirector\",auth=\"$auth\", wbinfopath=\"$wbinfopath\", defaultdomain=\"$defaultdomain\", squidbase=\"$squidbase\", udscript=\"$udscript\", adminaddr=\"$adminaddr\" ");
   $SAMSConf->LoadConfig();
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
@@ -179,8 +180,8 @@ function SamsReConfigForm()
 
            print("</SCRIPT>\n");
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM sams");
   $row=mysql_fetch_array($result);
   print("<FORM NAME=\"samsreconfigform\" ACTION=\"main.php\">\n");

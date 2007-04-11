@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,15 +8,14 @@
 function UpdateGroup()
 {
   global $SAMSConf;
-  
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access!=2)     {       exit;     }
 
   if(isset($_GET["id"])) $sname=$_GET["id"];
   if(isset($_GET["nick"])) $nick=$_GET["nick"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("DELETE FROM sconfig WHERE sname=\"$sname\" ");
 
   $result=mysql_query("UPDATE groups SET nick=\"$nick\"  WHERE name=\"$sname\" ");
@@ -66,7 +65,7 @@ function UpdateGroupForm()
 }
 
 
-function groupbuttom_0_prop($access,$id)
+function groupbuttom_0_prop($id)
 {
   global $SAMSConf;
   

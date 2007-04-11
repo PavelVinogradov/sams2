@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -16,8 +16,8 @@ function Monitor_1()
   printf("setTimeout('Refr();',5000);\n");
   printf("</SCRIPT>\n");
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
-
+    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+    
   $result=mysql_query("SELECT * FROM squidusers ORDER BY nick");
   $count=0;
   print("<TABLE WIDTH=\"95%\" BORDER=0>");
@@ -61,7 +61,7 @@ function Monitor_1()
 }
 
 
-function monitorbuttom_1($access)
+function monitorbuttom_1()
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -60,7 +60,7 @@ function DeleteGroup()
 
 
 
-function groupbuttom_9_delete($access,$groupname)
+function groupbuttom_9_delete($groupname)
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -34,8 +34,8 @@ function WebInterfaceReConfig()
     $showutree="Y";
   if($showgraph=="on")
     $showgraph="Y";
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("UPDATE globalsettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
   $SAMSConf->LoadConfig();
 }
@@ -55,11 +55,11 @@ function WebInterfaceReConfigForm()
   
   PageTop("config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
   print("<P>\n");
-
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM globalsettings");
   $row=mysql_fetch_array($result);
+
   print("<FORM NAME=\"samsreconfigform\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"webinterfacereconfig\">\n");
@@ -71,28 +71,26 @@ function WebInterfaceReConfigForm()
   
   print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_13</B>\n");
   print("<TD><SELECT NAME=\"lang\">\n");
-  $filelist=`ls ./lang/lang.*`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $len=strlen($filename)+1;
-  $filename2=str_replace("./lang/lang.","",$filename);
-  $language=ReturnLanguage($filename);
-  if($row['lang']=="$filename2")
-     print("<OPTION VALUE=\"$filename2\" SELECTED> $language");
-  else
-     print("<OPTION VALUE=\"$filename2\"> $language");
-  while($len<$filelen)
-    {
-       $filename=strtok(chr(0x0a));
-       $filename2=str_replace("./lang/lang.","",$filename);
-       $len=$len+strlen($filename)+1;
-       $language=ReturnLanguage($filename);
-       if($row['lang']=="$filename2")
-          print("<OPTION VALUE=\"$filename2\" SELECTED> $language");
-       else
-          print("<OPTION VALUE=\"$filename2\"> $language");
-    }
-  print("</SELECT>\n");
+
+    if ($handle2 = opendir("./lang"))
+        {
+	  while (false !== ($file = readdir($handle2)))
+            {
+ 	      if(strstr($file, "lang.")!=FALSE)
+                {
+  		   $filename2=str_replace("lang.","",$file);
+		   $language=ReturnLanguage("lang/$file");
+                  // echo "$file $language<BR>";
+ 		 if($row['lang']=="$filename2")
+     			print("<OPTION VALUE=\"$filename2\" SELECTED> $language");
+  		else
+     			print("<OPTION VALUE=\"$filename2\"> $language");
+                }
+            }
+        }
+   print("</SELECT>\n");
+
+
   print("<TR>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_14</B><TD>\n");
   print("<TR>\n");
@@ -111,26 +109,23 @@ function WebInterfaceReConfigForm()
 ##############################
    print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_42</B>\n");
   print("<TD><SELECT NAME=\"iconset\">\n");
-  $filelist=`ls ./icon`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $len=strlen($filename)+1;
-  $filename2=str_replace("./icon","",$filename);
-  if($row['iconset']=="$filename2")
-     print("<OPTION VALUE=\"$filename2\" SELECTED>$filename2");
-  else
-     print("<OPTION VALUE=\"$filename2\">$filename2");
-  while($len<$filelen)
-    {
-       $filename=strtok(chr(0x0a));
-       $filename2=str_replace("./icon","",$filename);
-       $len=$len+strlen($filename)+1;
-       if($row['iconset']=="$filename2")
-          print("<OPTION VALUE=\"$filename2\" SELECTED>$filename2");
-       else
-          print("<OPTION VALUE=\"$filename2\">$filename2");
-    }
+
+
+    if ($handle2 = opendir("./icon"))
+        {
+	  while (false !== ($file = readdir($handle2)))
+            {
+ 	      if(strlen($file)>4)
+                {
+ 		 if($row['iconset']=="$file")
+     			print("<OPTION VALUE=\"$file\" SELECTED> $file");
+  		else
+     			print("<OPTION VALUE=\"$file\"> $file");
+               }
+            }
+        }
   print("</SELECT>\n");
+
 ##############################
   print("<TR>\n");
   print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_1</B>\n");
@@ -194,6 +189,7 @@ function WebInterfaceReConfigForm()
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
   print("</FORM>\n");
+
 }
 
 

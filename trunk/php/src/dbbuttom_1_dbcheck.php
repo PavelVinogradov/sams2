@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -69,7 +69,8 @@ function dbcheck()
   print("</TABLE> ");
 
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+    
   //$result=mysql_query("check table cache");
 
   print("<P><TABLE WIDTH=\"90%\" BORDER=0> ");
@@ -125,7 +126,7 @@ function dbcheck()
 }
 
 
-function dbbuttom_1_dbcheck($access)
+function dbbuttom_1_dbcheck()
 {
   global $SAMSConf;
   

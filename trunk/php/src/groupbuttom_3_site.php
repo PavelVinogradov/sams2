@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -69,7 +69,7 @@ function SiteGroupList()
   print("<TH>$groupbuttom_3_site_SiteGroupList_7");
   print("<TH>URL");
 
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT date,user,size,url FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\"&&url like \"%$site%\" ORDER BY size desc limit 250");
 
   while($row=mysql_fetch_array($result))
@@ -129,7 +129,7 @@ function GroupSitesPeriod()
   print("<TH>$groupbuttom_3_site_GroupSitesPeriod_2");
   print("<TH>URL");
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
   mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\"");
 
@@ -144,9 +144,9 @@ function GroupSitesPeriod()
 
   $filesize=($filesize*$SAMSConf->KBSIZE)-1;
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-  $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT tc.* FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache AS tc, ".$SAMSConf->MYSQLDATABASE."squidusers AS tu WHERE tc.user = tu.nick AND tc.domain = tu.domain AND tu.group=\"$groupname\" AND tc.date>=\"$sdate\" AND tc.date<=\"$edate\"");
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT tc.* FROM $SAMSConf->MYSQLDATABASE.cache AS tc, $SAMSConf->SQUIDCTRLDATABASE.squidusers AS tu WHERE tc.user = tu.nick AND tc.domain = tu.domain AND tu.group=\"$groupname\" AND tc.date>=\"$sdate\" AND tc.date<=\"$edate\"");
   $result=mysql_query("UPDATE cache_ SET url=SUBSTRING_INDEX(url,'/',3) ");
 
   $result2=mysql_query("SELECT url, SUM(size) AS sum_size FROM cache_ GROUP BY url ORDER BY sum_size DESC");
@@ -184,8 +184,8 @@ function GroupSitesForm()
   require($lang);
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
 
@@ -207,7 +207,7 @@ function GroupSitesForm()
 
 
 
-function groupbuttom_3_site($access,$groupname)
+function groupbuttom_3_site($groupname)
 {
   global $SAMSConf;
   

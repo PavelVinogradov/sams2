@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -34,8 +34,8 @@ function EditURLFromList()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("UPDATE urls SET url=\"$url\" WHERE url=\"$oldvalue\"&&type=\"$type\" ");
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
@@ -121,8 +121,8 @@ function DeleteAllURLFromList()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("DELETE FROM urls WHERE type=\"$type\" ");
   UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $url","02");
@@ -150,8 +150,8 @@ function AddURLFromList()
       $SAMSConf->access=UserAccess();
       if($SAMSConf->access!=2)     {       exit;     }
   
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE)
+      db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+      mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
            or print("Error\n");
       $result=mysql_query("INSERT INTO urls SET url=\"$url\",type=\"$type\" ");
       $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
@@ -178,8 +178,8 @@ function DeleteURLFromList()
   if(isset($_GET["deletedurl"])) $deletedurl=$_GET["deletedurl"];
 
   print("type=$type url=$url");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   print("<h1>URL=$url / $type $deletedurl</h1>");
   $result=mysql_query("DELETE FROM urls WHERE urls.url=\"$deletedurl\"&&urls.type=\"$type\" ");

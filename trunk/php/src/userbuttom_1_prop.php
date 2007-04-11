@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -28,8 +28,8 @@ function UpdateUser()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   if($gauditor=="on")
      $gauditor=1;
   else
@@ -77,8 +77,8 @@ function UpdateUserForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 
@@ -139,8 +139,8 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<SELECT NAME=\"usergroup\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result2=mysql_query("SELECT name,nick FROM groups");
   $result_u=mysql_query("SELECT * FROM squidusers WHERE id=\"$row[id]\" ");
@@ -219,7 +219,7 @@ function UpdateUserForm()
 
 
 
-function userbuttom_1_prop($access,$userid)
+function userbuttom_1_prop($userid)
 {
   global $SAMSConf;
   

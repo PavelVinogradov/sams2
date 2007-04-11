@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -18,8 +18,8 @@ function ClearSquidLog()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   $result=mysql_query("DELETE FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\"");
   $result=mysql_query("DELETE FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\"");
@@ -52,7 +52,7 @@ function ClearSquidLogForm()
 }
 
 
-function squidbuttom_3_delete($access)
+function squidbuttom_3_delete()
 {
   global $SAMSConf;
   

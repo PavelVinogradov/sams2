@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -39,7 +39,7 @@ function RecalcUsersTraffic()
 	    $tsize=$row[0];
 	 if($row[3]>0)
 	    $thit=$row[3];
-	 $result2=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET size=\"$tsize\",hit=\"$thit\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
+	 $result2=mysql_query("UPDATE $SAMSConf->SQUIDCTRLDATABASE.squidusers SET size=\"$tsize\",hit=\"$thit\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
        }
   UpdateLog("$SAMSConf->adminname","$usersbuttom_5_recalc_RecalcUsersTraffic_3","01");
 

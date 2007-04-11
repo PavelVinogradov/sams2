@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -10,7 +10,7 @@ function logoff()
  print("<h1>LOGOFF</h1>");
 }
 
-function userbuttom_9_logoff($access,$userid)
+function userbuttom_9_logoff($userid)
 {
   global $SAMSConf;
   

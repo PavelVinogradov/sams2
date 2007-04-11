@@ -1,8 +1,8 @@
-<?
+<?php
 #LANGUAGE:Russian KOI8-R
 #NTLMCHARSETENCODER:"iconv -f KOI8-R -t 866"
 
- $CHARSET="koi8-r";
+ $CHARSET="KOI8-R";
  $langtest="KOI8-R";
 
 //file usergroup.php
@@ -142,10 +142,6 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
-  $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
-  $redir_filetypesform2="Удалить";
-  $redir_filetypesform3="Изменить";
-  $redir_filetypesform4="Добавить";
 
   $alltraffic_1="Статистика пользователей";
 
@@ -583,7 +579,6 @@
   $lframe_sams_UserFolder_1="Пользователи";
   $lframe_sams_UserGroupsFolder_1="Группы пользователей";
   $lframe_sams_UserShablonFolder_1="Шаблоны пользователей";
-  $lframe_sams_FileDenied_1="Расширения файлов"; 
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
 
@@ -808,6 +803,7 @@
   $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси сервер";
   $squidbuttom_0_reconfig_ReconfigSquidForm_4="Реконфигурировать";
 
+ $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
   
    
 //  global $LANG;

@@ -186,7 +186,7 @@ void AddLog(MYSQL *conn, int level, char *demon, char *str)
     {
       tt=time(NULL);
       t=localtime(&tt);
-      sprintf(&log[0],"INSERT INTO %s.log SET user='%s',date='%d-%d-%d',time='%d:%d:%d',value='%s',code='10'",conf.samsdb,demon,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,str);
+      sprintf(&log[0],"INSERT INTO squidctrl.log SET user='%s',date='%d-%d-%d',time='%d:%d:%d',value='%s',code='10'",demon,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,str);
       send_mysql_query(conn,&log[0]);
     }  
 
