@@ -1,8 +1,8 @@
-<?
+<?php
 #LANGUAGE:Russian KOI8-R
 #NTLMCHARSETENCODER:"iconv -f KOI8-R -t 866"
 
- $CHARSET="koi8-r";
+ $CHARSET="KOI8-R";
  $langtest="KOI8-R";
 
 //file usergroup.php
