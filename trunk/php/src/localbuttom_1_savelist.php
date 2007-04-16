@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -11,8 +11,8 @@ function SaveLocalList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
 
   $result=mysql_query("SELECT * FROM redirect WHERE  filename=\"localhosts\" ");
@@ -32,7 +32,7 @@ function SaveLocalList()
 
 }
 
-function localbuttom_1_savelist()
+function localbuttom_1_savelist($access)
 {
   global $SAMSConf;
   

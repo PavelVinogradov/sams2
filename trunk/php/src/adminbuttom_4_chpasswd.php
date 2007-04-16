@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -22,10 +22,9 @@ function ChangeAdminPasswd()
  $passwd=crypt($newpasswd,"00");
   if(strstr($username,$SAMSConf->adminname)||strstr("Admin",$SAMSConf->adminname))
     {
-
-       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-       $result=mysql_query("UPDATE $SAMSConf->SQUIDCTRLDATABASE.passwd SET pass=\"$passwd\" WHERE user=\"$username\" ");
+       db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
+       $result=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".passwd SET pass=\"$passwd\" WHERE user=\"$username\" ");
        if($result>0)
           PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
     }

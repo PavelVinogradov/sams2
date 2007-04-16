@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -14,8 +14,8 @@ function SaveBackUp()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
 
   $tablecount=0;
@@ -25,8 +25,8 @@ db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
       mkdir("/tmp/sams",0777);
   if(($fout=gzopen("data/$filename","w9"))!=NULL)
     {
-       gzwrite($fout,"# SQUIDCTRL DUMP FOR MYSQL DATABASE\n");
-       gzwrite($fout,"USE squidctrl;\n");
+       gzwrite($fout,"# ".$SAMSConf->MYSQLDATABASE." DUMP FOR MYSQL DATABASE\n");
+       gzwrite($fout,"USE ".$SAMSConf->MYSQLDATABASE.";\n");
        $result=mysql_query("SHOW TABLES");
        while($row=mysql_fetch_array($result)) //берем список таблиц
          {
@@ -68,8 +68,8 @@ db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
     }   
   else if(($fout=fopen("data/$filename","w9"))!=NULL)
     {
-       fwrite($fout,"# SQUIDCTRL DUMP FOR MYSQL DATABASE\n");
-       fwrite($fout,"USE squidctrl;\n");
+       fwrite($fout,"# ".$SAMSConf->MYSQLDATABASE." DUMP FOR MYSQL DATABASE\n");
+       fwrite($fout,"USE ".$SAMSConf->MYSQLDATABASE.";\n");
        $result=mysql_query("SHOW TABLES");
        while($row=mysql_fetch_array($result)) //берем список таблиц
          {
@@ -142,7 +142,7 @@ function SaveBackUpForm()
 }
 
 
-function backupbuttom_1_savebase()
+function backupbuttom_1_savebase($access)
 {
   global $SAMSConf;
   

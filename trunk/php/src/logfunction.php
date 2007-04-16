@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -10,6 +10,8 @@
 /****************************************************************/
 function UpdateLog($username,$value,$code)
 {
+  global $SAMSConf;
+  
   $year=date("Y")*1;
   $month=date("m")*1;
   $day=date("d")*1;
@@ -18,8 +20,8 @@ function UpdateLog($username,$value,$code)
   $min=date("i")*1;
   $sec=date("s")*1;
   $time="$hour:$min:$sec";
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("INSERT INTO log SET user=\"$username\",date=\"$date\",time=\"$time\",value=\"$value\",code=\"$code\" ");
 }
 

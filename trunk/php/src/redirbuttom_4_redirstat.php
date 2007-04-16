@@ -20,9 +20,9 @@ function ShowRedirStat()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-    
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
+
   PageTop("user.jpg","Статистика списка перенаправления запросов <BR><FONT COLOR=\"BLUE\">$row[name]</FONT>");
 
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
@@ -43,10 +43,10 @@ function ShowRedirStat()
   $count=1;
   $filesize=$filesize*$SAMSConf->KBSIZE;
   
-  $result=mysql_query("SELECT * FROM $SAMSConf->SQUIDCTRLDATABASE.urls WHERE type=\"$id\" ");
+  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".urls WHERE type=\"$id\" ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("SELECT count(*) FROM $SAMSConf->MYSQLDATABASE.cache WHERE  date>=\"$sdate\"&&date<=\"$edate\"&&url LIKE \"%$row[url]%\" ");
+         $result2=mysql_query("SELECT count(*) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE  date>=\"$sdate\"&&date<=\"$edate\"&&url LIKE \"%$row[url]%\" ");
          $row2=mysql_fetch_array($result2);
 	 print("<TR>");
          LTableCell($count,8);
@@ -69,9 +69,8 @@ function ShowRedirStatForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-    
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
   $row=mysql_fetch_array($result);
 
@@ -89,7 +88,7 @@ function ShowRedirStatForm()
 
 
  
-function redirbuttom_4_redirstat()
+function redirbuttom_4_redirstat($access)
 {
   global $SAMSConf;
   

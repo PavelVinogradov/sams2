@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -26,8 +26,8 @@ function ShowListsLog()
        print("</FORM>\n");
 
   
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM log WHERE code=\"02\"&&date>=\"$sdate\"&&date<=\"$edate\" ");
 
@@ -82,7 +82,7 @@ function ShowListsLogForm()
 
 
 
-function logbuttom_3()
+function logbuttom_3($access)
 {
   global $SAMSConf;
   

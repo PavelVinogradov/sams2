@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,8 +8,7 @@
 function FileListForm()
 {
   global $SAMSConf;
-  $filename="";  
-
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -48,7 +47,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"deletedurl\" VALUE=\"\"> \n");
   print("</BR>\n");
   print("\n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Удалить\" OnClick=DeleteURL(table)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform2\" OnClick=DeleteURL(table)>\n");
   print("</FORM>\n");
 
   print("<script language=JAVASCRIPT>\n");
@@ -107,7 +106,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"oldvalue\" VALUE=\"\"> \n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"editurl\" VALUE=\"\"> \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"editurlstr\" SIZE=30> \n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Change\" OnClick=ChangeURL(EDITURL)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform3\" OnClick=ChangeURL(EDITURL)>\n");
   print("</FORM>\n");
 
   
@@ -119,7 +118,7 @@ function FileListForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"urllistfunction.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"type\" VALUE=\"$id\"> \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"addurl\" SIZE=30> \n");
-  print("<INPUT TYPE=\"BUTTON\" value=\"Добавить \"  OnClick=AddURL(ADDURL)>\n");
+  print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform4\"  OnClick=AddURL(ADDURL)>\n");
   print("</FORM>\n");
 
   print("<P>\n");
@@ -165,7 +164,7 @@ function AddFileListForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  PageTop("redirect_48.jpg","Запрет доступа. <BR>Создание нового списка расширений файлов");
+  PageTop("redirect_48.jpg","$redir_filetypesform1");
   print("<BR>\n");
   print("<FORM NAME=\"REDIRECT\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
@@ -213,8 +212,25 @@ function FileListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$redirlisttray_RedirListTray_1.  <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "filebuttom","");
 
+      $filelist=`ls src/filebuttom*`;
+      $filelen=strlen($filelist);
+      $filename=strtok($filelist,chr(0x0a));
+      $funcname=str_replace("src/","",$filename);
+      $funcname=str_replace(".php","",$funcname);
+      require($filename);
+      $funcname($SAMSConf->access);
+      $len=$len+strlen($filename)+1;
+      while($len<$filelen)
+        {
+           //print("$len = $filelen");
+	       $filename=strtok(chr(0x0a));
+           $funcname=str_replace("src/","",$filename);
+           $funcname=str_replace(".php","",$funcname);
+           require($filename);
+           $funcname($SAMSConf->access);
+           $len=$len+strlen($filename)+1;
+        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

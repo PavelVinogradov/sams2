@@ -1,11 +1,11 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
-function allowbuttom_3_deletelist()
+function allowbuttom_3_deletelist($access)
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -31,7 +31,7 @@ function SaveContextList()
 
 }
 
-function contextbuttom_2_savelist()
+function contextbuttom_2_savelist($access)
 {
   global $SAMSConf;
   

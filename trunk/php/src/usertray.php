@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -69,8 +69,8 @@ function NotUsersTreeUserAuth()
 	   else
              $SAMSConf->domainusername=$userdomain;
        
-           db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-           mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+           db_connect($SAMSConf->MYSQLDATABASE) or exit();
+           mysql_select_db($SAMSConf->MYSQLDATABASE);
            $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE nick=\"$SAMSConf->domainusername\" ");
            $row=mysql_fetch_array($result);
            $SAMSConf->domainusername="$row[nick]";
@@ -81,8 +81,8 @@ function NotUsersTreeUserAuth()
     }
   if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
-       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+       db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$password\" ");
        $row=mysql_fetch_array($result);
        //$gauditor=$row['gauditor'];
@@ -207,8 +207,8 @@ function UserAuth()
              }
           }
 	 
-       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+       db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE id=\"$id\" ");
        $row=mysql_fetch_array($result);
        $gauditor=$row['gauditor'];
@@ -218,8 +218,8 @@ function UserAuth()
     }
   if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
-       db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-       mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+      db_connect($SAMSConf->MYSQLDATABASE) or exit();
+       mysql_select_db($SAMSConf->MYSQLDATABASE);
        
        $result2=mysql_query("SELECT nick,id FROM squidusers WHERE id=\"$id\" ");
        $row2=mysql_fetch_array($result2);
@@ -424,8 +424,8 @@ function UserTray($userid,$usergroup)
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\"&&squidusers.group=\"$usergroup\" ");
   $row=mysql_fetch_array($result);
@@ -446,7 +446,7 @@ function UserTray($userid,$usergroup)
       else	
         $un="$row[domain]+$row[nick]";
 
-      if((strlen($SAMSConf->domainusername)>0&&$SAMSConf->domainusername==$row[nick])||$$SAMSConf->roupauditor==$row[group])
+      if((strlen($SAMSConf->domainusername)>0&&$SAMSConf->domainusername==$row[nick])||$SAMSConf->roupauditor==$row[group])
         {
           print(" parent.basefrm.location.href=\"main.php?show=exe&function=userform&userid=$row[id]\";\n");
         }
@@ -462,7 +462,25 @@ function UserTray($userid,$usergroup)
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
   print("<B>$usertray_UserTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[nick]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "userbuttom", $row[id]);
+
+  $filelist=`ls src/userbuttom*`;
+  $filelen=strlen($filelist);
+  $filename=strtok($filelist,chr(0x0a));
+  $funcname=str_replace("src/","",$filename);
+  $funcname=str_replace(".php","",$funcname);
+  require($filename);
+  $funcname($SAMSConf->access,$row[id]);
+  $len=$len+strlen($filename)+1;
+  while($len<$filelen)
+    {
+       //print("$len = $filelen");
+	   $filename=strtok(chr(0x0a));
+       $funcname=str_replace("src/","",$filename);
+       $funcname=str_replace(".php","",$funcname);
+       require($filename);
+       $funcname($SAMSConf->access,$row[id]);
+       $len=$len+strlen($filename)+1;
+    }
 
   print("<TD>\n");
   print("</TABLE>\n");

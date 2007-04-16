@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -12,6 +12,11 @@ class UpTime
   var $minits="";
 }
 
+function GetUpTime()
+{
+  $value=`uptime`;
+  return($value);
+}
 function GetHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
@@ -28,9 +33,7 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
-//  $finp=`free`;
-  //$value=system("free &> data/free.txt");
-  $value=system("free > free.txt");
+  $finp=`free`;
   $str=strtok($finp," ");
   for($i=0;$i<20;$i++)
      {
@@ -59,25 +62,7 @@ function FileSystemUsage()
 {
 //  $finp=`df`;
 //  Исправил, иначе будет лажа  
-
-  print("<P><TABLE CLASS=samstable>");
-  print("<TR>");
-  print("<TH><B>Filesystem</B>");
-  print("<TH><B>/</B>");
-  $freespace = disk_free_space("/");
-  $totalspace = disk_total_space("/");
-
-  echo "<TR><TD><B>Total space </B>";
-  PrintFormattedSize("$totalspace",25);
-  echo "<TR><TD><B>Free space $freespace</B>";
-  PrintFormattedSize("$freespace",25);
-  echo "<TR><TD><B>test </B>";
-  PrintFormattedSize(4*1024*1024*1024+6*1024,25);
-  echo "<TR><TD><B>test </B>";
-  PrintFormattedSize(4029173760,25);
-  print("</TABLE>");
-/*
-  $finp=system("samsdf");
+  $finp=`df -P -h | grep -v devfs`;
 
   $len=strlen($finp);
   $str[0]=strtok($finp,"\n");
@@ -117,19 +102,20 @@ function FileSystemUsage()
       print("<TD>$fs[5]");
    }
   print("</TABLE>");
-*/
+
 }
 
 
 
 function SysInfo()
 {
+   global $SAMSConf;
+   
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
-   //$uptime=system("uptime | cut -d',' -f 1 ");
-   $uptime=exec("uptime");
+   $uptime=`uptime`;
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
@@ -160,7 +146,7 @@ function SysInfo()
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM $SAMSConf->MYSQLDATABASE.cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This month\n");
@@ -172,7 +158,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM $SAMSConf->MYSQLDATABASE.cachesum WHERE date=\"$edate\" ");
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE date=\"$edate\" ");
   $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This day\n");
@@ -226,7 +212,27 @@ function ConfigTray()
   //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
   print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
 
-    ExecuteFunctions("./src", "configbuttom","");
+
+  $filelist=`ls src/configbuttom*`;
+  //print(" $filelist");
+  $filelen=strlen($filelist);
+  $filename=strtok($filelist,chr(0x0a));
+  $funcname=str_replace("src/","",$filename);
+  $funcname=str_replace(".php","",$funcname);
+  //print(" $filename  $funcname ");
+  require($filename);
+  $funcname($SAMSConf->access,$row[name]);
+  $len=$len+strlen($filename)+1;
+  while($len<$filelen)
+    {
+ 	   $filename=strtok(chr(0x0a));
+       $funcname=str_replace("src/","",$filename);
+       $funcname=str_replace(".php","",$funcname);
+       //print(" $filename  $funcname ");
+       require($filename);
+       $funcname($SAMSConf->access,$row[name]);
+       $len=$len+strlen($filename)+1;
+    }
 
   print("<TD>\n");
   print("</TABLE>\n");

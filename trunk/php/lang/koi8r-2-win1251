@@ -1,4 +1,4 @@
 #!/bin/sh
 
-iconv -f KOI8-R -t CP1251 lang.KOI8-R | sed -e "s/KOI8-R/CP1251/"> lang.WIN1251
+iconv -f KOI8-R -t cp1251 lang.KOI8-R > lang.WIN1251
 

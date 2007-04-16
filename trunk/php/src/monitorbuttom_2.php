@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -12,12 +12,12 @@ function Monitor_2()
   printf("<SCRIPT LANGUAGE=\"javascript\">\n");
   printf("function Refr() \n");
   printf("{\n");
-  printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_2.php'};\n");
+  printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_1.php'};\n");
   printf("setTimeout('Refr();',5000);\n");
   printf("</SCRIPT>\n");
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-    mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-    
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
+
   $result=mysql_query("SELECT * FROM squidusers ORDER BY size DESC");
   $count=0;
   print("<TABLE WIDTH=\"95%\" BORDER=0>");
@@ -61,7 +61,7 @@ function Monitor_2()
 }
 
 
-function monitorbuttom_2()
+function monitorbuttom_2($access)
 {
   global $SAMSConf;
   

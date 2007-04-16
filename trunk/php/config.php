@@ -1,1 +1,1 @@
-<?php $configfile="/etc/sams.conf"; ?>
+<?php $configfile="/etc/sams.dev.conf"; ?>
