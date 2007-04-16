@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -71,7 +71,7 @@ function LoadRedirListForm()
 
 
 
-function redirbuttom_1_loadlist()
+function redirbuttom_1_loadlist($access)
 {
   global $SAMSConf;
   

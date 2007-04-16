@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -52,7 +52,7 @@ function shutdown_proxy()
       print("<TABLE CLASS=samstable WIDTH=\"80%\">");
       print("<TH width=60%>$shutdown_proxy_proxybuttom_1_down_1");
       print("<TH width=20%>$shutdown_proxy_proxybuttom_1_down_2");
-      $result=mysql_query("SELECT id,description FROM $SAMSConf->SQUIDCTRLDATABASE.proxyes ORDER BY id");
+      $result=mysql_query("SELECT id,description FROM ".$SAMSConf->MYSQLDATABASE.".proxyes ORDER BY id");
        while($row=mysql_fetch_array($result))
            {
              print("<TR><TD> $row[description]");
@@ -71,7 +71,7 @@ function shutdown_proxy()
     }	
 }
 
-function proxybuttom_1_down()
+function proxybuttom_1_down($access)
 {
   global $SAMSConf;
   

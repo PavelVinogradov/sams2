@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -63,8 +63,8 @@ function UpdateShablon()
   if($emin<0&&emin>60)
      $emin="00";
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("DELETE FROM sconfig WHERE sname=\"$sname\" ");
 
   $result=mysql_query("SELECT * FROM redirect");
@@ -493,7 +493,7 @@ function UpdateShablonForm()
 }
 
 
-function shablonbuttom_1_prop()
+function shablonbuttom_1_prop($access,$id)
 {
   global $SAMSConf;
   

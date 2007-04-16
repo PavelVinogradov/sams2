@@ -35,6 +35,23 @@ function ShowDomainUserName()
 }
 
 
+//function UserAuthenticate($user,$passwd)
+//{
+//  global $SAMSConf;
+//
+//  print("<h1>UserAuthenticate</h1>");
+//  $newpasswd=crypt($passwd,"00");
+//  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+//  mysql_select_db($SAMSConf->MYSQLDATABASE);
+
+//  $result=mysql_query("SELECT * FROM passwd WHERE user=\"$user\"&&pass=\"$passwd\" ");
+//  $row=mysql_fetch_array($result);
+//  print("<h1>$row[user]</h1>");
+//  return(0);
+//  return("$row[user]");
+//}
+
+
 function UserAuthetificateForm($usernick,$userdomain)
 {
   global $NTLMDOMAIN;
@@ -113,7 +130,7 @@ function ShowCookieInfo($user,$passwd)
 function CheckUserPassword($user,$passwd)
 {
   global $SAMSConf;
-
+  
   db_connect($SAMSConf->MYSQLDATABASE) or exit();
   mysql_select_db($SAMSConf->MYSQLDATABASE);
 
@@ -150,6 +167,7 @@ function GetPasswordForm()
 function SaveUserName($passwd,$number)
 {
   global $adminname, $SAMSConf;
+  
   $newpasswd=crypt($passwd,"00");
   print("passwd=$newpasswd=");
   db_connect($SAMSConf->MYSQLDATABASE) or exit();
@@ -181,7 +199,7 @@ function GetAdminPasswordForm()
 function UserPasswordTest($username,$passwd)
 {
   global $SAMSConf;
-
+  
   $newpasswd=crypt($passwd,"00");
   db_connect($SAMSConf->MYSQLDATABASE) or exit();
   mysql_select_db($SAMSConf->MYSQLDATABASE);

@@ -1,4 +1,4 @@
-<?php
+<?
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -6,6 +6,13 @@
  */
   global $SAMSConf;
 
+//global $ICONSET;
+//global $USERACCESS;
+//global $RFRAME;
+//global $adminname;
+//global $domainusername;
+//global  $access;
+//global $groupauditor;
 require('./mysqltools.php');
 require('./src/auth.php');
 require('./src/user.php');
@@ -25,33 +32,18 @@ require('./src/monitortray.php');
 require('./src/logtray.php');
 require('./src/dbtray.php');
 require('./src/filelisttray.php');
-$filename="";
-$sday=0;
-$smon=0;
-$syea=0;
-$shou=0;
-$eday=0;
-$emon=0;
-$eyea=0;
-$ehou=0;
-$sdate=0; 
-$edate=0;
-
-   $user="";
-
-
 
   $SAMSConf=new SAMSCONFIG();
 
 /******************************/
-if(isset($_GET["SDay"])) $sday=$_GET["SDay"];
-if(isset($_GET["EDay"])) $eday=$_GET["EDay"];
-if(isset($_GET["SMon"])) $smon=$_GET["SMon"];
-if(isset($_GET["EMon"])) $emon=$_GET["EMon"];
-if(isset($_GET["SYea"])) $syea=$_GET["SYea"];
-if(isset($_GET["EYea"])) $eyea=$_GET["EYea"];
-if(isset($_GET["SHou"])) $shou=$_GET["SHou"];
-if(isset($_GET["EHou"])) $ehou=$_GET["EHou"];
+$sday=$_GET["SDay"];
+$eday=$_GET["EDay"];
+$smon=$_GET["SMon"];
+$emon=$_GET["EMon"];
+$syea=$_GET["SYea"];
+$eyea=$_GET["EYea"];
+$shou=$_GET["SHou"];
+$ehou=$_GET["EHou"];
 
 if(isset($_GET["function"]))
    $function=$_GET["function"];
@@ -116,17 +108,20 @@ if(isset($_GET["size"]))
    $size=$_GET["size"];
 $reloadleftframe=0;
 
+//LoadConfig();
+// db_connect("$MYSQLDATABASE") or exit();
+
  if($SAMSConf->PHPVER<5)
    {
-     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
-     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
-     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS[user],$HTTP_COOKIE_VARS[passwd]);
+     $SAMSConf->domainusername=$HTTP_COOKIE_VARS[domainuser];
+     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS[gauditor];
    }  
  else
    {
-     $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
-     $SAMSConf->domainusername=$_COOKIE['domainuser'];
-     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
+     $SAMSConf->adminname=UserAuthenticate($_COOKIE[user],$_COOKIE[passwd]);
+     $SAMSConf->domainusername=$_COOKIE[domainuser];
+     $SAMSConf->groupauditor=$_COOKIE[gauditor];
    }  
 
 $SAMSConf->access=UserAccess();

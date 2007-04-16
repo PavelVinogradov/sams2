@@ -480,7 +480,7 @@ int main (int argc, char *argv[])
                     exit(1);
 
 //  fflush(stdout);
-  sprintf(&str[0],"SELECT squidctrl.sams.redirect_to,squidctrl.sams.denied_to,squidctrl.sams.auth,squidctrl.sams.ntlmdomain FROM squidctrl.sams");
+  sprintf(&str[0],"SELECT redirect_to,denied_to,auth,ntlmdomain FROM %s.sams",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -526,7 +526,7 @@ int main (int argc, char *argv[])
   mysql_free_result(res);
 
 
-  sprintf(&str[0],"SELECT squidctrl.globalsettings.lang FROM squidctrl.globalsettings");
+  sprintf(&str[0],"SELECT lang FROM %s.globalsettings",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -539,7 +539,7 @@ int main (int argc, char *argv[])
 
   /* Получаем количество пользователей SAMS */
   samsuserscount=0;
-  sprintf(&str[0],"SELECT count(nick) FROM squidctrl.squidusers");
+  sprintf(&str[0],"SELECT count(nick) FROM %s.squidusers",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -556,7 +556,7 @@ int main (int argc, char *argv[])
        exit(1);
      }
   /* Загружаем пользователей SAMS в массив */
-  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.shablon,squidusers.id,shablons.shour,shablons.smin,shablons.ehour,shablons.emin,shablons.days,shablons.auth,shablons.alldenied FROM squidctrl.squidusers LEFT JOIN squidctrl.shablons ON (squidusers.shablon=shablons.name) ORDER BY nick");
+  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.shablon,squidusers.id,shablons.shour,shablons.smin,shablons.ehour,shablons.emin,shablons.days,shablons.auth,shablons.alldenied FROM %s.squidusers LEFT JOIN %s.shablons ON (squidusers.shablon=shablons.name) ORDER BY nick",conf.samsdb,conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   //printf("!!!!!!!!!!!!!! flag=%d !!!!!!!!!!!!!\n",flag);
   res=mysql_store_result(conn);
@@ -614,7 +614,7 @@ int main (int argc, char *argv[])
 
   /* Получаем количество Списков  */
   samsshablonscount=0;
-  sprintf(&str[0],"SELECT count(sname) FROM squidctrl.sconfig");
+  sprintf(&str[0],"SELECT count(sname) FROM %s.sconfig",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -630,7 +630,7 @@ int main (int argc, char *argv[])
        exit(1);
      }
   /* Загружаем списки и шаблоны в массив */
-  sprintf(&str[0],"SELECT * FROM squidctrl.sconfig");
+  sprintf(&str[0],"SELECT * FROM %s.sconfig",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   for(i=0;i<samsshablonscount;i++)
@@ -653,7 +653,7 @@ int main (int argc, char *argv[])
 
   /* Получаем количество URL  */
   samslistcount=0;
-  sprintf(&str[0],"SELECT count(filename) FROM squidctrl.redirect");
+  sprintf(&str[0],"SELECT count(filename) FROM %s.redirect",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   row=mysql_fetch_row(res);
@@ -662,7 +662,7 @@ int main (int argc, char *argv[])
     {
        printf("\nSorting URL lists in the users templates: found %d URL lists\n",samslistcount);
     }
-  sprintf(&str[0],"SELECT filename,type FROM squidctrl.redirect");
+  sprintf(&str[0],"SELECT filename,type FROM %s.redirect",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   smcount=1;
@@ -671,7 +671,7 @@ int main (int argc, char *argv[])
        row=mysql_fetch_row(res);
        //if(strcmp("local",row[1])!=0)
        // {
-           sprintf(&str[0],"SELECT count(url) FROM squidctrl.urls WHERE type='%s'",row[0]);
+           sprintf(&str[0],"SELECT count(url) FROM %s.urls WHERE type='%s'",conf.samsdb,row[0]);
            //printf("%s\n",&str[0]); 
            flag=send_mysql_query(conn,&str[0]);
            res2=mysql_store_result(conn);
@@ -709,7 +709,7 @@ int main (int argc, char *argv[])
      }
 
   k=1;
-  sprintf(&str[0],"SELECT filename,type FROM squidctrl.redirect");
+  sprintf(&str[0],"SELECT filename,type FROM %s.redirect",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   for(i=0;i<samslistcount;i++)
@@ -717,7 +717,7 @@ int main (int argc, char *argv[])
        row=mysql_fetch_row(res);
        //if(strcmp("local",row[1])!=0)
          //{
-            sprintf(&str[0],"SELECT urls.url,urls.type FROM squidctrl.urls WHERE type='%s'",row[0]);
+            sprintf(&str[0],"SELECT urls.url,urls.type FROM %s.urls WHERE type='%s'",conf.samsdb,row[0]);
             flag=send_mysql_query(conn,&str[0]);
             res2=mysql_store_result(conn);
             while((row2=mysql_fetch_row(res2))!=NULL)
@@ -982,7 +982,7 @@ int main (int argc, char *argv[])
 
              if(REQUEST==1)
 	       {
-                 sprintf(&str[0],"INSERT INTO squidlog.redirect_test SET redirect_test.inp='%s',redirect_test.ip='%s',redirect_test.out='%s',redirect_test.user='%s',redirect_test.pid='%d'",&str1_[0],&str2[0],&str1[0],&str3[0],pid);
+                 sprintf(&str[0],"INSERT INTO %s.redirect_test SET redirect_test.inp='%s',redirect_test.ip='%s',redirect_test.out='%s',redirect_test.user='%s',redirect_test.pid='%d'",conf.logdb,&str1_[0],&str2[0],&str1[0],&str3[0],pid);
                  printf("%s\n",&str[0]);
                  flag=send_mysql_query(conn,&str[0]);
 	         strcpy(&str[0],"\0");

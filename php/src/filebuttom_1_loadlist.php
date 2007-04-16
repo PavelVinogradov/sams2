@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -71,7 +71,7 @@ function LoadFileListForm()
 
 
 
-function filebuttom_1_loadlist()
+function filebuttom_1_loadlist($access)
 {
   global $SAMSConf;
   

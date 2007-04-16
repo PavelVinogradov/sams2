@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -93,8 +93,25 @@ function SquidTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
 
-      ExecuteFunctions("./src", "squidbuttom","");
 
+      $filelist=`ls src/squidbuttom*`;
+      $filelen=strlen($filelist);
+      $filename=strtok($filelist,chr(0x0a));
+      $funcname=str_replace("src/","",$filename);
+      $funcname=str_replace(".php","",$funcname);
+      require($filename);
+      $funcname($SAMSConf->access);
+      $len=$len+strlen($filename)+1;
+      while($len<$filelen)
+        {
+           //print("$len = $filelen");
+	       $filename=strtok(chr(0x0a));
+           $funcname=str_replace("src/","",$filename);
+           $funcname=str_replace(".php","",$funcname);
+           require($filename);
+           $funcname($SAMSConf->access);
+           $len=$len+strlen($filename)+1;
+        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

@@ -1,11 +1,11 @@
-<?php
+<?
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
- function lffolder_4_z3_urlallow()
+ function lffolder_4_z3_urlallow($access,$sams)
  {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-      print("   allow = insFld(sams, gFld(\"$lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1\", \"main.php?show=exe&function=addallowlistform\", \"adir.gif\"))\n");
+      print("   allow = insFld($sams, gFld(\"$lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1\", \"main.php?show=exe&function=addallowlistform\", \"adir.gif\"))\n");
       $result=mysql_query("SELECT * FROM redirect WHERE type=\"allow\"");
       while($row=mysql_fetch_array($result))
          {

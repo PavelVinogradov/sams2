@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -62,8 +62,8 @@ function AllUsersForm()
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
@@ -98,7 +98,8 @@ function AllUsersForm()
     }  
   $count=0;
   
- $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SQUIDCTRLDATABASE.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SQUIDCTRLDATABASE.shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
+  //$result=mysql_query("SELECT squidusers.*,groups.nick AS gnick FROM squidusers LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".groups ON groups.name=squidusers.group ORDER BY squidusers.group,squidusers.nick");
+ $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".groups ON groups.name=squidusers.group LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
   
   while($row=mysql_fetch_array($result))
       {
@@ -136,7 +137,7 @@ function AllUsersForm()
          if($SAMSConf->access==2)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[id]] ");
-             if($row['enabled']==1)
+             if($row[enabled]==1)
 	       print(" CHECKED ");
 	     print("> \n ");
            }
@@ -153,7 +154,7 @@ function AllUsersForm()
 	        $traffic=$row['size'];
 	     PrintFormattedSize($traffic);
              
-	     if($row['quotes']>0)
+	     if($row[quotes]>0)
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
 	     else  
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
@@ -225,7 +226,28 @@ function UsersTray()
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
   print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$userstray_UsersTray_1</FONT></B>\n");
 
-  ExecuteFunctions("./src", "usersbuttom","");
+
+  $filelist=`ls src/usersbuttom*`;
+  //print(" $filelist");
+  $filelen=strlen($filelist);
+  $filename=strtok($filelist,chr(0x0a));
+  $funcname=str_replace("src/","",$filename);
+  $funcname=str_replace(".php","",$funcname);
+  //print(" $filename  $funcname ");
+  require($filename);
+  $funcname($SAMSConf->access,$row[name]);
+  $len=$len+strlen($filename)+1;
+  while($len<$filelen)
+    {
+ 	   $filename=strtok(chr(0x0a));
+       $funcname=str_replace("src/","",$filename);
+       $funcname=str_replace(".php","",$funcname);
+       //print(" $filename  $funcname ");
+       require($filename);
+       $funcname($SAMSConf->access,$row[name]);
+       $len=$len+strlen($filename)+1;
+    }
+
   print("<TD>\n");
   print("</TABLE>\n");
 

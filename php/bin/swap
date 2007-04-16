@@ -1,7 +1,0 @@
-#!/bin/sh
-
-free|tail -1|awk '{print $3}'
-echo 0
-echo 0
-echo 
-

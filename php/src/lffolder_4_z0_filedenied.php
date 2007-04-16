@@ -1,11 +1,11 @@
-<?php
+<?
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
- function lffolder_4_z0_filedenied()
+ function lffolder_4_z0_filedenied($access,$sams)
  {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-      print("   denied = insFld(sams, gFld(\"Расширения файлов\", \"main.php?show=exe&function=addfilelistform\", \"stop.gif\"))\n");
+      print("   denied = insFld($sams, gFld(\"$lframe_sams_FileDenied_1\", \"main.php?show=exe&function=addfilelistform\", \"stop.gif\"))\n");
       $result=mysql_query("SELECT * FROM redirect WHERE type=\"files\"");
       while($row=mysql_fetch_array($result))
          {

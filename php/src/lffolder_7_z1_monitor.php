@@ -1,11 +1,11 @@
-<?php
+<?
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
- function lffolder_7_z1_monitor()
+ function lffolder_7_z1_monitor($access,$sams)
  {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-      print("   licenses = insDoc(sams,gLnk(\"D\",\"$lframe_sams_lframe_sams_3\",\"tray.php?show=exe&function=monitortray\",\"monit.gif\"))\n");
+      print("   licenses = insDoc($sams,gLnk(\"D\",\"$lframe_sams_lframe_sams_3\",\"tray.php?show=exe&function=monitortray\",\"monit.gif\"))\n");
     }	 
 
  }

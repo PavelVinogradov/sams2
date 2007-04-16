@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -23,8 +23,8 @@ function UsersTrafficPeriodPDF()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   $pdfFile=pdf_new();
   PDF_open_file($pdfFile, "");
@@ -62,7 +62,7 @@ function UsersTrafficPeriodPDF()
   $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
   while($row=mysql_fetch_array($result))
        {
-         $result_2=mysql_query("SELECT * FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers WHERE $SAMSConf->SQUIDCTRLDATABASE.squidusers.nick=\"$row[user]\"&&$SAMSConf->SQUIDCTRLDATABASE.squidusers.domain=\"$row[domain]\"");
+         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE ".$SAMSConf->MYSQLDATABASE.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->MYSQLDATABASE.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          pdf_show_xy($pdfFile, $count+1, 50, $ycount);  
          pdf_show_xy($pdfFile, "$row[user]", 80, $ycount);  
@@ -115,8 +115,8 @@ function UsersTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
 //  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain");
@@ -124,7 +124,7 @@ function UsersTrafficPeriodGB()
   $count=0;
   while($row=mysql_fetch_array($result))
        {
-         $result_2=mysql_query("SELECT * FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers WHERE $SAMSConf->SQUIDCTRLDATABASE.squidusers.nick=\"$row[user]\"&&$SAMSConf->SQUIDCTRLDATABASE.squidusers.domain=\"$row[domain]\"");
+         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE ".$SAMSConf->MYSQLDATABASE.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->MYSQLDATABASE.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          
 	 $SIZE[$count]=floor($row[0]/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
@@ -152,8 +152,8 @@ function UsersTrafficPeriod()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   PageTop("usergroup_48.jpg","$usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
   print("<BR>\n");
@@ -200,7 +200,7 @@ function UsersTrafficPeriod()
   while($row=mysql_fetch_array($result))
        {
          print("<TR>");
-         $result_2=mysql_query("SELECT * FROM $SAMSConf->SQUIDCTRLDATABASE.squidusers WHERE $SAMSConf->SQUIDCTRLDATABASE.squidusers.nick=\"$row[user]\"&&$SAMSConf->SQUIDCTRLDATABASE.squidusers.domain=\"$row[domain]\"");
+         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE ".$SAMSConf->MYSQLDATABASE.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->MYSQLDATABASE.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          LTableCell($count,8);
                  
@@ -283,7 +283,7 @@ function UsersTrafficForm()
 }
 
 
-function usersbuttom_2_traffic()
+function usersbuttom_2_traffic($access,$userid)
 {
   global $SAMSConf;
   

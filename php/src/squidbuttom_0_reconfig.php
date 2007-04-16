@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -80,7 +80,7 @@ function ReconfigSquidForm()
       print("<TABLE CLASS=samstable WIDTH=\"80%\">");
       print("<TH width=60%>$squidbuttom_0_reconfig_ReconfigSquidForm_3");
       print("<TH width=20%>$squidbuttom_0_reconfig_ReconfigSquidForm_4");
-      $result=mysql_query("SELECT id,description FROM $SAMSConf->SQUIDCTRLDATABASE.proxyes ORDER BY id");
+      $result=mysql_query("SELECT id,description FROM ".$SAMSConf->MYSQLDATABASE.".proxyes ORDER BY id");
        while($row=mysql_fetch_array($result))
            {
              print("<TR><TD> $row[description]");
@@ -96,7 +96,7 @@ function ReconfigSquidForm()
 }
 
 
-function squidbuttom_0_reconfig()
+function squidbuttom_0_reconfig($access)
 {
   global $SAMSConf;
   

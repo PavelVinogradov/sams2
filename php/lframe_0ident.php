@@ -1,4 +1,4 @@
-<?php
+<?
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,10 +8,14 @@
 function lframe_0ident()
 {
 global $SAMSConf;
+  //global $USERACCESS;
+  //global $domainusername;
+  //global $ICONSET;
+  //global $adminname;
 
+  //global $LANG;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-//exit(0);
 
   if(strlen($SAMSConf->domainusername)>0||strlen($SAMSConf->adminname)>0)
     {

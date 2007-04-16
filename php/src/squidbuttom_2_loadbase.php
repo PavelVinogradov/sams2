@@ -1,4 +1,4 @@
-<?php
+<?
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -13,8 +13,8 @@ function LoadSquidLog()
    if($SAMSConf->access!=2)     {       exit;     }
   
   copy($_FILES['userfile']['tmp_name'],"data/loadsquid.sql");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
+  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
   $finp=gzopen("data/loadsquid.sql","r");
   while(gzeof($finp)==0)
     {
@@ -50,7 +50,7 @@ function LoadSquidLogForm()
 
 
 
-function squidbuttom_2_loadbase()
+function squidbuttom_2_loadbase($access)
 {
   global $SAMSConf;
   

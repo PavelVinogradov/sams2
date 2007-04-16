@@ -77,7 +77,7 @@ function UsersTrafficPeriodPDF()
   $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
   while($row=mysql_fetch_array($result))
        {
-         $result_2=mysql_query("SELECT * FROM squidctrl.squidusers WHERE squidctrl.squidusers.nick=\"$row[user]\"&&squidctrl.squidusers.domain=\"$row[domain]\"");
+         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE ".$SAMSConf->MYSQLDATABASE.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->MYSQLDATABASE.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          
 	 $pdfFile->SetXY(30, $ycount);
@@ -125,11 +125,10 @@ function AllUsersTrafficPDF()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
-  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers ");  
-  //$result=mysql_query("SELECT * FROM squidctrl.squidusers ");
+  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers ");
   while($row=mysql_fetch_array($result))
        {
           if($row['size']>0)
@@ -146,7 +145,7 @@ function AllUsersTrafficPDF()
               $ycount=50;
               $pdfFile->SetFont('Nimbus','',11);
               //$pdfFile->SetFont('SUSESerif-Roman','',11);
-              $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM squidlog.cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
+              $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
 	      while($row2=mysql_fetch_array($result2))
                 {
 	       
@@ -171,7 +170,7 @@ function AllUsersTrafficPDF()
 
               $ycount+=20;
           
-	      $query="select trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url,sum(size) as url_size,sum(hit) as hit_size from squidlog.cache where user=\"$row[nick]\"&&domain=\"$row[domain]\"&&date>=\"$sdate\"&&date<=\"$edate\" group by norm_url order by url_size desc limit 50";
+	      $query="select trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url,sum(size) as url_size,sum(hit) as hit_size from ".$SAMSConf->SQUIDCTRLDATABASE.".cache where user=\"$row[nick]\"&&domain=\"$row[domain]\"&&date>=\"$sdate\"&&date<=\"$edate\" group by norm_url order by url_size desc limit 50";
               $result3=mysql_query($query);
               while($row3=mysql_fetch_array($result3))
                 {
@@ -260,7 +259,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
              $ycount-=30;
   
 	   }
-	 $result_2=mysql_query("SELECT * FROM squidctrl.squidusers WHERE squidctrl.squidusers.nick=\"$row[user]\"&&squidctrl.squidusers.domain=\"$row[domain]\"");
+	 $result_2=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE ".$SAMSConf->MYSQLDATABASE.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->MYSQLDATABASE.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          pdf_show_xy($pdfFile, $count+1, 50, $ycount);  
          pdf_show_xy($pdfFile, "$row[user]", 80, $ycount);  
@@ -324,8 +323,8 @@ function AllUsersTrafficPDFlib()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
 
   $imagefile = "$SAMSConf->ICONSET/user.jpg";
   $image = PDF_load_image($pdfFile, "auto", $imagefile, "");
@@ -336,7 +335,7 @@ function AllUsersTrafficPDFlib()
   $fontdir = "lib/font/";
   pdf_set_parameter($pdfFile, "FontOutline", "Nimbus=$fontdir/Nimbus.ttf");
 		 
-  $result=mysql_query("SELECT * FROM squidctrl.squidusers WHERE squidusers.size>\"0\" ");
+  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".squidusers WHERE squidusers.size>\"0\" ");
   while($row=mysql_fetch_array($result))
        {
           $ycount=700;
@@ -344,7 +343,7 @@ function AllUsersTrafficPDFlib()
 	    {
               pdf_begin_page($pdfFile, 595, 842);
               
-	      $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM squidlog.cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
+	      $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
 	      while($row2=mysql_fetch_array($result2))
                 {
                    if($ycount>=700)
