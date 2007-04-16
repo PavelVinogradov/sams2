@@ -1,9 +1,9 @@
-<?
+<?php
 #LANGUAGE:Russian cp1251
 #NTLMCHARSETENCODER:"iconv -f CP1251 -t 866"
 
- $CHARSET="WIN1251";
- $langtest="WIN1251";
+ $CHARSET="CP1251";
+ $langtest="CP1251";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
