@@ -1,4 +1,4 @@
-<?
+<?php
 # This file is derived from xc/programs/rgb/rgb.txt in the X11R6 X 
 # Consortium distribution.  Conversion to PHP was done by 
 # Lars Magne Ingebrigtsen <larsi@gnus.org>, financed by Net Fonds ASA
