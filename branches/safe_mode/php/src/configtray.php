@@ -28,14 +28,24 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
-//  $finp=`free`;
-  //$value=system("free &> data/free.txt");
-  $value=system("free > free.txt");
-  $str=strtok($finp," ");
-  for($i=0;$i<20;$i++)
+  $value=exec("freemem");
+  $swapvalue=exec("freeswap");
+
+  $str=strtok($value," ");
+  for($i=0;$i<3;$i++)
      {
-       $mem[$i]=strtok(" ");
+	$string=strtok(" ");
+	if(strlen($string)>0)
+           $mem[$i]=$string;
      }
+  $str=strtok($swapvalue," ");
+  for($i=0;$i<3;$i++)
+     {
+	$string=strtok(" ");
+	if(strlen($string)>0)
+           $swap[$i]=$string;
+     }
+
   print("<P><TABLE CLASS=samstable>");
   print("<TR >");
   print("<TH>");
@@ -44,22 +54,19 @@ function MemoryUsage()
   print("<TH><B>Free</B>\n");
   print("<TR >");
   print("<TD>Memory");
-  print("<TD>$mem[5]");
-  print("<TD>$mem[6]");
-  print("<TD>$mem[7]\n");
+  print("<TD>$mem[0]");
+  print("<TD>$mem[1]");
+  print("<TD>$mem[2]\n");
   print("<TR >");
   print("<TD>Swap");
-  print("<TD>$mem[14]");
-  print("<TD>$mem[15]");
-  print("<TD>$mem[16]\n");
+  print("<TD>$swap[0]");
+  print("<TD>$swap[1]");
+  print("<TD>$swap[2]\n");
   print("</TABLE>");
 }
 
 function FileSystemUsage()
 {
-//  $finp=`df`;
-//  Исправил, иначе будет лажа  
-
   print("<P><TABLE CLASS=samstable>");
   print("<TR>");
   print("<TH><B>Filesystem</B>");
@@ -69,12 +76,8 @@ function FileSystemUsage()
 
   echo "<TR><TD><B>Total space </B>";
   PrintFormattedSize("$totalspace",25);
-  echo "<TR><TD><B>Free space $freespace</B>";
+  echo "<TR><TD><B>Free space </B>";
   PrintFormattedSize("$freespace",25);
-  echo "<TR><TD><B>test </B>";
-  PrintFormattedSize(4*1024*1024*1024+6*1024,25);
-  echo "<TR><TD><B>test </B>";
-  PrintFormattedSize(4029173760,25);
   print("</TABLE>");
 /*
   $finp=system("samsdf");
@@ -124,11 +127,13 @@ function FileSystemUsage()
 
 function SysInfo()
 {
+  global $SAMSConf;
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
+
    $uptime=exec("uptime");
    print("<TABLE WIDTH=90%>");
    print("<TR>");

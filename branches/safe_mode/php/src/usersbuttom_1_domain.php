@@ -105,11 +105,9 @@ function AddUsersFromDomainFormNew()
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
   
-  $userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
-  $userlist=`cat data/userlist`;
-  
-  
-  
+  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+  $test=exec("getwbinfousers $e");
+
   print("USERSLIST=$userlist<BR>");
   $len=substr_count($userlist,"\n");
   print("users count= $len<BR>");
@@ -117,58 +115,22 @@ function AddUsersFromDomainFormNew()
   print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
   print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
   print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
-  
-  for($i=0;$i<$len;$i++)
-    {
-      if($i==0)
-         $string=strtok($userlist,"\n");
-      else	
-         $string=strtok("\n");
-      $domainuser="$string"; 
-/*       
-       if($SAMSConf->NTLMDOMAIN=="Y")
+      $finp=fopen("data/userlist","r");
+      if($finp==FALSE)
+        {
+          echo "can't open file data/userlist<BR>";
+          exit(0);
+        }
+      while(feof($finp)==0)  
          {
-           $string2=$domainuser;
-	   $domain=trim(strtok($string2,"+"));
-           $user=trim(strtok("+"));
-           $domain=strtolower($domain);
-          }
-       else
-          {
-	     $domain="workgroup";
-             $user=trim($string2);
-           }
-*/
-       print("<OPTION VALUE=\"$domainuser\"> $domainuser $domain $user");
-/*       
-       if($SAMSConf->NTLMDOMAIN=="Y")
-         {
-           $string2="$string";
-	   $domain=trim(strtok($string2,"+"));
-           $user=trim(strtok("+"));
-           $domain=strtolower($domain);
-          }
-       else
-          {
-	     $domain="workgroup";
-             $user=trim($string);
-           }
+           $string=fgets($finp,10000);
+	   $domainuser="$string";
+	   print("<OPTION VALUE=\"$domainuser\"> $domainuser $domain $user");
 
-       $result=mysql_query("SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\" ");
-       $row=mysql_fetch_array($result);
-       if(strcmp($row['name'],$user)!=0&&strcmp($row['domain'],$domain)!=0)
-          {
-            if($SAMSConf->NTLMDOMAIN=="Y")
-              print("<OPTION VALUE=\"$domain+$user\"> $user+$domain");
-            else 
-              print("<OPTION VALUE=\"$user\"> $user");
-          }
-*/    
-    }
- 
+         }
+      fclose($finp);
   print("</SELECT>\n");
   print("<P>" );
-  exit(0);
 
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addusersfromdomain\">\n");
@@ -227,13 +189,10 @@ function AddUsersFromDomainForm()
   mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
-  $userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
+  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+  $test=exec("getwbinfousers $e");
+
   $finp=fopen("data/userlist","r");
-//  if($finp==NULL)
-//    {
-//       print("<BR>file data/userlist not found<BR>");
-//       exit(0);
-//    }  
 
   print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
   print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");

@@ -13,15 +13,17 @@ function TestPDC()
   require($lang);
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   print("<H1>TEST PDC</H1>");
+
+  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+  $test=exec("getwbinfousers $e");
   
   if($auth=="ntlm")
     {
-      //$userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
       exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
       $finp=fopen("data/userlist","r");
       if($finp==FALSE)
         {
-          echo "can't open sams config file data/userlist<BR>";
+          echo "can't open file data/userlist<BR>";
           exit(0);
         }
       while(feof($finp)==0)  
@@ -128,6 +130,7 @@ function SamsReConfig()
 function SamsReConfigForm()
 {
   global $SAMSConf;
+  $files=array();
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -232,24 +235,21 @@ function SamsReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"defaultdomain\" value=\"$row[defaultdomain]\">\n");
             
   $scount=0;
-  $filelist=`ls src/script`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  if(strlen($filename)>0)
-    {
-      $script[$scount]=$filename;
-      $scount++;
-    }  
-  while($len<$filelen)
-    {
-       $filename=strtok(chr(0x0a));
-       if(strlen($filename)>0)
-         {
-           $script[$scount]=$filename;
-           $scount++;
-    }  
-       $len=$len+strlen($filename)+1;
-    }
+    if ($handle2 = opendir("./src/script"))
+        {
+	  while (false !== ($file = readdir($handle2)))
+            {
+		if($file!="."&&$file!=".."&&$file!=".svn")
+		  {
+			       if(strlen($file)>0)
+			         {
+					$script[$scount]=$file;
+					$scount++;
+				}  
+
+		  }
+            }
+        }
   print("<TR>\n");
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_56</B>\n");
   print("<TD><SELECT NAME=\"udscript\" ID=\"udscript\" >\n");
