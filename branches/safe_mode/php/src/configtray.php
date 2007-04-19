@@ -67,18 +67,42 @@ function MemoryUsage()
 
 function FileSystemUsage()
 {
-  print("<P><TABLE CLASS=samstable>");
-  print("<TR>");
-  print("<TH><B>Filesystem</B>");
-  print("<TH><B>/</B>");
-  $freespace = disk_free_space("/");
-  $totalspace = disk_total_space("/");
+    $test=exec("fsusage");
+    $finp=fopen("data/fs","r");
+      if($finp==FALSE)
+        {
+          echo "can't open file data/userlist<BR>";
+          exit(0);
+        }
+      print("<P><TABLE CLASS=samstable>");
+      print("<TR>");
+      print("<TH><B>Filesystem</B>");
+      print("<TH><B>Size</B>");
+      print("<TH><B>Used</B>");
+      print("<TH><B>Available</B>");
+      print("<TH><B>Use%</B>");
+      while(feof($finp)==0)  
+         {
+           $string=fgets($finp,10000);
+		for($i=1;$i<strlen($string);$i++)
+		  {
+			$fs[0]=strtok($string," ");
+			for($j=1;$j<6;$j++)
+			  {
+				$fs[$j]=strtok(" ");
+			  }
+		  }
+			print("<TR>");
+			print("<TD>$fs[5]");
+			print("<TD>$fs[1]");
+			print("<TD>$fs[2]");
+			print("<TD>$fs[3]");
+			print("<TD>$fs[4]");
 
-  echo "<TR><TD><B>Total space </B>";
-  PrintFormattedSize("$totalspace",25);
-  echo "<TR><TD><B>Free space </B>";
-  PrintFormattedSize("$freespace",25);
-  print("</TABLE>");
+         }
+      fclose($finp);
+      print("</TABLE>");
+
 /*
   $finp=system("samsdf");
 

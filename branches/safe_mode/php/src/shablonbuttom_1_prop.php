@@ -497,6 +497,7 @@ function shablonbuttom_1_prop()
 {
   global $SAMSConf;
   
+  if(isset($_GET["id"])) $id=$_GET["id"];
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 

@@ -19,7 +19,7 @@ function TestPDC()
   
   if($auth=="ntlm")
     {
-      exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
+//      exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
       $finp=fopen("data/userlist","r");
       if($finp==FALSE)
         {
