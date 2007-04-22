@@ -8,6 +8,7 @@
 
 function RemoveCache()
 {
+  global $SAMSConf;
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
   
   $result=mysql_query("SELECT * FROM proxyes ");
@@ -38,10 +39,7 @@ function AddCache()
  
   if(isset($_GET["description"])) $description=$_GET["description"];
 
-
-
   $userid=TempName();
-  $usergroup=trim($usergroup);
 
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
     mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);

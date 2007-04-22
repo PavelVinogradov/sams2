@@ -11,7 +11,7 @@ function WebInterfaceReConfig()
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
+  $showgraph="";
   if(isset($_GET["lang"])) $lang=$_GET["lang"];
   if(isset($_GET["urlaccess"])) $urlaccess=$_GET["urlaccess"];
   if(isset($_GET["useraccess"])) $useraccess=$_GET["useraccess"];

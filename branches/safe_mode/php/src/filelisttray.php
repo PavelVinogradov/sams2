@@ -213,7 +213,7 @@ function FileListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$redirlisttray_RedirListTray_1.  <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "filebuttom","");
+      ExecuteFunctions("./src", "filebuttom","1");
 
      }
   print("<TD>\n");

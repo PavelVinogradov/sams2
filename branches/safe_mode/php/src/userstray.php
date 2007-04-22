@@ -60,6 +60,7 @@ function AllUsersForm()
   TestWI();
   $SAMSConf->access=UserAccess();
 
+  $groupname="";
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
@@ -225,7 +226,7 @@ function UsersTray()
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
   print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$userstray_UsersTray_1</FONT></B>\n");
 
-  ExecuteFunctions("./src", "usersbuttom","");
+  ExecuteFunctions("./src", "usersbuttom","1");
   print("<TD>\n");
   print("</TABLE>\n");
 

@@ -65,7 +65,7 @@ function AdminTray()
   //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
   print("<B>User<BR><FONT SIZE=\"+1\" COLOR=\"blue\">$SAMSConf->adminname</FONT></B>\n");
 
-   ExecuteFunctions("./src", "adminbuttom","");
+   ExecuteFunctions("./src", "adminbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");

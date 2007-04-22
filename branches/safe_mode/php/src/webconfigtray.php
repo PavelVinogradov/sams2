@@ -209,7 +209,7 @@ function WebConfigTray()
   
   print("<B>$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1</B>\n");
 
-      ExecuteFunctions("./src", "webconfigbuttom","");
+      ExecuteFunctions("./src", "webconfigbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");

@@ -24,7 +24,7 @@ function LogTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
       print("<B><FONT SIZE=\"+1\">$logtray_LogTray_1</FONT></B>\n");
 
-      ExecuteFunctions("./src", "logbuttom","");
+      ExecuteFunctions("./src", "logbuttom","1");
 
     }
   print("<TD>\n");

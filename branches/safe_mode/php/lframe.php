@@ -37,16 +37,23 @@ fclose($finp);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+	$cookie_user="";
+	$cookie_passwd="";
+	$cookie_domainuser="";
+	$cookie_gauditor="";
+	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
+	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
+	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+
  if($SAMSConf->PHPVER<5)
    {
-//echo "<h1>12345 phpver=$SAMSConf->PHPVER</h1>";
-//echo "<BR>user=$_COOKIE[user]=$HTTP_COOKIE_VARS[user]";
-//echo "<BR>passwd=$_COOKIE[passwd]=$HTTP_COOKIE_VARS[passwd]";
-//echo "<BR>domainuser=$_COOKIE[domainuser]=$HTTP_COOKIE_VARS[domainuser]";
-//echo "<BR>gauditor=$_COOKIE[gauditor]=$HTTP_COOKIE_VARS[gauditor]";
-     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
-     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
-     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+//     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
+//     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
+//     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+     $SAMSConf->domainusername=$cookie_domainuser;
+     $SAMSConf->groupauditor=$cookie_gauditor;
    }  
  else
    {
@@ -73,9 +80,9 @@ print("STARTALLOPEN = 0\n");
 print("ICONPATH = '$SAMSConf->ICONSET/'\n\n");
 
 $HOSTNAME=getenv('HOSTNAME');
-print("foldersTree = gFld(\"$HOSTNAME $retval\", \"main.php\", \"earth.gif\")\n");
+print("foldersTree = gFld(\"$HOSTNAME \", \"main.php\", \"earth.gif\")\n");
 
-      ExecuteFunctions("./", "lframe_");
+      ExecuteFunctions("./", "lframe_","1");
 
 print("\n</script>\n");
 

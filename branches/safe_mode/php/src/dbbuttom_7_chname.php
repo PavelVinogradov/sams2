@@ -27,7 +27,6 @@ function ChUser()
     
   $olduser=strtok($fromuser,"+");
   $olddomain=strtok("+");
-  print("<h3>$newuser $newdomain</h3>");
   $newuser=strtok($touser,"+");
   $newdomain=strtok("+");
 

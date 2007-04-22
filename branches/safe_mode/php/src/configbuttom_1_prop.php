@@ -67,6 +67,12 @@ function SamsReConfig()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $at="";
+  $nameencode="";
+  $parser_on="";
+  $checkdns="";
+  $parser="";
+  $parser_time="";
   if(isset($_GET["delaypool"])) $delaypool=$_GET["delaypool"];
   if(isset($_GET["redirect_to"])) $redirect_to=$_GET["redirect_to"];
   if(isset($_GET["denied_to"])) $denied_to=$_GET["denied_to"];
@@ -281,6 +287,7 @@ function SamsReConfigForm()
   $NTLMCHECKED="";
   $NCSACHECKED="";
   $IPCHECKED="";
+  $ADLDCHECKED="";
   $DOMAINDISABLE="DISABLED";
   if($row['auth']=="ip")
 	        		$IPCHECKED="CHECKED";
@@ -364,15 +371,15 @@ function SamsReConfigForm()
   print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
   
   print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
-  if(strpos($row[separator],"+")!=false)
+  if(strpos($row['separator'],"+")!=false)
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED $DOMAINDISABLE> <B>+</B>\n");
   else
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" $DOMAINDISABLE> <B>+</B>\n");
-  if(strpos($row[separator],chr(92) )!=false)
+  if(strpos($row['separator'],chr(92) )!=false)
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" CHECKED $DOMAINDISABLE> <B>\\</B> \n");
   else
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" $DOMAINDISABLE> <B>\\</B> \n");
-  if(strpos($row[separator],chr(64) )!=false)
+  if(strpos($row['separator'],chr(64) )!=false)
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\" CHECKED $DOMAINDISABLE> <B>@</B> \n");
   else
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"  $DOMAINDISABLE> <B>@</B> \n");

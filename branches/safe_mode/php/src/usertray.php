@@ -483,7 +483,7 @@ function UserTray($userid,$usergroup)
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
   print("<B>$usertray_UserTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[nick]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "userbuttom", $row[id]);
+      ExecuteFunctions("./src", "userbuttom", $row['id']);
 
   print("<TD>\n");
   print("</TABLE>\n");

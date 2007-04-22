@@ -30,7 +30,7 @@ function ExecuteFunctions($path, $mask, $id)
 	{ 	
 	    $funcname=str_replace(".php","",$files[$i]);		
 	    require("$path/$files[$i]");
-	    if(strlen($id)>0)
+	    if($id!=1)
 		$funcname($id);
 	    else
 		$funcname();
@@ -347,15 +347,16 @@ echo "<P>";
 function ReturnTrafficFormattedSize($size)
 {
   global $SAMSConf;
+    $str="";
     $gsize=floor($size/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
     $ostatok=$size-$gsize*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
     $msize=floor($ostatok/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
     $ostatok=$ostatok-$msize*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
-    $ksize=floor($ostatok/$SAMSConf->KBSIZE);         
-  if($gsize>0)
-    $str="$gsize Gb";
-  $str="$str $msize Mb $ksize kb ";
-  return($str);
+    $ksize=floor($ostatok/$SAMSConf->KBSIZE);
+    if($gsize>0)
+       $str="$gsize Gb";
+    $out="$str $msize Mb $ksize kb ";
+    return($out);
 } 
 
 function PrintTrafficSize($size)

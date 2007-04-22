@@ -42,6 +42,7 @@ function shablonbuttom_9_delete()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  if(isset($_GET["id"])) $id=$_GET["id"];
   $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
   $row=mysql_fetch_array($result);
 

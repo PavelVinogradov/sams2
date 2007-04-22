@@ -54,7 +54,7 @@ function UserGroupForm()
   $ga=0;
   $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
-  if($SAMSConf->groupauditor==$row[name])
+  if($SAMSConf->groupauditor==$row['name'])
     {
       $ga=1;
     }

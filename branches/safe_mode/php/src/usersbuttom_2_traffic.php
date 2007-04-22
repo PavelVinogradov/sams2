@@ -147,6 +147,9 @@ function UsersTrafficPeriod()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+   $size="";
+   if(isset($_GET["size"])) $size=$_GET["size"];
+
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
@@ -179,7 +182,7 @@ function UsersTrafficPeriod()
   print("<TABLE CLASS=samstable>");
   print("<TH width=8%>No");
   print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_4");
-  if($_GET["size"]=="On")
+  if($size=="On")
     {
       print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_8");
     }
@@ -216,7 +219,7 @@ function UsersTrafficPeriod()
 	 LTableCell($str,16);
 	 
 	 //LTableCell("<A HREF=\"tray.php?show=usertray&userid=$row_2[id]&usergroup=$row_2[group]\" TARGET=\"tray\">$row[user]</A>\n",16);
-         if($_GET["size"]=="On")
+         if($size=="On")
            {
               LTableCell($row_2['family'],16);
            }

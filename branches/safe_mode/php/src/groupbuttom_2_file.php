@@ -51,8 +51,11 @@ function GroupFileSizePeriod()
 
   $query="SELECT cache.user,cache.date,cache.size,cache.url, tu.name, tu.family, cache.domain FROM cache , $SAMSConf->SQUIDCTRLDATABASE.squidusers AS tu WHERE tu.nick=cache.user&&tu.domain=cache.domain&&tu.group=\"$groupname\"&&date>=\"$sdate\"&&date<=\"$edate\"&&cache.size>=\"$filesize\" order by cache.size desc limit 250";
   $result=mysql_query($query);
-  while($row=mysql_fetch_array($result))
-     {
+//  while($row=mysql_fetch_array($result))
+//     {
+    for($i=0;$i<mysql_num_rows($result);$i++)
+       {
+         $row=mysql_fetch_array($result);
          print("<TR>");
          LTableCell($count,8);
          

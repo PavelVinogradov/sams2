@@ -8,7 +8,7 @@
 function UpdateUser()
 {
   global $SAMSConf;
-
+  $gauditor="";
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
   if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];

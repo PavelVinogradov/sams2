@@ -12,7 +12,7 @@ function UserFileSizePeriod()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
+  $usergroup="";
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];

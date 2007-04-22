@@ -24,7 +24,7 @@ function NewGrpTray()
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
   print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$newgrouptray_NewGrpTray_1</FONT></B>\n");
 
-      ExecuteFunctions("./src", "newgrpbuttom","");
+      ExecuteFunctions("./src", "newgrpbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");

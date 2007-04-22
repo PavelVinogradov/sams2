@@ -10,6 +10,7 @@ function dbrepair()
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+  $tablecount=0;
   if(isset($_GET["tablecount"])) $tablecount=$_GET["tablecount"];
   if(isset($_GET["table"])) $table=$_GET["table"];
 
@@ -39,6 +40,7 @@ function dbcheck()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
+  $tablecount=0;
   $squidctrlerrorcount=0;
   $squidlogerrorcount=0;
   PageTop("dbcheck_48.jpg","$dbbuttom_1_dbcheck_dbcheck_1");

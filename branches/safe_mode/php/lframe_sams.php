@@ -16,7 +16,7 @@ function lframe_sams()
 
   print("   sams = insFld(foldersTree, gFld2(\"SAMS\", \"tray.php?show=exe&function=proxytray&filename=proxytray.php\", \"proxy.gif\"))\n");
 
-  ExecuteFunctions("./src", "lffolder_","");
+  ExecuteFunctions("./src", "lffolder_","1");
 
 return(0);
 }

@@ -25,7 +25,7 @@ function MonitorTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
       print("<B><FONT SIZE=\"+1\" COLOR=\"BLUE\">$monitortray_MonitorTray_1</FONT></B>\n");
 
-      ExecuteFunctions("./src", "monitorbuttom","");
+      ExecuteFunctions("./src", "monitorbuttom","1");
  
     }
   print("<TD>\n");

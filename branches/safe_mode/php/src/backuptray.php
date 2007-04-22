@@ -41,7 +41,7 @@ function BackUpTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\" COLOR=\"BLUE\">$backuptray_BackUpTray_1</FONT></B>\n");
 
-      ExecuteFunctions("./src", "backupbuttom","");
+      ExecuteFunctions("./src", "backupbuttom","1");
      }
 
   print("<TD>\n");

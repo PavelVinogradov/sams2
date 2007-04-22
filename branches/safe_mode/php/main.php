@@ -295,11 +295,23 @@ if($function=="logoff")
      $function="setcookie";
   }   
 
+	$cookie_user="";
+	$cookie_passwd="";
+	$cookie_domainuser="";
+	$cookie_gauditor="";
+	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
+	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
+	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+
  if($SAMSConf->PHPVER<5)
    {
-     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
-     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
-     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+//     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
+//     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
+//     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+     $SAMSConf->domainusername=$cookie_domainuser;
+     $SAMSConf->groupauditor=$cookie_gauditor;
    }  
  else
    {

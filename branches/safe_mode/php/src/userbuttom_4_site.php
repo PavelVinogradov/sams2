@@ -150,6 +150,7 @@ function UserSitesPeriod()
 
   $result=mysql_query("$query");
   $cache=0; 
+  $counter=0;
   while($row=mysql_fetch_array($result))
        {
          print("<TR>");
@@ -161,7 +162,7 @@ function UserSitesPeriod()
              $aaa=FormattedString("$row[hit_size]\n");
              RTableCell("$aaa",15);
            }
-	 PrintFormattedSize($row[url_size]-$row[hit_size]);         
+	 PrintFormattedSize($row['url_size']-$row['hit_size']);         
          if($SAMSConf->access==2)
            TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&username=$username\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
          if($SAMSConf->access==1)

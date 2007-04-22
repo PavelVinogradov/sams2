@@ -41,7 +41,6 @@ function UpdateGroupForm()
   
   $result2=mysql_query("SELECT * FROM groups WHERE groups.name=\"$id\" ");
   $row2=mysql_fetch_array($result2);
-  $alldenied=$row2['alldenied'];
   PageTop("shablon.jpg","$groupbuttom_0_prop_UpdateGroupForm_1 <FONT COLOR=\"BLUE\">$row2[nick]</FONT>");
 
   print("<FORM NAME=\"UPDATEGROUP\" ACTION=\"main.php\">\n");

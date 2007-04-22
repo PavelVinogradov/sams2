@@ -75,8 +75,6 @@ function SquidTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpsquidform\";\n");
       print("</SCRIPT> \n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
   if($SAMSConf->access==2)
     {
       print("<TABLE border=0 WIDTH=\"100%\">\n");
@@ -84,7 +82,7 @@ function SquidTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
 
-      ExecuteFunctions("./src", "squidbuttom","");
+      ExecuteFunctions("./src", "squidbuttom","1");
 
      }
   print("<TD>\n");

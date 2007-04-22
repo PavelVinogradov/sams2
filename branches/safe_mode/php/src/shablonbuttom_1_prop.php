@@ -104,7 +104,9 @@ function UpdateShablonForm()
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
-  
+   $DENIEDDISABLED="";
+   $ALLOWDISABLED="";
+   $NTLMSELECTED="";
   $result2=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
   $row2=mysql_fetch_array($result2);
   $alldenied=$row2['alldenied'];
@@ -138,7 +140,6 @@ function UpdateShablonForm()
           print("<INPUT TYPE=\"CHECKBOX\" NAME=\"_$row[filename]\">\n");
         print("<TD WIDTH=\"60%\"> $row[name]\n");
       }
-
   if($alldenied>0)
     {
       $DENIEDDISABLED="DISABLED";

@@ -94,7 +94,7 @@ function AddNewList()
   $id=TempName();
   print("<BR> INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
   $result=mysql_query("INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
-  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $groupnick","02");
+  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
   //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
 
@@ -125,7 +125,7 @@ function DeleteAllURLFromList()
   mysql_select_db($SAMSConf->SQUIDCTRLDATABASE)
        or print("Error\n");
   $result=mysql_query("DELETE FROM urls WHERE type=\"$type\" ");
-  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $url","02");
+  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $type","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");

@@ -220,7 +220,7 @@ function ContextListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$deniedlisttray_DeniedListTray_1 <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "contextbuttom","");
+      ExecuteFunctions("./src", "contextbuttom","1");
 
      }
   print("<TD>\n");

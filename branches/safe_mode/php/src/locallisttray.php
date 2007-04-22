@@ -161,9 +161,9 @@ function LocalTrafTray()
       print("<TABLE border=0 WIDTH=\"100%\">\n");
       print("<TR>\n");
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
-      print("<B> $localtraf_localtraftray1<BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
+      print("<B> $localtraf_localtraftray1</B>\n");
 
-        ExecuteFunctions("./src", "localbuttom","");
+        ExecuteFunctions("./src", "localbuttom","1");
 
      }
   print("<TD>\n");

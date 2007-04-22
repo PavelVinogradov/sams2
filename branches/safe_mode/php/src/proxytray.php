@@ -24,7 +24,7 @@ function ProxyTray()
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
   print("<B>Proxy</B>\n");
 
-  ExecuteFunctions("./src", "proxybuttom","");
+  ExecuteFunctions("./src", "proxybuttom","1");
   
   print("<TD>\n");
   print("</TABLE>\n");

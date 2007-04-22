@@ -24,13 +24,14 @@ function RecalcUsersTraffic()
   $stime="0:00:00";
   $etime="0:00:00";
 
-  PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 1.$smon.$syea по $eday.$smon.$syea $usersbuttom_5_recalc_RecalcUsersTraffic_");
+  PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 1.$smon.$syea по $eday.$smon.$syea $usersbuttom_5_recalc_RecalcUsersTraffic_2");
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->MYSQLDATABASE) or exit();
+  mysql_select_db($SAMSConf->MYSQLDATABASE);
   
   $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT sum(size),user,domain,sum(hit) FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\" GROUP BY user,domain");
-  $result=mysql_query("SELECT * FROM cache_ ");
+  $result=mysql_query("SELECT * FROM squidlog.cache_ ");
+
   while($row=mysql_fetch_array($result))
        {
 	 $tsize=0;
@@ -71,7 +72,7 @@ function usersbuttom_5_recalc()
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/recalc_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_5_recalc_usersbuttom_5_recalc_2\"  border=0 ");
-       print("onclick=RecalcCounter(\"$row[nick]\",\"$row[id]\") \n");
+       print("onclick=RecalcCounter(\"nick\",\"id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/recalc_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/recalc_32.jpg'\" >\n");
     }

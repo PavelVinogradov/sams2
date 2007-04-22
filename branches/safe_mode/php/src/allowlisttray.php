@@ -129,20 +129,6 @@ function AllowListForm()
   print("<INPUT TYPE=\"SUBMIT\" value=\"$redir_openurlbase9\">\n");
   print("</FORM>\n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$filename\" ");
-  $row=mysql_fetch_array($result);
-  if($row['type']=="$id")
-     {
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-       print("<A HREF=\"doc/localhost.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
-       print("<TD>$redir_openurlbase10");
-       print(" $redir_openurlbase11");
-       print(" <BR>$redir_openurlbase12");
-       print(" <BR>$redir_openurlbase13");
-       print(" <BR>$redir_openurlbase14");
-       print(" <BR>$redir_openurlbase15");
-     }
-
 }
 
 
@@ -205,7 +191,7 @@ function AllowListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$allowlisttray_allowlisttray_1 <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "allowbuttom","");
+      ExecuteFunctions("./src", "allowbuttom","1");
 
      }
   print("<TD>\n");

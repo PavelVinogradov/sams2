@@ -88,7 +88,7 @@ function ShablonTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$row[nick]</FONT></B>\n");
 
-      ExecuteFunctions("./src", "shablonbuttom","");
+      ExecuteFunctions("./src", "shablonbuttom","1");
     }
   print("<TD>\n");
   print("</TABLE>\n");

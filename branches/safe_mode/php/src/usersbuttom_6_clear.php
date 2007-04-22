@@ -54,7 +54,7 @@ function usersbuttom_6_clear()
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\" HEIGHT=\"50\">\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/erase_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_6_clear_usersbuttom_6_clear_2\"  border=0 ");
-       print("onclick=ClearCounter(\"$row[nick]\",\"$row[id]\") \n");
+       print("onclick=ClearCounter(\"nick\",\"id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/erase_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/erase_32.jpg'\" >\n");
     }

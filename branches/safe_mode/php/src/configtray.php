@@ -255,7 +255,7 @@ function ConfigTray()
   //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
   print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
 
-    ExecuteFunctions("./src", "configbuttom","");
+    ExecuteFunctions("./src", "configbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");
