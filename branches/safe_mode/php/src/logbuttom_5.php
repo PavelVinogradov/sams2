@@ -13,6 +13,8 @@ function ShowDaemonsLog()
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }

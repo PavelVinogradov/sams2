@@ -21,8 +21,8 @@ db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
   $tablecount=0;
 
   $filename=strftime("samsdb-%d%b%Y-%H-%M-%S.sql.gz");
-  if(is_dir("/tmp/sams")!=TRUE)
-      mkdir("/tmp/sams",0777);
+//  if(is_dir("/tmp/sams")!=TRUE)
+//      mkdir("/tmp/sams",0777);
   if(($fout=gzopen("data/$filename","w9"))!=NULL)
     {
        gzwrite($fout,"# SQUIDCTRL DUMP FOR MYSQL DATABASE\n");

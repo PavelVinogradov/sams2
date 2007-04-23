@@ -13,6 +13,8 @@ function ShowAllLog()
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];

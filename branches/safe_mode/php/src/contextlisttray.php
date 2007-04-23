@@ -144,8 +144,6 @@ function ContextListForm()
   print("<INPUT TYPE=\"SUBMIT\" value=\"$contextlisttray_RedirListForm_3\">\n");
   print("</FORM>\n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$filename\" ");
-  $row=mysql_fetch_array($result);
   if($row['type']=="$id")
      {
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");

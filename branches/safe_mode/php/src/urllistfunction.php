@@ -25,6 +25,7 @@ function EditURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["editurl"])) $url=$_GET["editurl"];
   if(isset($_GET["oldvalue"])) $oldvalue=$_GET["oldvalue"];
@@ -114,6 +115,7 @@ function DeleteAllURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+   $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];
@@ -140,6 +142,7 @@ function AddURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["addurl"])) $url=$_GET["addurl"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
@@ -171,7 +174,8 @@ function DeleteURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["type"])) $type=$_GET["type"];
+   $exefilename="";
+ if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["delete"])) $url=$_GET["delete"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];

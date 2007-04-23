@@ -175,9 +175,6 @@ function NewShablonForm()
            print("}\n");
            print("</SCRIPT> \n");
   
-      $YCLRVALUE=substr($row['clrdate'],0,4);
-      $MCLRVALUE=substr($row['clrdate'],5,2);
-      $DCLRVALUE=substr($row['clrdate'],8,2);
       $month=array(0,1,2,3,4,5,6,7,8,9,10,11,12); 
       $days=array(0,31,28,31,30,31,30,31,31,30,31,30,31); 
       $YCLRVALUE=strftime("%Y");

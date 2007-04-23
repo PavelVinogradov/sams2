@@ -108,7 +108,7 @@ function proxybuttom_1_down()
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/shutdown_32.jpg\" \n ");
        print("TITLE=\"Shutdown proxy server\"  border=0 ");
-       print("onclick=DeleteUser(\"$userid\") \n");
+       print("onclick=DeleteUser(\"userid\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/shutdown_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/shutdown_32.jpg'\" >\n");
     }

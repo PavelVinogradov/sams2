@@ -107,6 +107,7 @@ function UpdateShablonForm()
    $DENIEDDISABLED="";
    $ALLOWDISABLED="";
    $NTLMSELECTED="";
+   $IPSELECTED="";
   $result2=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
   $row2=mysql_fetch_array($result2);
   $alldenied=$row2['alldenied'];
