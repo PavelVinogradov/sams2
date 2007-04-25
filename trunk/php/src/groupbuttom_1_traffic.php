@@ -96,7 +96,7 @@ function GroupTrafficPeriod()
   print("<TH>$groupbuttom_1_traffic_GroupTrafficPeriod_4");
 
  //$result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum , ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
- $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, cachesum.domain FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum, ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+ $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, cachesum.domain, tu.nick FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum, ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
   while ($row=mysql_fetch_array($result))
        {
          print("<TR>");
