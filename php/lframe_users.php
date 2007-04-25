@@ -17,24 +17,20 @@ function lframe_users()
       switch ($SAMSConf->SHOWNAME)
         { 
 	  case "fam":
-            $SORDER0="family";
-            $SORDER1="";
+            $SORDER = "family";
           break;
 
           case "famn":
-            $SORDER0="family";
-            $SORDER1="name";
+            $SORDER = "family, name";
           break;
 
           case "nickd":
-            $SORDER0="domain";
-            $SORDER1="nick";
+            $SORDER = "domain, nick";
           break;
 
           case "nick":
           default:
-            $SORDER0="nick";
-            $SORDER1="";
+            $SORDER = "nick";
         }
 
       
@@ -53,7 +49,7 @@ function lframe_users()
          {
 	    $metka="users$count";
             print("     $metka = insFld(users, gFld2(\"$row[nick]\", \"tray.php?show=usergrouptray&groupname=$row[name]&groupnick=$row[nick]\", \"pgroup.gif\"))\n");
-            $result_=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$row[name]\" ORDER BY \"$SORDER0\",\"$SORDER1\"");
+            $result_=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$row[name]\" ORDER BY $SORDER");
             while($row_=mysql_fetch_array($result_))
                {
  //echo "SAMSConf->groupauditor = $SAMSConf->groupauditor\n result_=$result_\n\n";     
