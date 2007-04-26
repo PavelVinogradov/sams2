@@ -49,7 +49,7 @@ function GroupFileSizePeriod()
   print("<TH>URL");
   $count=0;
 
-  $query="SELECT cache.user,cache.date,cache.size,cache.url, tu.name, tu.family, cache.domain FROM cache , ".$SAMSConf->MYSQLDATABASE.".squidusers AS tu WHERE tu.nick=cache.user&&tu.domain=cache.domain&&tu.group=\"$groupname\"&&date>=\"$sdate\"&&date<=\"$edate\"&&cache.size>=\"$filesize\" order by cache.size desc limit 250";
+  $query="SELECT cache.user,cache.date,cache.size,cache.url, tu.name, tu.family, tu.nick, cache.domain FROM cache , ".$SAMSConf->MYSQLDATABASE.".squidusers AS tu WHERE tu.nick=cache.user&&tu.domain=cache.domain&&tu.group=\"$groupname\"&&date>=\"$sdate\"&&date<=\"$edate\"&&cache.size>=\"$filesize\" order by cache.size desc limit 250";
   $result=mysql_query($query);
   while($row=mysql_fetch_array($result))
      {
