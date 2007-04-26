@@ -146,7 +146,7 @@ function GroupSitesPeriod()
 
   db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
   mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
-  $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT tc.* FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache AS tc, ".$SAMSConf->MYSQLDATABASE."squidusers AS tu WHERE tc.user = tu.nick AND tc.domain = tu.domain AND tu.group=\"$groupname\" AND tc.date>=\"$sdate\" AND tc.date<=\"$edate\"");
+  $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT tc.* FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache AS tc, ".$SAMSConf->MYSQLDATABASE.".squidusers AS tu WHERE tc.user = tu.nick AND tc.domain = tu.domain AND tu.group=\"$groupname\" AND tc.date>=\"$sdate\" AND tc.date<=\"$edate\"");
   $result=mysql_query("UPDATE cache_ SET url=SUBSTRING_INDEX(url,'/',3) ");
 
   $result2=mysql_query("SELECT url, SUM(size) AS sum_size FROM cache_ GROUP BY url ORDER BY sum_size DESC");
