@@ -137,7 +137,7 @@ print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
 print("<TH>%");
 
 //$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent from cache_ order by cache_.user_size desc");
-$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,cache_.domain from cache_  LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
+$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain from cache_  LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
 $ap=0;
 $count=1;
 while($row=mysql_fetch_array($result))
