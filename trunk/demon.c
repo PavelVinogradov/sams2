@@ -310,7 +310,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 				  {
 				    exec_script(UDSCRIPTFILE, users[samsuser-1].user);
 				  }  
-				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='0',action='reconfig',service='squid'",conf.samsdb);
+				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachnum);
                                 flag=send_mysql_query(conn2,&str[0]);
 				if(flag==0)
 				  {
@@ -690,7 +690,7 @@ int main (int argc, char *argv[])
          }
        else
          {
-           sprintf(&str[0],"UPDATE %s.reconfig SET action='reconfig',service='squid'",conf.samsdb);
+           sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachenum);
            flag=send_mysql_query(conn2,&str[0]);
            printf("SAMS: users traffic counter is cleaned\n");
          }
@@ -774,7 +774,7 @@ int main (int argc, char *argv[])
 
        if(tc>0)
          {
-	   sprintf(&str[0],"INSERT INTO %s.reconfig SET number='0',action='reconfig',service='squid'",conf.samsdb);
+	   sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachenum);
            flag=send_mysql_query(conn2,&str[0]);
 	 
 	 }

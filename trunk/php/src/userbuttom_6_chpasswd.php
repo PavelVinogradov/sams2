@@ -26,7 +26,7 @@ function ChUserPasswd()
   mysql_select_db($SAMSConf->MYSQLDATABASE);
   $result=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET passwd=\"$newpasswd\" WHERE id=\"$userid\" ");
   if($SAMSConf->AUTH=="ncsa")
-         $result=mysql_query("INSERT INTO reconfig SET service=\"squid\",action=\"reconfig\" ");
+         $result=mysql_query("INSERT INTO reconfig SET service=\"squid\",action=\"reconfig\",number=\"0\" ");
 
 }
 
