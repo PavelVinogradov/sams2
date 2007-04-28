@@ -310,7 +310,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 				  {
 				    exec_script(UDSCRIPTFILE, users[samsuser-1].user);
 				  }  
-				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachnum);
+				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachenum);
                                 flag=send_mysql_query(conn2,&str[0]);
 				if(flag==0)
 				  {
