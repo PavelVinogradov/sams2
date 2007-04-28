@@ -37,7 +37,7 @@ function ReconfigSquid()
             $row=mysql_fetch_array($result);
 
             if($row[' parser']=="analog")
-              $result=mysql_query("INSERT INTO reconfig SET service=\"samsf\",action=\"reconfig\",number=\"0\" ");
+              $result=mysql_query("INSERT INTO reconfig SET service=\"samsf\",action=\"reconfig\"");
             print("$squidbuttom_0_reconfig_ReconfigSquid__2<BR>\n");
             for($i=0;$i<10;$i++)
 	        {
