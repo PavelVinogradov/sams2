@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -24,7 +24,7 @@ function RecalcUsersTraffic()
   $stime="0:00:00";
   $etime="0:00:00";
 
-  PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 1.$smon.$syea по $eday.$smon.$syea $usersbuttom_5_recalc_RecalcUsersTraffic_");
+  PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 1.$smon.$syea по $eday.$smon.$syea $usersbuttom_5_recalc_RecalcUsersTraffic_2");
 
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
@@ -71,14 +71,11 @@ function usersbuttom_5_recalc()
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/recalc_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_5_recalc_usersbuttom_5_recalc_2\"  border=0 ");
-       print("onclick=RecalcCounter(\"$row[nick]\",\"$row[id]\") \n");
+       print("onclick=RecalcCounter(\"nick\",\"id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/recalc_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/recalc_32.jpg'\" >\n");
     }
 
 }
-
-
-
 
 ?>
