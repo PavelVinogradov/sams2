@@ -1,0 +1,3 @@
+#$aaa=`$SAMSConf->WBINFOPATH/wbinfo -u`;
+
+$1/wbinfo -u &> ./data/userlist
