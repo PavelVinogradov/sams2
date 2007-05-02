@@ -808,7 +808,7 @@
   $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси сервер";
   $squidbuttom_0_reconfig_ReconfigSquidForm_4="Реконфигурировать";
 
-  
+  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
    
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
