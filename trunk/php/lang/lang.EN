@@ -775,7 +775,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   
   $shablonnew_NewShablonForm_17="select default authorisation method into SAMS settings";
 
-
+  $shablonbuttom_1_prop_UpdateShablonForm_21=" Access allowed lists to file extensions";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

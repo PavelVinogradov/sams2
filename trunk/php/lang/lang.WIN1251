@@ -1,5 +1,5 @@
 <?php
-#LANGUAGE:Russian cp1251
+#LANGUAGE:Russian CP1251
 #NTLMCHARSETENCODER:"iconv -f CP1251 -t 866"
 
  $CHARSET="CP1251";
@@ -808,7 +808,7 @@
   $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси сервер";
   $squidbuttom_0_reconfig_ReconfigSquidForm_4="Реконфигурировать";
 
-  
+  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
    
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
