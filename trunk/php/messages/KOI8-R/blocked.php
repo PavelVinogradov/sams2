@@ -7,8 +7,8 @@
 global $SAMSConf;
 
 //global $KBSIZE;
-//global $MYSQLDATABASE;
-//global $SQUIDCTRLDATABASE;
+//global $SAMSDB;
+//global $LOGDB;
 //global $MYSQLHOSTNAME;
 //global $MYSQLUSER;
 //global $MYSQLPASSWORD;
@@ -24,8 +24,8 @@ if(isset($_GET["url"])) $url=$_GET["url"];
   require('../../mysqltools.php');
   $SAMSConf=new SAMSCONFIG();
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT denied_to FROM sams ");
   $row=mysql_fetch_array($result);
   $start=strpos($row['denied_to'],"messages");

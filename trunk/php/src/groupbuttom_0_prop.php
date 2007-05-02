@@ -15,8 +15,8 @@ function UpdateGroup()
   if(isset($_GET["id"])) $sname=$_GET["id"];
   if(isset($_GET["nick"])) $nick=$_GET["nick"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("DELETE FROM sconfig WHERE sname=\"$sname\" ");
 
   $result=mysql_query("UPDATE groups SET nick=\"$nick\"  WHERE name=\"$sname\" ");

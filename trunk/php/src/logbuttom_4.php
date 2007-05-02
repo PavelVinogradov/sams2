@@ -25,8 +25,8 @@ function ShowAdminLog()
        NewDateSelect(0,"");
        print("</FORM>\n");
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   $result=mysql_query("SELECT * FROM log WHERE code=\"04\"&&date>=\"$sdate\"&&date<=\"$edate\" ");
 

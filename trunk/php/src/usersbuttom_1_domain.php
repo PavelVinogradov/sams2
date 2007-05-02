@@ -100,8 +100,8 @@ function AddUsersFromDomainFormNew()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
   
@@ -195,8 +195,8 @@ function AddUsersFromDomainFormNew()
   print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_4 \n");
   print("<TD>\n");
   print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 >\n");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM shablons");
   while($row=mysql_fetch_array($result))
@@ -223,8 +223,8 @@ function AddUsersFromDomainForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
   $userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
@@ -308,8 +308,8 @@ function AddUsersFromDomainForm()
   print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_4 \n");
   print("<TD>\n");
   print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 >\n");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM shablons");
   while($row=mysql_fetch_array($result))

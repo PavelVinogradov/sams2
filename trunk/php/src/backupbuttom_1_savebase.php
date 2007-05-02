@@ -14,8 +14,8 @@ function SaveBackUp()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
 
   $tablecount=0;
@@ -25,8 +25,8 @@ function SaveBackUp()
       mkdir("/tmp/sams",0777);
   if(($fout=gzopen("data/$filename","w9"))!=NULL)
     {
-       gzwrite($fout,"# ".$SAMSConf->MYSQLDATABASE." DUMP FOR MYSQL DATABASE\n");
-       gzwrite($fout,"USE ".$SAMSConf->MYSQLDATABASE.";\n");
+       gzwrite($fout,"# ".$SAMSConf->SAMSDB." DUMP FOR MYSQL DATABASE\n");
+       gzwrite($fout,"USE ".$SAMSConf->SAMSDB.";\n");
        $result=mysql_query("SHOW TABLES");
        while($row=mysql_fetch_array($result)) //берем список таблиц
          {
@@ -68,8 +68,8 @@ function SaveBackUp()
     }   
   else if(($fout=fopen("data/$filename","w9"))!=NULL)
     {
-       fwrite($fout,"# ".$SAMSConf->MYSQLDATABASE." DUMP FOR MYSQL DATABASE\n");
-       fwrite($fout,"USE ".$SAMSConf->MYSQLDATABASE.";\n");
+       fwrite($fout,"# ".$SAMSConf->SAMSDB." DUMP FOR MYSQL DATABASE\n");
+       fwrite($fout,"USE ".$SAMSConf->SAMSDB.";\n");
        $result=mysql_query("SHOW TABLES");
        while($row=mysql_fetch_array($result)) //берем список таблиц
          {

@@ -197,8 +197,8 @@ global $SAMSConf;
 
 global $DELAYPOOL;
 global $USERACCESS;
-global $MYSQLDATABASE;    
-global $SQUIDCTRLDATABASE; 
+global $SAMSDB;    
+global $LOGDB; 
 global $MYSQLHOSTNAME; 
 global $MYSQLUSER;  
 global $MYSQLPASSWORD; 

@@ -19,8 +19,8 @@ function DeleteAdmin()
 
   if(strstr("Admin",$SAMSConf->adminname)||strstr("auditor",$SAMSConf->adminname))
     {
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE) 
+      db_connect($SAMSConf->SAMSDB) or exit();
+      mysql_select_db($SAMSConf->SAMSDB) 
     	  or print("Error\n");
       
       $result=mysql_query("DELETE FROM passwd WHERE user=\"$username\" ");
@@ -52,8 +52,8 @@ function DeleteAdminForm()
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"deleteadmin\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"adminbuttom_5_deladmin.php\">\n");
       print("<SELECT NAME=\"username\" >\n");
-      db_connect($SAMSConf->MYSQLDATABASE) or exit();
-      mysql_select_db($SAMSConf->MYSQLDATABASE)
+      db_connect($SAMSConf->SAMSDB) or exit();
+      mysql_select_db($SAMSConf->SAMSDB)
           or print("Error\n");
       $result2=mysql_query("SELECT * FROM passwd WHERE user!=\"Admin\"&&user!=\"auditor\"");
       while($row=mysql_fetch_array($result2))

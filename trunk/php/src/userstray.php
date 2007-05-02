@@ -62,8 +62,8 @@ function AllUsersForm()
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
@@ -98,8 +98,8 @@ function AllUsersForm()
     }  
   $count=0;
   
-  //$result=mysql_query("SELECT squidusers.*,groups.nick AS gnick FROM squidusers LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".groups ON groups.name=squidusers.group ORDER BY squidusers.group,squidusers.nick");
- $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".groups ON groups.name=squidusers.group LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
+  //$result=mysql_query("SELECT squidusers.*,groups.nick AS gnick FROM squidusers LEFT JOIN ".$SAMSConf->SAMSDB.".groups ON groups.name=squidusers.group ORDER BY squidusers.group,squidusers.nick");
+ $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN ".$SAMSConf->SAMSDB.".groups ON groups.name=squidusers.group LEFT JOIN ".$SAMSConf->MYSQLDATABASE.".shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
   
   while($row=mysql_fetch_array($result))
       {

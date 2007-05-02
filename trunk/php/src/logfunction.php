@@ -20,8 +20,8 @@ function UpdateLog($username,$value,$code)
   $min=date("i")*1;
   $sec=date("s")*1;
   $time="$hour:$min:$sec";
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("INSERT INTO log SET user=\"$username\",date=\"$date\",time=\"$time\",value=\"$value\",code=\"$code\" ");
 }
 

@@ -114,8 +114,8 @@ function CheckUserPassword($user,$passwd)
 {
   global $SAMSConf;
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   $result=mysql_query("SELECT * FROM passwd WHERE user=\"$user\"&&pass=\"$passwd\" ");
   $row=mysql_fetch_array($result);
@@ -152,8 +152,8 @@ function SaveUserName($passwd,$number)
   global $adminname, $SAMSConf;
   $newpasswd=crypt($passwd,"00");
   print("passwd=$newpasswd=");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   $result=mysql_query("SELECT * FROM passwd WHERE pass=\"$newpasswd\" ");
   $row=mysql_fetch_array($result);
@@ -183,8 +183,8 @@ function UserPasswordTest($username,$passwd)
   global $SAMSConf;
 
   $newpasswd=crypt($passwd,"00");
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   $result=mysql_query("SELECT * FROM passwd  WHERE user=\"$username\" ");
   $row=mysql_fetch_array($result);
