@@ -71,7 +71,7 @@ function SiteUserList()
   print("<TH>$userbuttom_4_site_SiteUserList_7");
   print("<TH>URL");
 
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  mysql_select_db($SAMSConf->LOGDB);
   $result=mysql_query("SELECT date,user,size,url FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\"&&user=\"$username\"&&url like \"%$site%\" ORDER BY size desc limit 250");
   $counter=0;
   while($row=mysql_fetch_array($result))
@@ -116,8 +116,8 @@ function UserSitesPeriod()
   $emon=$DATE->emon;
   $eyea=$DATE->eyea;
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
 
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
 
@@ -198,8 +198,8 @@ function UserSitesForm()
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

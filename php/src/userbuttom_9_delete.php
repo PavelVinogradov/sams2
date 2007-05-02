@@ -23,8 +23,8 @@ function DeleteUser()
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
   $result=mysql_query("DELETE FROM squidusers WHERE id=\"$userid\" ");

@@ -28,8 +28,8 @@ function UpdateUser()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   if($gauditor=="on")
      $gauditor=1;
   else
@@ -77,8 +77,8 @@ function UpdateUserForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
   
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 
@@ -139,8 +139,8 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<SELECT NAME=\"usergroup\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE)
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result2=mysql_query("SELECT name,nick FROM groups");
   $result_u=mysql_query("SELECT * FROM squidusers WHERE id=\"$row[id]\" ");

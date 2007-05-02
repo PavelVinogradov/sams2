@@ -44,8 +44,8 @@ class SAMSCONFIG
   var $DELAYPOOL;
   var $USERACCESS;
   var $URLACCESS;
-  var $MYSQLDATABASE;    
-  var $SQUIDCTRLDATABASE;    
+  var $SAMSDB;    
+  var $LOGDB;    
   var $MYSQLHOSTNAME;    
   var $MYSQLUSER;        
   var $MYSQLPASSWORD;    
@@ -101,9 +101,9 @@ class SAMSCONFIG
        {
          $string=fgets($finp, 10000);
          $str2=trim(strtok($string,"="));
-//         if(!strcasecmp($str2,"SAMSPATH" ))               $this->MYSQLDATABASE=trim(strtok("="));
-         if(!strcasecmp($str2,"SAMS_DB" ))               $this->MYSQLDATABASE=trim(strtok("="));
-         if(!strcasecmp($str2,"SQUID_DB" ))              $this->SQUIDCTRLDATABASE=trim(strtok("="));
+//         if(!strcasecmp($str2,"SAMSPATH" ))               $this->SAMSDB=trim(strtok("="));
+         if(!strcasecmp($str2,"SAMS_DB" ))               $this->SAMSDB=trim(strtok("="));
+         if(!strcasecmp($str2,"SQUID_DB" ))              $this->LOGDB=trim(strtok("="));
          if(!strcasecmp($str2,"MYSQLHOSTNAME" ))         $this->MYSQLHOSTNAME=trim(strtok("="));
          if(!strcasecmp($str2,"MYSQLUSER" ))   	         $this->MYSQLUSER=trim(strtok("="));
          if(!strcasecmp($str2,"MYSQLPASSWORD" ))         $this->MYSQLPASSWORD=trim(strtok("="));
@@ -136,7 +136,7 @@ class SAMSCONFIG
     }
   function ReadSAMSSettings()
     {
-      $result=mysql_query("SELECT * FROM ".$this->MYSQLDATABASE.".sams");
+      $result=mysql_query("SELECT * FROM ".$this->SAMSDB.".sams");
       $row=mysql_fetch_array($result);
       
       $this->REDIRECTOR=$row['redirector'];
@@ -149,7 +149,7 @@ class SAMSCONFIG
       $this->SQUIDBASE=$row['squidbase'];
       $this->SEPARATOR=$row['separator'];
  
-      $result=mysql_query("SELECT * FROM ".$this->MYSQLDATABASE.".globalsettings");
+      $result=mysql_query("SELECT * FROM ".$this->SAMSDB.".globalsettings");
       $row=mysql_fetch_array($result);
       $this->LANG=$row['lang'];
       $this->ICONSET="icon/$row[iconset]";
@@ -162,7 +162,7 @@ class SAMSCONFIG
       $this->SHOWGRAPH=$row['showgraph'];
       $this->PDFLIB=$row['createpdf'];
 
-      $result=mysql_query("SELECT MAX(id) FROM ".$this->MYSQLDATABASE.".proxyes ");
+      $result=mysql_query("SELECT MAX(id) FROM ".$this->SAMSDB.".proxyes ");
       $row=mysql_fetch_array($result);
       $this->PROXYCOUNT=$row[0]+1;
       
@@ -171,7 +171,7 @@ class SAMSCONFIG
         $this->SWITCHTO=0;
       else  
         $this->SWITCHTO=1;
-      mysql_query("USE ".$this->MYSQLDATABASE);
+      mysql_query("USE ".$this->SAMSDB);
     }
   function SAMSCONFIG()
     {
@@ -179,10 +179,10 @@ class SAMSCONFIG
       $this->ReadSAMSConfFile($configfile);
       
       $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->MYSQLDATABASE)==FALSE)
+      if($link && mysql_select_db($this->SAMSDB)==FALSE)
         echo "Error connection to database<BR>";
       $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->SQUIDCTRLDATABASE)==FALSE)
+      if($link && mysql_select_db($this->LOGDB)==FALSE)
         echo "Error connection to database<BR>";
       $this->ReadSAMSSettings();
     }
@@ -193,10 +193,10 @@ class SAMSCONFIG
       $this->ReadSAMSConfFile($configfile);
       
       $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->MYSQLDATABASE)==FALSE)
+      if($link && mysql_select_db($this->SAMSDB)==FALSE)
         echo "Error connection to database<BR>";
       $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->SQUIDCTRLDATABASE)==FALSE)
+      if($link && mysql_select_db($this->LOGDB)==FALSE)
         echo "Error connection to database<BR>";
       $this->ReadSAMSSettings();
     }
@@ -207,8 +207,8 @@ class SAMSCONFIG
       echo "groupauditor = $this->groupauditor<BR>";
       echo "access = $this->access<BR>";
       echo "domainusername = $this->domainusername<BR>";
-      echo "MYSQLDATABASE = $this->MYSQLDATABASE<BR>";    
-      echo "SQUIDCTRLDATABASE = $this->SQUIDCTRLDATABASE<BR>";    
+      echo "SAMSDB = $this->MYSQLDATABASE<BR>";    
+      echo "LOGDB = $this->SQUIDCTRLDATABASE<BR>";    
       echo "MYSQLHOSTNAME = $this->MYSQLHOSTNAME<BR>";    
       echo "MYSQLUSER = $this->MYSQLUSER<BR>";        
       echo "DELAYPOOL = $this->DELAYPOOL<BR>";
@@ -275,9 +275,9 @@ function ReturnGroupNick($groupname)
 {
     global $SAMSConf;
     
-//  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-//  mysql_select_db($SAMSConf->MYSQLDATABASE);
-  $result=mysql_query("SELECT * FROM ".$SAMSConf->MYSQLDATABASE.".groups WHERE name=\"$groupname\"");
+//  db_connect($SAMSConf->LOGDB) or exit();
+//  mysql_select_db($SAMSConf->SAMSDB);
+  $result=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".groups WHERE name=\"$groupname\"");
   $row=mysql_fetch_array($result);
   return($row['nick']);
 }

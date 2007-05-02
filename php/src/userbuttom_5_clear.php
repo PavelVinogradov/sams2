@@ -17,8 +17,8 @@ function ClearUserTrafficCounter()
   
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("UPDATE squidusers SET size=\"0\",hit=\"0\" WHERE id=\"$userid\" ");
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);

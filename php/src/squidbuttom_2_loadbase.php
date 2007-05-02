@@ -13,8 +13,8 @@ function LoadSquidLog()
    if($SAMSConf->access!=2)     {       exit;     }
   
   copy($_FILES['userfile']['tmp_name'],"data/loadsquid.sql");
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
   $finp=gzopen("data/loadsquid.sql","r");
   while(gzeof($finp)==0)
     {

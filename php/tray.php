@@ -109,7 +109,7 @@ if(isset($_GET["size"]))
 $reloadleftframe=0;
 
 //LoadConfig();
-// db_connect("$MYSQLDATABASE") or exit();
+// db_connect("$SAMSDB") or exit();
 
  if($SAMSConf->PHPVER<5)
    {

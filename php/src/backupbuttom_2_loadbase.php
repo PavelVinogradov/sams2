@@ -26,14 +26,14 @@ function CountUserTraffic()
 
   PageTop("usergroup_48.jpg","$backupbuttom_2_loadbase_CountUserTraffic_1 1.$smon.$syea - $eday.$smon.$syea $backupbuttom_2_loadbase_CountUserTraffic_2");
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
 
   $result=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT sum(size),user,domain FROM cache WHERE date>=\"$sdate\"&&date<=\"$edate\" GROUP BY user,domain");
   $result=mysql_query("SELECT * FROM cache_ ");
   while($row=mysql_fetch_array($result))
        {
-         $result2=mysql_query("UPDATE ".$SAMSConf->MYSQLDATABASE.".squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
+         $result2=mysql_query("UPDATE ".$SAMSConf->SAMSDB.".squidusers SET size=\"$row[0]\" WHERE nick=\"$row[user]\"&&domain=\"$row[domain]\" ");
        }
   UpdateLog("$SAMSConf->adminname","$backupbuttom_2_loadbase_CountUserTraffic_3","01");
 
@@ -52,8 +52,8 @@ function RestoreBackUp()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-   db_connect($SAMSConf->MYSQLDATABASE) or exit();
-   mysql_select_db($SAMSConf->MYSQLDATABASE);
+   db_connect($SAMSConf->SAMSDB) or exit();
+   mysql_select_db($SAMSConf->SAMSDB);
   if(($finp=gzopen("data/loadsamsdb.sql.gz","r"))!=NULL)
     {
        while(gzeof($finp)==0)

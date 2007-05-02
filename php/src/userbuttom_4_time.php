@@ -40,8 +40,8 @@ function URLTimePeriodGB()
   if($SAMSConf->access==0&&$SAMSConf->groupauditor!=$row[group])     {       exit;    }
    
   
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
   
   $count=0;
   for($h=0;$h<24;$h++)
@@ -57,7 +57,7 @@ function URLTimePeriodGB()
     }
   
   $acount=0;
-  $query="SELECT HOUR(time) as hour,MINUTE(time) as minute,SUM(size) as size,SUM(hit) as hit FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou GROUP BY hour,minute";
+  $query="SELECT HOUR(time) as hour,MINUTE(time) as minute,SUM(size) as size,SUM(hit) as hit FROM ".$SAMSConf->LOGDB.".cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou GROUP BY hour,minute";
   $result=mysql_query("$query");
   while($row=mysql_fetch_array($result))
        {
@@ -125,8 +125,8 @@ function URLTimePeriod()
   if($SAMSConf->access==0&&$SAMSConf->groupauditor!=$row[group])     {       exit;    }
    
   
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
   
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$URLTimeForm_userbuttom_4_time_1");
 
@@ -157,11 +157,11 @@ function URLTimePeriod()
   $query="DROP TABLE IF EXIST \"cache_\" ";
   $result=mysql_query("$query");
   
-  $query="CREATE TEMPORARY TABLE ".$SAMSConf->SQUIDCTRLDATABASE.".cache_ SELECT date,time,HOUR(time) as hour,MINUTE(time) as minute,user,domain,trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou ORDER BY hour,minute,url";
+  $query="CREATE TEMPORARY TABLE ".$SAMSConf->LOGDB.".cache_ SELECT date,time,HOUR(time) as hour,MINUTE(time) as minute,user,domain,trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou ORDER BY hour,minute,url";
   $result=mysql_query("$query");
 //  print("query=$query<BR>result = $result");
   
-  $query=" SELECT * FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache_  GROUP BY hour,minute,norm_url";
+  $query=" SELECT * FROM ".$SAMSConf->LOGDB.".cache_  GROUP BY hour,minute,norm_url";
   $result=mysql_query("$query");
   //print("result = $result");
   $cache=0; 
@@ -205,8 +205,8 @@ function URLTimeForm()
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 

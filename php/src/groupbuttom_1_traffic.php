@@ -21,13 +21,13 @@ function GroupTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
 
   $aaa=ReturnGroupNick($groupname);
   
-  $result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum , ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+  $result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->LOGDB.".cachesum , ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
   $count=0;
   while ($row=mysql_fetch_array($result))
        {
@@ -58,9 +58,9 @@ function GroupTrafficPeriod()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SQUIDCTRLDATABASE) or exit();
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->SQUIDCTRLDATABASE);
+  db_connect($SAMSConf->LOGDB) or exit();
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
 
   $aaa=ReturnGroupNick($groupname);
   PageTop("usergroup_48.jpg"," $grptraffic_1 <FONT COLOR=\"BLUE\">$aaa</FONT><BR>$groupbuttom_1_traffic_GroupTrafficPeriod_1");
@@ -95,8 +95,8 @@ function GroupTrafficPeriod()
     }   
   print("<TH>$groupbuttom_1_traffic_GroupTrafficPeriod_4");
 
- //$result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum , ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
- $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, cachesum.domain, tu.nick FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cachesum, ".$SAMSConf->MYSQLDATABASE.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+ //$result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->LOGDB.".cachesum , ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+ $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, cachesum.domain, tu.nick FROM ".$SAMSConf->LOGDB.".cachesum, ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
   while ($row=mysql_fetch_array($result))
        {
          print("<TR>");
@@ -156,8 +156,8 @@ function GroupTrafficForm()
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
 

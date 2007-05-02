@@ -90,8 +90,8 @@ function AddUsersFromLDAPForm()
     
    PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
 
-  db_connect($SAMSConf->MYSQLDATABASE) or exit();
-  mysql_select_db($SAMSConf->MYSQLDATABASE);
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
 
   $server = "127.0.0.1"; // имя контролера домена
   $ldapuser = "admin";  // существующий пользователь (если запрещен анонимный  просмотр)
