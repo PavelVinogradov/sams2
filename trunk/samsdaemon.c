@@ -960,7 +960,8 @@ int ChangeSQUIDconf(MYSQL *conn)
                        if(RSAMS==1||RGUARD==1)
 		         {
                            //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
-			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
+//			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }
                    else
@@ -1851,10 +1852,12 @@ int MakeACLFiles(MYSQL *conn)
                 sprintf(&buf[0],"%s.out",&shablonname[0]);
 	        if(RecodeFile(&str[0],&shablonname[0],&buf[0])<10)
 		   {
+		      //printf("system(%s)\n",&str[0]);
 		      system(&str[0]);
 		   }
 		else   
 		   {
+		      //printf("system(%s)\n",&str[0]);
 		      system(&str[0]);
                       sprintf(&str[0],"mv %s.out %s",&shablonname[0],&shablonname[0]);
 		      system(&str[0]);
@@ -1957,7 +1960,7 @@ int MakeACLFiles(MYSQL *conn)
       /* END    создаем списки отключенных пользователей NCSA, NTLM     */
     }
 
-
+/*
   if(NTLM==1&&RECODE==1)
     {
        sprintf(&buf[0],"disable.out");
@@ -1971,7 +1974,7 @@ int MakeACLFiles(MYSQL *conn)
 	 }
 
     }      
-
+*/
  return(0);
 }
 
