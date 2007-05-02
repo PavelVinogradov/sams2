@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -131,22 +131,6 @@ function RedirListForm()
   print("<INPUT TYPE=\"SUBMIT\" value=\"$redirlisttray_RedirListForm_3\">\n");
   print("</FORM>\n");
 
-  
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$filename\" ");
-  $row=mysql_fetch_array($result);
-  if($row['type']=="$id")
-     {
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-       print("<A HREF=\"doc/localhost.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
-       print("<TD>$redirlisttray_RedirListForm_4");
-       print(" $redirlisttray_RedirListForm_5");
-       print(" <BR>$redirlisttray_RedirListForm_6");
-       print(" <BR>$redirlisttray_RedirListForm_7");
-       print(" <BR>$redirlisttray_RedirListForm_8");
-       print(" <BR>$redirlisttray_RedirListForm_9");
-       printf("</TABLE>");
-     }
-
 }
 
 
@@ -212,25 +196,8 @@ function RedirListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$redirlisttray_RedirListTray_1.  <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
+      ExecuteFunctions("./src", "redirbuttom","1");
 
-      $filelist=`ls src/redirbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");
