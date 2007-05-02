@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <mysql.h>
 #include <math.h>
+//#include <tgmath.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -498,8 +499,8 @@ char *str2lower(char *string)
 
 long txt2digit(char *str)
 {
-  int len,i,base=0;
-  double value;
+  int len,i,j,base=0;
+  double value,pow;
   value=0;
   len=strlen(str);
   for(i=0;i<len;i++)
@@ -519,7 +520,13 @@ long txt2digit(char *str)
                 case '9':               base=9; break;
                 case '0':               base=0; break;
               }
-            value+=base*pow(10,len-i-1);
+	    pow=1;	
+            for(j=0;j<len-i-1;j++)
+	      {
+	        pow=pow*10; 
+	      }
+	    value+=base*pow;
+//	    value+=base*pow(10,len-i-1);
          }
      }
   return(value);
