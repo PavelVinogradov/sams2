@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -15,7 +15,7 @@ function Monitor_1()
   printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_1.php'};\n");
   printf("setTimeout('Refr();',5000);\n");
   printf("</SCRIPT>\n");
-  db_connect($SAMSConf->LOGDB) or exit();
+  db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
 
   $result=mysql_query("SELECT * FROM squidusers ORDER BY nick");
@@ -61,7 +61,7 @@ function Monitor_1()
 }
 
 
-function monitorbuttom_1($access)
+function monitorbuttom_1()
 {
   global $SAMSConf;
   
