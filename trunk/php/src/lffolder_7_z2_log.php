@@ -1,11 +1,11 @@
-<?
+<?php
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
- function lffolder_7_z2_log($access,$sams)
+ function lffolder_7_z2_log()
  {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";

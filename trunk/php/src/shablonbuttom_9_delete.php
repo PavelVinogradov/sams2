@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -35,13 +35,14 @@ function DeleteShablon()
 }
 
 
-function shablonbuttom_9_delete($access,$id)
+function shablonbuttom_9_delete()
 {
   global $SAMSConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  if(isset($_GET["id"])) $id=$_GET["id"];
   $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
   $row=mysql_fetch_array($result);
 
