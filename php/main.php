@@ -1,4 +1,4 @@
-<?
+<?php
 /*      SAMS (Squid Account Management System
  *      Author: Dmitry Chemerik chemerik@mail.ru
  *
@@ -19,15 +19,18 @@
 
 
 
+function BlankPage()
+{
 
+}
  
 class DATE
 {
   var $sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou,$sdate,$edate;
   function DATE($mas, $sdate, $edate)
     {
-       if(strlen($sdate)==0&&strlen($edate)==0)
-         list($this->sday,$this->smon,$this->syea,$this->shou,$this->eday,$this->emon,$this->eyea,$this->ehou)=$mas;
+       if(strlen($sdate)<=1&&strlen($edate)<=1)
+		list($this->sday,$this->smon,$this->syea,$this->shou,$this->eday,$this->emon,$this->eyea,$this->ehou)=$mas;
        else
          {
            list($this->sday,$this->smon,$this->syea,$this->shou,$this->eday,$this->emon,$this->eyea,$this->ehou)=$mas;
@@ -61,7 +64,7 @@ class DATE
     }
 }
  
-
+global $DATE;
 global $SAMSConf;
 require('./mysqltools.php');
 //LoadConfig();
@@ -87,6 +90,25 @@ require('./src/dbtray.php');
 require('./src/filelisttray.php');
 
 /******************************/
+$sday=0;
+$smon=0;
+$syea=0;
+$shou=0;
+$eday=0;
+$emon=0;
+$eyea=0;
+$ehou=0;
+$sdate=0; 
+$edate=0;
+$user=0;
+$function="";
+$filename=0;
+$username=0;
+$usergroup=0;
+$usernick=0;
+$userid=0;
+$userid=0;
+$gb=0;
 
 if(isset($_GET["SDay"])) $sday=$_GET["SDay"];
 if(isset($_GET["EDay"])) $eday=$_GET["EDay"];
@@ -106,7 +128,6 @@ if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];
 if(isset($_GET["userid"])) $userid=$_GET["userid"];
 if(isset($_GET["id"])) $userid=$_GET["id"];
-if(isset($_GET["function"])) $function=$_GET["function"];
 if(isset($_GET["gb"])) $gb=$_GET["gb"];
 
 if(isset($_GET["sdate"])) $sdate=$_GET["sdate"];
@@ -120,11 +141,16 @@ if($ehou==0)
 if($shou==0)
    $shou=0;
 
-$DATE=new DATE(Array("$sday","$smon","$syea","$shou","$eday","$emon","$eyea","$ehou"), $sdate, $edate);
-
-//echo "$sdate:$edate $shou-$ehou<BR> $DATE->shou-$DATE->ehou<BR>";
-
+$DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
+
+
+//if(isset($_GET["setup"])) $setup=$_GET["setup"];
+//if($setup=="setup")
+//  {
+//	require("src/createdb.php");
+//	$function();
+//  }
 
 $lang="./lang/lang.$SAMSConf->LANG";
 require($lang);
@@ -136,13 +162,14 @@ if($function=="setcookie")
      $time=time();
      $result=mysql_query("SELECT * FROM sams ");
      $row=mysql_fetch_array($result);
-     $autherrorc=$row[autherrorc];
-     $autherrort=$row[autherrort];
+     $autherrorc=$row['autherrorc'];
+     $autherrort=$row['autherrort'];
      if($autherrorc==0||$time>$autherrort+60)
        {  
          if($time>$autherrort+60)
            {  
              $newpasswd=crypt($userid,mysql_result(mysql_query("SELECT pass FROM passwd WHERE user='$username' "),0));
+
              setcookie("user","$username");
              setcookie("passwd","$newpasswd");
              $SAMSConf->adminname=UserAuthenticate($username,$newpasswd);
@@ -267,18 +294,30 @@ if($function=="logoff")
      setcookie("gauditor","");
      $function="setcookie";
   }   
- 
+
+	$cookie_user="";
+	$cookie_passwd="";
+	$cookie_domainuser="";
+	$cookie_gauditor="";
+	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
+	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
+	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+
  if($SAMSConf->PHPVER<5)
    {
-     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS[user],$HTTP_COOKIE_VARS[passwd]);
-     $SAMSConf->domainusername=$HTTP_COOKIE_VARS[domainuser];
-     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS[gauditor];
+//     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
+//     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
+//     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
+     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+     $SAMSConf->domainusername=$cookie_domainuser;
+     $SAMSConf->groupauditor=$cookie_gauditor;
    }  
  else
    {
-     $SAMSConf->adminname=UserAuthenticate($_COOKIE[user],$_COOKIE[passwd]);
-     $SAMSConf->domainusername=$_COOKIE[domainuser];
-     $SAMSConf->groupauditor=$_COOKIE[gauditor];
+     $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
+     $SAMSConf->domainusername=$_COOKIE['domainuser'];
+     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
    }  
  
  $SAMSConf->access=UserAccess();
@@ -302,13 +341,13 @@ if(stristr($filename,".php" )==FALSE)
   }
 
 /*
-printf("language=$LANG<BR>");
+printf("language=$SAMSConf->LANG<BR>");
 printf("show=$user<BR>");
 printf("function=$function<BR>");
 printf("filename=$filename<BR>");
 printf("id=$id<BR>");
 print("domainusername=$domainusername groupauditor=$groupauditor<BR>");
-print("access=$access<BR>");
+print("access=$SAMSConf->access<BR>");
 
 printf("username=$username<BR>");
 printf("passwd=$userid<BR>");
