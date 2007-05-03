@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -28,7 +28,7 @@ function ClearUserTrafficCounter()
 
 
 
-function userbuttom_5_clear($access,$userid)
+function userbuttom_5_clear($userid)
 {
   global $SAMSConf;
   

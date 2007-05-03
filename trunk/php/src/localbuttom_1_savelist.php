@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -32,7 +32,7 @@ function SaveLocalList()
 
 }
 
-function localbuttom_1_savelist($access)
+function localbuttom_1_savelist()
 {
   global $SAMSConf;
   

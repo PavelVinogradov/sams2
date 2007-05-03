@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -13,6 +13,8 @@ function ShowAllLog()
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
@@ -110,7 +112,7 @@ function ShowAllLogForm()
        print("</FORM>\n");
 }
 
-function logbuttom_1($access)
+function logbuttom_1()
 {
   global $SAMSConf;
   

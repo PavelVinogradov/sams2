@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,6 +8,7 @@
 function HelpSquidForm()
 {
   global $SAMSConf;
+  $files=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -23,15 +24,25 @@ function HelpSquidForm()
   if($SAMSConf->access==2)
     {
       $squidlogfiles=0;
-      //print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">$squidtray_HelpSquidForm_3 ");
 
-      $filelist=`ls backup/squidlog*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $filename=str_replace("backup/","",$filename);
-      if(strlen($filename)>2)
+    $scount=0;
+    if ($handle2 = opendir("./backup"))
         {
-          if($squidlogfiles==0)
+	  while (false !== ($file = readdir($handle2)))
+            {
+		if($file!="."&&$file!=".."&&$file!=".svn")
+		  {
+			       if(strlen($file)>0)
+			         {
+					$script[$scount]=$file;
+					$scount++;
+				}  
+
+		  }
+            }
+        }
+
+          if($scount>0)
 	      {
                  print("<H3>$squidtray_HelpSquidForm_3 </H3>");
                  print("<P><TABLE border=0 WIDTH=\"60%\">\n");
@@ -39,36 +50,16 @@ function HelpSquidForm()
                  print("<TH >Filename");
                  print("<TH >Size");
              }
-	  $squidlogfiles++;
-	  $filesize=filesize("backup/$filename");
-          print("<TR>\n");
-          print("<TD WIDTH=\"10%\" ALIGN=\"CENTER\">$squidlogfiles ");
-          print("<TD WIDTH=\"70%\" ALIGN=\"LEFT\">");
-          print("<B><A HREF=\"backup/$filename\">$filename</A></B>\n");
-          print("<TD WIDTH=\"20%\" ALIGN=\"CENTER\"> $filesize");
-	}  
-      $len=$len+strlen($filename)+1;
-      
-      while($len<$filelen)
-        {
-           $filename=strtok(chr(0x0a));
-           $filename=str_replace("backup/","",$filename);
-           if(strlen($filename)>2)
-             {
-	       $squidlogfiles++;
-               $filesize=filesize("backup/$filename");
-               print("<TR>\n");
-               print("<TD WIDTH=\"10%\" ALIGN=\"CENTER\">$squidlogfiles ");
-               print("<TD WIDTH=\"70%\" ALIGN=\"LEFT\">");
-               print("<B><A HREF=\"backup/$filename\">$filename</A></B>\n");
-               print("<TD WIDTH=\"20%\" ALIGN=\"CENTER\"> $filesize");
-	     }  
-           $len=$len+strlen($filename)+1;
-        }
-       print("</TABLE>");
-     }
-
-
+	for($i=0;$i<$scount;$i++)
+	    {
+		$filesize=filesize("./backup/$script[$i]");
+		print("<TR>\n");
+		print("<TD WIDTH=\"10%\" ALIGN=\"CENTER\">$i ");
+		print("<TD WIDTH=\"70%\" ALIGN=\"LEFT\">");
+		print("<B><A HREF=\"backup/$script[$i]\">$script[$i]</A></B>\n");
+		print("<TD WIDTH=\"20%\" ALIGN=\"CENTER\"> $filesize");
+            }
+    }
 }
 
 
@@ -84,8 +75,6 @@ function SquidTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpsquidform\";\n");
       print("</SCRIPT> \n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
   if($SAMSConf->access==2)
     {
       print("<TABLE border=0 WIDTH=\"100%\">\n");
@@ -93,25 +82,8 @@ function SquidTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
 
+      ExecuteFunctions("./src", "squidbuttom","1");
 
-      $filelist=`ls src/squidbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -31,8 +31,6 @@ function DBTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpdbform\";\n");
       print("</SCRIPT> \n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
   if($SAMSConf->access==2)
     {
       print("<TABLE border=0 WIDTH=\"100%\">\n");
@@ -40,25 +38,8 @@ function DBTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B><FONT SIZE=\"+1\">MySQL</FONT></B>\n");
 
+      ExecuteFunctions("./src", "dbbuttom","1");
 
-      $filelist=`ls src/dbbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

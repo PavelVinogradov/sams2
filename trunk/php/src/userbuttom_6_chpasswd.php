@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -93,7 +93,7 @@ function ChUserPasswdForm()
 }
 
 
-function userbuttom_6_chpasswd($access,$userid)
+function userbuttom_6_chpasswd($userid)
 {
   global $SAMSConf;
   

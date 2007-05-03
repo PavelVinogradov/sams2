@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -13,14 +13,17 @@ function TestPDC()
   require($lang);
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   print("<H1>TEST PDC</H1>");
+
+  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+  $test=exec("getwbinfousers $e");
   
   if($auth=="ntlm")
     {
-      $userlist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
+//      exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
       $finp=fopen("data/userlist","r");
       if($finp==FALSE)
         {
-          echo "can't open sams config file data/userlist<BR>";
+          echo "can't open file data/userlist<BR>";
           exit(0);
         }
       while(feof($finp)==0)  
@@ -64,6 +67,12 @@ function SamsReConfig()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $at="";
+  $nameencode="";
+  $parser_on="";
+  $checkdns="";
+  $parser="";
+  $parser_time="";
   if(isset($_GET["delaypool"])) $delaypool=$_GET["delaypool"];
   if(isset($_GET["redirect_to"])) $redirect_to=$_GET["redirect_to"];
   if(isset($_GET["denied_to"])) $denied_to=$_GET["denied_to"];
@@ -127,6 +136,7 @@ function SamsReConfig()
 function SamsReConfigForm()
 {
   global $SAMSConf;
+  $files=array();
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -231,24 +241,21 @@ function SamsReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"defaultdomain\" value=\"$row[defaultdomain]\">\n");
             
   $scount=0;
-  $filelist=`ls src/script`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  if(strlen($filename)>0)
-    {
-      $script[$scount]=$filename;
-      $scount++;
-    }  
-  while($len<$filelen)
-    {
-       $filename=strtok(chr(0x0a));
-       if(strlen($filename)>0)
-         {
-           $script[$scount]=$filename;
-           $scount++;
-    }  
-       $len=$len+strlen($filename)+1;
-    }
+    if ($handle2 = opendir("./src/script"))
+        {
+	  while (false !== ($file = readdir($handle2)))
+            {
+		if($file!="."&&$file!=".."&&$file!=".svn")
+		  {
+			       if(strlen($file)>0)
+			         {
+					$script[$scount]=$file;
+					$scount++;
+				}  
+
+		  }
+            }
+        }
   print("<TR>\n");
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_56</B>\n");
   print("<TD><SELECT NAME=\"udscript\" ID=\"udscript\" >\n");
@@ -280,6 +287,7 @@ function SamsReConfigForm()
   $NTLMCHECKED="";
   $NCSACHECKED="";
   $IPCHECKED="";
+  $ADLDCHECKED="";
   $DOMAINDISABLE="DISABLED";
   if($row['auth']=="ip")
 	        		$IPCHECKED="CHECKED";
@@ -363,15 +371,15 @@ function SamsReConfigForm()
   print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
   
   print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
-  if(strpos($row[separator],"+")!=false)
+  if(strpos($row['separator'],"+")!=false)
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED $DOMAINDISABLE> <B>+</B>\n");
   else
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" $DOMAINDISABLE> <B>+</B>\n");
-  if(strpos($row[separator],chr(92) )!=false)
+  if(strpos($row['separator'],chr(92) )!=false)
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" CHECKED $DOMAINDISABLE> <B>\\</B> \n");
   else
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" $DOMAINDISABLE> <B>\\</B> \n");
-  if(strpos($row[separator],chr(64) )!=false)
+  if(strpos($row['separator'],chr(64) )!=false)
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\" CHECKED $DOMAINDISABLE> <B>@</B> \n");
   else
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"  $DOMAINDISABLE> <B>@</B> \n");

@@ -1,11 +1,11 @@
-<?
+<?php
 /*
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
 
- function lffolder_4_z2_url($access,$sams)
+ function lffolder_4_z2_url()
  {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-      print("   context = insFld($sams, gFld(\"$lframe_sams_FolderContextDenied_1\", \"main.php?show=exe&function=addcontextlistform\", \"stop.gif\"))\n");
+      print("   context = insFld(sams, gFld(\"$lframe_sams_FolderContextDenied_1\", \"main.php?show=exe&function=addcontextlistform\", \"stop.gif\"))\n");
       $result=mysql_query("SELECT * FROM redirect WHERE type=\"regex\"");
       while($row=mysql_fetch_array($result))
          {

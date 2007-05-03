@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -50,7 +50,7 @@ function LoadSquidLogForm()
 
 
 
-function squidbuttom_2_loadbase($access)
+function squidbuttom_2_loadbase()
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -41,7 +41,7 @@ function ReconfigSquid()
             print("$squidbuttom_0_reconfig_ReconfigSquid__2<BR>\n");
             for($i=0;$i<10;$i++)
 	        {
-                  $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"reconfig\"");
+                  $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"reconfig\" ");
                   $row=mysql_fetch_array($result);
 	          if($row[0]==0)
                     {
@@ -96,7 +96,7 @@ function ReconfigSquidForm()
 }
 
 
-function squidbuttom_0_reconfig($access)
+function squidbuttom_0_reconfig()
 {
   global $SAMSConf;
   
