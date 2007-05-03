@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -116,7 +116,7 @@ function UserTrafficPeriod()
       print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_4");
     }   
   print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_5");
-
+  $size=0;
   $result=mysql_query("SELECT sum(size),date,user,domain,sum(hit) FROM cachesum WHERE user=\"$username\"&&date>=\"$sdate\"&&date<=\"$edate\"&&domain=\"$userdomain\" GROUP BY date");
   while($row=mysql_fetch_array($result))
        {
@@ -188,7 +188,7 @@ function UserTrafficForm()
 }
 
 
-function userbuttom_2_traffic($access,$userid)
+function userbuttom_2_traffic($userid)
 {
   global $SAMSConf;
   

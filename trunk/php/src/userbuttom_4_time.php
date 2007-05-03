@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -157,21 +157,21 @@ function URLTimePeriod()
   $query="DROP TABLE IF EXIST \"cache_\" ";
   $result=mysql_query("$query");
   
-  $query="CREATE TEMPORARY TABLE ".$SAMSConf->LOGDB.".cache_ SELECT date,time,HOUR(time) as hour,MINUTE(time) as minute,user,domain,trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url FROM ".$SAMSConf->SQUIDCTRLDATABASE.".cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou ORDER BY hour,minute,url";
+  $query="CREATE TEMPORARY TABLE $SAMSConf->LOGDB.cache_ SELECT date,time,HOUR(time) as hour,MINUTE(time) as minute,user,domain,trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url FROM $SAMSConf->LOGDB.cache WHERE cache.user=\"$username\"&&cache.domain=\"$userdomain\"&&cache.date=\"$sdate\"&&HOUR(time)>=$shou&&HOUR(time)<$ehou ORDER BY hour,minute,url";
   $result=mysql_query("$query");
 //  print("query=$query<BR>result = $result");
   
-  $query=" SELECT * FROM ".$SAMSConf->LOGDB.".cache_  GROUP BY hour,minute,norm_url";
+  $query=" SELECT * FROM $SAMSConf->LOGDB.cache_  GROUP BY hour,minute,norm_url";
   $result=mysql_query("$query");
   //print("result = $result");
   $cache=0; 
-  
+  $counter=0;  
   while($row=mysql_fetch_array($result))
        {
   	 print("<TR>");
          LTableCell($count,8);
-         LTableCell($row[hour],10);
-         LTableCell($row[minute],10);
+         LTableCell($row['hour'],10);
+         LTableCell($row['minute'],10);
          if($SAMSConf->access==2)
            TableCell("<A TARGET=BLANK  HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$sday&SMon=$smon&EMon=$smon&SYea=$syea&EYea=$syea\" target=\"blank\"><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
          if($SAMSConf->access==1)
@@ -180,8 +180,8 @@ function URLTimePeriod()
            TableCell("<A HREF=\"http://$row[norm_url]\" target=\"blank\">$row[norm_url]</A>\n");
 
          $count=$count+1;
-         $counter=$counter+$row['url_size'];
-         $cache=$cache+$row['hit_size'];
+         //$counter=$counter+$row['url_size'];
+         //$cache=$cache+$row['hit_size'];
        }
          print("<TR><TD>");
          $aaa=FormattedString($cache);
@@ -232,7 +232,7 @@ function URLTimeForm()
 
 
 
-function userbuttom_4_time($access,$userid)
+function userbuttom_4_time($userid)
 {
   global $SAMSConf;
   

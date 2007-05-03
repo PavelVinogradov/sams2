@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -109,8 +109,6 @@ function FileSystemUsage()
 
 function SysInfo()
 {
-   global $SAMSConf;
-   
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
@@ -211,26 +209,7 @@ function WebConfigTray()
   
   print("<B>$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1</B>\n");
 
-  $filelist=`ls src/webconfigbuttom*`;
-  
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $funcname=str_replace("src/","",$filename);
-  $funcname=str_replace(".php","",$funcname);
-  //print(" $filename  $funcname ");
-  require($filename);
-  $funcname($SAMSConf->access,$row[name]);
-  $len=$len+strlen($filename)+1;
-  while($len<$filelen)
-    {
- 	   $filename=strtok(chr(0x0a));
-       $funcname=str_replace("src/","",$filename);
-       $funcname=str_replace(".php","",$funcname);
-       //print(" $filename  $funcname ");
-       require($filename);
-       $funcname($SAMSConf->access,$row[name]);
-       $len=$len+strlen($filename)+1;
-    }
+      ExecuteFunctions("./src", "webconfigbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");

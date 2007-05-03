@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -12,7 +12,7 @@ function UserFileSizePeriod()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
+  $usergroup="";
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
@@ -100,16 +100,15 @@ function UserFileSizeForm()
 
 
 
-function userbuttom_3_file($access,$userid)
+function userbuttom_3_file($userid)
 {
   global $SAMSConf;
-  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+//echo "access=$SAMSConf->access";
 
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
-
    if($SAMSConf->access==2)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
