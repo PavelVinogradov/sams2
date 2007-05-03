@@ -16,6 +16,9 @@ function AddUsersFromLDAP()
 
     $access=UserAccess();
    if($access!=2)     {       exit;     }
+
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
  
   if(isset($_GET["username"])) $userlist=$_GET["username"];
   if(isset($_GET["groupname"])) $usergroup=$_GET["groupname"];
@@ -90,9 +93,6 @@ function AddUsersFromLDAPForm()
     
    PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-
   $server = "127.0.0.1"; // имя контролера домена
   $ldapuser = "admin";  // существующий пользователь (если запрещен анонимный  просмотр)
   $ldapuserpassword = "ldappasswd";
@@ -111,7 +111,7 @@ function AddUsersFromLDAPForm()
        // Search surname entry
        $sr=ldap_search($ds,"dc=biont, dc=ru", "uid=*");  
        echo "Search result is ".$sr."<p>";
- echo "Number of entires returned is ".ldap_count_entries($ds,$sr)."<p>";
+       echo "Number of entires returned is ".ldap_count_entries($ds,$sr)."<p>";
 
     echo "Getting entries ...<p>";
     $info = ldap_get_entries($ds, $sr);
