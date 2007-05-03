@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -17,7 +17,10 @@ function GetDomainUsersList()
   mysql_select_db($SAMSConf->SAMSDB);
 
   if($SAMSConf->AUTH=="ntlm")
-      $userslist=`$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist`;
+     {
+	$e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+	$test=exec("getwbinfousers $e");
+     }
   else
       {
 #################   
@@ -35,14 +38,14 @@ function GetDomainUsersList()
               $info = $adldap->all_users(true);
             $groupinfo=$adldap->all_groups(true);
           }
-        `rm -f data/userlist`;
+	unlink("./data/userlist");
         for($i=1;$i<$info[0]*2+1;$i++)
              {
 	       $user=$info[$i];
                $i++;
 	       $username=$info[$i];
-               //echo "<BR>$username";
-               `echo $user >> data/userlist`;
+		$e = escapeshellcmd("$user");
+		$test=exec("updateuserlist $e");
 	     }
 
 #################      
@@ -57,10 +60,20 @@ function GetDomainUsersList()
        $string=fgets($finp,10000);
        if($SAMSConf->NTLMDOMAIN=="Y")
 	 {
-	   $domain=trim(strtok($string,"+"));
-           $user=trim(strtok("+"));
-           $domainlen=strlen($domain);
-           $userlen=strlen($user);
+		if(strstr($string,"+")!=NULL)
+		  {
+			$domain=trim(strtok($string,"+"));
+           		$user=trim(strtok("+"));
+           		$domainlen=strlen($domain);
+           		$userlen=strlen($user);
+		  }
+		else
+		  {
+			$domain=trim(strtok($string,"\\"));
+           		$user=trim(strtok("\\"));
+           		$domainlen=strlen($domain);
+           		$userlen=strlen($user);
+		  }
            if($domainlen==0||$userlen==0)
              {
 	       $user=$domain;
@@ -70,7 +83,7 @@ function GetDomainUsersList()
          }
       else
 	 {
-           $domain="$SAMSConf->DEFAULTDOMAIN";
+           $domain="$SAMSConf->DEFAULTDOMAIN==";
            $user=trim($string);
            //$user=strtolower($user);
          }
@@ -162,6 +175,7 @@ function AddUser()
      $enabled=1;
   else
      $enabled=-1;
+
   //$result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\" ");
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {

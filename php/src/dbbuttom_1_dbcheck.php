@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -10,6 +10,7 @@ function dbrepair()
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+  $tablecount=0;
   if(isset($_GET["tablecount"])) $tablecount=$_GET["tablecount"];
   if(isset($_GET["table"])) $table=$_GET["table"];
 
@@ -39,6 +40,7 @@ function dbcheck()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
+  $tablecount=0;
   $squidctrlerrorcount=0;
   $squidlogerrorcount=0;
   PageTop("dbcheck_48.jpg","$dbbuttom_1_dbcheck_dbcheck_1");
@@ -70,7 +72,6 @@ function dbcheck()
 
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
-  //$result=mysql_query("check table cache");
 
   print("<P><TABLE WIDTH=\"90%\" BORDER=0> ");
   $result=mysql_query("show tables");
@@ -125,7 +126,7 @@ function dbcheck()
 }
 
 
-function dbbuttom_1_dbcheck($access)
+function dbbuttom_1_dbcheck()
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,7 +8,7 @@
 function UpdateUser()
 {
   global $SAMSConf;
-
+  $gauditor="";
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
   if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];
@@ -219,7 +219,7 @@ function UpdateUserForm()
 
 
 
-function userbuttom_1_prop($access,$userid)
+function userbuttom_1_prop($userid)
 {
   global $SAMSConf;
   

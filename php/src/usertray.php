@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -28,9 +28,31 @@ function NotUsersTreeUserAuth()
   if($SAMSConf->AUTH=="ntlm")
     {
       
-      $aaa=`$SAMSConf->WBINFOPATH/wbinfo -a "$userdomain"%"$password"`;
-//echo "$SAMSConf->WBINFOPATH/wbinfo -a \"$userdomain\"%\"$password\"<P>";
+//  $e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+//  $aaa=exec("testwbinfopasswd $e");
+echo "<h1>$aaa</h1>";
+exit(0);
       $aflag=0;
+
+      $finp=fopen("data/passwd","r");
+      if($finp==FALSE)
+        {
+          echo "can't open file data/passwd<BR>";
+          exit(0);
+        }
+      while(feof($finp)==0)  
+         {
+           $string=fgets($finp,10000);
+           print("$string<BR>\n");
+           if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
+             { 
+                $aflag=1;
+	     }  
+
+         }
+      fclose($finp);
+
+/*
       $str1=strtok($aaa,"\n");
       if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
         { 
@@ -44,7 +66,9 @@ function NotUsersTreeUserAuth()
               { 
                 $aflag=1;
 	      }  
+
 	 }
+*/
       if($aflag>0)
         {
            if($SAMSConf->NTLMDOMAIN=="Y")
@@ -111,16 +135,15 @@ function UserAuth()
   $SAMSConf->grauditor=0;
   $SAMSConf->domainusername="";
   $aflag=0;
+
   if($SAMSConf->AUTH=="ntlm")
     {
-      
       if($SAMSConf->NTLMDOMAIN=="Y")
         {
            $mas=array();
            $mas=$SAMSConf->SEPARATOR;
-           //$slashe=chr(92);
            $slashe="\\";
-//echo "SEPARATOR=\"$SAMSConf->SEPARATOR\" slashe=$slashe<P>";      
+
            for($j=strlen($SAMSConf->SEPARATOR)-1;$j>0;$j--)
             {
 	      if($mas[$j]==$slashe)
@@ -133,78 +156,76 @@ function UserAuth()
 		}  
               $userdomain="$domain$separator$user";
 
-//echo "$SAMSConf->WBINFOPATH/wbinfo -a \"$userdomain\"%\"$password\"<P>";
-              $aaa=`$SAMSConf->WBINFOPATH/wbinfo -a "$userdomain"%"$password"`;
-              //$aflag=0;
-              $str1=strtok($aaa,"\n");
-              if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-                { 
-                  $aflag=1;
-	        }  
-              for($i=0;$i<10;$i++)
-                {
-                  $str1=strtok("\n");
-//echo "$str1<BR>";
-		  if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-                    { 
-                      $aflag=1;
-	            }  
-	        }
-              if($aflag>0)
-                {
-                   $SAMSConf->domainusername=$user;
-	           $i=0;
-                }
+	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+	$aaa=exec("testwbinfopasswd $e");
+        	$aflag=0;
+		$finp=fopen("data/passwd","r");
+		if($finp==FALSE)
+	  	  {
+			echo "can't open file data/passwd<BR>";
+			exit(0);
+	  	  }
+		while(feof($finp)==0)  
+         	  {
+			$string=fgets($finp,10000);
+			print("$string<BR>\n");
+			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
+		  	  { 
+				$aflag=1;
+				$SAMSConf->domainusername=$user;
+		  	  }  
+         	  }
+		fclose($finp);
 	    
 	    } 
            if($aflag==0)
 	     {
 	       $userdomain="$user";
-               $aaa=`$SAMSConf->WBINFOPATH/wbinfo -a "$userdomain"%"$password"`;
-//echo "$SAMSConf->WBINFOPATH/wbinfo -a \"$userdomain\"%\"$password\"<P>";
-               $aflag=0;
-               $str1=strtok($aaa,"\n");
-               if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-                 { 
-                   $aflag=1;
-	         }  
-               for($i=0;$i<10;$i++)
-                 {
-                    $str1=strtok("\n");
-//echo "$str1<BR>";
-                    if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-                      { 
-                        $aflag=1;
-	              }  
-	         }
-               if($aflag>0)
-                 {
-                   $SAMSConf->domainusername=$user;
-                 }
+	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+	$aaa=exec("testwbinfopasswd $e");
+        	$aflag=0;
+		$finp=fopen("data/passwd","r");
+		if($finp==FALSE)
+	  	  {
+			echo "can't open file data/passwd<BR>";
+			exit(0);
+	  	  }
+		while(feof($finp)==0)  
+         	  {
+			$string=fgets($finp,10000);
+			print("$string<BR>\n");
+			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
+		  	  { 
+				$aflag=1;
+				$SAMSConf->domainusername=$user;
+		  	  }  
+         	  }
+		fclose($finp);
 	     }
          }
        else
          {
            $userdomain="$user";
-           $aaa=`$SAMSConf->WBINFOPATH/wbinfo -a "$userdomain"%"$password"`;
-           $aflag=0;
-           $str1=strtok($aaa,"\n");
-           if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-             { 
-               $aflag=1;
-	     }  
-           for($i=0;$i<10;$i++)
-             {
-                $str1=strtok("\n");
-                if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-                  { 
-                    $aflag=1;
-	          }  
-	     }
-           if($aflag>0)
-             {
-               $SAMSConf->domainusername=$user;
-             }
+	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+	$aaa=exec("testwbinfopasswd $e");
+        	$aflag=0;
+		$finp=fopen("data/passwd","r");
+		if($finp==FALSE)
+	  	  {
+			echo "can't open file data/passwd<BR>";
+			exit(0);
+	  	  }
+		while(feof($finp)==0)  
+         	  {
+			$string=fgets($finp,10000);
+			print("$string<BR>\n");
+			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
+		  	  { 
+				$aflag=1;
+				$SAMSConf->domainusername=$user;
+		  	  }  
+         	  }
+		fclose($finp);
           }
 	 
        db_connect($SAMSConf->SAMSDB) or exit();
@@ -462,25 +483,7 @@ function UserTray($userid,$usergroup)
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
   print("<B>$usertray_UserTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[nick]</FONT></B>\n");
 
-
-  $filelist=`ls src/userbuttom*`;
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $funcname=str_replace("src/","",$filename);
-  $funcname=str_replace(".php","",$funcname);
-  require($filename);
-  $funcname($SAMSConf->access,$row[id]);
-  $len=$len+strlen($filename)+1;
-  while($len<$filelen)
-    {
-       //print("$len = $filelen");
-	   $filename=strtok(chr(0x0a));
-       $funcname=str_replace("src/","",$filename);
-       $funcname=str_replace(".php","",$funcname);
-       require($filename);
-       $funcname($SAMSConf->access,$row[id]);
-       $len=$len+strlen($filename)+1;
-    }
+      ExecuteFunctions("./src", "userbuttom", $row['id']);
 
   print("<TD>\n");
   print("</TABLE>\n");

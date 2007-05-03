@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -72,7 +72,7 @@ $all=$row[0];
 if($all==0) $all=1;
 $percent=$all/100;
   
-  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM ".$SAMSConf->SAMSDB.".squidusers,".$SAMSConf->MYSQLDATABASE.".groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
   $count=0;
   while($row=mysql_fetch_array($result))
     {
@@ -137,11 +137,13 @@ print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
 print("<TH>%");
 
 //$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent from cache_ order by cache_.user_size desc");
-$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain from cache_  LEFT JOIN ".$SAMSConf->SAMSDB.".squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
+$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain from cache_  LEFT JOIN $SAMSConf->SAMSDB.squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
 $ap=0;
 $count=1;
-while($row=mysql_fetch_array($result))
+
+for($count=1;$count<mysql_num_rows($result)+1;$count++)
   {
+     $row=mysql_fetch_array($result);
      print("<TR>");
      LTableCell($count,5);
      
@@ -169,6 +171,7 @@ while($row=mysql_fetch_array($result))
      $ap=$ap+$row['percent'];
      $count++;
   }
+
 print("<TR><TD>");
 RBTableCell("$usersbuttom_4_percent_UsersPercentTraffic_7",20);
 if(($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")
@@ -180,6 +183,7 @@ if($SAMSConf->access==2)
   }   
 RBTableCell(ReturnTrafficFormattedSize($all),25);
 RBTableCell("$ap %",15);
+
 print("</TABLE>\n");
 
 
@@ -194,11 +198,11 @@ print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_5");
 print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
 print("<TH>%");
 
-$result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM ".$SAMSConf->SAMSDB.".squidusers,".$SAMSConf->MYSQLDATABASE.".groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+$result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
 $count=1;
 while($row=mysql_fetch_array($result))
   {
-     $grname=$row['name'];
+     $grname=$row['nick'];
      print("<TR>");
      LTableCell($count,5);
      LTableCell($row['nick'],20);

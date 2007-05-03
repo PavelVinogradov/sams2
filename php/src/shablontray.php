@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -88,23 +88,7 @@ function ShablonTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$row[nick]</FONT></B>\n");
 
-      $filelist=`ls src/shablonbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access,$row['name']);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access,$row['name']);
-           $len=$len+strlen($filename)+1;
-        }
+      ExecuteFunctions("./src", "shablonbuttom","1");
     }
   print("<TD>\n");
   print("</TABLE>\n");
