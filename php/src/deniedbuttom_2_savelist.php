@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -35,7 +35,7 @@ function SaveDeniedList()
 
 }
 
-function deniedbuttom_2_savelist($access)
+function deniedbuttom_2_savelist()
 {
   global $SAMSConf;
   

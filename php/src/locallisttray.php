@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -161,27 +161,10 @@ function LocalTrafTray()
       print("<TABLE border=0 WIDTH=\"100%\">\n");
       print("<TR>\n");
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
-      print("<B> $localtraf_localtraftray1<BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
+      print("<B> $localtraf_localtraftray1</B>\n");
 
+        ExecuteFunctions("./src", "localbuttom","1");
 
-      $filelist=`ls src/localbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-	       $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");

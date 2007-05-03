@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -12,11 +12,6 @@ class UpTime
   var $minits="";
 }
 
-function GetUpTime()
-{
-  $value=`uptime`;
-  return($value);
-}
 function GetHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
@@ -33,12 +28,24 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
-  $finp=`free`;
-  $str=strtok($finp," ");
-  for($i=0;$i<20;$i++)
+  $value=exec("freemem");
+  $swapvalue=exec("freeswap");
+
+  $str=strtok($value," ");
+  for($i=0;$i<3;$i++)
      {
-       $mem[$i]=strtok(" ");
+	$string=strtok(" ");
+	if(strlen($string)>0)
+           $mem[$i]=$string;
      }
+  $str=strtok($swapvalue," ");
+  for($i=0;$i<3;$i++)
+     {
+	$string=strtok(" ");
+	if(strlen($string)>0)
+           $swap[$i]=$string;
+     }
+
   print("<P><TABLE CLASS=samstable>");
   print("<TR >");
   print("<TH>");
@@ -47,22 +54,57 @@ function MemoryUsage()
   print("<TH><B>Free</B>\n");
   print("<TR >");
   print("<TD>Memory");
-  print("<TD>$mem[5]");
-  print("<TD>$mem[6]");
-  print("<TD>$mem[7]\n");
+  print("<TD>$mem[0]");
+  print("<TD>$mem[1]");
+  print("<TD>$mem[2]\n");
   print("<TR >");
   print("<TD>Swap");
-  print("<TD>$mem[14]");
-  print("<TD>$mem[15]");
-  print("<TD>$mem[16]\n");
+  print("<TD>$swap[0]");
+  print("<TD>$swap[1]");
+  print("<TD>$swap[2]\n");
   print("</TABLE>");
 }
 
 function FileSystemUsage()
 {
-//  $finp=`df`;
-//  Исправил, иначе будет лажа  
-  $finp=`df -P -h | grep -v devfs`;
+    $test=exec("fsusage");
+    $finp=fopen("data/fs","r");
+      if($finp==FALSE)
+        {
+          echo "can't open file data/userlist<BR>";
+          exit(0);
+        }
+      print("<P><TABLE CLASS=samstable>");
+      print("<TR>");
+      print("<TH><B>Filesystem</B>");
+      print("<TH><B>Size</B>");
+      print("<TH><B>Used</B>");
+      print("<TH><B>Available</B>");
+      print("<TH><B>Use%</B>");
+      while(feof($finp)==0)  
+         {
+           $string=fgets($finp,10000);
+		for($i=1;$i<strlen($string);$i++)
+		  {
+			$fs[0]=strtok($string," ");
+			for($j=1;$j<6;$j++)
+			  {
+				$fs[$j]=strtok(" ");
+			  }
+		  }
+			print("<TR>");
+			print("<TD>$fs[5]");
+			print("<TD>$fs[1]");
+			print("<TD>$fs[2]");
+			print("<TD>$fs[3]");
+			print("<TD>$fs[4]");
+
+         }
+      fclose($finp);
+      print("</TABLE>");
+
+/*
+  $finp=system("samsdf");
 
   $len=strlen($finp);
   $str[0]=strtok($finp,"\n");
@@ -102,20 +144,21 @@ function FileSystemUsage()
       print("<TD>$fs[5]");
    }
   print("</TABLE>");
-
+*/
 }
 
 
 
 function SysInfo()
 {
-   global $SAMSConf;
-   
+  global $SAMSConf;
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
-   $uptime=`uptime`;
+   //$uptime=system("uptime | cut -d',' -f 1 ");
+
+   $uptime=exec("uptime");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
@@ -212,27 +255,7 @@ function ConfigTray()
   //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
   print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
 
-
-  $filelist=`ls src/configbuttom*`;
-  //print(" $filelist");
-  $filelen=strlen($filelist);
-  $filename=strtok($filelist,chr(0x0a));
-  $funcname=str_replace("src/","",$filename);
-  $funcname=str_replace(".php","",$funcname);
-  //print(" $filename  $funcname ");
-  require($filename);
-  $funcname($SAMSConf->access,$row[name]);
-  $len=$len+strlen($filename)+1;
-  while($len<$filelen)
-    {
- 	   $filename=strtok(chr(0x0a));
-       $funcname=str_replace("src/","",$filename);
-       $funcname=str_replace(".php","",$funcname);
-       //print(" $filename  $funcname ");
-       require($filename);
-       $funcname($SAMSConf->access,$row[name]);
-       $len=$len+strlen($filename)+1;
-    }
+    ExecuteFunctions("./src", "configbuttom","1");
 
   print("<TD>\n");
   print("</TABLE>\n");

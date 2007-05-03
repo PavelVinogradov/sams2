@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -52,17 +52,12 @@ function ClearSquidLogForm()
 }
 
 
-function squidbuttom_3_delete($access)
+function squidbuttom_3_delete()
 {
   global $SAMSConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
-  if(isset($_GET["id"])) $id=$_GET["id"];
-
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
 
    if($SAMSConf->access==2)
     {

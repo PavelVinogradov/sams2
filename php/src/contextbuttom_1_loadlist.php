@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -66,7 +66,7 @@ function LoadContextListForm()
 
 
 
-function contextbuttom_1_loadlist($access)
+function contextbuttom_1_loadlist()
 {
   global $SAMSConf;
   

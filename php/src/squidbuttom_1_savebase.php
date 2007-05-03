@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -87,7 +87,7 @@ function SaveSquidLogForm()
 }
 
 
-function squidbuttom_1_savebase($access)
+function squidbuttom_1_savebase()
 {
   global $SAMSConf;
   

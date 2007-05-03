@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -11,7 +11,6 @@
 function UpdateLog($username,$value,$code)
 {
   global $SAMSConf;
-  
   $year=date("Y")*1;
   $month=date("m")*1;
   $day=date("d")*1;

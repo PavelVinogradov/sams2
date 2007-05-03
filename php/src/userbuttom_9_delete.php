@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -34,7 +34,7 @@ function DeleteUser()
 
 
 
-function userbuttom_9_delete($access,$userid)
+function userbuttom_9_delete($userid)
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -65,7 +65,7 @@ function LoadLocalListForm()
 
 
 
-function localbuttom_2_loadlist($access)
+function localbuttom_2_loadlist()
 {
   global $SAMSConf;
   

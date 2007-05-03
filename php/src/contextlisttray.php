@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -7,6 +7,7 @@
 
 function EkranChars($string)
 {
+  $newstring="";
   for($i=0;$i<strlen($string);$i++)
      {
       $letter=substr ( $string, $i ,1);
@@ -143,8 +144,6 @@ function ContextListForm()
   print("<INPUT TYPE=\"SUBMIT\" value=\"$contextlisttray_RedirListForm_3\">\n");
   print("</FORM>\n");
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$filename\" ");
-  $row=mysql_fetch_array($result);
   if($row['type']=="$id")
      {
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
@@ -219,25 +218,8 @@ function ContextListTray()
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
       print("<B>$deniedlisttray_DeniedListTray_1 <FONT SIZE=\"+1\" COLOR=\"blue\">$row[name]</FONT></B>\n");
 
+      ExecuteFunctions("./src", "contextbuttom","1");
 
-      $filelist=`ls src/contextbuttom*`;
-      $filelen=strlen($filelist);
-      $filename=strtok($filelist,chr(0x0a));
-      $funcname=str_replace("src/","",$filename);
-      $funcname=str_replace(".php","",$funcname);
-      require($filename);
-      $funcname($SAMSConf->access);
-      $len=$len+strlen($filename)+1;
-      while($len<$filelen)
-        {
-           //print("$len = $filelen");
-        $filename=strtok(chr(0x0a));
-           $funcname=str_replace("src/","",$filename);
-           $funcname=str_replace(".php","",$funcname);
-           require($filename);
-           $funcname($SAMSConf->access);
-           $len=$len+strlen($filename)+1;
-        }
      }
   print("<TD>\n");
   print("</TABLE>\n");
