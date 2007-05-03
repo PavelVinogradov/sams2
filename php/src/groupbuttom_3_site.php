@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -207,7 +207,7 @@ function GroupSitesForm()
 
 
 
-function groupbuttom_3_site($access,$groupname)
+function groupbuttom_3_site($groupname)
 {
   global $SAMSConf;
   

@@ -88,7 +88,7 @@ function ShowRedirStatForm()
 
 
  
-function redirbuttom_4_redirstat($access)
+function redirbuttom_4_redirstat()
 {
   global $SAMSConf;
   

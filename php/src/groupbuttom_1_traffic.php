@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -22,12 +22,11 @@ function GroupTrafficPeriodGB()
   $eddate=$DATE->EndDate();
 
   db_connect($SAMSConf->LOGDB) or exit();
-  db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
   $aaa=ReturnGroupNick($groupname);
   
-  $result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->LOGDB.".cachesum , ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+  $result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM $SAMSConf->LOGDB.cachesum , $SAMSConf->SAMSDB.squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
   $count=0;
   while ($row=mysql_fetch_array($result))
        {
@@ -59,7 +58,6 @@ function GroupTrafficPeriod()
   $eddate=$DATE->EndDate();
 
   db_connect($SAMSConf->LOGDB) or exit();
-  db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
   $aaa=ReturnGroupNick($groupname);
@@ -95,8 +93,7 @@ function GroupTrafficPeriod()
     }   
   print("<TH>$groupbuttom_1_traffic_GroupTrafficPeriod_4");
 
- //$result=mysql_query("SELECT user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall FROM ".$SAMSConf->LOGDB.".cachesum , ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
- $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, cachesum.domain, tu.nick FROM ".$SAMSConf->LOGDB.".cachesum, ".$SAMSConf->SAMSDB.".squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
+ $result=mysql_query("SELECT cachesum.user,cachesum.domain,sum(cachesum.hit),sum(cachesum.size) as sizeall, tu.name, tu.family, tu.nick, cachesum.domain FROM $SAMSConf->LOGDB.cachesum, $SAMSConf->SAMSDB.squidusers as tu WHERE tu.nick=cachesum.user && tu.domain=cachesum.domain &&  tu.group=\"$groupname\" && date>=\"$sdate\"&&date<=\"$edate\" group by user order by sizeall desc");
   while ($row=mysql_fetch_array($result))
        {
          print("<TR>");
@@ -176,7 +173,7 @@ function GroupTrafficForm()
 }
 
 
-function groupbuttom_1_traffic($access,$groupname)
+function groupbuttom_1_traffic($groupname)
 {
   global $SAMSConf;
   

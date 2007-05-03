@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -8,6 +8,7 @@
 
 function RemoveCache()
 {
+  global $SAMSConf;
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
   
   $result=mysql_query("SELECT * FROM proxyes ");
@@ -17,7 +18,7 @@ function RemoveCache()
 	if($cache[$id]=="on")
 	  {
 	    //echo "remove cache $row[id] $row[description]<BR>";
-            $result2=mysql_query("DELETE FROM ".$SAMSConf->SAMSDB.".proxyes WHERE id=\"$id\" ");
+            $result2=mysql_query("DELETE FROM $SAMSConf->SAMSDB.proxyes WHERE id=\"$id\" ");
           }
     }
   print("<SCRIPT>\n");
@@ -38,14 +39,12 @@ function AddCache()
  
   if(isset($_GET["description"])) $description=$_GET["description"];
 
-
-
   $userid=TempName();
-  $usergroup=trim($usergroup);
 
   db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-      $result=mysql_query("SELECT MAX(id) FROM ".$SAMSConf->SAMSDB.".proxyes ");
+    mysql_select_db($SAMSConf->SAMSDB);
+    
+      $result=mysql_query("SELECT MAX(id) FROM proxyes ");
       $row=mysql_fetch_array($result);
       $id=$row[0]+1;
       $result=mysql_query("INSERT INTO proxyes SET id=\"$id\", description=\"$description\" ");
@@ -68,9 +67,6 @@ function CacheForm()
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access==2)
     {
- //      db_connect($SAMSConf->SAMSDB) or exit();
- //      mysql_select_db($SAMSConf->SAMSDB)
- //           or print("Error\n");
       PageTop("proxyes_48.jpg","$CacheForm_squidbuttom_4_addcache_1");
       //print("<H2>$CacheForm_squidbuttom_4_addcache_1</H2>\n");
       print("<FORM NAME=\"cacheform\" ACTION=\"main.php\">\n");
@@ -81,7 +77,7 @@ function CacheForm()
       print("<TH width=20%>$CacheForm_squidbuttom_4_addcache_2");
       print("<TH width=60%>$CacheForm_squidbuttom_4_addcache_3");
       print("<TH width=20%>$CacheForm_squidbuttom_4_addcache_4");
-      $result=mysql_query("SELECT id,description FROM ".$SAMSConf->SAMSDB.".proxyes ORDER BY id");
+      $result=mysql_query("SELECT id,description FROM $SAMSConf->SAMSDB.proxyes ORDER BY id");
        while($row=mysql_fetch_array($result))
            {
              print("<TR><TD>$row[id]<TD> $row[description]");
@@ -107,7 +103,7 @@ function CacheForm()
 }
 
  
-function squidbuttom_4_addcache($access)
+function squidbuttom_4_addcache()
 {
   global $SAMSConf;
   

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -25,6 +25,7 @@ function EditURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["editurl"])) $url=$_GET["editurl"];
   if(isset($_GET["oldvalue"])) $oldvalue=$_GET["oldvalue"];
@@ -94,7 +95,7 @@ function AddNewList()
   $id=TempName();
   print("<BR> INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
   $result=mysql_query("INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
-  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $groupnick","02");
+  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
   //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
 
@@ -114,6 +115,7 @@ function DeleteAllURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+   $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];
@@ -125,7 +127,7 @@ function DeleteAllURLFromList()
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result=mysql_query("DELETE FROM urls WHERE type=\"$type\" ");
-  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $url","02");
+  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $type","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");
@@ -140,6 +142,7 @@ function AddURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["addurl"])) $url=$_GET["addurl"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
@@ -171,7 +174,8 @@ function DeleteURLFromList()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["type"])) $type=$_GET["type"];
+   $exefilename="";
+ if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["delete"])) $url=$_GET["delete"];
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];
