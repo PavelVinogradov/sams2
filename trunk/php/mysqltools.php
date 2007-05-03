@@ -235,7 +235,6 @@ if($squidctrldb==FALSE)
     $error=1;
     $squidctrldb=1;
   }
-echo "<P>";
 
       if($error>0)
         {
