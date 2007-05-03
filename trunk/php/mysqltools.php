@@ -5,6 +5,41 @@
  * (see the file 'main.php' for license details)
  */
 
+function ExecuteFunctions($path, $mask, $id)
+{
+  $files=array();
+  $count=0;
+    if ($handle2 = opendir($path))
+        {
+	  while (false !== ($file = readdir($handle2)))
+            {
+	      if(strstr($file, $mask)!=FALSE)
+                {
+		  if(strpos($file, $mask)==0)
+		    {  
+		  	$files[$count]=$file;
+		  	$count++;
+		    }
+                }
+            }
+        }
+   sort($files);  
+   for($i=0;$i<$count;$i++)
+     {
+	if(strstr($files[$i],"~")==NULL)
+	{ 	
+	    $funcname=str_replace(".php","",$files[$i]);		
+	    require("$path/$files[$i]");
+	    if($id!=1)
+		$funcname($id);
+	    else
+		$funcname();
+	}	
+
+     }
+  return($files);
+}
+
 function about()
 {
   global $SAMSConf;
@@ -136,7 +171,7 @@ class SAMSCONFIG
     }
   function ReadSAMSSettings()
     {
-      $result=mysql_query("SELECT * FROM ".$this->SAMSDB.".sams");
+      $result=mysql_query("SELECT * FROM $this->SAMSDB.sams");
       $row=mysql_fetch_array($result);
       
       $this->REDIRECTOR=$row['redirector'];
@@ -149,7 +184,7 @@ class SAMSCONFIG
       $this->SQUIDBASE=$row['squidbase'];
       $this->SEPARATOR=$row['separator'];
  
-      $result=mysql_query("SELECT * FROM ".$this->SAMSDB.".globalsettings");
+      $result=mysql_query("SELECT * FROM $this->SAMSDB.globalsettings");
       $row=mysql_fetch_array($result);
       $this->LANG=$row['lang'];
       $this->ICONSET="icon/$row[iconset]";
@@ -162,29 +197,88 @@ class SAMSCONFIG
       $this->SHOWGRAPH=$row['showgraph'];
       $this->PDFLIB=$row['createpdf'];
 
-      $result=mysql_query("SELECT MAX(id) FROM ".$this->SAMSDB.".proxyes ");
+      $result=mysql_query("SELECT MAX(id) FROM $this->SAMSDB.proxyes ");
       $row=mysql_fetch_array($result);
       $this->PROXYCOUNT=$row[0]+1;
       
-      $result=mysql_query("USE samstraf");
-      if($result==FALSE)
-        $this->SWITCHTO=0;
-      else  
+//      $result=mysql_query("USE samstraf");
+//      if($result==FALSE)
+//        $this->SWITCHTO=0;
+//      else  
         $this->SWITCHTO=1;
-      mysql_query("USE ".$this->SAMSDB);
+      mysql_query("USE $this->SAMSDB");
     }
   function SAMSCONFIG()
     {
+      $error=0;
       require('./config.php');      
       $this->ReadSAMSConfFile($configfile);
       
-      $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->SAMSDB)==FALSE)
-        echo "Error connection to database<BR>";
-      $link=@mysql_connect($this->MYSQLHOSTNAME,$this->MYSQLUSER,$this->MYSQLPASSWORD) || die (mysql_error());
-      if($link && mysql_select_db($this->LOGDB)==FALSE)
-        echo "Error connection to database<BR>";
+$link=mysql_connect("$this->MYSQLHOSTNAME","$this->MYSQLUSER","$this->MYSQLPASSWORD");
+if($link==FALSE)
+  {
+    echo "Access denied for user $this->MYSQLUSER@$this->MYSQLHOSTNAME to MySQL<BR>";
+    $error=1;
+    $link=1;
+  }
+$squidlogdb=mysql_select_db($this->LOGDB);
+if($squidlogdb==FALSE)
+  {
+//    echo "connect to database $this->LOGDB error<BR>";
+    $error=1;
+    $squidlogdb=1;
+  }
+$squidctrldb=mysql_select_db($this->SAMSDB);
+if($squidctrldb==FALSE)
+  {
+//    echo "connect to database $this->SAMSDB error<BR>";
+    $error=1;
+    $squidctrldb=1;
+  }
+echo "<P>";
+
+      if($error>0)
+        {
+
+		if(isset($_GET["function"])) $function=$_GET["function"];
+		
+		if($function=="userdoc")
+		  {
+
+       			print("<SCRIPT language=JAVASCRIPT>\n");
+       			print("function Createdb()\n");
+       			print("{\n");
+			print("parent.basefrm.location.href=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup\";\n");  
+       			//print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteuser&filename=userbuttom_9_delete.php&&userid=$userid\";\n");
+       			print("}\n");
+       			print("</SCRIPT> \n");
+       			print("<TABLE><TR> \n");
+     			echo "<TD><IMG SRC=\"icon/classic/warning.jpg\" ALIGN=LEFT>";
+			echo "<TD>Web интерфейс не смог подсоединиться к базе SAMS.<BR>";
+       			print("</TABLE> \n");
+			if($squidlogdb==1)
+				echo "База squidlog несоздана или пользователь $this->MYSQLUSER не имеет прав на подключение к ней<BR>";
+			if($squidctrldb==1)
+				echo "База squidctrl несоздана или пользователь $this->MYSQLUSER не имеет прав на подключение к ней<BR>";
+			echo "<BR>Как создать базы SAMS: ";
+			echo "<BR>KOI8-R:  <A HREF=\"doc/KOI8-R/mysql_install.html\" TARGET=\"basefrm\">Установка и создание базы SAMS в MySQL</A>";
+			//echo "<BR>Сейчас вы сможете создать базы SAMS или проверить соединение с ними";
+  			//print("<FORM NAME=\"createdbform\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup \" METHOD=POST>\n");
+			//print("<P><CENTER><INPUT TYPE=\"SUBMIT\" VALUE=\"Ok\" onclick=CreateDB()></CENTER>\n");
+
+			//print("</FORM>\n");
+			//echo "CREATE DATABASE<BR>";
+			//print("<SCRIPT>\n");
+			//print("parent.basefrm.location.href=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup\";\n");  
+			//print("</SCRIPT> \n");
+
+		  }
+		
+	}
+
+
       $this->ReadSAMSSettings();
+
     }
 
   function LoadConfig()
@@ -207,8 +301,8 @@ class SAMSCONFIG
       echo "groupauditor = $this->groupauditor<BR>";
       echo "access = $this->access<BR>";
       echo "domainusername = $this->domainusername<BR>";
-      echo "SAMSDB = $this->MYSQLDATABASE<BR>";    
-      echo "LOGDB = $this->SQUIDCTRLDATABASE<BR>";    
+      echo "SAMSDB = $this->SAMSDB<BR>";    
+      echo "LOGDB = $this->LOGDB<BR>";    
       echo "MYSQLHOSTNAME = $this->MYSQLHOSTNAME<BR>";    
       echo "MYSQLUSER = $this->MYSQLUSER<BR>";        
       echo "DELAYPOOL = $this->DELAYPOOL<BR>";
@@ -253,15 +347,16 @@ class SAMSCONFIG
 function ReturnTrafficFormattedSize($size)
 {
   global $SAMSConf;
+    $str="";
     $gsize=floor($size/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
     $ostatok=$size-$gsize*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
     $msize=floor($ostatok/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
     $ostatok=$ostatok-$msize*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
-    $ksize=floor($ostatok/$SAMSConf->KBSIZE);         
-  if($gsize>0)
-    $str="$gsize Gb";
-  $str="$str $msize Mb $ksize kb ";
-  return($str);
+    $ksize=floor($ostatok/$SAMSConf->KBSIZE);
+    if($gsize>0)
+       $str="$gsize Gb";
+    $out="$str $msize Mb $ksize kb ";
+    return($out);
 } 
 
 function PrintTrafficSize($size)
@@ -273,11 +368,9 @@ function PrintTrafficSize($size)
  
 function ReturnGroupNick($groupname)
 {
-    global $SAMSConf;
-    
-//  db_connect($SAMSConf->LOGDB) or exit();
-//  mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".groups WHERE name=\"$groupname\"");
+  global $SAMSConf;
+
+  $result=mysql_query("SELECT * FROM $SAMSConf->SAMSDB.groups WHERE name=\"$groupname\"");
   $row=mysql_fetch_array($result);
   return($row['nick']);
 }
@@ -675,6 +768,7 @@ function TempName()
 function FormattedString($size)
 {
   $count=0;
+  $newsize=0;
   $len=strlen(trim($size));
   for($i=$len-1;$i>-1;$i--)     
      {
@@ -689,38 +783,30 @@ function FormattedString($size)
   return($newsize);
 }
 
-function PrintFormattedSizeOld($size)
-{
- global $SAMSConf;
- $msize=floor($size/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
- $ostatok=$size%($SAMSConf->KBSIZE*$SAMSConf->KBSIZE);
- $ksize=floor($ostatok/$SAMSConf->KBSIZE);
- if($ksize<10)
-   $ksize="0$ksize";
- if($ksize<100)
-   $ksize="0$ksize";
-   
-  print("<TD ALIGN=RIGHT>&nbsp;<B>$msize</B>&nbsp;Mb<B>&nbsp;$ksize</B>&nbsp;kb\n");
-
-
-}
-
 function PrintFormattedSize($size)
 {
  global $SAMSConf;
- $msize=floor($size/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
- $ostatok=$size%($SAMSConf->KBSIZE*$SAMSConf->KBSIZE);
- $ksize=floor($ostatok/$SAMSConf->KBSIZE);
+ $kbsize=$SAMSConf->KBSIZE;
+ $gsize=floor($size/($kbsize*$kbsize*$kbsize));
+ $ostatok=$size-$gsize*$kbsize*$kbsize*$kbsize;
+ $msize=floor($ostatok/($kbsize*$kbsize));
+ $ostatok=$size-$gsize*$kbsize*$kbsize*$kbsize-$msize*$kbsize*$kbsize;
+ $ksize=floor($ostatok/$kbsize);
+ if($msize<10)
+   $msize="0$msize";
+ if($msize<100)
+   $msize="0$msize";
  if($ksize<10)
    $ksize="0$ksize";
  if($ksize<100)
    $ksize="0$ksize";
    
   print("<TD ALIGN=RIGHT>&nbsp;");
-  print("<B>$msize</B>&nbsp;Mb");
+  if($gsize>0)
+    print("<B>$gsize</B>&nbsp;Gb ");
+  if($gsize>0||$msize>0)
+    print("<B>$msize</B>&nbsp;Mb");
   print("<B>&nbsp;$ksize</B>&nbsp;kb\n");
-
-
 }
 
 

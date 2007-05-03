@@ -323,8 +323,8 @@ function AllUsersTrafficPDFlib()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
+  db_connect($SAMSConf->LOGDB) or exit();
+  mysql_select_db($SAMSConf->LOGDB);
 
   $imagefile = "$SAMSConf->ICONSET/user.jpg";
   $image = PDF_load_image($pdfFile, "auto", $imagefile, "");
@@ -343,7 +343,7 @@ function AllUsersTrafficPDFlib()
 	    {
               pdf_begin_page($pdfFile, 595, 842);
               
-	      $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
+	      $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
 	      while($row2=mysql_fetch_array($result2))
                 {
                    if($ycount>=700)

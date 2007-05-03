@@ -127,9 +127,7 @@ function ShowCookieInfo($user,$passwd)
 function CheckUserPassword($user,$passwd)
 {
   global $SAMSConf;
-  
-//  db_connect($SAMSConf->SAMSDB) or exit();
-   $lang="./lang/lang.$SAMSConf->LANG";
+  $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   mysql_select_db($SAMSConf->SAMSDB);
@@ -192,11 +190,8 @@ function GetPasswordForm()
 function UserAuthenticate($user,$passwd)
 {
   global $SAMSConf;
-  
-  //$newpasswd=crypt($passwd,"00");
   db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-
+    mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM passwd WHERE user=\"$user\"&&pass=\"$passwd\" ");
   $row=mysql_fetch_array($result);
 
@@ -213,8 +208,8 @@ function SaveUserName($passwd,$number)
   $newpasswd=crypt($passwd,"00");
   //print("passwd=$newpasswd=");
   db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-
+    mysql_select_db($SAMSConf->SAMSDB);
+    
   $result=mysql_query("SELECT * FROM passwd WHERE pass=\"$newpasswd\" ");
   $row=mysql_fetch_array($result);
   if($number==0)

@@ -1,4 +1,4 @@
-<?
+<?php
 /*  
  * SAMS (Squid Account Management System)
  * Author: Dmitry Chemerik chemerik@mail.ru
@@ -14,15 +14,15 @@ function SaveBackUp()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  db_connect($SAMSConf->SAMSDB) or exit();
+db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
 
   $tablecount=0;
 
   $filename=strftime("samsdb-%d%b%Y-%H-%M-%S.sql.gz");
-  if(is_dir("/tmp/sams")!=TRUE)
-      mkdir("/tmp/sams",0777);
+//  if(is_dir("/tmp/sams")!=TRUE)
+//      mkdir("/tmp/sams",0777);
   if(($fout=gzopen("data/$filename","w9"))!=NULL)
     {
        gzwrite($fout,"# ".$SAMSConf->SAMSDB." DUMP FOR MYSQL DATABASE\n");
@@ -142,7 +142,7 @@ function SaveBackUpForm()
 }
 
 
-function backupbuttom_1_savebase($access)
+function backupbuttom_1_savebase()
 {
   global $SAMSConf;
   
