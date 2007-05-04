@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<FONT SIZE=-1>Эта документация основана на статье Д.Новикова "Авторизация Windows-
+пользователей в SQUID на основе их доменных аккаунтов"
+<BR>Оригинал: http://www.artmagic.ru/labs/sqlandwin.shtml
+</FONT>
+
+ <H2>Инсталляция и настройка программного обеспечения</H2>
+
+
+<H3>3.Установка и создание базы SAMS в MySQL.</H3>
+<P>Скачайте и разархивируйте исходные коды MySQL:
+<P>tar xvfz mysql-x.x.tar.gz
+<P>далее компилируем и инсталлируем MySQL:
+<P>make
+<BR>make install
+
+<H3>3.Установка и конфигурация базы данных MySQL.</H3>
+
+<P>Создание пользователя MySQL.
+<BR>Для работы SAMS необходимо в MySQL создать пользователя со всеми правами на базы squidctrl и squidlog.
+MySQL позволяет создать пользователя и назначить ему базу до того, как сама база будет создана.
+
+<P><B>Создание пользователя вручную</B>
+<BR>Зайдите в консоль MySQL:
+<BR>mysql -u root -p  (Если у вас пароль пользователя root пустой, ключ -p не используйте)
+<BR>Выполните там команды:
+<BR>GRANT ALL ON squidctrl.* TO sams@localhost IDENTIFIED BY "yourpassword";
+<BR>GRANT ALL ON squidlog.* TO sams@localhost IDENTIFIED BY "yourpassword";
+<BR>Где:
+<BR> yourpassword - пароль
+<BR>Занесите имя пользователя и пароль в файл конфигурации SAMS /etc/sams.conf
+
+<P><B>Создание пользователя скриптом</B>
+<BR>Отредактируйте файл /sams-XXXXXX/mysql/create_sams_user.sql и измените пароль пользователя в строках:
+<BR>GRANT ALL ON squidctrl.* TO sams@localhost IDENTIFIED BY "yourpassword";
+<BR>GRANT ALL ON squidlog.* TO sams@localhost IDENTIFIED BY "yourpassword";
+<BR>Где:
+<BR> yourpassword - пароль
+<BR>Запустите скрипт /sams-XXXXXX/mysql/create_sams_user для создания пользователя.
+<BR>Этот скрипт выполняется от имени пользователя root. Если у вас  пользователь root имеет пароль по-умолчанию (пустой),
+отредактируйте скрипт, удалив из строки
+<BR>mysql -u root -p < create_sams_user.sql      ключ -p
+<BR>Занесите имя пользователя и пароль в файл конфигурации SAMS /etc/sams.conf
+
+<P><B>Создание базы данных SAMS:</B>
+<BR>Из каталога mysql выполните скрипты create_sams_db и create_squid_db.
+<BR>Эти скрипты по-умолчанию выполняются от имени пользователя, прописанного в sams.conf.
+<BR>Если у вас в sams.conf прописан пользователь root, а пароль пользователя mysql root оставлен
+по-умолчанию (пустой), отредактируйте скрипты, удалив из строк
+<BR>mysql -u $USER -p < xxxx_db.sql ключ -p
+
+</BODY>
+</HTML>

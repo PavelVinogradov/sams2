@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<FONT SIZE=-1>Эта документация основана на статье Д.Новикова "Авторизация Windows-
+пользователей в SQUID на основе их доменных аккаунтов"
+<BR>Оригинал: http://www.artmagic.ru/labs/sqlandwin.shtml
+</FONT>
+
+ <H2>Building, Installing and Configuring Squid</H2>
+
+<H3>Building, Installing and Configuring Squid for NTLM authorization</H3>
+<P>The Winbind interface changed in Samba and therefore, the winbind components of your Squid version may be don't work correctly.  
+To enable the Squid winbind components to work correctly, before compiling squid, replace the Squid versions 
+of winbindd_nss.h located in the squid/helpers/ directories (there are three: one in the basic_auth/winbind, one in the ntlm_auth/winbind, 
+and one in the external_acl/winbind_group directories) with the Samba version of winbindd_nss.h found in samba/source/nsswitch.
+ 
+<H3>Building and Installing Squid</H3>
+
+<P>Several command-line options need to be specified during the configure process to ensure Squid is built with support for winbind integration.  
+They are
+
+<P>--enable-auth="ntlm,basic"
+<BR>--enable-basic-auth-helpers="winbind"
+<BR>--enable-ntlm-auth-helpers="winbind" 
+<BR>--enable-external-acl-helpers="winbind_group"
+
+<P>Also, to allow squid to throttle bandwidth, the option --enable-delay-pools should be added to the list as well.
+
+<P>After configure is done, run make.  Then run make install.
+ 
+<H3>Configuring Squid to work with NTLM authorization</H3>
+
+<P>Now the squid.conf file needs to be configured.   Edit the squid.conf file and uncomment, edit or add the following lines:
+
+<P>auth_param ntlm program /usr/local/squid/libexec/wb_ntlmauth
+<BR>auth_param ntlm children 5
+<BR>auth_param ntlm max_challenge_resuses 0
+<BR>auth_param ntlm max_challenge_lifetime 2 minutes
+
+<P>auth_param basic program /usr/local/squid/libexec/wb_auth
+<BR>auth_param basic children 5
+<BR>auth_param basic realm Squid proxy-caching web server
+<BR>auth_param basic credentialsttl 2 hours
+
+
+<P>Without starting Squid, run wb_group to test whether or not this tool can determine if a given user is a member of a particular 
+Window's group e.g. run /usr/local/squid/libexec/wb_group -d.  At the (lack of) prompt, enter example\\username NoINETAccess.  
+If successful, a list should be displayed of  SIDs and groups that this user is a member of followed by "OK" if the user is a member 
+of the specified group.  Otherwise, the "ERR" message is displayed.  When the "ERR" is displayed in the absence of any SIDs, there 
+was an error by wb_group communicating with the domain.  This error is vague and can be difficult to troubleshoot.  No specific 
+recommendations can be given when this error is encountered.
+
+<P>It was found that /usr/local/squid/var permissions are not set correctly initially for squid to function properly.  Since squid runs as nobody 
+(user and group) when started by root, the var dir user and group need to be changed to "nobody" instead of "root".  Apply these changes 
+recursively by running the following commands:
+
+<P>root#chown -R nobody /usr/local/squid/var
+<BR>root#chgrp -R nobody /usr/local/squid/var
+
+<P>Start squid with the -z option (/usr/local/squid/sbin/squid -z); this creates swap and cache directories.  Then start squid normally and test 
+it using a client machine.  Set the client machine to use squidy as a proxy server for Internet Explorer.
+
+<H3>Configuring Squid to work with NCSA authorization</H3>
+
+<P>Now the squid.conf file needs to be configured.   Edit the squid.conf file and uncomment, edit or add the following lines:
+
+<BR> auth_param basic program /usr/libexec/ncsa_auth /etc/squid/ncsa.sams
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+
+<BR>
+<BR>WARNING!!! NTLM и NCSA authorization don't work corectly in one time
+
+<P><B>Configuring Squid to work with redirector</B>
+<P>Squid has the ability to rewrite requested URLs. Implemented as an external process (similar to a dnsserver), 
+Squid can be configured to pass every incoming URL through a redirector process that returns either a new URL, 
+or a blank line to indicate no change.
+<BR>SAMS may use a several redirectors, but SAMS doesn't insert redirector support to squid.conf. You must insert support 
+string for your redirector into squid.conf.  
+<BR>For the SAMS redirector:
+<BR>insert into the file squid.conf string:
+<BR>redirect_program /path/to/redirector
+
+
+
+</BODY>
+</HTML>
