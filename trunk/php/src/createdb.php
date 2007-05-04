@@ -13,14 +13,14 @@ echo " $hostname-$suname-$supasswd-$samsusername-$samsuserpasswd";
   $link=mysql_connect($hostname,$suname,$supasswd);
   if($link!=NULL)
     echo "<BR>Connect to database = Ok";
-  $result=mysql_query("GRANT ALL ON $SAMSConf->SQUIDCTRLDATABASE.* TO $samsusername@$hostname IDENTIFIED BY '$samsuserpasswd'");
+  $result=mysql_query("GRANT ALL ON $SAMSConf->SAMSDB.* TO $samsusername@$hostname IDENTIFIED BY '$samsuserpasswd'");
   $row=mysql_fetch_array($result);
   if($result!=NULL)
    {
       echo "<BR>user $samsusername created";
       $adduser1=1;
    }
-  $result=mysql_query("GRANT ALL ON squidlog.* TO $samsusername@$hostname IDENTIFIED BY '$samsuserpasswd'");
+  $result=mysql_query("GRANT ALL ON $SAMSConf->LOGDB.* TO $samsusername@$hostname IDENTIFIED BY '$samsuserpasswd'");
   $row=mysql_fetch_array($result);
   if($result!=NULL)
    {
