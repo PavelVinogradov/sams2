@@ -262,29 +262,59 @@ int TestLocalURL(char *url)
   int i=0,count=0,slashe=0,ipflag=0;
   int found=0,localfound=0;
 
-  if(strstr(url,"://")==NULL)
-      return(0);
+  /* Get domain name for URL like http://<domain name>/ */
+  if(strstr(url,"://") !=NULL)
+  {
+  	for(i=0,count=0;i<strlen(url);i++)
+	{
+       		if(i>=249)
+          		i=strlen(url);
+
+       		if(slashe>=2)
+		{
+			if(slashe<3&&url[i]!='/')
+			{
+				DNS.url[count]=url[i];
+				count++;
+			}
+		}
+		
+		if(url[i]=='/')
+		{
+			slashe++;
+		}	 
+	}
+  } else {
+	/* If user ask https page, we get url like: domain.name:443 */
+	if ( strstr(url,":443") != NULL) {
+  		
+		for(i=0,count=0;i<strlen(url);i++)
+		{
+       			if(i>=249)
+          			i=strlen(url);
+
+			if (url[i] == ':')
+			{ /* We found :443. Stop parse */
+				break;
+			} else {
+				DNS.url[count]=url[i];
+				count++;
+			}
+		}
+
+	} else {
+		if (DEBUG > 0) 
+		{
+			printf ("We don't know how parse URL like: %s", url);
+		}
+
+		return(0);
+	}
+  }
   
        /**  ищем в списке локальных хостов **/
        
        /* получаем доменное имя*/
-  for(i=0,count=0;i<strlen(url);i++)
-     {
-       if(i>=249)
-          i=strlen(url);
-       if(slashe>=2)
-         {
-           if(slashe<3&&url[i]!='/')
-	     {
-	       DNS.url[count]=url[i];
-	       count++;
-	     }
-	 }
-       if(url[i]=='/')
-         {
-	   slashe++;
-	 }	 
-     }
   strcpy(&DNS.url[count],"\0");
 	// это IP адрес? 
   ipflag=LocalIPAddr(&DNS.url[0],&DNS.ip[0],&DNS.mask[0]);
