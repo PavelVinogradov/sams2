@@ -618,7 +618,6 @@ int main (int argc, char *argv[])
   char real[6];
   //int week[12]={31,28,31,30,31,30,31,31,30,31,30,31};
   
-  printf("\n");
   EXPORT=0;
   EMPTY=0;
   DNSDB=0;
