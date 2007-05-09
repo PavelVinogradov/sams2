@@ -29,14 +29,21 @@ char *STR[10];
 char AUTH[5];
 int CLEAR,TCLEAR, LOADFILE;
 
-  char ip[15];
-  int ip1[4];
-  int ip2[4];
+char ip[15];
+int ip1[4];
+int ip2[4];
 
-// void trim(char *string) 
 static char str[BUFFER_SIZE];
 
-
+/*@brief Export data from squidlog database from date1 to date2 
+ * 
+ * Export data from SQL database to file. 
+ * If EMPTY variable set - delete data from database.
+ *
+ * @arg char* date1 - Start export from this date
+ * @arg char* date2 - Stop export on this date
+ * @arg MYSQL* conn - MYSQL connection
+ * */
 int ExportDB(char *date1, char *date2, MYSQL *conn)
 {
   int flag;
@@ -51,11 +58,11 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
     }
   if((fout=fopen( &str[0], "wt" ))==NULL)
     {
-         printf("Don't create file %s\n",&str[0]);
+         printf("Can't create file %s\n",&str[0]);
          return(1);
     }
   fprintf(fout,"USE %s;\n\n",conf.logdb);
-  sprintf(&str[0],"SELECT * FROM %s.cachesum WHERE date>='%s'&&date<='%s'",conf.logdb,date1,date2);
+  sprintf(&str[0],"SELECT * FROM %s.cachesum WHERE date BETWEEN '%s' AND '%s'",conf.logdb,date1,date2);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   while((row=mysql_fetch_row(res)))
@@ -66,7 +73,7 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
 
   fprintf(fout,"\n");
 
-  sprintf(&str[0],"SELECT * FROM %s.cache WHERE date>='%s'&&date<='%s'",conf.logdb,date1,date2);
+  sprintf(&str[0],"SELECT * FROM %s.cache WHERE date BETWEEN '%s' AND '%s'",conf.logdb,date1,date2);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
   while((row=mysql_fetch_row(res)))
@@ -78,11 +85,10 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
     {
       if(DEBUG>0)
         printf("Empty %s base to %s:%s",conf.logdb,date1,date2);
-      sprintf(&str[0],"DELETE FROM %s.cachesum WHERE date>='%s'&&date<='%s'",conf.logdb,date1,date2);
+      sprintf(&str[0],"DELETE FROM %s.cachesum WHERE date BETWEEN '%s' AND '%s'",conf.logdb,date1,date2);
       flag=send_mysql_query(conn,&str[0]);
-      sprintf(&str[0],"DELETE FROM %s.cache WHERE date>='%s'&&date<='%s'",conf.logdb,date1,date2);
+      sprintf(&str[0],"DELETE FROM %s.cache WHERE date BETWEEN '%s' AND '%s'",conf.logdb,date1,date2);
       flag=send_mysql_query(conn,&str[0]);
-    
     }
 
   fclose(fout);
