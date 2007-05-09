@@ -1,1 +1,2 @@
-free | grep Swap: 
+STR=`free | grep Swap:`
+echo $STR 

@@ -1,3 +1,3 @@
-#$aaa=`$SAMSConf->WBINFOPATH/wbinfo -u`;
-
-$1/wbinfo -u &> ./data/userlist
+#STR=`$1/wbinfo -u`
+STR=`$1/wbinfo -u`
+echo $STR

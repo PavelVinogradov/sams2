@@ -31,19 +31,15 @@ function MemoryUsage()
   $value=exec("freemem");
   $swapvalue=exec("freeswap");
 
-  $str=strtok($value," ");
-  for($i=0;$i<3;$i++)
+  $a=explode(" ",$value);
+  for($i=1;$i<4;$i++)
      {
-	$string=strtok(" ");
-	if(strlen($string)>0)
-           $mem[$i]=$string;
+           $mem[$i-1]=$a[$i];
      }
-  $str=strtok($swapvalue," ");
-  for($i=0;$i<3;$i++)
+  $a=explode(" ",$swapvalue);
+  for($i=1;$i<4;$i++)
      {
-	$string=strtok(" ");
-	if(strlen($string)>0)
-           $swap[$i]=$string;
+           $swap[$i-1]=$a[$i];
      }
 
   print("<P><TABLE CLASS=samstable>");
@@ -67,13 +63,10 @@ function MemoryUsage()
 
 function FileSystemUsage()
 {
-    $test=exec("fsusage");
-    $finp=fopen("data/fs","r");
-      if($finp==FALSE)
-        {
-          echo "can't open file data/userlist<BR>";
-          exit(0);
-        }
+    $fstest=exec("fsusage");
+    $a=explode(" ",$fstest);
+    $acount=count($a)/6;
+
       print("<P><TABLE CLASS=samstable>");
       print("<TR>");
       print("<TH><B>Filesystem</B>");
@@ -81,70 +74,19 @@ function FileSystemUsage()
       print("<TH><B>Used</B>");
       print("<TH><B>Available</B>");
       print("<TH><B>Use%</B>");
-      while(feof($finp)==0)  
-         {
-           $string=fgets($finp,10000);
-		for($i=1;$i<strlen($string);$i++)
-		  {
-			$fs[0]=strtok($string," ");
-			for($j=1;$j<6;$j++)
-			  {
-				$fs[$j]=strtok(" ");
-			  }
-		  }
-			print("<TR>");
-			print("<TD>$fs[5]");
-			print("<TD>$fs[1]");
-			print("<TD>$fs[2]");
-			print("<TD>$fs[3]");
-			print("<TD>$fs[4]");
+      print("<TH><B>Mounted on</B>");
 
+      for($i=0;$i<$acount;$i++)
+        {
+	    print("<TR>");
+	    for($j=0;$j<6;$j++)
+	      {
+	        $fs=$a[$i*6+$j];
+	        print("<TD>$fs");
+	      }
          }
-      fclose($finp);
+
       print("</TABLE>");
-
-/*
-  $finp=system("samsdf");
-
-  $len=strlen($finp);
-  $str[0]=strtok($finp,"\n");
-  $newlen=strlen($str[0])+1;
-  $c=0;
-  while($newlen<$len)
-     {
-       $c=$c+1;
-       $str[$c]=strtok("\n");
-       $newlen=$newlen+strlen($str[$c])+1;
-     }
-  print("<P><TABLE CLASS=samstable>");
-  print("<TR>");
-  print("<TH><B>Filesystem</B>");
-  print("<TH><B>Size</B>");
-  print("<TH><B>Used</B>");
-  print("<TH><B>Available</B>");
-  print("<TH><B>Use%</B>");
-  //Добавил        
-  print("<TH><B>Mount</B>");
-
-  for($i=1;$i<$c+1;$i++)
-     {
-       $fs[0]=strtok($str[$i]," ");
-       for($j=1;$j<6;$j++)
-          {
-            $fs[$j]=strtok(" ");
-
-          }
-       print("<TR>");
-       print("<TD>$fs[0]");
-       print("<TD>$fs[1]");
-       print("<TD>$fs[2]");
-       print("<TD>$fs[3]");
-       print("<TD>$fs[4]");
- // Добавил       
-      print("<TD>$fs[5]");
-   }
-  print("</TABLE>");
-*/
 }
 
 
