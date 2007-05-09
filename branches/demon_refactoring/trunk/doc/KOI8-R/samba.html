@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<FONT SIZE=-1>Эта документация основана на статье Д.Новикова "Авторизация Windows-
+пользователей в SQUID на основе их доменных аккаунтов"
+<BR>Оригинал: http://www.artmagic.ru/labs/sqlandwin.shtml
+</FONT>
+
+ <H2>Инсталляция и настройка программного обеспечения</H2>
+<P>
+<H3><font color="RED">ВНИМАНИЕ!!! Этот пункт необходим только если вы планируете работать с аутентификацией пользователей в домене Windows NT 4.0 по протоколу NTLM</font> </H3>
+<P>
+
+<H3>1.Установка и конфигурация SAMBA 2.x</H3>
+ Для того, чтобы система могла авторизоваться в Windows домене необходимо
+ инсталлировать сервер SMB протокола для *NIX систем SAMBA.
+ Работу с Active Directory поддерживает samba версии 2.х.
+ <P>Необходимо чтобы SAMBA была собрана с поддержкой winbind, т.е.
+ <P>configure  --with-winbind  --with-winbind-auth-challenge
+<P>далее компилируем и инсталлируем:
+<P>make
+<BR>make install
+<P>После установки, SAMBA нужно настроить на использование winbind и домен Windows.
+<P>Файл smb.conf должен содержать следующие строки:
+<P><B>[global]
+<BR>       workgroup = WORK - Имя нашего Windows-домена
+<BR>       netbios name = PDC - Имя сервера (необязательно)
+<BR>       server string = ProxyServer
+<BR>       hosts allow = 10.128.   127. -  Диапазоны IP адресов, с которых могут обращаться к samba. Для безопасности.
+<BR>       winbind separator = +</B>
+<P>       Если у вас в сети только один домен и вы хотите при авторизации пользователя на PDC
+использовать только имя пользователя без имени домена, можно прописать
+<BR><B>       winbind use default domain = yes</B>
+<BR>Иначе, если вы хотите использовать при авторизации конструкцию domain+user (у вас в сети несколько доменов), пропишите
+<BR><B>       winbind use default domain = no
+<P>       winbind uid = 10000-20000
+<BR>       winbind gid = 10000-20000
+<BR>       winbind enum users = yes
+<BR>       winbind enum groups = yes
+<BR>       template homedir = /home/winnt/%D/%U
+<BR>       template shell = /bin/bash
+<BR>       max log size = 50
+<BR>       security = domain
+<BR>       password server = Primary Exch - серверы паролей (PDC, BDC)
+<BR>       encrypt passwords = yes</B>
+
+<P>Создайте каталог /etc/samsba/private.
+<P>После изменения smb.conf можно попробовать зарегистрироваться в домене Windows.
+<P> smbpasswd -j WORK (наш домен) -r Primary(наш PDC) -U Administrator
+<BR> Необходимо чтобы первый вход с компьютера с samba был осуществлен из-под пользователя 
+домена windows, имеющего права администратора домена. В этот момент происходит обмен секретами между samba и контроллером домена.
+<P>Если регистрация в домене прошла успешно, будет выдано сообщение:
+<P>  Joined domain YourDomain.
+<P>Далее запускаем демона WINBINDD:
+<P> winbindd -d9
+<P>и контролируем его работу:
+<P>команда wbinfo -p должна вернуть:
+<P>'ping' to winbindd succeeded
+<P> команда wbinfo -t должна вернуть:
+<P>"Secret is good".
+<P>Если это не так, заглядываем в логи winbind и разбираемся в чем дело.
+<P>Копируем библиотеку libnss_winbind.so в каталог /lib:
+<P>  cp nsswitch/libnss_winbind.so /lib
+<P>создаем символические ссылки на нее:
+<P> ln -s /lib/libnss_winbind.so /lib/libnss_winbind.so.1
+<BR> ln -s /lib/libnss_winbind.so /lib/libnss_winbind.so.2
+<P>Изменяем файл /etc/nsswitch.conf. Он должен содержать строки вида
+<P> passwd: files winbind
+<BR> group: files winbind
+<P>Перезапустите winbindd
+<P>Пробуем авторизовать пользователя в Windows домене:
+<P>wbinfo -a [домен+]пользователь_домена%пароль
+<P>если авторизация прошла успешно, будет выдано сообщение:
+<P>   plaintext password authentication succeeded
+<BR>   error code was NT_STATUS_OK (0x0)
+<BR>   challenge/response password authentication succeeded
+<BR>   error code was NT_STATUS_OK (0x0)
+
+<H3>2. Настройка NTLM авторизации в SAMS</H3>
+
+Для настройки NTLM авторизации пользователей в Windows домене необходимо в дереве настроек 
+WEB интерфейса SAMS выбрать пункт "Администрирование SAMS", далее в нижнем фрейме нажать кнопку 
+<IMG SRC="../img/config_32.jpg">
+<BR> В открывшемся диалоге выьираем способ авторизации пользователей "NTLM". Далее нажимаем кнопку 
+"Тестировать ответ PDC". В открывшемся окне будет выведен список пользовтаелей, зарегистрированных домене.
+
+<H3>Конфигурируем SQUID на работу с winbind (ntlm,basic) авторизацией </H3>
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<BR> auth_param ntlm program /usr/lib/squid/wb_ntlmauth
+<BR> auth_param ntlm children 5
+<BR> auth_param ntlm max_challenge_reuses 0
+<BR> auth_param ntlm max_challenge_lifetime 2 minutes
+<BR> auth_param basic program /usr/local/squid/libexec/wb_auth
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+<P>Причем важно чтобы NTLM авторизация шла первой, иначе будет применяться
+авторизация basic, и IE будет спрашивать пароль.
+
+
+</BODY>
+</HTML>
