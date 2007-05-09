@@ -608,9 +608,9 @@ void ReplaceURL(char *url, char *user, char *domain)
      }
 }
 
-/* @brief Determine index in global array users for passed username 
+/* @brief Determine index in global users array for passed username 
  *
- * @arg char* username - Raw tested username
+ * @arg char* username - Username
  * @arg char* domain   - User domain (for NTLM and NCSA auth only)
  * @arg char* ipaddr   - User ip-address
  * @arg int   type     - Auth type. One of AUTH_TYPE_[IP|NTML|NCSA]
@@ -671,6 +671,4 @@ int ReturnSAMSUser(char *username, char *domain, char *ipaddr, int type)
 
   return(0);
 }
-
-
 
