@@ -120,9 +120,11 @@ long GetNewEndValue()
   return(value);
 }
 
-
-
-
+/* @brief Save position of last parsed line in DB
+ *
+ * @param MYSQL* conn - MySQL connection
+ * @param long count - saved position
+ */
 void SaveNewEndFileValue(MYSQL *conn,long count)
 {
   int flag;
@@ -130,7 +132,7 @@ void SaveNewEndFileValue(MYSQL *conn,long count)
   flag=send_mysql_query(conn,&str[0]);
   if(flag!=0)
     {
-       printf("error: can't update end file counter\n");
+       printf("MysqlError: Can't update end file counter.\n");
        exit(1);
     }
   if(DEBUG!=0)
