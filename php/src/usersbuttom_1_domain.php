@@ -190,26 +190,28 @@ function AddUsersFromDomainForm()
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
   $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $test=exec("getwbinfousers $e");
-
-  $finp=fopen("data/userlist","r");
+  $value=exec("getwbinfousers $e");
+  $a=explode(" ",$value);
+  $acount=count($a);
 
   print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
   print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
   print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
-  while(feof($finp)==0)  
+
+  for($i=0;$i<$acount;$i++)
      {
-       $string=fgets($finp,10000);
+       $mem[$i]=$a[$i];
+       //$string=fgets($finp,10000);
        if($SAMSConf->NTLMDOMAIN=="Y")
          {
-           if(strstr($string,"\\"))
+           if(strstr($a[$i],"\\"))
 	     {
-	       $domain=trim(strtok($string,"\\"));
+	       $domain=trim(strtok($a[$i],"\\"));
                $user=trim(strtok("\\"));
 	     }
 	   else
 	     {
-	       $domain=trim(strtok($string,"+"));
+	       $domain=trim(strtok($a[$i],"+"));
                $user=trim(strtok("+"));
 	     }  
            $domainlen=strlen($domain);
@@ -224,7 +226,7 @@ function AddUsersFromDomainForm()
        else
           {
 	     $domain=$SAMSConf->DEFAULTDOMAIN;
-             $user=trim($string);
+             $user=trim($a[$i]);
            }
        //print("$user/$domain domainlen=$domainlen userlen=$userlen<BR>");
 
@@ -238,7 +240,7 @@ function AddUsersFromDomainForm()
               print("<OPTION VALUE=\"$user\"> $user");
           }
      }
-  fclose($finp);
+//  fclose($finp);
   print("</SELECT>\n");
   print("<P>" );
 

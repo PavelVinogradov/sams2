@@ -1,1 +1,2 @@
-free | grep Mem: 
+STR=`free | grep Mem:`
+echo $STR 

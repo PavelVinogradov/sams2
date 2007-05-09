@@ -15,24 +15,15 @@ function TestPDC()
   print("<H1>TEST PDC</H1>");
 
   $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $test=exec("getwbinfousers $e");
-  
+  $value=exec("getwbinfousers $e");
+  $a=explode(" ",$value);
+  $acount=count($a);
+	  
   if($auth=="ntlm")
     {
-//      exec("$SAMSConf->WBINFOPATH/wbinfo -u > data/userlist");
-      $finp=fopen("data/userlist","r");
-      if($finp==FALSE)
-        {
-          echo "can't open file data/userlist<BR>";
-          exit(0);
-        }
-      while(feof($finp)==0)  
-         {
-           $string=fgets($finp,10000);
-           print("$string<BR>\n");
+      for($i=0;$i<$acount;$i++)
+         print("$a[$i]<BR>\n");
 
-         }
-      fclose($finp);
    }   
  if($auth=="adld")
     {

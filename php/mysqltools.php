@@ -17,6 +17,7 @@ function ExecuteFunctions($path, $mask, $id)
                 {
 		  if(strpos($file, $mask)==0)
 		    {  
+//echo "$count: $file <BR>";
 		  	$files[$count]=$file;
 		  	$count++;
 		    }
@@ -26,6 +27,7 @@ function ExecuteFunctions($path, $mask, $id)
    sort($files);  
    for($i=0;$i<$count;$i++)
      {
+//echo "$i/$count: $files[$i] <BR>";
 	if(strstr($files[$i],"~")==NULL)
 	{ 	
 	    $funcname=str_replace(".php","",$files[$i]);		

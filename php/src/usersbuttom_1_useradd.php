@@ -24,6 +24,7 @@ function GetDomainUsersList()
   else
       {
 #################   
+
          require_once("adldap.php");
          $adldap = new adLDAP();
 
@@ -38,7 +39,6 @@ function GetDomainUsersList()
               $info = $adldap->all_users(true);
             $groupinfo=$adldap->all_groups(true);
           }
-	unlink("./data/userlist");
         for($i=1;$i<$info[0]*2+1;$i++)
              {
 	       $user=$info[$i];
@@ -52,24 +52,26 @@ function GetDomainUsersList()
       }
       
       
-      
-  $finp=fopen("data/userlist","r");
+  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
+  $value=exec("getwbinfousers $e");
+  $a=explode(" ",$value);
+  $acount=count($a);
+	      
   print("<SELECT NAME=\"usernick\" ID=\"usernick\" SIZE=1 >\n");
-  while(feof($finp)==0)
-     {
-       $string=fgets($finp,10000);
+  for($i=0;$i<$acount;$i++)
+       {
        if($SAMSConf->NTLMDOMAIN=="Y")
 	 {
-		if(strstr($string,"+")!=NULL)
+		if(strstr($a[$i],"+")!=NULL)
 		  {
-			$domain=trim(strtok($string,"+"));
+			$domain=trim(strtok($a[$i],"+"));
            		$user=trim(strtok("+"));
            		$domainlen=strlen($domain);
            		$userlen=strlen($user);
 		  }
 		else
 		  {
-			$domain=trim(strtok($string,"\\"));
+			$domain=trim(strtok($a[$i],"\\"));
            		$user=trim(strtok("\\"));
            		$domainlen=strlen($domain);
            		$userlen=strlen($user);
@@ -84,7 +86,7 @@ function GetDomainUsersList()
       else
 	 {
            $domain="$SAMSConf->DEFAULTDOMAIN==";
-           $user=trim($string);
+           $user=trim($a[$i]);
            //$user=strtolower($user);
          }
 
@@ -102,7 +104,6 @@ function GetDomainUsersList()
 
      }
   print("</SELECT>\n");
-  fclose($finp);
 }
 
 
@@ -374,7 +375,6 @@ function NewUserForm()
 function usersbuttom_1_useradd()
 {
   global $SAMSConf;
-  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
