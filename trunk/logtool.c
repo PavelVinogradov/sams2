@@ -608,17 +608,29 @@ void ReplaceURL(char *url, char *user, char *domain)
      }
 }
 
+/* @brief Determine index in global array users for passed username 
+ *
+ * @arg char* username - Raw tested username
+ * @arg char* domain   - User domain (for NTLM and NCSA auth only)
+ * @arg char* ipaddr   - User ip-address
+ * @arg int   type     - Auth type. One of AUTH_TYPE_[IP|NTML|NCSA]
+ *
+ * @return int Index+1 of user in global array users
+ * @see LocalIPAddr, url_decode
+ *
+ * use global samsuserscount, users
+ */
 int ReturnSAMSUser(char *username, char *domain, char *ipaddr, int type)
 {
   int i;
   struct local_url host;
   
-  if(type==0)
+  if(type==AUTH_TYPE_IP)
     {
       LocalIPAddr(ipaddr,&host.ip[0],&host.mask[0]);
     }  
 
-  if(type>0)
+  if(type != AUTH_TYPE_IP)
     {
       if(strlen(username)>0)
         url_decode(username);
@@ -626,39 +638,38 @@ int ReturnSAMSUser(char *username, char *domain, char *ipaddr, int type)
 
   for(i=0;i<samsuserscount;i++)
     {
-      if(type==0)
-        {
-
-               if(users[i].ip[0]==host.ip[0]&&users[i].ip[1]==host.ip[1]&&users[i].ip[2]==host.ip[2]&&users[i].ip[3]==host.ip[3])
-                  {
-//printf("ipauth>0 %d=%d %d=%d %d=%d %d=%d\n",users[i].ip[0],host.ip[0],users[i].ip[1],host.ip[1],users[i].ip[2],host.ip[2],users[i].ip[3],host.ip[3]);
-                    return(i+1);
-                  }
-        }
-      if(type==2)
-        {
-          if((users[i].ncsaauth>0)||users[i].ntlmauth>0||users[i].adldauth>0)
+      switch (type) {
+        
+	case AUTH_TYPE_IP:
+	  if(users[i].ip[0]==host.ip[0]&&users[i].ip[1]==host.ip[1]&&users[i].ip[2]==host.ip[2]&&users[i].ip[3]==host.ip[3])
             {
-               if(strcmp(username,users[i].user)==0)
-                 {
-//printf("    ncsa auth>0   %s = %s\n", username, users[i].user);
-                   return(i+1);
-                 }
-	    }
-        }
-      if(type==1)
-        {
+		//printf("ipauth>0 %d=%d %d=%d %d=%d %d=%d\n",users[i].ip[0],host.ip[0],users[i].ip[1],host.ip[1],users[i].ip[2],host.ip[2],users[i].ip[3],host.ip[3]);
+                return(i+1);
+            }
+        break;
+
+	case AUTH_TYPE_NTLM:
           if((users[i].ntlmauth>0&&NTLMDOMAIN!=0)||(users[i].adldauth>0&&NTLMDOMAIN!=0))
             {
                if(strcmp(username,users[i].user)==0&&strcmp(domain,users[i].domain)==0)
                  {
-//printf("    ntlm auth>0   %s = %s\n", username, users[i].user);
+		   //printf("    ntlm auth>0   %s = %s\n", username, users[i].user);
                    return(i+1);
                  }
 	    }
-        }
+        break;
+
+	case AUTH_TYPE_NCSA:
+          if(strcmp(username,users[i].user)==0)
+            {
+		//printf("    ncsa auth>0   %s = %s\n", username, users[i].user);
+                return(i+1);
+            }
+	break;
+      }
     }
- return(0);
+
+  return(0);
 }
 
 
