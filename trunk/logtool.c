@@ -85,6 +85,10 @@ struct samsusers *users;
 struct local_url *local;
 struct dns_cache *dns;
 
+#define AUTH_TYPE_IP 0
+#define AUTH_TYPE_NTLM 1
+#define AUTH_TYPE_NCSA 2
+
 int DNSDB;
 int DNSDBMAX;
 int NODNSSERVER;
