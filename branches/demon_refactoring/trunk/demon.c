@@ -95,22 +95,28 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
   return(0);
 }
 
-
+/* @brief Return address of last parsed line in logfile
+ *
+ * Use global variable path, defined as char path[1024] in logtool.c
+ * @see trim
+ */
 long GetNewEndValue()
 {
   long value;
   FILE *finp;
 
-  trim(&path[0]);
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
+  trim(&path[0]);
+
   if((finp=fopen( &path[0], "rb" ))==NULL)
     {
-         printf("Don't open file %s/%s\n",conf.logdir,conf.logfile);
+         printf("Can't open file %s/%s\n",conf.logdir,conf.logfile);
          return(0);
     }
   fseek(finp,0,SEEK_END);
   value=ftell(finp);
   fclose(finp);
+
   return(value);
 }
 
