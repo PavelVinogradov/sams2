@@ -493,20 +493,20 @@ void LoadFile(MYSQL *conn,char *filename)
                       {
                         domain=strtok(STR[7],"+");
                         user=strtok(NULL,"+");
-                        samsuser=ReturnSAMSUser(user, domain, STR[2], 1);
+                        samsuser=ReturnSAMSUser(user, domain, STR[2], AUTH_TYPE_NTLM);
                         userflag=1;
                       }
                     else if(strstr(STR[7],"\\")!=0)
                       {
                         domain=strtok(STR[7],"\\");
                         user=strtok(NULL,"\\");
-                        samsuser=ReturnSAMSUser(user,domain, STR[2], 1);
+                        samsuser=ReturnSAMSUser(user,domain, STR[2], AUTH_TYPE_NTLM);
                         userflag=1;
                       }
 		    else
 		      {
                         strcpy(str,STR[7]);
-                        if((samsuser=ReturnSAMSUser(str,"", STR[2], 2))>0)
+                        if((samsuser=ReturnSAMSUser(str,"", STR[2], AUTH_TYPE_NCSA))>0)
                           {
                              domain=users[samsuser-1].domain;
                              user=users[samsuser-1].user;
@@ -519,7 +519,7 @@ void LoadFile(MYSQL *conn,char *filename)
 
                 if(userflag==0)
                   {
-                     if((samsuser=ReturnSAMSUser("","", STR[2], 0))>0)
+                     if((samsuser=ReturnSAMSUser("","", STR[2], AUTH_TYPE_IP))>0)
                        {
                           domain=users[samsuser-1].domain;
                           user=users[samsuser-1].user;
