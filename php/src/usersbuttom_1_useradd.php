@@ -19,49 +19,28 @@ function GetDomainUsersList()
   if($SAMSConf->AUTH=="ntlm")
      {
 	$e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-	$test=exec("getwbinfousers $e");
+	$value=exec("getwbinfousers $e");
+	$a=explode(" ",$value);
+	$acount=count($a);
      }
   else
       {
-#################   
-
          require_once("adldap.php");
-         $adldap = new adLDAP();
+         //create the LDAP connection
+ 	  $pdc=array("$SAMSConf->LDAPSERVER");
+	  $options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+	  ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
 
-         if ($adldap -> authenticate($SAMSConf->LDAPUSER,$SAMSConf->LDAPUSERPASSWD))
-          {
-            if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
-              {
-                $adldap->_GROUP="$ldapgroup";
-                $info = $adldap->group_users(true);
-              }
-            else  
-              $info = $adldap->all_users(true);
-            $groupinfo=$adldap->all_groups(true);
-          }
-        for($i=1;$i<$info[0]*2+1;$i++)
-             {
-	       $user=$info[$i];
-               $i++;
-	       $username=$info[$i];
-		$e = escapeshellcmd("$user");
-		$test=exec("updateuserlist $e");
-	     }
-
-#################      
+	  $ldap=new adLDAP($options);
+	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	  $acount=count($a);
       }
-      
-      
-  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $value=exec("getwbinfousers $e");
-  $a=explode(" ",$value);
-  $acount=count($a);
 	      
   print("<SELECT NAME=\"usernick\" ID=\"usernick\" SIZE=1 >\n");
   for($i=0;$i<$acount;$i++)
-       {
-       if($SAMSConf->NTLMDOMAIN=="Y")
-	 {
+     {
+         if($SAMSConf->NTLMDOMAIN=="Y")
+	   {
 		if(strstr($a[$i],"+")!=NULL)
 		  {
 			$domain=trim(strtok($a[$i],"+"));

@@ -22,7 +22,6 @@ function AddUsersFromAdLDAP()
   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
   if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
-//  if(isset($_GET["domainname"])) $domainname=$_GET["domainname"];
 
   if($enabled=="on")
      $enabled=1;
@@ -31,7 +30,6 @@ function AddUsersFromAdLDAP()
   if(strlen($domainname)>1)
        $domain=$domainname;    
 
-  //print("userlist=$userlist usergroup=$usergroup  usershablon=$usershablon<BR>");
   $i=0;
 
   $result=mysql_query("SELECT traffic FROM shablons WHERE name=\"$usershablon\" ");
@@ -43,7 +41,7 @@ function AddUsersFromAdLDAP()
 
        $string=$userlist[$i];
        $i++;
-      $user=$string;
+       $user="$string";
 
        print("user=$user domain=$domain enabled=$enabled<BR>");
        
@@ -69,9 +67,11 @@ function AddUsersFromAdLDAP()
 			 squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
 		if($result!=FALSE)
                    UpdateLog("$SAMSConf->adminname","Added user $user ","01");
+
           }
 
      }
+
   print("<SCRIPT>\n");
   print(" parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
   print(" parent.lframe.location.href=\"lframe.php\"; \n");
@@ -99,39 +99,30 @@ function AddUsersFromAdLDAPForm()
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 Active Directory ");
   
-  require_once("adldap.php");
+   require_once("adldap.php");
+   //create the LDAP connection
+   $pdc=array("$SAMSConf->LDAPSERVER");
+   $options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+   ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+   $ldap=new adLDAP($options);
 
-//create the LDAP connection
- $adldap = new adLDAP();
- if($adldap==NULL)
-   {
-      print("Connection not created");
-      exit(0);
-   }
- else
-   {
-      print("Connection to AD server created <BR>");
-   }  
-
- echo ("Authenticated into AD as user $SAMSConf->LDAPUSER... \n");
-
-//authenticate a user
- if ($adldap -> authenticate($SAMSConf->LDAPUSER,$SAMSConf->LDAPUSERPASSWD))
-  {
-    echo (" OK!<br><br>\n");
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
       {
-        $adldap->_GROUP="$ldapgroup";
-        $info = $adldap->group_users(true);
+	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	  $acount=count($a);
       }
-    else  
-      $info = $adldap->all_users(true);
-//$rrr=$groupinfo[0]*2+1;
-//echo "groupinfo=$rrr";    
-    $groupinfo=$adldap->all_groups(true);
+    else
+      {
+	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	  $acount=count($a);
+      }
+
+    $groupinfo=$ldap->all_groups($include_desc = false, $search = "*", $sorted = true);
+    $gcount=count($groupinfo);
     
     print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
     
+/*
     print("<SCRIPT language=JAVASCRIPT>\n");
     print("function SelectADGroup(formname)\n");
     print("{\n");
@@ -145,29 +136,27 @@ function AddUsersFromAdLDAPForm()
     print("<TR><TD>Найдены группы домена:\n");
     print("<TD><SELECT NAME=\"addgroupname\">\n");
     print("<OPTION VALUE=\"_allgroups_\" SELECT> ALL GROUPS");
-    for($i=1;$i<$groupinfo[0]*2+1;$i++)
+    for($i=0;$i<$gcount;$i++)
       {
 	$groupname=$groupinfo[$i];
         print("<OPTION VALUE=\"$groupname\"> $groupname");
-        $i++;
       }
     print("</SELECT>\n");
     print("</TABLE>\n");
     print("<INPUT TYPE=\"BUTTON\" value=\"Выбрать пользователей группы\" onclick=SelectADGroup(AddDomainUsers)>\n");
     print("<P>\n");
-    
+*/    
     
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
       printf("<B>Найдены пользователи группы Active Directory: $ldapgroup</B><BR>");
     else
-      print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
+      print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
     print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
     
-    for($i=1;$i<$info[0]*2+1;$i++)
+    for($i=0;$i<$acount;$i++)
       {
-	$user=$info[$i];
-        $i++;
-	$username=$info[$i];
+	$user=$a[$i];
+	$username=$a[$i];
         $result=mysql_query("SELECT * FROM squidusers WHERE nick=\"$user\" ");
         if(mysql_num_rows($result)==0)  
 	  {
@@ -223,12 +212,6 @@ function AddUsersFromAdLDAPForm()
 
     print("<INPUT TYPE=\"SUBMIT\" value=\"$usersbuttom_1_domain_AddUsersFromDomainForm_5\">\n");
     print("</FORM>\n");
-  }
-else
-  {
-        echo (" <FONT COLOR=\"RED\">ERROR!<br><br></FONT>\n");
-
-  }
 
 	  
 	  
