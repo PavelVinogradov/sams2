@@ -147,14 +147,13 @@ class adLDAP {
 		
 		//bind as the user		
 		$this->_bind = @ldap_bind($this->_conn,$username.$this->_account_suffix,$password);
-		if (!$this->_bind){ return (false); }
+		if (!$this->_bind){return (false); }
 		
 		//once we've checked their details, kick back into admin mode if we have it
 		if ($this->_ad_username!=NULL && !$prevent_rebind){
 			$this->_bind = @ldap_bind($this->_conn,$this->_ad_username.$this->_account_suffix,$this->_ad_password);
 			if (!$this->_bind){ echo ("FATAL: AD rebind failed."); exit(); } //this should never happen in theory
 		}
-		
 		return (true);
 	}
 

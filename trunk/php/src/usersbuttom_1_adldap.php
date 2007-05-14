@@ -180,7 +180,7 @@ function AddUsersFromAdLDAPForm()
     print("<TR><TD>\n");
     print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_7\n");
     print("<TD>\n");
-    print("<INPUT TYPE=\"TEXT\" NAME=\"domainname\" id=Show VALUE=\"$SAMSConf->DEFAULTDOMAIN\">\n");
+    print("<INPUT TYPE=\"TEXT\" NAME=\"domainname\" id=Show VALUE=\"$SAMSConf->LDAPDOMAIN\">\n");
 
     print("<TR><TD>\n");
     print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");
