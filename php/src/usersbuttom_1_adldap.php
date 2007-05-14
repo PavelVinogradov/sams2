@@ -108,7 +108,8 @@ function AddUsersFromAdLDAPForm()
 
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
       {
-	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	  $a=$ldap->group_users($ldapgroup);
+//	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
 	  $acount=count($a);
       }
     else
@@ -122,7 +123,7 @@ function AddUsersFromAdLDAPForm()
     
     print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
     
-/*
+/* */
     print("<SCRIPT language=JAVASCRIPT>\n");
     print("function SelectADGroup(formname)\n");
     print("{\n");
@@ -145,7 +146,7 @@ function AddUsersFromAdLDAPForm()
     print("</TABLE>\n");
     print("<INPUT TYPE=\"BUTTON\" value=\"Выбрать пользователей группы\" onclick=SelectADGroup(AddDomainUsers)>\n");
     print("<P>\n");
-*/    
+/* */    
     
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
       printf("<B>Найдены пользователи группы Active Directory: $ldapgroup</B><BR>");
