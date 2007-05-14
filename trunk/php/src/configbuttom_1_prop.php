@@ -29,26 +29,34 @@ function TestPDC()
     {
        require_once("adldap.php");
        //create the LDAP connection
-       $adldap = new adLDAP();
-      
-      if ($adldap -> authenticate($SAMSConf->LDAPUSER,$SAMSConf->LDAPUSERPASSWD))
-        {
-           echo ("Authenticated into Active Directory... ok!<BR>\n");
-           echo ("Active Directory users found:<P>\n");
-           $info = $adldap->all_users(true);
-           for($i=1;$i<$info[0]*2+1;$i++)
-             {
-	       $user=$info[$i];
-               $i++;
-	       $username=$info[$i];
-               print(" $user <BR>");
-             }
-        } 
-      else
-        {
-           echo ("Authenticated into Active Directory... Error<BR>\n");
-	}   
-        
+
+ 	$pdc=array("$SAMSConf->LDAPSERVER");
+	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+
+	$ldap=new adLDAP($options);
+
+	$groups=$ldap->all_groups($include_desc = false, $search = "*", $sorted = true);
+	$gcount=count($groups);
+        print("<TABLE CLASS=samstable>");
+        print("<TH width=5%>No");
+        print("<TH >$SAMSConf->LDAPDOMAIN groups");
+	for($i=0;$i<$gcount;$i++)
+		echo "<TR><TD>$i:<TD>$groups[$i]<BR>";
+	echo "</TABLE><P>";
+
+	$users=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	$count=count($users);
+        print("<TABLE CLASS=samstable>");
+        print("<TH width=5%>No");
+        print("<TH >$SAMSConf->LDAPDOMAIN users");
+	for($i=0;$i<$count;$i++)
+   	{
+		//$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
+		//$mcount=count($userinfo);
+        	echo "<TR><TD>$i:<TD> $users[$i] <BR>";
+    	}
+	echo "</TABLE>";
    }
 }   
 

@@ -2,10 +2,14 @@
 /*
 	PHP LDAP CLASS FOR MANIPULATING ACTIVE DIRECTORY
 	Version 2.1
+	MODIFIED FOR SAMS
 	
 	Written by Scott Barnett
 	email: scott@wiggumworld.com
 	http://adldap.sourceforge.net/
+	Modified to SAMS by Dmitry Chemerik
+	email: chemerik@mail.ru
+	http://sams.perm.ru
 	
 	Copyright (C) 2006-2007 Scott Barnett
 	
@@ -106,22 +110,29 @@ class adLDAP {
 		ldap_set_option($this->_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->_conn, LDAP_OPT_REFERRALS, 0);
 		
+	        echo ("Connect to AD as $this->_ad_username$this->_account_suffix: ");
 		//bind as a domain admin if they've set it up
 		if ($this->_ad_username!=NULL && $this->_ad_password!=NULL)
 		{
 			$this->_bind = @ldap_bind($this->_conn,$this->_ad_username.$this->_account_suffix,$this->_ad_password);
 			if (!$this->_bind)
-			{
+			  {
 				if ($this->_use_ssl)
 				{
+			                echo (" <FONT COLOR=\"RED\">ERROR</FONT><BR>");
 					//if you have problems troubleshooting, remove the @ character from the ldap_bind command above to get the actual error message
 					echo ("FATAL: AD bind failed. Either the LDAPS connection failed or the login credentials are incorrect."); exit();
 				} 
 				else 
 				{
+			                echo (" <FONT COLOR=\"RED\">ERROR</FONT><BR>");
 					echo ("FATAL: AD bind failed. Check the login credentials."); exit();
 				}
-			}
+			  }
+			else
+			  {
+			   echo (" OK<BR>");
+			  }
 
 		}
 		return (true);
@@ -474,7 +485,7 @@ class adLDAP {
 	// Returns all AD users
 	function all_users($include_desc = false, $search = "*", $sorted = true){
 		if (!$this->_bind){ return (false); }
-		
+
 		//perform the search and grab all their details
 		$filter = "(&(objectClass=user)(samaccounttype=". ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)(cn=".$search."))";
 		$fields=array("samaccountname","displayname");
@@ -482,6 +493,7 @@ class adLDAP {
 		$entries = ldap_get_entries($this->_conn, $sr);
 
 		$users_array = array();
+$acount=$entries["count"];
 		for ($i=0; $i<$entries["count"]; $i++){
 			if ($include_desc && strlen($entries[$i]["displayname"][0])>0){
 				$users_array[ $entries[$i]["samaccountname"][0] ] = $entries[$i]["displayname"][0];
@@ -491,6 +503,7 @@ class adLDAP {
 				array_push($users_array, $entries[$i]["samaccountname"][0]);
 			}
 		}
+
 		if ($sorted){ asort($users_array); }
 		return ($users_array);
 	}
@@ -671,44 +684,34 @@ class adLDAP {
 		}
 		return ($group_array);	
 	}
+
+
+	function group_users($groupname)
+	{
+		$group_array=array();
+
+		$allusers=$this->all_users($include_desc = false, $search = "*", $sorted = true);
+                $acount=count($allusers);
+                for($i=0, $j=0;$i<$acount;$i++)
+		{
+			$value=$this->user_ingroup($allusers[$i],$groupname,$recursive=NULL);
+			if($value!=FALSE)
+			{
+				$group_array[$j]=$allusers[$i];
+				$j++;
+			}
+		}
+		if($j>0)
+			return ($group_array);
+		else
+			return false;
+	}
+
+
+
+
+
 	
 } // End class
-/*
-echo "<HTML><BODY>";
-echo "<H1>ADLDAP test</H1>";
-global $SAMSConf;
-require('./mysqltools.php');
-$SAMSConf=new SAMSCONFIG();
-
-//$pdc=array("192.168.0.2");
-//$options=array(account_suffix=>"@security.loc", base_dn=>"DC=security,DC=loc",domain_controllers=>$pdc, 
-//ad_username=>"Administrator",ad_password=>"rdfhnbhf","","","");
-
-$pdc=array("$SAMSConf->LDAPSERVER");
-$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
-ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
-
-$ldap=new adLDAP($options);
-
-
-//$fields=array("firstname","surname");
-$users=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
-$count=count($users);
-echo "found $count users:<BR>";
-for($i=0;$i<$count;$i++)
-   {
-	//$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
-	//$mcount=count($userinfo);
-        echo "$i: $users[$i] $mcount -$userinfo[firstname]-$userinfo[surname]-$userinfo[memberof]-<BR>";
-    }
-$groups=$ldap->all_groups($include_desc = false, $search = "*", $sorted = true);
-$gcount=count($groups);
-echo "found $gcount groups:<BR>";
-for($i=0;$i<$gcount;$i++)
-	echo "$i: $groups[$i]<BR>";
-
-
-echo "</BODY></HTML>";
-*/
 
 ?>
