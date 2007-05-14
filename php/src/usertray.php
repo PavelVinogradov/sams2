@@ -16,10 +16,13 @@ function NotUsersTreeUserAuth()
   $SAMSConf->domainusername="";
   if($SAMSConf->AUTH=="adld")
     {
-       require_once("adldap.php");
-      $group="Users";
-      $adldap = new adLDAP();
-      if ($adldap -> authenticate($userdomain,$password))
+	require_once("adldap.php");
+	//create the LDAP connection
+	$pdc=array("$SAMSConf->LDAPSERVER");
+	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+	$ldap=new adLDAP($options);
+      if ($ldap->authenticate($userdomain,$password))
          {
             $aflag=1;
            $SAMSConf->domainusername=$userdomain;
@@ -258,9 +261,15 @@ function UserAuth()
      }
   if($SAMSConf->AUTH=="adld")
     {
-        require_once("adldap.php");
-        $adldap = new adLDAP();
-        if($adldap==NULL)
+
+	require_once("adldap.php");
+	//create the LDAP connection
+	$pdc=array("$SAMSConf->LDAPSERVER");
+	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+	$ldap=new adLDAP($options);
+
+        if($ldap==NULL)
           {
              //print("Connection not created!");
              exit(0);
@@ -270,8 +279,7 @@ function UserAuth()
             $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,id FROM squidusers WHERE id=\"$id\" ");
             $row=mysql_fetch_array($result);
 
-	    
-	    if($adldap -> authenticate( $row['nick'], $password ))
+	    if($ldap -> authenticate( $row['nick'], $password ))
             {
               $SAMSConf->domainusername=$row['nick'];
             }
