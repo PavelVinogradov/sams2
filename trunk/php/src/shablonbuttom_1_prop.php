@@ -157,7 +157,7 @@ function UpdateShablonForm()
   
   print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
   print("<INPUT TYPE=\"CHECKBOX\" NAME=\"alldenied\" onclick=EnableDeniedLists(UPDATESHABLON) $DENIEDCHECKED>\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>Доступ запрещен ко всем URL \n");
+  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_22 \n");
   
   print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
   print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_9 \n");
@@ -247,7 +247,7 @@ function UpdateShablonForm()
   $acount=0;
   print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
 //  print("<INPUT TYPE=\"RADIO\" NAME=\"denied\" VALUE=\"allowed\"  onclick=DisableDeniedLists(UPDATESHABLON) $ALLOWCHECKED>\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B> Запрет загрузки файлов по расширениям\n");
+  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B> $shablonbuttom_1_prop_UpdateShablonForm_23\n");
   $result=mysql_query("SELECT name,filename,type FROM redirect WHERE type=\"files\" ");
   while($row=mysql_fetch_array($result))
       {

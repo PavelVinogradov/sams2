@@ -207,7 +207,6 @@ function NewShablonForm()
   
       
 /* calendar */  
-  //print("<B><FONT SIZE=+1>Режим работы</B></FONT>\n");
   print("<P><B>$shablonbuttom_1_prop_UpdateShablonForm_14 \n");
   print("<TABLE  BORDER=0>\n");
   print("<TR>\n");
