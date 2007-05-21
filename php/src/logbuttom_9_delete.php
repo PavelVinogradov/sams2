@@ -22,7 +22,7 @@ function ClearLog()
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
   $result=mysql_query("DELETE FROM ".$SAMSConf->SAMSDB.".log WHERE date>=\"$sdate\"&&date<=\"$edate\"");
-  print("<H3>Удалены логи</H3> $traffic_2 $bdate $traffic_3 $eddate ");
+  print("<H3>$logbuttom_9_delete_ClearLog_1:</H3> $traffic_2 $bdate $traffic_3 $eddate ");
 //  UpdateLog("$SAMSConf->adminname","$squidbuttom_3_delete_ClearSquidLog_1 $traffic_2 $sday.$smon.$syea $traffic_3 $eday.$emon.$eyea","03");
 }
 

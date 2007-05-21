@@ -776,6 +776,15 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablonnew_NewShablonForm_17="select default authorisation method into SAMS settings";
 
   $shablonbuttom_1_prop_UpdateShablonForm_21=" Access allowed lists to file extensions";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1="LDAP Domain groups:";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2="Select group";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_3="Active Directory users";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4="Users of Active directory group";
+  $shablonbuttom_1_prop_UpdateShablonForm_22="Access is forbidden to all URL";
+  $shablonbuttom_1_prop_UpdateShablonForm_23="Interdiction of loading files on expansions";
+  $logbuttom_9_delete_ClearLog_1="Logs removed ";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

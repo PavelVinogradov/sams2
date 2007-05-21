@@ -366,7 +366,6 @@ if($user=="exe"&&$function!="setcookie")
            require($req);
         $function();
   }
-
 // reload LEFT & DOWN frames
 if($function=="setcookie")
   {

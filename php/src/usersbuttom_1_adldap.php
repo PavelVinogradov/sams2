@@ -134,7 +134,7 @@ function AddUsersFromAdLDAPForm()
     print("}\n");
     print("</SCRIPT> \n");
     print("<TABLE>\n");
-    print("<TR><TD>Найдены группы домена:\n");
+    print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1\n");
     print("<TD><SELECT NAME=\"addgroupname\">\n");
     print("<OPTION VALUE=\"_allgroups_\" SELECT> ALL GROUPS");
     for($i=0;$i<$gcount;$i++)
@@ -144,12 +144,12 @@ function AddUsersFromAdLDAPForm()
       }
     print("</SELECT>\n");
     print("</TABLE>\n");
-    print("<INPUT TYPE=\"BUTTON\" value=\"Выбрать пользователей группы\" onclick=SelectADGroup(AddDomainUsers)>\n");
+    print("<INPUT TYPE=\"BUTTON\" value=\"$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2\" onclick=SelectADGroup(AddDomainUsers)>\n");
     print("<P>\n");
 /* */    
     
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
-      printf("<B>Найдены пользователи группы Active Directory: $ldapgroup</B><BR>");
+      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $ldapgroup</B><BR>");
     else
       print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
     print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
