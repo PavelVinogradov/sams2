@@ -34,7 +34,10 @@ function EditURLFromList()
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
-  
+
+   $oldvalue = UnecranChars ($oldvalue);
+   $url = UnecranChars ($url);
+
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
@@ -46,7 +49,7 @@ function EditURLFromList()
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");
   print("</SCRIPT> \n");
-
+  
 }
  
  
@@ -148,6 +151,8 @@ function AddURLFromList()
   if(isset($_GET["execute"])) $execute=$_GET["execute"];
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];
 
+  $url = UnecranChars($url);
+
   if(strlen($url)>0)
     {   
       $SAMSConf->access=UserAccess();
@@ -161,8 +166,9 @@ function AddURLFromList()
       $row=mysql_fetch_array($result);
       UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row[name] $urllistfunction_AddURLFromList_2 $url","02");
     }
+  
   print("<SCRIPT>\n");
-     print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");
+    print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");
   print("</SCRIPT> \n");
 
 }
@@ -181,11 +187,11 @@ function DeleteURLFromList()
   if(isset($_GET["exefilename"])) $exefilename=$_GET["exefilename"];
   if(isset($_GET["deletedurl"])) $deletedurl=$_GET["deletedurl"];
 
-  print("type=$type url=$url");
+  $deletedurl = UnecranChars ($deletedurl);
+
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
-  print("<h1>URL=$url / $type $deletedurl</h1>");
   $result=mysql_query("DELETE FROM urls WHERE urls.url=\"$deletedurl\"&&urls.type=\"$type\" ");
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
   $row=mysql_fetch_array($result);
@@ -194,7 +200,7 @@ function DeleteURLFromList()
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&function=$execute&filename=$exefilename&id=$type\";\n");
   print("</SCRIPT> \n");
-
+ 
 }
 
 
