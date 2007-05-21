@@ -18,7 +18,17 @@ function EkranChars($string)
      }
   return($newstring);
 } 
- 
+
+function EcranChars ($string)
+{
+	return (str_replace ("\\", "\\\\", $string));
+}
+
+function UnecranChars($string)
+{
+	return (str_replace("\\\\", "\\", $string));
+} 
+
 function ContextListForm()
 {
   global $SAMSConf;
