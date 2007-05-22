@@ -96,13 +96,13 @@ function AddNewList()
    if($SAMSConf->access!=2)     {       exit;     }
 
   $id=TempName();
-  print("<BR> INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
+  //print("<BR> INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
   $result=mysql_query("INSERT INTO redirect SET name=\"$name\",filename=\"$id\",type=\"$type\" ") || die (mysql_error());
   UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
   //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
 
-//tray.php?show=deniedlisttray&id=$row[filename]
+  //tray.php?show=deniedlisttray&id=$row[filename]
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
   print("  parent.tray.location.href=\"tray.php?show=exe&function=$execute&id=$id\";\n");
