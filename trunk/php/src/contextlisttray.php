@@ -26,7 +26,12 @@ function EcranChars ($string)
 
 function UnecranChars($string)
 {
-	return (str_replace("\\\\", "\\", $string));
+	// Check is magic_quotes_gpc = On
+	if (get_magic_quotes_gpc () ) {
+		return ( stripslashes ($string) );
+	} else {
+		return ($string);
+	}
 } 
 
 function ContextListForm()
