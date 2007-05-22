@@ -5,16 +5,6 @@
  * (see the file 'main.php' for license details)
  */
 
-global $KBSIZE;
-global $SAMSDB;
-global $LOGDB;
-global $MYSQLHOSTNAME;
-global $MYSQLUSER;
-global $MYSQLPASSWORD;
-global $LANG;
-global $ICONSET;
-
-
 if(isset($_GET["id"])) $id=$_GET["id"];
 if(isset($_GET["action"])) $action=$_GET["action"];
 if(isset($_GET["ip"])) $ip=$_GET["ip"];
@@ -22,13 +12,21 @@ if(isset($_GET["user"])) $user=$_GET["user"];
 if(isset($_GET["url"])) $url=$_GET["url"];
 
   require('../../mysqltools.php');
-  LoadConfig();
+
+  $SAMSConf = new SAMSCONFIG();
+    
+  $SAMSConf->LoadConfig();
+
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT denied_to FROM sams ");
   $row=mysql_fetch_array($result);
   $start=strpos($row['denied_to'],"messages");
   $path=substr($row['denied_to'],0,$start);
+
+  $ICONSET = $SAMSConf->ICONSET;
+  $KBSIZE = $SAMSConf->KBSIZE;
+  $LANG = $SAMSCong->LANG;
 
 print("  <HTML><HEAD>");
 
