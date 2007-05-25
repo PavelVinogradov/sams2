@@ -163,10 +163,15 @@ class SAMSCONFIG
               $str2=trim(strtok($string,"="));
 	      $LDAPBASEDN_=trim(strtok("="));
 	      $LDAPDOMAIN=$LDAPBASEDN_;
-              $LDAPBASEDN1=strtok($LDAPBASEDN_,".");
-              $LDAPBASEDN2=strtok(".");
 	      $this->LDAPDOMAIN=$LDAPDOMAIN;
-	      $this->LDAPBASEDN="DC=$LDAPBASEDN1,DC=$LDAPBASEDN2";
+              $LDAPBASEDN2=strtok($LDAPBASEDN_,".");
+	      $this->LDAPBASEDN="DC=$LDAPBASEDN2";
+		while(strlen($LDAPBASEDN2)>0)
+		{
+			$LDAPBASEDN2=strtok(".");
+			if(strlen($LDAPBASEDN2)>0)
+	      			$this->LDAPBASEDN="$this->LDAPBASEDN,DC=$LDAPBASEDN2";
+		}
            }
        }
       fclose($finp);

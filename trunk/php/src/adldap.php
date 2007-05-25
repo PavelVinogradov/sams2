@@ -110,7 +110,7 @@ class adLDAP {
 		ldap_set_option($this->_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->_conn, LDAP_OPT_REFERRALS, 0);
 		
-	        echo ("Connect to AD as $this->_ad_username$this->_account_suffix: ");
+	        echo ("Connect  to AD as $this->_ad_username$this->_account_suffix: ");
 		//bind as a domain admin if they've set it up
 		if ($this->_ad_username!=NULL && $this->_ad_password!=NULL)
 		{
@@ -484,16 +484,15 @@ class adLDAP {
 	// Returns all AD users
 	function all_users($include_desc = false, $search = "*", $sorted = true){
 		if (!$this->_bind){ return (false); }
-
 		//perform the search and grab all their details
 		$filter = "(&(objectClass=user)(samaccounttype=". ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)(cn=".$search."))";
 		$fields=array("samaccountname","displayname");
 		$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
 		$entries = ldap_get_entries($this->_conn, $sr);
-
 		$users_array = array();
-$acount=$entries["count"];
-		for ($i=0; $i<$entries["count"]; $i++){
+		$acount=$entries["count"];
+		for ($i=0; $i<$entries["count"]; $i++)
+		{
 			if ($include_desc && strlen($entries[$i]["displayname"][0])>0){
 				$users_array[ $entries[$i]["samaccountname"][0] ] = $entries[$i]["displayname"][0];
 			} elseif ($include_desc){
