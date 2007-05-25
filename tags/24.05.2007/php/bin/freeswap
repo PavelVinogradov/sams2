@@ -1,0 +1,2 @@
+STR=`free | grep Swap:`
+echo $STR 

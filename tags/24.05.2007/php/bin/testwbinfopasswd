@@ -1,0 +1,4 @@
+#$1/wbinfo -a $2%$3 &> ./data/passwd
+#echo "$1/wbinfo -a $2%$3" >> ./data/passwd
+
+echo "$1/wbinfo"
