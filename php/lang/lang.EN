@@ -674,6 +674,21 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $userbuttom_6_chpasswd_ChUserPasswdForm_1="Change password to the user ";
   $userbuttom_6_chpasswd_ChUserPasswd_1="The user password has been changed";
 
+// File EN/blocked.php
+  $blocked_php_1="User";
+  $blocked_php_2="Access to proxy disabled";
+  $blocked_php_3="Access to URL";
+  $blocked_php_4="disabled";
+  $blocked_php_5="You are switch off";
+  $blocked_php_6="Quota limit exceed";
+  $blocked_php_7="receive:";
+  $blocked_php_8="Access to this URL is restricted";
+  $blocked_php_9="You can't access to proxy in sthi day of week";
+  $blocked_php_10="or proxy access time diapason exceed";
+  $blocked_php_11="quota:";
+  $blocked_php_12="Mb";
+  $blocked_php_13="Kb";
+
 //  $adminbuttom_1_prop_SamsReConfigForm_44="User domain into access.log is entered with the םבלומרכיםי ÂÕË×ÁÍÉ";
   $adminbuttom_1_prop_SamsReConfigForm_20="User domain into access.log is entered with the";
   $adminbuttom_1_prop_SamsReConfigForm_20a="CAPITAL";
