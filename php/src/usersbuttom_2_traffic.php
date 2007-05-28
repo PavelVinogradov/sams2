@@ -235,13 +235,15 @@ function UsersTrafficPeriod()
              $aaa=FormattedString("$row[1]");
              RTableCell($aaa,15);
 	   }   
-	 PrintFormattedSize($row[0]-$row[1]);
+	 if($SAMSConf->realtraffic=="real")
+	   PrintFormattedSize($row[0]-$row[1]);
+	 else
+	   PrintFormattedSize($row[0]);
          
 	 print("</TR>");
          $count=$count+1;
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
-         $traf=$traf+$row[0]-$row[1];
        }
   print("<TR>");
   print("<TD>");
@@ -255,7 +257,10 @@ function UsersTrafficPeriod()
       $aaa=FormattedString("$hitsize");
       RBTableCell($aaa,15);
     }   
-  PrintFormattedSize($traf);
+  if($SAMSConf->realtraffic=="real")
+    PrintFormattedSize($size2 - $hitsize);
+  else
+    PrintFormattedSize($size2);
   
   print("</TABLE>");
 

@@ -119,7 +119,10 @@ function GroupTrafficPeriod()
              $aaa=FormattedString("$row[2]");
              RTableCell($aaa,20);
 	   }
-	 PrintFormattedSize($row[3]-$row[2]);
+	 if($SAMSConf->realtraffic=="real")
+  	   PrintFormattedSize($row[3]-$row[2]);
+	 else
+	   PrintFormattedSize($row[3]);
          
 	 print("</TR>");
          $count=$count+1;
@@ -138,7 +141,10 @@ function GroupTrafficPeriod()
       $aaa=FormattedString("$hitsize");
       RBTableCell($aaa,20);
     }  
-  PrintFormattedSize($size2-$hitsize);
+  if($SAMSConf->realtraffic=="real")
+    PrintFormattedSize($size2-$hitsize);
+  else
+    PrintFormattedSize($size2);
   print("</TABLE>");
 
 }

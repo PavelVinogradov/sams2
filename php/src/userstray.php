@@ -149,10 +149,10 @@ function AllUsersForm()
          if($SAMSConf->access==2)
            {
 	    if($SAMSConf->realtraffic=="real")
-	        $traffic=$row['size']-$row['hit'];
+	        PrintFormattedSize($row['size']-$row['hit']);
             else
-	        $traffic=$row['size'];
-	     PrintFormattedSize($traffic);
+	        PrintFormattedSize($row['size']);
+
              
 	     if($row['quotes']>0)
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
