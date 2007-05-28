@@ -133,7 +133,7 @@ function UserGroupForm()
 	 if($SAMSConf->access==2||$ga==1)
            {
 	    if($SAMSConf->realtraffic=="real")
-	     	PrintFormattedSize($row['size'] - $row['hit');
+	     	PrintFormattedSize($row['size'] - $row['hit']);
 	    else
 		PrintFormattedSize($row['size']);
              
