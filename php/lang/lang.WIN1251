@@ -1,9 +1,9 @@
 <?php
-#LANGUAGE:Russian CP1251
-#NTLMCHARSETENCODER:"iconv -f CP1251 -t 866"
+#LANGUAGE:Russian WINDOWS-1251
+#NTLMCHARSETENCODER:"iconv -f WINDOWS-1251 -t 866"
 
- $CHARSET="CP1251";
- $langtest="CP1251";
+ $CHARSET="WINDOWS-1251";
+ $langtest="WINDOWS-1251";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
@@ -754,6 +754,9 @@
   $blocked_php_8="Доступ к данному URL запрещен";
   $blocked_php_9="Вы не можете получить доступ к прокси серверу в этот день недели";
   $blocked_php_10="или истекло время доступа к прокси-серверу";
+  $blocked_php_11="лимит:";
+  $blocked_php_12="Мб";
+  $blocked_php_13="Кб";
 
   $usersbuttom_2_traffic_UsersTrafficPeriod_8="Фамилия";
   
