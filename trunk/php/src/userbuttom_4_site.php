@@ -81,7 +81,10 @@ function SiteUserList()
          LTableCell("$row[user]",20);
          $aaa=FormattedString("$row[size]");
          RTableCell($aaa,20);
-         PrintFormattedSize($row['size']-$row['hit']);         
+	 if($SAMSConf->realtraffic=="real")
+           PrintFormattedSize($row['size']-$row['hit']);
+	 else
+	   PrintFormattedSize($row['size']);
 	 print("<TD ALIGN=\"LEFT\" bgcolor=blanchedalmond onclick=EditURL(\"$row[url]\")> &nbsp;$row[3] \n");
        }
    print("</TABLE>");
@@ -162,7 +165,11 @@ function UserSitesPeriod()
              $aaa=FormattedString("$row[hit_size]\n");
              RTableCell("$aaa",15);
            }
-	 PrintFormattedSize($row['url_size']-$row['hit_size']);         
+	 if($SAMSConf->realtraffic=="real")
+	   PrintFormattedSize($row['url_size']-$row['hit_size']);
+	 else
+	   PrintFormattedSize($row['url_size']);
+	   
          if($SAMSConf->access==2)
            TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&username=$username\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
          if($SAMSConf->access==1)
@@ -182,7 +189,11 @@ function UserSitesPeriod()
       $aaa=FormattedString($cache);
       RBTableCell($aaa,15);
    }      
- PrintFormattedSize($counter-$cache);         
+ if($SAMSConf->realtraffic=="real")
+   PrintFormattedSize($counter-$cache);
+ else
+   PrintFormattedSize($counter);
+   
  print("<TD>");
  print("</TABLE>");
 
