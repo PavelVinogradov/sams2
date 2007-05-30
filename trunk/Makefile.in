@@ -233,6 +233,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 		rm -f  $(datadir)/sams/src/adminbuttom_1_prop.php; \
 	fi
 	chmod 777 $(datadir)/sams/data; 
+	chmod ugo+x $(datadir)/sams/bin/*;
 	rm -f $(datadir)/sams/data/*;
 	cp -R doc $(datadir)/sams/;
 	-@if test ! -d $(HTTPDPATH)/sams; then \
@@ -279,6 +280,7 @@ update-binPROGRAMS:
 		rm -f  $(datadir)/sams/src/adminbuttom_1_prop.php; \
 	fi
 	chmod 777 $(datadir)/sams/data; 
+	chmod ugo+x $(datadir)/sams/bin/*;
 	rm -f $(datadir)/sams/data/*;
 	cp -R doc $(datadir)/sams/;
 
