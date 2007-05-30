@@ -31,52 +31,18 @@ function NotUsersTreeUserAuth()
   if($SAMSConf->AUTH=="ntlm")
     {
       
-//  $e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-//  $aaa=exec("testwbinfopasswd $e");
-echo "<h1>$aaa</h1>";
-exit(0);
-      $aflag=0;
-
-      $finp=fopen("data/passwd","r");
-      if($finp==FALSE)
-        {
-          echo "can't open file data/passwd<BR>";
-          exit(0);
-        }
-      while(feof($finp)==0)  
-         {
-           $string=fgets($finp,10000);
-           print("$string<BR>\n");
-           if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-             { 
-                $aflag=1;
-	     }  
-
-         }
-      fclose($finp);
-
-/*
-      $str1=strtok($aaa,"\n");
-      if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-        { 
-          $aflag=1;
-	}  
-      for($i=0;$i<10;$i++)
-         {
-            $str1=strtok("\n");
-//echo "$str1<BR>";
-            if(stristr($str1,"succeeded" )!=false||stristr($str1,"NT_STATUS_OK" )!=false)
-              { 
-                $aflag=1;
-	      }  
-
-	 }
-*/
+	$aflag=0;
+	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+	$aaa=exec("bin/testwbinfopasswd $e");
+	$aflag=0;
+	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+	  { 
+		$aflag=1;
+	  }  
       if($aflag>0)
         {
            if($SAMSConf->NTLMDOMAIN=="Y")
              {
-               //echo "SAMSConf->NTLMDOMAIN==$SAMSConf->NTLMDOMAIN<BR> ";
 	       if(strrpos($userdomain,"+" )!=false)
 	         {
                    $user=strtok($userdomain,"+");
@@ -157,53 +123,27 @@ function UserAuth()
 	        {	
 		  $separator=$mas[$j];
 		}  
-              $userdomain="$domain$separator$user";
-
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=exec("testwbinfopasswd $e");
-        	$aflag=0;
-		$finp=fopen("data/passwd","r");
-		if($finp==FALSE)
-	  	  {
-			echo "can't open file data/passwd<BR>";
-			exit(0);
-	  	  }
-		while(feof($finp)==0)  
-         	  {
-			$string=fgets($finp,10000);
-			print("$string<BR>\n");
-			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
-		  	  { 
-				$aflag=1;
-				$SAMSConf->domainusername=$user;
-		  	  }  
-         	  }
-		fclose($finp);
-	    
+                $userdomain="$domain$separator$user";
+		$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+		$aaa=exec("bin/testwbinfopasswd $e");
+		$aflag=0;
+		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+		  { 
+			$aflag=1;
+			$SAMSConf->domainusername=$user;
+		  }  
 	    } 
            if($aflag==0)
 	     {
-	       $userdomain="$user";
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=exec("testwbinfopasswd $e");
-        	$aflag=0;
-		$finp=fopen("data/passwd","r");
-		if($finp==FALSE)
-	  	  {
-			echo "can't open file data/passwd<BR>";
-			exit(0);
-	  	  }
-		while(feof($finp)==0)  
-         	  {
-			$string=fgets($finp,10000);
-			print("$string<BR>\n");
-			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
-		  	  { 
-				$aflag=1;
-				$SAMSConf->domainusername=$user;
-		  	  }  
-         	  }
-		fclose($finp);
+	        $userdomain="$user";
+		$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+		$aaa=exec("bin/testwbinfopasswd $e");
+		$aflag=0;
+		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+		  { 
+			$aflag=1;
+			$SAMSConf->domainusername=$user;
+		  }  
 	     }
          }
        else
@@ -222,7 +162,7 @@ function UserAuth()
          	  {
 			$string=fgets($finp,10000);
 			print("$string<BR>\n");
-			if(stristr($string,"succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
+			if(stristr($string,"authentication succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
 		  	  { 
 				$aflag=1;
 				$SAMSConf->domainusername=$user;
@@ -338,7 +278,6 @@ function UserForm()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
