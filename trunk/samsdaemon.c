@@ -194,7 +194,7 @@ int chSquidGuardConf(MYSQL *conn)
            fprintf(fout,"urllist %s/_sams_banlists/%s/urls #sams\n", conf.sgdbpath, row[1]);
 
            if(strstr(row[2],"redir")==0)
-             fprintf(fout,"redirect %s/%s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, conf.lang,"%n","%u");
+             fprintf(fout,"redirect %s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, "%n","%u");
            else 	     
              fprintf(fout,"redirect %s  #_sams_\n", conf.redirpath);
 	   fprintf(fout,"} #sams\n");
@@ -237,7 +237,7 @@ int chSquidGuardConf(MYSQL *conn)
 		  fprintf(fout,"none  %20s#sams\n"," ");
                 else
                   fprintf(fout,"all  %20s#sams\n"," ");
-                fprintf(fout,"redirect %s/%s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, conf.lang,"%n","%u");
+                fprintf(fout,"redirect %s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, "%n","%u");
                 fprintf(fout,"}  %30s#sams\n"," ");
                 mysql_free_result(res2);
 	      }
@@ -269,7 +269,7 @@ int chSquidGuardConf(MYSQL *conn)
 		  fprintf(fout,"none  %20s#sams\n"," ");
                 else
                   fprintf(fout,"all  %20s#sams\n"," ");
-                fprintf(fout,"redirect %s/%s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, conf.lang,"%n","%u");
+                fprintf(fout,"redirect %s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, "%n","%u");
                 fprintf(fout,"}  %30s#sams\n"," ");
                 mysql_free_result(res2);
 
@@ -299,7 +299,7 @@ int chSquidGuardConf(MYSQL *conn)
 		  fprintf(fout,"none  %20s#sams\n"," ");
                 else
                   fprintf(fout,"all  %20s#sams\n"," ");
-                fprintf(fout,"redirect %s/%s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, conf.lang,"%n","%u");
+                fprintf(fout,"redirect %s/blocked.php?action=sgdenied&user=%s&url=\%s  #sams\n", conf.deniedpath, "%n","%u");
                 fprintf(fout,"}  %30s#sams\n"," ");
                 mysql_free_result(res2);
 	      }
@@ -308,12 +308,12 @@ int chSquidGuardConf(MYSQL *conn)
 
       fprintf(fout,"sams_disabled {  %30s#sams\n pass  %30s#sams\n"," "," ");
       fprintf(fout,"pass none%30s#sams\n"," ");
-      fprintf(fout,"redirect %s/%s/blocked.php?action=sgdisable&user=%s&url=%s  #sams\n", conf.deniedpath, conf.lang,"%i","%u");
+      fprintf(fout,"redirect %s/blocked.php?action=sgdisable&user=%s&url=%s  #sams\n", conf.deniedpath, "%i","%u");
       fprintf(fout,"}%30s#sams\n"," ");
       
       fprintf(fout,"default {  %30s#sams\n pass  %30s#sams\n"," "," ");
       fprintf(fout,"pass none%30s#sams\n"," ");
-      fprintf(fout,"redirect %s/%s/blocked.php?action=sgdisable&user=%s&url=%s  #sams\n", conf.deniedpath, conf.lang,"%i","%u");
+      fprintf(fout,"redirect %s/blocked.php?action=sgdisable&user=%s&url=%s  #sams\n", conf.deniedpath, "%i","%u");
       fprintf(fout,"}%30s#sams\n"," ");
       fprintf(fout,"}  %30s#sams\n"," ");
 
@@ -409,7 +409,7 @@ int chRejikConf(MYSQL *conn)
                     if(strcmp(row[2],"ncsa")==0||strcmp(row[2],"ntlm")==0||strcmp(row[2],"adld")==0)
                       fprintf(fout,"work_id f:%s/%s.sams\n", conf.rejikpath, row[0]);
 	            fprintf(fout,"ban_dir %s/_sams_banlists/%s_denied\n", conf.rejikpath, row[0]);
-                    fprintf(fout,"url %s/%s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath, conf.lang);
+                    fprintf(fout,"url %s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath);
 	          }
                 mysql_free_result(res2);
 	        sprintf(&str[0],"SELECT urls.url,redirect.type,sconfig.sname FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON urls.type=redirect.filename WHERE sname='%s'&&redirect.type='regex'",conf.samsdb,conf.samsdb,conf.samsdb, row[0]);
@@ -423,7 +423,7 @@ int chRejikConf(MYSQL *conn)
                     if(strcmp(row[2],"ncsa")==0||strcmp(row[2],"ntlm")==0||strcmp(row[2],"adld")==0)
                       fprintf(fout,"work_id f:%s/%s.sams\n", conf.rejikpath, row[0]);
 	            fprintf(fout,"ban_dir %s/_sams_banlists/%s_regex\n", conf.rejikpath, row[0]);
-                    fprintf(fout,"url %s/%s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath, conf.lang);
+                    fprintf(fout,"url %s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath);
 	          }
                 mysql_free_result(res2);
 	      }
@@ -440,7 +440,7 @@ int chRejikConf(MYSQL *conn)
                     if(strcmp(row[2],"ncsa")==0||strcmp(row[2],"ntlm")==0||strcmp(row[2],"adld")==0)
                       fprintf(fout,"work_id f:%s/%s.sams\n", conf.rejikpath, row[0]);
 	            fprintf(fout,"ban_dir %s/_sams_banlists/%s_allow\n", conf.rejikpath, row[0]);
-                    fprintf(fout,"url %s/%s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath, conf.lang);
+                    fprintf(fout,"url %s/blocked.php?action=rejikdenied&url=#URL#  #_sams_\n", conf.deniedpath);
                     fprintf(fout,"reverse  #_sams_\n");
 	          }
                 mysql_free_result(res2);
@@ -452,7 +452,7 @@ int chRejikConf(MYSQL *conn)
                     fprintf(fout,"<_sams_disabled_ip>\n");
                     fprintf(fout,"work_ip f:%s/disabled_ip.sams\n", conf.rejikpath);
 	            fprintf(fout,"ban_dir %s/_sams_banlists/localhosts\n", conf.rejikpath);
-                    fprintf(fout,"url %s/%s/blocked.php?action=rejikdisable&url=#URL#&user=#IDENT#&ip=#IP#  #_sams_\n", conf.deniedpath, conf.lang);
+                    fprintf(fout,"url %s/blocked.php?action=rejikdisable&url=#URL#&user=#IDENT#&ip=#IP#  #_sams_\n", conf.deniedpath);
                     fprintf(fout,"reverse  #_sams_\n");
 	
 	}
@@ -461,7 +461,7 @@ int chRejikConf(MYSQL *conn)
                     fprintf(fout,"<_sams_disabled_id>\n");
                     fprintf(fout,"work_id f:%s/disabled_id.sams\n", conf.rejikpath);
 	            fprintf(fout,"ban_dir %s/_sams_banlists/localhosts\n", conf.rejikpath);
-                    fprintf(fout,"url %s/%s/blocked.php?action=rejikdisable&url=#URL#&user=#IDENT#&ip=#IP#  #_sams_\n", conf.deniedpath, conf.lang);
+                    fprintf(fout,"url %s/blocked.php?action=rejikdisable&url=#URL#&user=#IDENT#&ip=#IP#  #_sams_\n", conf.deniedpath);
                     fprintf(fout,"reverse  #_sams_\n");
 	
 	}

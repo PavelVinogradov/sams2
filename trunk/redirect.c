@@ -953,15 +953,15 @@ int main (int argc, char *argv[])
 		 //запрещено все и непопали в разрещенный список
 		 if(URLALLOW!=0&&ALLOW==0)
                     {
-                      sprintf(&str1[0],"%s/%s/blocked.php?action=urldenied&id=%s",&denied_to[0],&LANG[0],&userid[0]);
+                      sprintf(&str1[0],"%s/blocked.php?action=urldenied&id=%s",&denied_to[0],&userid[0]);
 		    }  
                  if(USERDENIED!=0)
                     {
-                      sprintf(&str1[0],"%s/%s/blocked.php?action=userdisabled&id=%s",&denied_to[0],&LANG[0],&userid[0]);
+                      sprintf(&str1[0],"%s/blocked.php?action=userdisabled&id=%s",&denied_to[0],&userid[0]);
 		    }  
                  if(DENIED!=0&&ALLOW==0)
                     {
-                      sprintf(&str1[0],"%s/%s/blocked.php?action=urldenied&id=%s",&denied_to[0],&LANG[0],&userid[0]);
+                      sprintf(&str1[0],"%s/blocked.php?action=urldenied&id=%s",&denied_to[0],&userid[0]);
 		    }  
                  if(REDIRECT!=0)
                     {
@@ -969,7 +969,7 @@ int main (int argc, char *argv[])
 		    }  
                  if(TIMEDENIED!=0)
                     {
-                      sprintf(&str1[0],"%s/%s/blocked.php?action=timedenied&id=%s",&denied_to[0],&LANG[0],&userid[0]);
+                      sprintf(&str1[0],"%s/blocked.php?action=timedenied&id=%s",&denied_to[0],&userid[0]);
 		    }  
                  sprintf(&str[0],"%s %s/- %s %s",&str1[0],&str2[0],&str3[0],&str4[0]);
                  fprintf(stdout,"%s\n",&str[0]);
