@@ -180,15 +180,7 @@ function URLTimePeriod()
            TableCell("<A HREF=\"http://$row[norm_url]\" target=\"blank\">$row[norm_url]</A>\n");
 
          $count=$count+1;
-         //$counter=$counter+$row['url_size'];
-         //$cache=$cache+$row['hit_size'];
        }
-         print("<TR><TD>");
-         $aaa=FormattedString($cache);
-         RBTableCell($aaa,15);
-         $aaa=FormattedString($counter);
-         RBTableCell($aaa,15);
-         print("<TD>");
   print("</TABLE>");
 
 
