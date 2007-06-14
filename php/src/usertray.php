@@ -414,7 +414,7 @@ function UserTray($userid,$usergroup)
       else	
         $un="$row[domain]+$row[nick]";
 
-      if((strlen($SAMSConf->domainusername)>0&&$SAMSConf->domainusername==$row[nick])||$SAMSConf->roupauditor==$row[group])
+      if((strlen($SAMSConf->domainusername)>0&&$SAMSConf->domainusername==$row[nick])||$SAMSConf->groupauditor==$row[group])
         {
           print(" parent.basefrm.location.href=\"main.php?show=exe&function=userform&userid=$row[id]\";\n");
         }
