@@ -774,7 +774,7 @@ function TempName()
 function FormattedString($size)
 {
   $count=0;
-  $newsize=0;
+  $newsize="";
   $len=strlen(trim($size));
   for($i=$len-1;$i>-1;$i--)     
      {
