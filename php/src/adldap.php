@@ -110,7 +110,6 @@ class adLDAP {
 		ldap_set_option($this->_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->_conn, LDAP_OPT_REFERRALS, 0);
 		
-	        echo ("Connect  to AD as $this->_ad_username$this->_account_suffix: ");
 		//bind as a domain admin if they've set it up
 		if ($this->_ad_username!=NULL && $this->_ad_password!=NULL)
 		{
@@ -129,11 +128,6 @@ class adLDAP {
 					echo ("FATAL: AD bind failed. Check the login credentials."); exit();
 				}
 			  }
-			else
-			  {
-			   echo (" OK<BR>");
-			  }
-
 		}
 		return (true);
 	}
