@@ -312,56 +312,54 @@ int TestLocalURL(char *url)
 	}
   }
   
-       /**  ищем в списке локальных хостов **/
-       
-       /* получаем доменное имя*/
+  /**  ищем в списке локальных хостов **/
+  /* получаем доменное имя*/
   strcpy(&DNS.url[count],"\0");
-	// это IP адрес? 
+
+  // это IP адрес? 
   ipflag=LocalIPAddr(&DNS.url[0],&DNS.ip[0],&DNS.mask[0]);
         
-	// нет не IP, и включено преобразование DNS адресов
-       if(ipflag==0&&NODNSSERVER==0)
-         {
-           GetIPbyHostName(&DNS);
-           ipflag=1;
-           
-	 }
+  // нет не IP, и включено преобразование DNS адресов
+  if(ipflag==0&&NODNSSERVER==0)
+    {
+      GetIPbyHostName(&DNS);
+      ipflag=1;
+    }
 
-       if(ipflag==1)
-         {
-           for(i=0;i<LCOUNT;i++)
-             {
-               
-//printf("%d=%d ",local[i].ip[0],(local[i].mask[0]&DNS.ip[0]));
-//printf("%d=%d ",local[i].ip[1],(local[i].mask[1]&DNS.ip[1]));
-//printf("%d=%d ",local[i].ip[2],(local[i].mask[2]&DNS.ip[2]));
-//printf("%d=%d \n",local[i].ip[3],(local[i].mask[3]&DNS.ip[3]));
+  if(ipflag==1)
+    {
+      for(i=0;i<LCOUNT;i++)
+        {
+          //printf("%d=%d ",local[i].ip[0],(local[i].mask[0]&DNS.ip[0]));
+	  //printf("%d=%d ",local[i].ip[1],(local[i].mask[1]&DNS.ip[1]));
+	  //printf("%d=%d ",local[i].ip[2],(local[i].mask[2]&DNS.ip[2]));
+	  //printf("%d=%d \n",local[i].ip[3],(local[i].mask[3]&DNS.ip[3]));
 	       
-	       if(local[i].ipflag!=0&&local[i].ip[0]==(local[i].mask[0]&DNS.ip[0])
-	                            &&local[i].ip[1]==(local[i].mask[1]&DNS.ip[1])
-				    &&local[i].ip[2]==(local[i].mask[2]&DNS.ip[2])
-				    &&local[i].ip[3]==(local[i].mask[3]&DNS.ip[3]))
-                 {
-                   if(DEBUG>0)
-		     {
-                       printf(" found IP\n");
-		     }  
-	           return(1);
-                 }
-	     }
+	  if(local[i].ipflag!=0&&local[i].ip[0]==(local[i].mask[0]&DNS.ip[0])
+	                       &&local[i].ip[1]==(local[i].mask[1]&DNS.ip[1])
+			       &&local[i].ip[2]==(local[i].mask[2]&DNS.ip[2])
+			       &&local[i].ip[3]==(local[i].mask[3]&DNS.ip[3]))
+            {
+              if(DEBUG>0)
+	  	{
+                  printf(" found IP\n");
+		}  
+	      return(1);
+            }
 	 }
-       else
-         {
-           for(i=0;i<LCOUNT;i++)
-             {
-               if(strstr(url,local[i].url)!=0&&strlen(local[i].url)>0)
-                 {
-                   if(DEBUG>0)
-                     printf(" found   %s = %s\n", local[i].url, url);
-	           return(1);
-                 }
-	     }
-	 }
+    }
+  else
+    {
+      for(i=0;i<LCOUNT;i++)
+        {
+          if(strstr(url,local[i].url)!=0&&strlen(local[i].url)>0)
+            {
+              if(DEBUG>0)
+                printf(" found   %s = %s\n", local[i].url, url);
+	      return(1);
+            }
+	}
+    }
     
   if(NODNSSERVER==0)
     {
@@ -370,9 +368,8 @@ int TestLocalURL(char *url)
       localfound=0;
       found=SearchDNSBase(&DNS);
     }
-//exit(0);
-return(0);
-
+  //exit(0);
+  return(0);
 }
 
 
