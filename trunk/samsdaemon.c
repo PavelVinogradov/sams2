@@ -564,6 +564,8 @@ int SaveBackUp(int sm, MYSQL *conn)
        send_mysql_query(conn,&str[0]);
        sprintf(&str[0],"DELETE FROM %s.cache WHERE cache.date<='%d-%d-31'",conf.logdb,year,month);
        send_mysql_query(conn,&str[0]);
+       sprintf(&str[0],"OPTIMIZE TABLE %s.cache, %s.cachesum",conf.logdb, conf.logdb);
+       send_mysql_query(conn,&str[0]);
 
        fclose(fout);
        free(filename);  
