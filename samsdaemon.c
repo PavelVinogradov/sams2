@@ -549,7 +549,7 @@ int SaveBackUp(int sm, MYSQL *conn)
        mysql_free_result(res);
 
        fprintf(fout,"\n### CACHE table\n");
-
+	
        sprintf(&str[0],"SELECT * FROM %s.cache WHERE date<='%d-%d-31' ORDER BY date",conf.logdb,year,month);
        send_mysql_query(conn,&str[0]);
        res=mysql_store_result(conn);
@@ -2115,7 +2115,22 @@ void ReadSAMSFlags(MYSQL *conn2)
       if(DEBUG==1)
          printf("NO\n");
     }
-    
+  
+  if(DEBUG==1)
+    printf("    Squidlog cache save... ");
+  sprintf(&temp[0],"%s",row[12]);
+  SQUIDBASE=atoi(row[12]);
+  if(SQUIDBASE==0)
+    {
+      if(DEBUG==1)
+         printf("ALL\n");
+    }
+  else
+    {
+      if(DEBUG==1)
+         printf("%d month\n", SQUIDBASE);
+    }
+   
   if(DEBUG==1)
     printf("    User name recode... ");
   sprintf(&temp[0],"%s",row[8]);
@@ -2152,7 +2167,6 @@ void ReadSAMSFlags(MYSQL *conn2)
   LOGLEVEL=atoi(row[11]);
   if(DEBUG==1)
     printf("    Log level... '%d'\n",LOGLEVEL);
-  SQUIDBASE=atoi(row[12]);
   //printf("SQUID LOG %d %d",SQUIDBASE,atoi(row[12]));
   conf.redirpath=MallocMemory(row[13]);
   conf.deniedpath=MallocMemory(row[14]);
@@ -2368,37 +2382,40 @@ int main (int argc, char *argv[])
 		 }
 
                //if(DEBUG==1)
-  	       //   printf("sams_clr_month=%d month=%d sams_clr_day=%d day=%d COUNTCLEAN=%d\n", sams_clr_month, t->tm_mon+1, sams_clr_day, t->tm_mday, COUNTCLEAN);
+  	          //printf("sams_clr_month=%d month=%d sams_clr_day=%d day=%d COUNTCLEAN=%d\n", sams_clr_month, t->tm_mon+1, sams_clr_day, t->tm_mday, COUNTCLEAN);
 
                clearflag=0;
-               //если настал новый день, смотрим не пора ли сбросить счетчики трафика
-               if((sams_clr_month!=(t->tm_mon+1)||sams_clr_day!=(t->tm_mday))&&COUNTCLEAN==1)  
-                 {
+	       //Если настал новый месяц то проверяем необходимость ротации БД
+	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0))
+		 {
                    if(DEBUG==1)
-  	              printf("New day\n");
+  	              printf("New month. We need purge our database.\n");
 
-               if((sams_clr_month!=(t->tm_mon+1))&&SQUIDBASE>0)  
-                 {
                    sams_clr_month=t->tm_mon+1;
-                   if(DEBUG==1)
+                  
+		   if(DEBUG==1)
                      printf("Save SQUID base\n");
                    if(DEBUG==0)
 		     syslog(LOG_DEBUG,"SAMS: SQUID base saved to disk\n");
-                   flag=SaveBackUp(SQUIDBASE,conn);
+                   
+		   flag=SaveBackUp(SQUIDBASE,conn);
                    if(flag!=0)
                      {
-                        printf("error: can't clear user traffic counter\n");
+                       printf("error: can't clear user traffic counter\n");
                      }
                    else
                      {
-                        if(DEBUG==1)
-                           printf("SAMS: SQUID base saved to disk\n");
+                       if(DEBUG==1)
+                         printf("SAMS: SQUID base saved to disk\n");
                      }
                  }
 
-
-		   if(sams_clr_month!=(t->tm_mon+1))
-		     sams_clr_month=t->tm_mon+1;
+               //если настал новый день, смотрим не пора ли сбросить счетчики трафика
+               if((sams_clr_day!=(t->tm_mday))&&COUNTCLEAN==1)  
+                 {
+                   if(DEBUG==1)
+  	              printf("New day\n");
+		   
                    if(sams_clr_day!=(t->tm_mday))
 		     sams_clr_day=t->tm_mday;
                    
