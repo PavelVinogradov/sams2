@@ -24,7 +24,7 @@ function DisableSelectedUsers()
          $enabled=1;
        if($delete[$id]=="on")
          $deleteuser=1;
-       print("user $row[nick] enabled=$users[$id] delete=$deleteuser<BR>");
+       print("user $row['nick'] enabled=$users[$id] delete=$deleteuser<BR>");
        if($enabled==1&&$row['enabled']!=1)
          {
            print("enabled user<BR>");
