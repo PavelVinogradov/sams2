@@ -821,6 +821,11 @@
   $shablonbuttom_1_prop_UpdateShablonForm_22="Доступ запрещен ко всем URL";
   $shablonbuttom_1_prop_UpdateShablonForm_23="Запрет загрузки файлов по расширениям";
   $logbuttom_9_delete_ClearLog_1="Удалены логи";
+
+  $shablontray_ShablonUsers_2="Выберите пользователей для назначения шаблона";
+  $shablontray_ShablonUsers_3="Назначить выбранным пользователям шаблон";
+  $grouptray_NewGroupForm_10="Выберите пользователей для перемещения в группу";
+  $grouptray_NewGroupForm_11="Переместить выбранных пользователей в группу";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

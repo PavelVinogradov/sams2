@@ -47,6 +47,7 @@ function UserGroupForm()
   $SAMSConf->access=UserAccess();
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
+  if(isset($_GET["gid"])) $gid=$_GET["gid"];
 
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB)
@@ -158,6 +159,52 @@ function UserGroupForm()
       print("</FORM>\n");
     } 
 
+  if($SAMSConf->access==2)
+    {
+	print("<SCRIPT language=JAVASCRIPT>\n");
+        print("function SelectUsers(id)\n");
+        print("{\n");
+        print("   var group = \"main.php?show=exe&function=usergroupform&groupname=$groupname&gid=\" +  id ; \n");
+        print("   parent.basefrm.location.href=group;\n");
+        print("}\n");
+	print("</SCRIPT>\n");
+
+      print("<P><B>$grouptray_NewGroupForm_10 $gname:</B> ");
+      print("<FORM NAME=\"moveform\" ACTION=\"main.php\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"moveuserstogroup\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"groupname\" value=\"$groupname\">\n");
+
+      print("<SELECT NAME=\"groupid\" onchange=SelectUsers(moveform.groupid.value)>\n");
+      $result=mysql_query("SELECT * FROM groups WHERE name!=\"$groupname\" ORDER BY nick");
+      if($gid=="ALL")
+        print("<OPTION VALUE=\"ALL\" SELECTED> ALL\n");
+      else
+        print("<OPTION VALUE=\"ALL\"> ALL\n");
+
+      while($row=mysql_fetch_array($result))
+         {
+	    $SECTED="";
+	    if($row['name']==$gid)
+		$SECTED="SELECTED";
+	    if($row['name']!=$id)
+               print("<OPTION VALUE=\"$row[name]\" $SECTED> $row[nick]\n");
+         }
+      print("</SELECT>\n");
+
+      print("<SELECT NAME=\"username[]\" SIZE=10 MULTIPLE>\n");
+      if($gid=="ALL")
+        $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group!=\"$groupname\" ORDER BY nick");
+      else
+	$result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$gid\"&&squidusers.group!=\"$groupname\" ORDER BY nick ");
+      while($row=mysql_fetch_array($result))
+         {
+            print("<OPTION VALUE=$row[id]> $row[nick]\n");
+         }
+      print("</SELECT>\n");
+      print(" <P><INPUT TYPE=\"SUBMIT\" VALUE=\"$grouptray_NewGroupForm_11 '$gname'\" \n> ");
+      print("</TABLE> ");
+    } 
 
 
 }
@@ -170,7 +217,7 @@ function GroupTray($groupname,$groupnick)
   require($lang);
 
   print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&function=usergroupform&groupname=$groupname\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=usergroupform&groupname=$groupname&gid=ALL\";\n");
   print("</SCRIPT> \n");
 
   db_connect($SAMSConf->SAMSDB) or exit();

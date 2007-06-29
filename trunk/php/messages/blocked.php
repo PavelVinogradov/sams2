@@ -27,8 +27,8 @@ if(isset($_GET["url"])) $url=$_GET["url"];
   $ICONSET = $SAMSConf->ICONSET;
   $KBSIZE = $SAMSConf->KBSIZE;
   $MBSIZE = $SAMSConf->KBSIZE * $SAMSConf->KBSIZE;
-  $LANG = $SAMSCong->LANG;
-  $LANGCODE = "ru"
+  $LANG = $SAMSConf->LANG;
+  $LANGCODE = "ru";
 
   switch($LANG)
     {
@@ -44,14 +44,14 @@ if(isset($_GET["url"])) $url=$_GET["url"];
 	$CHAR_SET="utf-8";
 	break;
       case "EN":
-	$CHAR_SET="iso-8859-1"
-	$LANGCODE="en"
+	$CHAR_SET="iso-8859-1";
+	$LANGCODE="en";
       default:
 	$CHAR_SET="koi8-r";
 	break;
     }  
 
-  $lang="../lang/lang.$LANG";
+  $lang="../lang/lang.LANG";
   require($lang);
   
 print("  <HTML lang=\"$LANGCODE\"><HEAD>\n");
@@ -69,7 +69,7 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
        print("  <TR><TD><IMG SRC=\"$path$ICONSET/denied.gif\">");
        print("  <TD>");
        if(strlen($row['nick'])>0)
-          print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row['family'] $row['name'] $row['soname']($row['nick'])</H2></FONT> ");
+          print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[family] $row[name] $row[soname]($row[nick])</H2></FONT> ");
        print("<P><FONT COLOR=\"RED\"><B><H2>$blocked_php_3 <FONT COLOR=\"BLACK\">$url</FONT> $blocked_php_4!!!</H2></B></FONT> ");
        if($row['enabled']<0)
          {
@@ -78,7 +78,7 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
        if($row['size']/$MBSIZE>$row['quotes']&&$row['quotes']>0&&$row['enabled']>=0)
          {
            print("  <P>$blocked_php_6 ");
-           print("  <BR><B>$blocked_php_11</B> $row['quotes'] $blocked_php_12");
+           print("  <BR><B>$blocked_php_11</B> $row[quotes] $blocked_php_12");
            $msize=floor($row['size']/$MBSIZE);
            $ostatok=$row['size']%$MBSIZE;
            $ksize=floor($ostatok/$KBSIZE);
@@ -109,7 +109,7 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
     {
        print("  <TD>");
        if(strlen($row['nick'])>0)
-          print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row['nick']</H2></FONT> ");
+          print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
        print("<P><FONT COLOR=\"RED\"><B><H2>$blocked_php_2</H2></B></FONT> ");
        if($row['enabled']<0)
          {
@@ -118,7 +118,7 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
        if($row['size']/$MBSIZE>$row['quotes']&&$row['quotes']>0&&$row['enabled']>=0)
          {
            print("  <P>$blocked_php_6 ");
-           print("  <BR><B>$blocked_php_11</B> $row['quotes'] $blocked_php_12");
+           print("  <BR><B>$blocked_php_11</B> $row[quotes] $blocked_php_12");
            $msize=floor($row['size']/$MBSIZE);
            $ostatok=$row['size']%$MBSIZE;
            $ksize=floor($ostatok/$KBSIZE);
@@ -128,16 +128,16 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
   if($action=="urldenied")
     {
        if(strlen($row['nick'])>0)
-         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row['nick']</H2></FONT> ");
+         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
        print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_8</H3></FONT> ");
     }
   if($action=="timedenied")
     {
        if(strlen($row['nick'])>0)
-         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row['nick']</H2></FONT> ");
+         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
          print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9"); 
          print("  <BR>$blocked_php_10</H3></FONT> ");
-         print("  <P>$row['shour']:$row['smin'] - $row['ehour']:$row['emin'] ");
+         print("  <P>$row[shour]:$row[smin] - $row[ehour]:$row[emin] ");
     }
 
   print("  <TR> ");

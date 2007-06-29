@@ -13,6 +13,7 @@ function ShablonUsers()
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["sid"])) $sid=$_GET["sid"];
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
@@ -60,6 +61,55 @@ function ShablonUsers()
        print("<TD> $row[soname] ");
       }
   print("</TABLE>\n");
+
+  if($SAMSConf->access==2)
+    {
+
+	print("<SCRIPT language=JAVASCRIPT>\n");
+        print("function SelectUsers(id)\n");
+        print("{\n");
+        print("   var shablon = \"main.php?show=exe&function=shablonusers&id=$id&sid=\" +  id ; \n");
+        print("   parent.basefrm.location.href=shablon;\n");
+        print("}\n");
+	print("</SCRIPT>\n");
+
+      print("<P><B>$shablontray_ShablonUsers_2 $nick1:</B> ");
+      print("<FORM NAME=\"moveform\" ACTION=\"main.php\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"moveuserstoshablon\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"shablonname\" value=\"$id\">\n");
+
+      print("<SELECT NAME=\"shablonid\" onchange=SelectUsers(moveform.shablonid.value)>\n");
+      $result=mysql_query("SELECT * FROM shablons ORDER BY nick");
+      if($sid=="ALL")
+        print("<OPTION VALUE=\"ALL\" SELECTED> ALL\n");
+      else
+        print("<OPTION VALUE=\"ALL\"> ALL\n");
+
+      while($row=mysql_fetch_array($result))
+         {
+	    $SECTED="";
+	    if($row['name']==$sid)
+		$SECTED="SELECTED";
+	    if($row['name']!=$id)
+               print("<OPTION VALUE=\"$row[name]\" $SECTED> $row[nick]\n");
+         }
+      print("</SELECT>\n");
+
+      print("<SELECT NAME=\"username[]\" SIZE=10 MULTIPLE >\n");
+      if($sid=="ALL")
+	$result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon!=\"$id\" ORDER BY nick");
+      else
+	$result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon=\"$sid\"&&squidusers.shablon!=\"$id\" ORDER BY nick");
+      while($row=mysql_fetch_array($result))
+         {
+            print("<OPTION ID=\"$row[id]\" VALUE=$row[id]> $row[nick]\n");
+         }
+      print("</SELECT>\n");
+      print("<P> <INPUT TYPE=\"SUBMIT\" VALUE=\"$shablontray_ShablonUsers_3 '$nick1'\" \n> ");
+      print("</FORM>\n");
+    } 
+
 }
 
 
@@ -80,7 +130,7 @@ function ShablonTray()
       $row=mysql_fetch_array($result);
 
       print("<SCRIPT>\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&function=shablonusers&id=$id\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&function=shablonusers&id=$id&sid=ALL\";\n");
       print("</SCRIPT> \n");
 
       print("<TABLE border=0 WIDTH=\"100%\">\n");

@@ -18,8 +18,7 @@ function GetDomainUsersList()
 
   if($SAMSConf->AUTH=="ntlm")
      {
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-	$value=exec("getwbinfousers $e");
+        $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
 	$a=explode(" ",$value);
 	$acount=count($a);
      }

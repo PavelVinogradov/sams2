@@ -105,8 +105,7 @@ function AddUsersFromDomainFormNew()
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
   
-  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $test=exec("getwbinfousers $e");
+  $test=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
 
   print("USERSLIST=$userlist<BR>");
   $len=substr_count($userlist,"\n");
@@ -189,8 +188,8 @@ function AddUsersFromDomainForm()
   mysql_select_db($SAMSConf->SAMSDB);
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1");
-  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $value=exec("getwbinfousers $e");
+
+  $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
   $a=explode(" ",$value);
   $acount=count($a);
 

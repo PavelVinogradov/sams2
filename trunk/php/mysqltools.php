@@ -5,6 +5,59 @@
  * (see the file 'main.php' for license details)
  */
 
+function ExecuteShellScript($script, $str)
+{
+  $phpos=PHP_OS;
+  $bin=0;
+  $length=strlen($str);
+  if(!strcasecmp($phpos,"FreeBSD"))
+   {
+     if($length>0)
+       {
+         $e = escapeshellcmd($str);
+         $value=exec("bin/$script $e");
+       }	
+     else
+         $value=exec("bin/$script");
+       
+     $bin=1;
+   }
+  else
+   {
+     if($length>0)
+       {
+         $e = escapeshellcmd($str);
+         $value=exec("$script $e");
+       }	 
+     else
+       $value=exec("$script");
+   }
+  if(strlen($value)<2)
+   {
+     if($bin==0)
+        {
+          if($length>0)
+            {
+              $e = escapeshellcmd($str);
+              $value=exec("bin/$script $e");
+            }	
+          else
+              $value=exec("bin/$script");
+        }
+     else
+       {  
+         if($length>0)
+           {
+             $e = escapeshellcmd($str);
+             $value=exec("$script $e");
+           }	 
+         else
+            $value=exec("$script");
+       }
+   }
+  return($value);
+}
+
 function ExecuteFunctions($path, $mask, $id)
 {
   $files=array();
