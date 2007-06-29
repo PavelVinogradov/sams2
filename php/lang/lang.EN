@@ -800,6 +800,12 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablonbuttom_1_prop_UpdateShablonForm_22="Access is forbidden to all URL";
   $shablonbuttom_1_prop_UpdateShablonForm_23="Interdiction of loading files on expansions";
   $logbuttom_9_delete_ClearLog_1="Logs removed ";
+
+  $shablontray_ShablonUsers_2="Select users to set template";
+  $shablontray_ShablonUsers_3="Set template ";
+  $grouptray_NewGroupForm_10="Select users to move into group";
+  $grouptray_NewGroupForm_11="Move selected users into group";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

@@ -28,8 +28,9 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
-  $value=exec("freemem");
-  $swapvalue=exec("freeswap");
+  $phpos=PHP_OS;
+  $value=ExecuteShellScript("freemem",$phpos);
+  $swapvalue=ExecuteShellScript("freeswap",$phpos);
 
   $a=explode(" ",$value);
   for($i=1;$i<4;$i++)
@@ -63,7 +64,7 @@ function MemoryUsage()
 
 function FileSystemUsage()
 {
-    $fstest=exec("fsusage");
+    $fstest=ExecuteShellScript("fsusage","");
     $a=explode(" ",$fstest);
     $acount=count($a)/6;
 
@@ -100,7 +101,7 @@ function SysInfo()
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
 
-   $uptime=exec("uptime");
+   $uptime=ExecuteShellScript("uptime");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");

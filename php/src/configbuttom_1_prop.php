@@ -14,8 +14,7 @@ function TestPDC()
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   print("<H1>TEST PDC</H1>");
 
-  $e = escapeshellcmd("$SAMSConf->WBINFOPATH");
-  $value=exec("getwbinfousers $e");
+  $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH");
   $a=explode(" ",$value);
   $acount=count($a);
 	  
