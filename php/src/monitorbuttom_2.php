@@ -12,7 +12,7 @@ function Monitor_2()
   printf("<SCRIPT LANGUAGE=\"javascript\">\n");
   printf("function Refr() \n");
   printf("{\n");
-  printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_2.php'};\n");
+  printf("document.location='main.php?show=exe&function=monitor_2&filename=monitorbuttom_2.php'};\n");
   printf("setTimeout('Refr();',5000);\n");
   printf("</SCRIPT>\n");
   db_connect($SAMSConf->SAMSDB) or exit();
