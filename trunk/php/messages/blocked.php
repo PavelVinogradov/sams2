@@ -51,7 +51,7 @@ if(isset($_GET["url"])) $url=$_GET["url"];
 	break;
     }  
 
-  $lang="../lang/lang.LANG";
+  $lang="../lang/lang.$LANG";
   require($lang);
   
 print("  <HTML lang=\"$LANGCODE\"><HEAD>\n");
