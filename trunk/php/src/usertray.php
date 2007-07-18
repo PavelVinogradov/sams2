@@ -109,7 +109,7 @@ function UserAuth()
     {
       if($SAMSConf->NTLMDOMAIN=="Y")
         {
-           $mas=array();
+          $mas=array();
            $mas=$SAMSConf->SEPARATOR;
            $slashe="\\";
 
@@ -124,8 +124,7 @@ function UserAuth()
 		  $separator=$mas[$j];
 		}  
                 $userdomain="$domain$separator$user";
-		$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-		$aaa=exec("testwbinfopasswd $e");
+                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
 		$aflag=0;
 		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 		  { 
@@ -136,8 +135,7 @@ function UserAuth()
            if($aflag==0)
 	     {
 	        $userdomain="$user";
-		$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-		$aaa=exec("testwbinfopasswd $e");
+                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
 		$aflag=0;
 		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 		  { 
@@ -148,27 +146,14 @@ function UserAuth()
          }
        else
          {
-           $userdomain="$user";
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=exec("testwbinfopasswd $e");
-        	$aflag=0;
-		$finp=fopen("data/passwd","r");
-		if($finp==FALSE)
-	  	  {
-			echo "can't open file data/passwd<BR>";
-			exit(0);
-	  	  }
-		while(feof($finp)==0)  
-         	  {
-			$string=fgets($finp,10000);
-			print("$string<BR>\n");
-			if(stristr($string,"authentication succeeded" )!=false||stristr($string,"NT_STATUS_OK" )!=false)
-		  	  { 
-				$aflag=1;
-				$SAMSConf->domainusername=$user;
-		  	  }  
-         	  }
-		fclose($finp);
+                $userdomain="$user";
+                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
+		$aflag=0;
+		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+		  { 
+			$aflag=1;
+			$SAMSConf->domainusername=$user;
+		  }  
           }
 	 
        db_connect($SAMSConf->SAMSDB) or exit();

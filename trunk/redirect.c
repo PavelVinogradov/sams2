@@ -401,7 +401,7 @@ int UserAccess(char *str0, char *str1, char *str2)
              strcpy(&samsuser[0],"\0");
 	     strcpy(&samsdomain[0],"\0");
         }
-      if(users[i].ncsaauth!=0||(users[i].ntlmauth!=0&&NTLMDOMAIN==0))  
+      if(users[i].ncsaauth!=0||(users[i].ntlmauth!=0&&NTLMDOMAIN==0)||(users[i].adldauth!=0&&NTLMDOMAIN==0))  
         {
              if(strcmp(str2lower(str1),users[i].user)==0)
                {
