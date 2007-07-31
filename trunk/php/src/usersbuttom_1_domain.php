@@ -192,7 +192,6 @@ function AddUsersFromDomainForm()
   $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
   $a=explode(" ",$value);
   $acount=count($a);
-
   print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
   print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
   print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
@@ -228,15 +227,15 @@ function AddUsersFromDomainForm()
              $user=trim($a[$i]);
            }
        //print("$user/$domain domainlen=$domainlen userlen=$userlen<BR>");
-
+//echo "  SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\"<BR>";
        $result=mysql_query("SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\" ");
        $row=mysql_fetch_array($result);
        if(strcmp($row['name'],$user)!=0&&strcmp($row['domain'],$domain)!=0)
           {
             if($SAMSConf->NTLMDOMAIN=="Y")
-              print("<OPTION VALUE=\"$domain+$user\"> $user+$domain");
+              print("<OPTION VALUE=\"$domain+$user\"> $user+$domain  ");
             else 
-              print("<OPTION VALUE=\"$user\"> $user");
+              print("<OPTION VALUE=\"$user\"> $user  ");
           }
      }
 //  fclose($finp);
@@ -250,7 +249,7 @@ function AddUsersFromDomainForm()
   print("<TR><TD>\n");
   print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_7\n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"domainname\" id=Show >\n");
+  print("<INPUT TYPE=\"TEXT\" NAME=\"domainname\" id=Show VALUE=\"$SAMSConf->DEFAULTDOMAIN\" >\n");
 
   print("<TR><TD>\n");
   print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");

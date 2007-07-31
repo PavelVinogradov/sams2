@@ -202,6 +202,7 @@ if($function=="userauth")
   {   
      if(isset($_GET["id"])) $id=$_GET["id"];
      $SAMSConf->groupauditor=UserAuth();
+
      $time=time();
      $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$id\" ");
      $row=mysql_fetch_array($result);
@@ -404,9 +405,6 @@ if($function=="autherror")
           print("<h2>next logon after $time2 second</h2> \n");
        }   
   }   
-
-if($user=="about")
-   about();
 print("</center>\n");
 print("</body></html>\n");
 

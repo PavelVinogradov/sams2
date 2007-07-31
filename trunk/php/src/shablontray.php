@@ -5,6 +5,20 @@
  * (see the file 'main.php' for license details)
  */
 
+function MoveUsersToShablon()
+{
+ if(isset($_GET["shablonname"])) $id=$_GET["shablonname"];
+ if(isset($_GET["username"])) $users=$_GET["username"];
+
+  for($i=0;$i<count($users);$i++)
+    {
+           $result=mysql_query("UPDATE squidusers SET shablon=\"$id\" WHERE squidusers.id=\"$users[$i]\"");
+    }
+  print("<SCRIPT>\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=shablonusers&id=$id&sid=ALL\";\n");
+  print("</SCRIPT> \n");
+}
+
 function ShablonUsers()
 {
   global $SAMSConf;

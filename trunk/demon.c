@@ -114,7 +114,10 @@ long GetNewEndValue()
 void SaveNewEndFileValue(MYSQL *conn,long count)
 {
   int flag;
-  sprintf(&str[0],"UPDATE %s.sams SET endvalue=\'%ld\'",conf.samsdb,count);
+  if(conf.cachenum==0)
+    sprintf(&str[0],"UPDATE %s.sams SET endvalue=\'%ld\'",conf.samsdb,count);
+  else
+    sprintf(&str[0],"UPDATE %s.proxyes SET endvalue=\'%ld\' WHERE id=\'%d\'",conf.samsdb,count, conf.cachenum);
   flag=send_mysql_query(conn,&str[0]);
   if(flag!=0)
     {
@@ -592,8 +595,8 @@ int main (int argc, char *argv[])
 {
   int i,k,j,EXPORT,tc;
   MYSQL *conn,*conn2;
-  MYSQL_RES *res;
-  MYSQL_ROW row;
+  MYSQL_RES *res, *res2;
+  MYSQL_ROW row, row2;
   char *filename=NULL;
   char *date1=NULL;
   char *date2=NULL;
@@ -816,7 +819,25 @@ int main (int argc, char *argv[])
           NTLMDOMAIN=1;
         }
 	
-      ENDVALUE=txt2digit(row[0]);
+      if(conf.cachenum==0)
+        {
+          if(DEBUG>0)
+            printf("Cache %d\n", conf.cachenum);
+          ENDVALUE=txt2digit(row[0]);
+        }
+      else
+        {
+          if(DEBUG>0)
+            printf("Cache %d\n", conf.cachenum);
+          sprintf(&str[0],"SELECT endvalue FROM %s.proxyes WHERE id='%d'", conf.samsdb, conf.cachenum);
+          flag=send_mysql_query(conn,&str[0]);
+          res2=mysql_store_result(conn);
+          row2=mysql_fetch_row(res2);
+          ENDVALUE=txt2digit(row2[0]);
+          mysql_free_result(res2);
+        }
+
+
       if(LOADFILE==0)
         NEWENDVALUE=GetNewEndValue();
       if(DEBUG>0)
@@ -877,6 +898,7 @@ int main (int argc, char *argv[])
           printf("ISP Mb size=%.0f, kb size=%.0f\n",MBSIZE,KBSIZE);
 	}  
       mysql_free_result(res);
+
 
    }
  

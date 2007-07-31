@@ -826,6 +826,25 @@
   $shablontray_ShablonUsers_3="Назначить выбранным пользователям шаблон";
   $grouptray_NewGroupForm_10="Выберите пользователей для перемещения в группу";
   $grouptray_NewGroupForm_11="Переместить выбранных пользователей в группу";
+
+  $squidbuttom_5_readcache_LoadFileForm_1="Загружается файл";
+  $squidbuttom_5_readcache_LoadFileForm_2="из кэш";
+  $squidbuttom_5_readcache_LoadFileForm_3="Идет загрузка файла";
+  $squidbuttom_5_readcache_LoadFileForm_4="Файл не загружен";
+  $squidbuttom_5_readcache_LoadFileForm_5="Проверьте, запущен ли samsdaemon";
+  $squidbuttom_5_readcache_LoadFileForm_6="Файл скопирован в";
+  $squidbuttom_5_readcache_ReadCacheFilesList_1="Идет сканирование директорий кэша";
+  $squidbuttom_5_readcache_ReadCacheFilesList_2="Сканирование окончено";
+  $squidbuttom_5_readcache_ReadCacheFiles_1="Сканируются файлы в кэше SQUID";
+  $squidbuttom_5_readcache_ReadCacheFiles_2="Идет сканирование...";
+  $squidbuttom_5_readcache_ReadCacheFiles_3="Идет сканирование директорий кэша";
+  $squidbuttom_5_readcache_ReadCacheFiles_4="Команда на сканирование кэша SQUID не получена демоном<BR>проверьте, запущен ли samsdaemon";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_1="Сканирование файлов в кэше SQUID";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_2="Показать все файлы, размером не менее";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_3="Сканировать";
+  $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Достать файлы, сохраненные в кеше SQUID";
+
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

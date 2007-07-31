@@ -13,18 +13,35 @@ function ReconfigSquid()
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+
   if($SAMSConf->access==2)
     {
        PageTop("reconfig_48.jpg","$squidbuttom_0_reconfig_ReconfigSquid_1");
        if($SAMSConf->PROXYCOUNT>1)
           {
-            for($i=0;$i<$SAMSConf->PROXYCOUNT;$i++)
+            for($i=0;$i<=$SAMSConf->PROXYCOUNT;$i++)
 	       {
 	           if($cache[$i]=="on")
 	              {
 	                 //echo "remove cache $row[id] $row[description]<BR>";
                          $result=mysql_query("INSERT INTO reconfig SET number=\"$i\",service=\"squid\",action=\"reconfig\" ");
-		      }
+        	         for($j=0;$j<10;$j++)
+        	           {
+                	      $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"reconfig\" ");
+                	      $row=mysql_fetch_array($result);
+            	              if($row[0]==0)
+                                {
+	            	           $str="<FONT color=\"BLUE\" SIZE=+1> $squidbuttom_0_reconfig_ReconfigSquid_3</FONT><BR>\n";
+                            	   break;
+            	                 }
+            	              else
+                	         { 
+	        	            $str="<FONT color=\"RED\" SIZE=+1> $squidbuttom_0_reconfig_ReconfigSquid_4</FONT><BR>\n";
+            	                 }
+            	             sleep(1);
+            	           }
+        	          print("$str");
+		        }
                 }
           
           }

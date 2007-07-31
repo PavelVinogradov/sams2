@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/param.h>
 #include <sys/un.h>
 #include <syslog.h>
 #include <time.h>
@@ -737,10 +738,60 @@ int ChangeSQUIDconf(MYSQL *conn)
            if(DEBUG==1)
              printf("TAG: acl found... START\n");
            
+//#####
+	   sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth='ip'",conf.samsdb);
+
+	   flag=send_mysql_query(conn,&str[0]);
+           res=mysql_store_result(conn);
+           while((row=mysql_fetch_row(res)))
+	     {
+               count=0;
+               if(RSAMS==1||RGUARD==1||RREJIK==1)
+                  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'",conf.samsdb,row[0]);
+               else   
+		  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
+               flag=send_mysql_query(conn,&str[0]);
+               res2=mysql_store_result(conn);
+               row2=mysql_fetch_row(res2);
+               count=atoi(row2[0]);
+               mysql_free_result(res2);
+               if(DEBUG==1)
+                 printf("%d users found in template %s (%s), create ACL\n",count,row[0],row[1]);
+               if(count>0)
+	         {
+		   if(strcmp(row[5],"ntlm")==0||strcmp(row[5],"ncsa")==0||strcmp(row[5],"adld")==0)
+                     sprintf(&method[0],"proxy_auth");
+		   else  
+                     sprintf(&method[0],"src");
+		   fprintf(fout,"acl _sams_%s %s \"%s/%s.sams\" \n",row[0],&method[0],conf.squidrootdir,row[0]);
+    
+		   if(RSAMS==0&&RGUARD==0)    
+		    {
+                       if(atoi(row[8])<atoi(row[10]))
+		         {
+		           fprintf(fout,"acl _sams_%s_time time %s %s:%s-%s:%s\n",row[0],row[7],row[8],row[9],row[10],row[11]);
+			 }
+		       else
+		         {
+		           fprintf(fout,"acl _sams_%s_time_1 time %s %s:%s-24:0\n",row[0],row[7],row[8],row[9]);
+		           fprintf(fout,"acl _sams_%s_time_2 time %s 0:0-%s:%s\n",row[0],row[7],row[10],row[11]);
+			 }	   
+		     }  
+
+		 }
+	     }
+           mysql_free_result(res);
+
 	   if(ADLD==1)
-	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
+	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth DESC",conf.samsdb);
            else
-	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
+	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth",conf.samsdb);
+
+//#####
+//	   if(ADLD==1)
+//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
+//           else
+//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
 
 	   flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
@@ -927,11 +978,118 @@ int ChangeSQUIDconf(MYSQL *conn)
 		    fprintf(fout,"\n");
 		  }  
 	     }
-	   
+
+//#######	   
+	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth='ip'",conf.samsdb);
+           flag=send_mysql_query(conn,&str[0]);
+           res=mysql_store_result(conn);
+           while((row=mysql_fetch_row(res)))
+	     {
+               count=0;
+               if(RSAMS==1||RGUARD==1||RREJIK==1)   
+		  sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'",conf.samsdb,row[0]);
+	       else
+	          sprintf(&str[0],"SELECT count(*) FROM %s.squidusers WHERE shablon='%s'&&enabled>'0'",conf.samsdb,row[0]);
+               flag=send_mysql_query(conn,&str[0]);
+               res2=mysql_store_result(conn);
+               row2=mysql_fetch_row(res2);
+               count=atoi(row2[0]); 
+               mysql_free_result(res2);
+               if(DEBUG==1)
+                 printf("%d users found in the template %s (%s), create access rights\n",count,row[0],row[1]);
+
+               if(count>0)
+                 {
+
+                   acount=atoi(row[14]);
+                   if(acount>0)
+		     {
+                       if(RSQUID==1||RNONE==1)
+		         {
+			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
+		         }  
+                       if(RSAMS==1||RGUARD==1)
+		         {
+                           //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
+//			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+			 }  
+		     }
+                   else
+		     {
+                       if(RSAMS==1||RGUARD==1)
+		         {
+                           //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+			 }  
+		       else
+		         {   
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+			 }  
+		     }  
+		     
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&redirect.type='files' GROUP BY sconfig.set",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
+                           flag=send_mysql_query(conn,&str[0]);
+                           res2=mysql_store_result(conn);
+                           while((row2=mysql_fetch_row(res2)))
+	                     {
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                             }
+                           mysql_free_result(res2);
+		      
+                   if(RSQUID==1||RNONE==1)
+		     {
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, redirect.filename, redirect.type FROM %s.sconfig left join %s.redirect ON sconfig.set = redirect.filename WHERE sname = '%s'&&redirect.type='allow'\n",conf.samsdb,conf.samsdb,row[0]);
+                           flag=send_mysql_query(conn,&str[0]);
+                           res2=mysql_store_result(conn);
+                           while((row2=mysql_fetch_row(res2)))
+	                     {
+                               if(acount>0)
+			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+			       else
+			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
+                             }
+                           mysql_free_result(res2);
+                       if(acount==0)
+		         {
+                           sprintf(&str[0],"SELECT sconfig.sname, sconfig.set, urls.url FROM %s.sconfig LEFT JOIN %s.urls ON sconfig.set=urls.type LEFT JOIN %s.redirect ON redirect.filename=sconfig.set WHERE sconfig.sname='%s'&&urls.url!='NULL'&&(redirect.type='denied'||redirect.type='regex') GROUP BY sconfig.set",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
+                           flag=send_mysql_query(conn,&str[0]);
+                           res2=mysql_store_result(conn);
+                           while((row2=mysql_fetch_row(res2)))
+	                     {
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                             }
+                           mysql_free_result(res2);
+			 }  
+                     }
+
+                   if(RSQUID==1||RNONE==1||RREJIK==1)
+		     {
+                       if(atoi(row[8])<atoi(row[10]))
+		         sprintf(&outstr[0],"%s _sams_%s_time \n", &outstr[0], row[0]);
+		       else 
+		         {	 
+		           sprintf(&outstr[0],"%s _sams_%s_time_1 \n", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_2 \n", &outstr[0], row[0]);
+			 }  
+		     } 
+
+		   fprintf(fout,"%s \n", &outstr[0]);
+		     
+		 }
+	     }
+           mysql_free_result(res);
+
 	   if(ADLD==1)
-	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
+	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth DESC",conf.samsdb);
            else
-	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
+	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth",conf.samsdb);
+//#######
+	   
+//	   if(ADLD==1)
+//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
+//           else
+//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
@@ -2003,6 +2161,9 @@ void ReadSAMSFlags(MYSQL *conn2)
   DPOOLS=0;
   LOGLEVEL=0;
   if(DEBUG==1)
+    printf("    Cache... %d\n", conf.cachenum);
+
+  if(DEBUG==1)
     printf("    User autentification... ");
   sprintf(&temp[0],"%s",row[1]);
   if(strcmp(&temp[0],"ncsa")==0)
@@ -2194,12 +2355,152 @@ void ReadSAMSFlags(MYSQL *conn2)
          printf("NO\n");
     }
   mysql_free_result(res);
+
 }
+
+void CodeSlashe(char *strin, char *strout)
+{
+  int i;
+  strcpy(strout,"\0");
+  printf("input=%s\n",strin);
+  for(i=0;i<strlen(strin);i++)
+    {
+printf("%c",strin[i]);
+/*
+      if(strin[i]=="\\")
+        {
+	  strcat(strout,"%2f");
+	}
+      else
+        {
+	  strcat(strout,strin[i]);
+	}	
+  */    
+    } 
+printf("\n");
+  if(DEBUG>0)
+    printf("ekrane slashe: %s\n",strout);
+}
+
+
+int ReplaceCHR(char *str)
+{
+  char *pos;
+  if(str[0]=='\0')
+     return(1);
+  pos=strstr(str,"'");
+  while(pos>0)
+    {
+        strcpy(pos,pos+1);
+        pos=strstr(str,"'");
+    }
+ return(0);
+}
+
+int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
+{
+    register struct dirent *dirbuf;
+    DIR *fddir;
+    FILE *finp;
+    struct   stat st;
+    ino_t dot_ino = 0, dotdot_ino = 0;
+    char filename[1024];
+    char filebuf[1024];
+    char url[1024];
+    char urlcode[1024];
+    char letter;
+    int flag;
+
+    if((fddir = opendir (dirname)) == NULL)
+      {
+        fprintf(stderr, "Can't read %s\n", dirname);
+        return 1;
+      }
+      
+    while ((dirbuf = readdir (fddir)) != NULL ) 
+      {
+        if (dirbuf->d_ino == 0) 
+	  continue;
+        if (strcmp (dirbuf->d_name, "." ) == 0)
+	  {
+            dot_ino = dirbuf->d_ino;
+	    continue;
+	  } 
+	else 
+	  {
+	     if(strcmp (dirbuf->d_name, "..") == 0)
+	       {
+                dotdot_ino = dirbuf->d_ino;
+                continue;
+               } 
+	     else 
+	       { 
+		 strncpy(&filename[0],dirname,512);
+		 sprintf(&filename[0],"%s/%s", &filename[0], dirbuf->d_name);
+	         //lstat (dirbuf->d_name, &st);
+	         lstat (&filename[0], &st);
+                 if(S_ISREG(st.st_mode))
+	           {     
+		     if(st.st_size > MAXSIZE)
+		       {
+			 if((finp=fopen(&filename[0], "rt" ))==NULL)
+			    {
+    				printf("Don't open file %s\n",&filename[0]);
+    				return(0);
+			    }
+			 while((letter=fgetc(finp))!=(char)0x0A)
+			    { 
+                              //fprintf(fout,"%c",letter);
+				if(letter!=(char)0x00)
+                                  {
+				    sprintf(&filebuf[0],"%s%c",&filebuf[0],letter);
+                                  }
+				else
+				  {
+
+				    strcpy(&url[0],&filebuf[0]);
+				    strcpy(&filebuf[0],"\0");
+
+				  }
+                            }
+			 //CodeSlashe(&url[0],&urlcode[0]);   
+			 ReplaceCHR(&url[0]);
+	                 if(DEBUG>0)
+			   printf("%s %s %d\n", &filename[0], &url[0], st.st_size);
+                         sprintf(&str[0],"INSERT INTO %s.files SET id='%d',filepath='%s',url='%s',size='%d'",conf.logdb,conf.cachenum,&filename[0],&url[0], st.st_size);
+                         flag=send_mysql_query(conn,&str[0]);
+			 fclose(finp);
+		       }
+	           }
+                 if(S_ISDIR(st.st_mode))
+	           {     
+	             //printf("        Directory %s\n", &filename[0]);
+		     listdir(&filename[0],MAXSIZE,conn);
+	           }
+		 strcpy(&filename[0],"\0");
+	       }
+          }      
+	
+
+      }
+    closedir (fddir);
+																				
+    if(dot_ino    == 0) 
+      printf(" :   \".\"\n");
+    if(dotdot_ino == 0) 
+      printf(" :   \"..\"\n");
+    if(dot_ino && dot_ino == dotdot_ino)  
+      printf("   \n");
+			
+    return 0;
+}
+
+
 
 
 int main (int argc, char *argv[])
 {
-  int i;
+  int i,save;
   MYSQL *conn,*conn2;
   MYSQL_RES *res;
   MYSQL_ROW row;
@@ -2207,12 +2508,19 @@ int main (int argc, char *argv[])
   pid_t pid,childpid,parentpid;
   time_t tt,tt2;
   struct tm *t,*t2;
+    struct   stat st;
   int sams_sec;
   int sams_clr_month;
   int sams_clr_day;
   int SD=0;
   int clearflag;
   int sleepcounter;
+    char buf[1024];
+    char url[1024];
+    char urlcode[1024];
+    char letter;
+  FILE *finp,*fout;
+  unsigned char symbol[3];
   
   struct sigaction sigchld_action;
 
@@ -2400,6 +2708,8 @@ int main (int argc, char *argv[])
                    if(DEBUG==0)
 		     syslog(LOG_DEBUG,"SAMS: SQUID base saved to disk\n");
                    
+                   sprintf(&str[0],"SQUID base saved to disk");
+		   AddLog(conn2,0,"samsdaemon",&str[0]);
 		   flag=SaveBackUp(SQUIDBASE,conn);
                    if(flag!=0)
                      {
@@ -2435,7 +2745,7 @@ int main (int argc, char *argv[])
                            row=mysql_fetch_row(res);
                            sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
-                           sprintf(&str[0],"Traffic clean. Template %s",row[2]);
+                           sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
 		           clearflag=1;
 			}
@@ -2455,7 +2765,7 @@ int main (int argc, char *argv[])
                            row=mysql_fetch_row(res);
                            sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
-                           sprintf(&str[0],"Traffic clean. Template %s",row[2]);
+                           sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
 			   clearflag=1;
 		        }
@@ -2479,7 +2789,7 @@ int main (int argc, char *argv[])
 
 		        sprintf(&str[0],"UPDATE %s.shablons SET clrdate='%d-%d-%d' WHERE name='%s'",conf.samsdb,t2->tm_year+1900,t2->tm_mon+1,t2->tm_mday,row[1]);
 			flag=send_mysql_query(conn2,&str[0]);
-                        sprintf(&str[0],"Traffic clean. Template %s",row[2]);
+                           sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
 			AddLog(conn2,0,"samsdaemon",&str[0]);
 			clearflag=1;
 		     }
@@ -2504,6 +2814,91 @@ int main (int argc, char *argv[])
                      }
                  }
              }
+
+           sprintf(&str[0],"SELECT action,service,value FROM %s.reconfig WHERE service='squid'&&action='loadfile'&&number='%d'",conf.samsdb,conf.cachenum);
+	   flag=send_mysql_query(conn2,&str[0]);
+           res=mysql_store_result(conn2);
+           //Если сигнал на чтение логов
+           
+	   if(mysql_num_rows(res)>0)
+	     {
+               row=mysql_fetch_row(res);
+               sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='squid'&&action='loadfile'&&number='%d'",conf.samsdb,conf.cachenum);
+               flag=send_mysql_query(conn,&str[0]);
+//###########################
+	   	if((finp=fopen(row[2], "rt" ))==NULL)
+	     	  {
+    			printf("Don't open file %s\n", row[2]);
+    			return(0);
+	     	  }
+	   	while((letter=fgetc(finp))!=(char)0x0A)
+	          { 
+		    if(letter!=(char)0x00&&letter!=(char)0x2F)
+                      {
+		        sprintf(&buf[0],"%s%c",&buf[0],letter);
+                      }
+	            else
+		      {
+		        strcpy(&url[0],&buf[0]);
+		        strcpy(&buf[0],"\0");
+		      }
+                  }
+  	   	fclose(finp);
+           	if(DEBUG>0)
+	      	  printf("Read command to copy file %s to %s/share/sams/data/%s\n",row[2],conf.samspath,&url[0]);
+	   	if((finp=fopen(row[2], "rb" ))==NULL)
+  	     	  {
+               		printf("Don't open file %s\n",row[2]);
+               		return(0);
+             	  }
+	   	sprintf(&buf[0],"%s/share/sams/data/%s",conf.samspath,&url[0]);
+  	   	if((fout=fopen(&buf[0], "wb" ))==NULL)
+    	     	  {
+      			return(0);
+    	      	  }
+  	   	save=0;
+  	   	lstat (row[2], &st);
+  	   	while((i=feof(finp))==0)
+    	     	  {
+       			symbol[0]=fgetc( finp ); 
+       			if(save==1)
+	 	  	  fprintf(fout,"%c",symbol[0]); 
+       			if(symbol[0]==0x0A&&symbol[1]==0x0D&&symbol[2]==0x0A)
+         	  	  save=1;
+       			symbol[2]=symbol[1];
+       			symbol[1]=symbol[0];
+   	     	  }
+  	   	fclose(finp);
+  	   	fclose(fout);
+
+//###########################
+	     }  
+           mysql_free_result(res);
+
+           sprintf(&str[0],"SELECT action,service,value FROM %s.reconfig WHERE service='squid'&&action='files'&&number='%d'",conf.samsdb,conf.cachenum);
+	   flag=send_mysql_query(conn2,&str[0]);
+           res=mysql_store_result(conn2);
+           //Если сигнал на чтение логов
+           
+	   if(mysql_num_rows(res)>0)
+	     {
+               row=mysql_fetch_row(res);
+               sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='squid'&&action='files'&&number='%d'",conf.samsdb,conf.cachenum);
+               flag=send_mysql_query(conn,&str[0]);
+                    if(DEBUG>0)
+		      printf("\n\n\nRead command to scan squid cache files\n\n\n");
+
+               sprintf(&str[0],"INSERT INTO %s.reconfig SET service='squid',action='cachescan',number='%d'",conf.samsdb,conf.cachenum);
+               flag=send_mysql_query(conn,&str[0]);
+               listdir("/var/spool/squid",atoi(row[2])*1024, conn2);
+               sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='squid'&&action='cachescan'&&number='%d'",conf.samsdb,conf.cachenum);
+               flag=send_mysql_query(conn,&str[0]);
+               sprintf(&str[0],"INSERT INTO %s.reconfig SET service='squid',action='scanoff',number='%d'",conf.samsdb,conf.cachenum);
+               flag=send_mysql_query(conn,&str[0]);
+	       //printf("\nflag = %d\n\n",flag);
+
+	     }  
+           mysql_free_result(res);
 
            sprintf(&str[0],"SELECT action,service FROM %s.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.samsdb,conf.cachenum);
 	   flag=send_mysql_query(conn2,&str[0]);
