@@ -39,3 +39,12 @@ CREATE TABLE cachesum (
 
 insert into cachesum select date,user,domain,sum(size),sum(hit) from cache group by date,user;
 
+DROP TABLE IF EXISTS files;
+CREATE TABLE files (
+  id tinyint(3) NOT NULL default '0',
+  filepath varchar(50) NOT NULL default '',
+  url varchar(120) NOT NULL default '',
+  size int(12) NOT NULL default '0'
+) TYPE=MyISAM;
+
+

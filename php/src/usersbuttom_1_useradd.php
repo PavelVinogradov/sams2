@@ -54,7 +54,8 @@ function GetDomainUsersList()
            		$domainlen=strlen($domain);
            		$userlen=strlen($user);
 		  }
-           if($domainlen==0||$userlen==0)
+
+           if(strlen($domain)==0||strlen($user)==0)
              {
 	       $user=$domain;
 	       $domain=$SAMSConf->DEFAULTDOMAIN;
@@ -63,7 +64,7 @@ function GetDomainUsersList()
          }
       else
 	 {
-           $domain="$SAMSConf->DEFAULTDOMAIN==";
+           $domain="$SAMSConf->DEFAULTDOMAIN";
            $user=trim($a[$i]);
            //$user=strtolower($user);
          }
@@ -75,9 +76,9 @@ function GetDomainUsersList()
        if(strcmp($row['name'],$user)!=0&&strcmp($row['domain'],$domain)!=0)
           {
             if($SAMSConf->NTLMDOMAIN=="Y")
-		print("<OPTION VALUE=\"$domain+$user\"> $user/$domain");
+		print("<OPTION VALUE=\"$domain+$user\"> $user/$domain ");
 	    else  
-	      print("<OPTION VALUE=\"$user\"> $user");
+	      print("<OPTION VALUE=\"$user\"> $user ");
 	  }
 
      }

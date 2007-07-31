@@ -4,6 +4,20 @@
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
+function MoveUsersToGroup()
+{
+ if(isset($_GET["groupname"])) $id=$_GET["groupname"];
+ if(isset($_GET["username"])) $users=$_GET["username"];
+
+  for($i=0;$i<count($users);$i++)
+    {
+           $result=mysql_query("UPDATE squidusers SET squidusers.group=\"$id\" WHERE squidusers.id=\"$users[$i]\"");
+    }
+  print("<SCRIPT>\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=usergroupform&groupname=$id&gid=ALL\";\n");
+  print("        parent.lframe.location.href=\"lframe.php\";\n");
+  print("</SCRIPT> \n");
+}
 
 function DisableGroupUsers()
 {

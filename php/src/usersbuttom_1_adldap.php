@@ -83,7 +83,6 @@ function AddUsersFromAdLDAP()
 
 function AddUsersFromAdLDAPForm()
 {
-//(memberOf= CN= Internet ,CN=Users,DC= your ,DC= domain )   
   global $SAMSConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";

@@ -101,7 +101,7 @@ function SysInfo()
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
 
-   $uptime=ExecuteShellScript("uptime");
+   $uptime=ExecuteShellScript("uptime","");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");

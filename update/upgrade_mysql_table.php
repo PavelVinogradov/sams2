@@ -396,5 +396,11 @@ $result=UpgradeTable("squidctrl.proxyes","description","varchar(50) NOT NULL def
 if($result==1)
   InsertData("INSERT INTO squidctrl.proxyes VALUES('0','main proxy server')");
 
+$result=UpgradeTable("squidctrl.reconfig","value","varchar(110) ");
+$result=AddTable("squidlog","files","id","tinyint(3) NOT NULL default '0' ");
+$result=UpgradeTable("squidlog.files","filepath","varchar(50)");
+$result=UpgradeTable("squidlog.files","url","varchar(120)");
+$result=UpgradeTable("squidlog.files","size","int(12)");
+$result=UpgradeTable("squidctrl.proxyes","endvalue","int(20)");
   
 ?>

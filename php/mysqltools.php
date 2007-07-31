@@ -126,7 +126,7 @@ function db_connect($basename)
  
 class SAMSCONFIG
 {
-//  var $SAMSPATH;
+  var $SAMSPATH;
   var $access;
   var $groupauditor;
   var $domainusername;
@@ -211,6 +211,7 @@ class SAMSCONFIG
          if(!strcasecmp($str2,"LDAPSERVER" ))            $this->LDAPSERVER=trim(strtok("="));
          if(!strcasecmp($str2,"MYSQLVERSION" ))          $this->MYSQLVERSION=trim(strtok("="));
          if(!strcasecmp($str2,"SHUTDOWNCOMMAND" ))       $this->SHUTDOWN=trim(strtok("="));
+         if(!strcasecmp($str2,"SAMSPATH" ))       $this->SAMSPATH=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPBASEDN" ))
            {
               $str2=trim(strtok($string,"="));
@@ -259,8 +260,9 @@ class SAMSCONFIG
 
       $result=mysql_query("SELECT MAX(id) FROM $this->SAMSDB.proxyes ");
       $row=mysql_fetch_array($result);
-      $this->PROXYCOUNT=$row[0]+1;
-      
+      $this->PROXYCOUNT=$row[0];
+      if($row[0]==0)
+        $this->PROXYCOUNT++;
 //      $result=mysql_query("USE samstraf");
 //      if($result==FALSE)
 //        $this->SWITCHTO=0;

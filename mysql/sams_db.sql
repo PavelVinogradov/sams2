@@ -16,7 +16,7 @@
  INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','1');
  INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1');
  DROP TABLE IF EXISTS `reconfig`;
- CREATE TABLE `reconfig` ( `number` int(2),`service` varchar (15),`action` varchar(10)) TYPE=MyISAM;
+ CREATE TABLE `reconfig` ( `number` int(2),`service` varchar (15),`action` varchar(10), `value` varchar(110)) TYPE=MyISAM;
  INSERT INTO reconfig VALUES('1','sams','');
  DROP TABLE IF EXISTS `redirect`;
  CREATE TABLE `redirect` ( `name` varchar(25), `filename` varchar(25), `type` varchar(25), `show` int(10) unsigned, `redirect_to` varchar(100)) TYPE=MyISAM;
@@ -51,6 +51,6 @@
  ALTER TABLE squidusers ADD INDEX (`group`);
  ALTER TABLE squidusers ADD INDEX (`family`);
  DROP TABLE IF EXISTS `proxyes`;
- CREATE TABLE `proxyes` ( `id` tinyint(3) default '0', `description` varchar(50) default 'Proxy server') TYPE=MyISAM;
+ CREATE TABLE `proxyes` ( `id` tinyint(3) default '0', `description` varchar(50) default 'Proxy server', `endvalue` int(20) default '0') TYPE=MyISAM;
 
 
