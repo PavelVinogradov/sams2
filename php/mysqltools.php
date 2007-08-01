@@ -853,13 +853,13 @@ function PrintFormattedSize($size)
  $msize=floor($ostatok/($kbsize*$kbsize));
  $ostatok=$size-$gsize*$kbsize*$kbsize*$kbsize-$msize*$kbsize*$kbsize;
  $ksize=floor($ostatok/$kbsize);
- if($msize<10)
+ if($msize<10&&$gsize>0)
    $msize="0$msize";
- if($msize<100)
+ if($msize<100&&$gsize>0)
    $msize="0$msize";
- if($ksize<10)
+ if($ksize<10&&$msize>0)
    $ksize="0$ksize";
- if($ksize<100)
+ if($ksize<100&&$msize>0)
    $ksize="0$ksize";
    
   print("<TD ALIGN=RIGHT>&nbsp;");
