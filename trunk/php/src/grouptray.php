@@ -140,8 +140,7 @@ function UserGroupForm()
 	     print("> \n ");
            }
 	 
-	 
-	 print("<TD WIDTH=\"15%\"> <B>$row[nick] </B>");
+	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=usertray&userid=$row[id]&usergroup=$row[group]\"  TARGET=\"tray\">$row[nick] </A></B>");
          if($SAMSConf->access==2)
            {
              print("<TD WIDTH=\"15%\"> <B>$row[domain] </B>");
