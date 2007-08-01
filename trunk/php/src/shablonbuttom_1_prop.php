@@ -220,29 +220,6 @@ function UpdateShablonForm()
         $acount++;
       }
 
- 
-  $acount=0;
-  print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
-//  print("<INPUT TYPE=\"RADIO\" NAME=\"denied\" VALUE=\"allowed\"  onclick=DisableDeniedLists(UPDATESHABLON) $ALLOWCHECKED>\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B> $shablonbuttom_1_prop_UpdateShablonForm_11\n");
-  $result=mysql_query("SELECT name,filename,type FROM redirect WHERE type=\"allow\" ");
-  while($row=mysql_fetch_array($result))
-      {
-        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
-        print("<IMG SRC=\"$SAMSConf->ICONSET/stop.jpg\">");
-
-        $result2=mysql_query("SELECT * FROM sconfig WHERE sconfig.sname=\"$id\"&&sconfig.set=\"$row[filename]\" ");
-        $row2=mysql_fetch_array($result2);
-        if($row['filename']==$row2['set'])
-          print("<INPUT TYPE=\"CHECKBOX\" NAME=\"_$row[filename]\" CHECKED $ALLOWDISABLED>\n");
-        else
-          print("<INPUT TYPE=\"CHECKBOX\" NAME=\"_$row[filename]\" $ALLOWDISABLED>\n");
-        print("<TD WIDTH=\"60%\"> $row[name]\n");
-	$alist[$acount]="_$row[filename]";
-        $acount++;
-      }
-//  print("</TABLE>\n");
-
    // file extensions
   $acount=0;
   print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
