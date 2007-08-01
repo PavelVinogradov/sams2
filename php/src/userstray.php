@@ -144,7 +144,7 @@ function AllUsersForm()
            }
 	 
 	 
-	 print("<TD WIDTH=\"15%\"> <B>$row[1] </B>");
+	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=usertray&userid=$row[id]&usergroup=$row[group]\"  TARGET=\"tray\">$row[1] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
          if($SAMSConf->access==2)
