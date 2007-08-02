@@ -393,7 +393,7 @@ int chRejikConf(MYSQL *conn)
                 if(strcmp(row[2],"ncsa")==0||strcmp(row[2],"ntlm")==0||strcmp(row[2],"adld")==0)
                   fprintf(fout,"work_id f:%s/%s.sams\n", conf.rejikpath, row[0]);
 	        fprintf(fout,"ban_dir %s/_sams_banlists/%s_redir\n", conf.rejikpath, row[0]);
-                fprintf(fout,"url http://127.0.0.1/sams/icon/classic/blank.gif  #_sams_\n");
+                fprintf(fout,"url %s  #_sams_\n", conf.redirpath);
 	      }
             mysql_free_result(res2);
 
