@@ -1,0 +1,17 @@
+Source: sams
+Section: net
+Priority: extra
+Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
+Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev
+Standards-Version: 3.7.2
+
+Package: sams
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Squid Account Management System (SAMS)
+ Long description there
+
+Package: sams-web
+Architecture: all
+Description: Web-interface to control sams
+ Long description there
