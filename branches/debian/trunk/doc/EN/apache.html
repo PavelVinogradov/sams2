@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+ 
+<H3>Configuring  APACHE web server with PHP support</H3>
+
+
+<P>If you are using the SAMS, you must install the Apache http server with php support.
+In the php module your must switch on MySQL support.
+
+<BR>For the red-hat like linux your must install::
+<BR> apache-***.rpm,
+<BR> mod_php***.rpm
+<BR> php***.rpm
+<BR> php-common***.rpm
+<BR> php-mysql***.rpm
+
+<P>Configuring PHP support.
+<BR>Uncomment or insert next string into the httpd.conf:
+<BR> LoadModule php4_module libexec/libphp4.so
+<BR>AddModule mod_php4.c
+<BR>AddType application/x-httpd-php .php .phtml
+
+<P>Switch on upload files on web server:
+<P><Directory "/var/www/htdocs">
+<BR>   ?
+<BR>   Options ? ExecCGI
+<BR>   ?
+<BR></Directory>
+
+<H3> Configuring  PHP </H3>
+<BR>Uncomment or insert net string into the php.ini:
+<BR>extensions=mysql.so
+<BR>register_globals = On
+
+</BODY>
+</HTML>
