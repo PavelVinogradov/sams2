@@ -1,17 +1,14 @@
 Source: sams
 Section: net
-Priority: extra
+Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
-Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev
+Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev, libpcre3-dev
 Standards-Version: 3.7.2
 
 Package: sams
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, apache2 | httpd, php5, php5-mysql
+Recommends: mysql-server
+Suggests: php5-gd, php5-ldap 
 Description: Squid Account Management System (SAMS)
- Long description there
-
-Package: sams-web
-Architecture: all
-Description: Web-interface to control sams
  Long description there
