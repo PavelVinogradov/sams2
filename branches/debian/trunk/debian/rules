@@ -11,7 +11,7 @@
 # build-arch and build-indep targets  by Bill Allombert 2001
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
@@ -43,7 +43,7 @@ build-arch: build-arch-stamp
 build-arch-stamp:  config.status
 
 	# Add here commands to compile the arch part of the package.
-	#$(MAKE) 
+	$(MAKE) 
 	touch $@
 
 build-indep: build-indep-stamp
@@ -91,9 +91,10 @@ install-arch:
 
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
-	$(MAKE) prefix=$(CURDIR)/debian/sams install
+	#$(MAKE) prefix=$(CURDIR)/debian/sams install
 
 	dh_install -s
+	#ln -s ../doc/sams/html $(CURDIR)/debian/sams/usr/share/sams/doc 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep
 # in another 'make' thread.
@@ -110,7 +111,7 @@ binary-common:
 #	dh_installpam
 #	dh_installmime
 #	dh_python
-#	dh_installinit
+	dh_installinit
 #	dh_installcron
 #	dh_installinfo
 	dh_installman

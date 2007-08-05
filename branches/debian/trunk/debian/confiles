@@ -1,1 +1,3 @@
-/ets/sams.conf
+sams.conf
+apache.conf
+cherokee.conf
