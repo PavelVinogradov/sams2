@@ -248,6 +248,10 @@ class SAMSCONFIG
       $result=mysql_query("SELECT * FROM $this->SAMSDB.globalsettings");
       $row=mysql_fetch_array($result);
       $this->LANG=$row['lang'];
+      if ($this->LANG=="EN") 
+        $this->LANGCODE = "EN"; 
+      else
+        $this->LANGCODE = "RU";
       $this->ICONSET="icon/$row[iconset]";
       $this->USERACCESS=$row['useraccess'];
       $this->URLACCESS=$row['urlaccess'];
@@ -322,7 +326,7 @@ if($squidctrldb==FALSE)
 			if($squidctrldb==1)
 				echo "База squidctrl несоздана или пользователь $this->MYSQLUSER не имеет прав на подключение к ней<BR>";
 			echo "<BR>Как создать базы SAMS: ";
-			echo "<BR>KOI8-R:  <A HREF=\"doc/KOI8-R/mysql_install.html\" TARGET=\"basefrm\">Установка и создание базы SAMS в MySQL</A>";
+			echo "<BR>RUS:  <A HREF=\"doc/RU/mysql_install.html\" TARGET=\"basefrm\">Установка и создание базы SAMS в MySQL</A>";
 			//echo "<BR>Сейчас вы сможете создать базы SAMS или проверить соединение с ними";
   			//print("<FORM NAME=\"createdbform\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup \" METHOD=POST>\n");
 			//print("<P><CENTER><INPUT TYPE=\"SUBMIT\" VALUE=\"Ok\" onclick=CreateDB()></CENTER>\n");

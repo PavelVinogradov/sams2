@@ -159,7 +159,7 @@ function AddDeniedListForm()
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$redir_addredirectform3\">\n");
   print("</FORM>\n");
 
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANG/urllists.html\">");
+       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
        print("<TD>$denied_adddeniedform5");
 

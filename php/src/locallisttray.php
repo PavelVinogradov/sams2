@@ -133,7 +133,7 @@ function EditLocalListForm()
   print("</FORM>\n");
 
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-       print("<A HREF=\"doc/$SAMSConf->LANG/urllists.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
+       print("<A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
        print("<TD>$redir_openurlbase10");
        print(" $redir_openurlbase11");
        print(" <BR>$redir_openurlbase12");

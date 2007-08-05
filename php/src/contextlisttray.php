@@ -162,7 +162,7 @@ function ContextListForm()
   if($row['type']=="$id")
      {
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-       print("<A HREF=\"doc/localhost.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
+       print("<A HREF=\"doc/$SAMSConf->LANGCODE/localhost.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
        print("<TD>$redir_openurlbase10");
        print(" $redir_openurlbase11");
        print(" <BR>$redir_openurlbase12");
@@ -203,7 +203,7 @@ function AddContextListForm()
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$redir_addredirectform3\">\n");
   print("</FORM>\n");
 
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANG/urllists.html\">");
+       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
        print("<TD>$urlregex_addform4");
 

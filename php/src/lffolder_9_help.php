@@ -13,7 +13,7 @@
 
   if($SAMSConf->access==2)
     {
-       print("   licenses = insDoc(sams,gLnk(\"R\",\"$lframe_sams_lframe_sams_6\",\"doc/$SAMSConf->LANG/index.html\",\"help.jpg\"))\n");
+       print("   licenses = insDoc(sams,gLnk(\"R\",\"$lframe_sams_lframe_sams_6\",\"doc/$SAMSConf->LANGCODE/index.html\",\"help.jpg\"))\n");
     }	 
 
  }

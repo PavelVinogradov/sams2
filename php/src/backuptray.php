@@ -14,7 +14,7 @@ function HelpBackUpForm()
 
   PageTop("backup_48.jpg","$backuptray_HelpBackUpForm_1");
   print("<P><P>\n");
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/backup.html\">");
+       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/backup.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
        print("<TD>$backuptray_HelpBackUpForm_2");
 }

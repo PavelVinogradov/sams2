@@ -250,7 +250,7 @@ function NewShablonForm()
   print("</FORM>\n");
 
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-       print("<A HREF=\"doc/$SAMSConf->LANG/shablons.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
+       print("<A HREF=\"doc/$SAMSConf->LANGCODE/shablons.html\"><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT></A>");
        print("<TD>$shablonnew_NewShablonForm_7");
        print(" $shablonnew_NewShablonForm_8");
 

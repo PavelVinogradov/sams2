@@ -16,7 +16,7 @@ function HelpSquidForm()
   PageTop("reconfig_48.jpg","$squidtray_HelpSquidForm_1");
   print("<P><P>\n");
   print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\">");
-  //print("<A HREF=\"doc/reconfig.html\">");
+  //print("<A HREF=\"doc/$SAMSConf->LANGCODE/reconfig.html\">");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
   print("<TD>$squidtray_HelpSquidForm_2");
   print("</TABLE>");
