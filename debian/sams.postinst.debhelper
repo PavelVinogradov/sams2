@@ -1,0 +1,10 @@
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/sams" ]; then
+	update-rc.d sams defaults >/dev/null
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d sams start || exit $?
+	else
+		/etc/init.d/sams start || exit $?
+	fi
+fi
+# End automatically added section
