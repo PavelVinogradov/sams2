@@ -166,7 +166,7 @@ function AddRedirListForm()
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$redirlisttray_AddRedirListForm_3\">\n");
   print("</FORM>\n");
 
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANG/urllists.html\">");
+       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
        print("<TD>$redirlisttray_AddRedirListForm_4");
 

@@ -14,7 +14,7 @@ function HelpDBForm()
 
   PageTop("db_48.jpg","$dbtray_HelpDBForm_1");
   print("<P><P>\n");
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANG/mysql.html\">");
+       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/mysql.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
        print("<TD>$dbtray_HelpDBForm_2");
 }
