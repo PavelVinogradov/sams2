@@ -23,7 +23,7 @@ function ShowRedirStat()
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
 
-  PageTop("user.jpg","Статистика списка перенаправления запросов <BR><FONT COLOR=\"BLUE\">$row[name]</FONT>");
+  PageTop("user.jpg","$redirbuttom_4_redirstat_ShowRedirStat_1<BR><FONT COLOR=\"BLUE\">$row[name]</FONT>");
 
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
@@ -74,7 +74,7 @@ function ShowRedirStatForm()
   $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
   $row=mysql_fetch_array($result);
 
-  PageTop("user.jpg","Статистика списка перенаправления запросов <BR><FONT COLOR=\"BLUE\">$row[name]</FONT>");
+  PageTop("user.jpg","$redirbuttom_4_redirstat_ShowRedirStat_1 <BR><FONT COLOR=\"BLUE\">$row[name]</FONT>");
 
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");

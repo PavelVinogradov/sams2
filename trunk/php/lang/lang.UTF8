@@ -843,7 +843,12 @@
   $squidbuttom_5_readcache_ReadCacheSquidForm_2="Показать все файлы, размером не менее";
   $squidbuttom_5_readcache_ReadCacheSquidForm_3="Сканировать";
   $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Достать файлы, сохраненные в кеше SQUID";
+  $squidbuttom_6_readcache_ReadCacheSquidForm_4="В каталоге ";
+  $squidbuttom_6_readcache_ReadCacheSquidForm_5="найдены файлы";
 
+  $usersbuttom_4_site_UsersSitesPeriod_1="Список ресурсов, к которым обращались пользователи";
+  $logbuttom_9_delete_ClearLogForm_1="Очистить логи";
+  $redirbuttom_4_redirstat_ShowRedirStat_1="Статистика списка перенаправления запросов";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";

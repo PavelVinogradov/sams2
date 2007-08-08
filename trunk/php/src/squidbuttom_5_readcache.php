@@ -290,7 +290,7 @@ function ReadCacheSquidForm()
           }
 	if($scount>0)
 	      {
-                 print("<H3>В каталоге $SAMSConf->SAMSPATH/share/sams/data найдены файлы</H3>");
+                 print("<H3>$squidbuttom_6_readcache_ReadCacheSquidForm_4 $SAMSConf->SAMSPATH/share/sams/data $squidbuttom_6_readcache_ReadCacheSquidForm_5</H3>");
                  print("<P><TABLE border=0 WIDTH=\"60%\">\n");
                  print("<TH >N ");
                  print("<TH >Filename");

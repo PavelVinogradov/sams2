@@ -119,7 +119,7 @@ function UsersSitesPeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-  PageTop("user.jpg","Список ресурсов, к которым обращались пользователи");
+  PageTop("user.jpg","$usersbuttom_4_site_UsersSitesPeriod_1");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
@@ -209,7 +209,7 @@ function UsersSitesForm()
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
 
-  PageTop("user.jpg","Список ресурсов, к которым обращались пользователи");
+  PageTop("user.jpg","$usersbuttom_4_site_UsersSitesPeriod_1");
 
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
