@@ -36,7 +36,7 @@ function ClearLogForm()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
   
-  PageTop("erase_48.jpg","Очистить логи");;
+  PageTop("erase_48.jpg","$logbuttom_9_delete_ClearLogForm_1");;
 
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");

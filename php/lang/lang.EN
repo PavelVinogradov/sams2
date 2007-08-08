@@ -608,6 +608,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_40="used:";
   $adminbuttom_1_prop_SamsReConfigForm_41=" Settings of the SAMS web interface";
   $adminbuttom_1_prop_SamsReConfigForm_42="Icon set";
+  $adminbuttom_1_prop_SamsReConfigForm_43="Not used redirector";
 
   $userbuttom_1_prop_UpdateUserForm_14="This user see statistic of his group users";
   $usertray_UserTray_1="User";
@@ -805,6 +806,28 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablontray_ShablonUsers_3="Set template ";
   $grouptray_NewGroupForm_10="Select users to move into group";
   $grouptray_NewGroupForm_11="Move selected users into group";
+
+  $squidbuttom_5_readcache_LoadFileForm_1="File loaded";
+  $squidbuttom_5_readcache_LoadFileForm_2="from cache";
+  $squidbuttom_5_readcache_LoadFileForm_3="File loaded";
+  $squidbuttom_5_readcache_LoadFileForm_4="File not loaded";
+  $squidbuttom_5_readcache_LoadFileForm_5="Check up, whether it is started samsdaemon";
+  $squidbuttom_5_readcache_LoadFileForm_6="File uploaded into ";
+  $squidbuttom_5_readcache_ReadCacheFilesList_1="Scanning cache directories";
+  $squidbuttom_5_readcache_ReadCacheFilesList_2="Scanning is ended";
+  $squidbuttom_5_readcache_ReadCacheFiles_1="Scanning files into cache directories";
+  $squidbuttom_5_readcache_ReadCacheFiles_2="Scanning...";
+  $squidbuttom_5_readcache_ReadCacheFiles_3="Scanning cache directories";
+  $squidbuttom_5_readcache_ReadCacheFiles_4="The command on scanning of cache SQUID is not received by a demon<BR>check up, whether it is started samsdaemon";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_1="Scanning files into cache directories";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_2="Show all files, with size > ";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_3="Start scanning";
+  $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Get files into SQUID cache";
+  $squidbuttom_6_readcache_ReadCacheSquidForm_4="Files are found in the catalogue ";
+
+  $usersbuttom_4_site_UsersSitesPeriod_1=" List of resources used by the users";
+  $logbuttom_9_delete_ClearLogForm_1="Clear log";
+  $redirbuttom_4_redirstat_ShowRedirStat_1="Statistics of the redirection list";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
