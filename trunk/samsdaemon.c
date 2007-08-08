@@ -393,7 +393,7 @@ int chRejikConf(MYSQL *conn)
                 if(strcmp(row[2],"ncsa")==0||strcmp(row[2],"ntlm")==0||strcmp(row[2],"adld")==0)
                   fprintf(fout,"work_id f:%s/%s.sams\n", conf.rejikpath, row[0]);
 	        fprintf(fout,"ban_dir %s/_sams_banlists/%s_redir\n", conf.rejikpath, row[0]);
-                fprintf(fout,"url %s  #_sams_\n", conf.redirpath);
+		fprintf(fout,"url %s  #_sams_\n", conf.redirpath); 
 	      }
             mysql_free_result(res2);
 
@@ -733,7 +733,7 @@ int ChangeSQUIDconf(MYSQL *conn)
            strncpy(&squiduser[0],suser2,32);
 	 }
        //############## TAG ACL ###################################################################
-       if(strstr( &buf[0], "#  TAG: acl" )!=0)
+       if(strstr( &buf[0], "#  TAG: acl" )!=0&&strstr( &buf[0], "_" )==0)
          {
            if(DEBUG==1)
              printf("TAG: acl found... START\n");
@@ -835,7 +835,7 @@ int ChangeSQUIDconf(MYSQL *conn)
            mysql_free_result(res);
 
            // списки расширений файлов 
-           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set ",conf.samsdb,conf.samsdb);
+           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set GROUP BY filename",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
@@ -857,8 +857,7 @@ int ChangeSQUIDconf(MYSQL *conn)
            mysql_free_result(res);
 
            // списки запрета доступа 
-           //sprintf(&str[0],"SELECT * FROM %s.redirect WHERE type='denied' ",conf.samsdb);
-           sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set ",conf.samsdb,conf.samsdb);
+           sprintf(&str[0],"SELECT redirect.* FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set GROUP BY filename",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
@@ -949,7 +948,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 
        //############## TAG http_access ###################################################################
 
-       if(strstr( &buf[0], "#  TAG: http_access" )!=0)
+       if(strstr( &buf[0], "#  TAG: http_access" )!=0&&strstr( &buf[0], "#  TAG: http_access2" )==0)
          {
            if(DEBUG==1)
              printf("TAG: http_access found...  START\n");
@@ -1010,8 +1009,6 @@ int ChangeSQUIDconf(MYSQL *conn)
 		         }  
                        if(RSAMS==1||RGUARD==1)
 		         {
-                           //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
-//			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
 			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }
@@ -1019,7 +1016,6 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     {
                        if(RSAMS==1||RGUARD==1)
 		         {
-                           //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
                            sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		       else
@@ -1066,11 +1062,11 @@ int ChangeSQUIDconf(MYSQL *conn)
                    if(RSQUID==1||RNONE==1||RREJIK==1)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
-		         sprintf(&outstr[0],"%s _sams_%s_time \n", &outstr[0], row[0]);
+		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 		       else 
 		         {	 
-		           sprintf(&outstr[0],"%s _sams_%s_time_1 \n", &outstr[0], row[0]);
-		           sprintf(&outstr[0],"%s _sams_%s_time_2 \n", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
@@ -1175,34 +1171,16 @@ int ChangeSQUIDconf(MYSQL *conn)
                    if(RSQUID==1||RNONE==1||RREJIK==1)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
-		         sprintf(&outstr[0],"%s _sams_%s_time \n", &outstr[0], row[0]);
+		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 		       else 
 		         {	 
-		           sprintf(&outstr[0],"%s _sams_%s_time_1 \n", &outstr[0], row[0]);
-		           sprintf(&outstr[0],"%s _sams_%s_time_2 \n", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
 		   fprintf(fout,"%s \n", &outstr[0]);
 		     
-                   //if(RSQUID==1||RNONE==1||RREJIK==1)
-		   //  {
-                   //    if(atoi(row[8])<atoi(row[10]))
-		   //      fprintf(fout,"%s _sams_%s_time \n", &outstr[0], row[0]);
-		   //    else 
-		   //      {	 
-		   //        fprintf(fout,"%s _sams_%s_time_1 \n", &outstr[0], row[0]);
-		   //        fprintf(fout,"%s _sams_%s_time_2 \n", &outstr[0], row[0]);
-		//	 }  
-		   //  } 
-		   
-		   //else
-		   //  {
-		   //    fprintf(fout,"%s\n", &outstr[0]);
-		   //  }    
-
-                   //if(DEBUG==1)
-                   //  printf("\n");
 		 }
 	     }
            mysql_free_result(res);
@@ -1912,39 +1890,40 @@ int MakeACLFiles(MYSQL *conn)
                       {
 			for(k=1;k<strlen(SEPARATOR);k++)
 			  {
-                            
-                            if(BIGD==1||BIGD==100)
+                            if(BIGD==1)
 		              {
                                 str2upper((char *)row2[6]);
 			        fprintf(fout,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
                                 if(RREJIK==1&&atoi(row2[10])>0)
                                   fprintf(fout2,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
 		              }
-                            if(BIGD==-1||BIGD==100)
+                            else if(BIGD==-1)
 		              {
                                 Str2Lower(row2[6]);
 			        fprintf(fout,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
                                 if(RREJIK==1&&atoi(row2[10])>0)
                                   fprintf(fout2,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
 		              }
-			    
-			    //fprintf(fout,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
-                            //if(RREJIK==1&&atoi(row2[10])>0)
-                            //  fprintf(fout2,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
+			    else  
+		              {
+			        fprintf(fout,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
+                                if(RREJIK==1&&atoi(row2[10])>0)
+                                  fprintf(fout2,"%s%c%s\n",row2[6],SEPARATOR[k],row2[1]);
+		              }
 			  }
 			
 		      }
-                    fprintf(fout,"%s",row2[1]);
+                    fprintf(fout,"%s\n",row2[1]);
                     if(RREJIK==1&&atoi(row2[10])>0)
-                      fprintf(fout2,"%s",row2[1]);
+                      fprintf(fout2,"%s\n",row2[1]);
 
 		  }      
                 //if(NCSA==1) 
 		if(strcmp(row[1],"ncsa")==0)
 		  {
-                     fprintf(fout,"%s",row2[1]);
+                     fprintf(fout,"%s\n",row2[1]);
                      if(RREJIK==1&&atoi(row2[10])>0)
-                       fprintf(fout2,"%s",row2[1]);
+                       fprintf(fout2,"%s\n",row2[1]);
 
                      if(ncsacount==0)
 		       {
@@ -1980,19 +1959,18 @@ int MakeACLFiles(MYSQL *conn)
                      ncsacount++;
 
 		  }      
-                if(strcmp(row[1],"ip")==0&&RREJIK==0) 
-                    fprintf(fout,"%s/255.255.255.255",row2[11]);
+                if(strcmp(row[1],"ip")==0&&RREJIK==0&&strlen(row2[11])>4) 
+                    fprintf(fout,"%s/255.255.255.255\n",row2[11]);
                 if(strcmp(row[1],"ip")==0&&RREJIK==1) 
 		  {
-                    fprintf(fout,"%s/255.255.255.255",row2[11]);
+                    fprintf(fout,"%s/255.255.255.255\n",row2[11]&&strlen(row2[11])>4);
                     if(RREJIK==1&&atoi(row2[10])>0)
                       fprintf(fout2,"%s",row2[11]);
 		  }  
 		  
-                fprintf(fout,"\n");
-                if(RREJIK==1&&atoi(row2[10])>0)
-                  fprintf(fout2,"\n");
-                //printf("user found: %15s+%15s %15s/%15s\n",row2[6],row2[1],row2[11],row2[12]);
+//                fprintf(fout,"\n");
+//                if(RREJIK==1&&atoi(row2[10])>0)
+//                  fprintf(fout2,"\n");
 	     }
            if(strcmp(row[1],"ncsa")==0) 
 	     {
