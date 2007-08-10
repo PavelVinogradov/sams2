@@ -733,7 +733,7 @@ int ChangeSQUIDconf(MYSQL *conn)
            strncpy(&squiduser[0],suser2,32);
 	 }
        //############## TAG ACL ###################################################################
-       if(strstr( &buf[0], "#  TAG: acl" )!=0&&strstr( &buf[0], "_" )==0)
+       if(strstr( &buf[0], "TAG:" )!=0&&strstr( &buf[0], "acl" )!=0&&strstr( &buf[0], "_" )==0)
          {
            if(DEBUG==1)
              printf("TAG: acl found... START\n");
@@ -948,7 +948,8 @@ int ChangeSQUIDconf(MYSQL *conn)
 
        //############## TAG http_access ###################################################################
 
-       if(strstr( &buf[0], "#  TAG: http_access" )!=0&&strstr( &buf[0], "#  TAG: http_access2" )==0)
+//       if(strstr( &buf[0], "#  TAG: http_access" )!=0&&strstr( &buf[0], "#  TAG: http_access2" )==0)
+       if(strstr( &buf[0], "TAG:" )!=0&& strstr( &buf[0], "http_access" )!=0&& strstr( &buf[0], "2" )==0)
          {
            if(DEBUG==1)
              printf("TAG: http_access found...  START\n");
@@ -1071,7 +1072,6 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     } 
 
 		   fprintf(fout,"%s \n", &outstr[0]);
-		     
 		 }
 	     }
            mysql_free_result(res);
@@ -1080,12 +1080,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth DESC",conf.samsdb);
            else
 	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth",conf.samsdb);
-//#######
-	   
-//	   if(ADLD==1)
-//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth DESC",conf.samsdb);
-//           else
-//	     sprintf(&str[0],"SELECT * FROM %s.shablons ORDER BY auth",conf.samsdb);
+
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
            while((row=mysql_fetch_row(res)))
@@ -1113,10 +1108,8 @@ int ChangeSQUIDconf(MYSQL *conn)
 		         {
 			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
 		         }  
-                       if(RSAMS==1||RGUARD==1)
+                       if(RSAMS==1||RGUARD==1||RREJIK==1)
 		         {
-                           //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
-//			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
 			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }
@@ -1171,7 +1164,9 @@ int ChangeSQUIDconf(MYSQL *conn)
                    if(RSQUID==1||RNONE==1||RREJIK==1)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
+		         {	 
 		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
+			 }  
 		       else 
 		         {	 
 		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
@@ -1180,7 +1175,6 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     } 
 
 		   fprintf(fout,"%s \n", &outstr[0]);
-		     
 		 }
 	     }
            mysql_free_result(res);
