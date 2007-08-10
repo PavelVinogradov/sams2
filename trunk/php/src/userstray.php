@@ -80,7 +80,7 @@ function AllUsersForm()
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
   print("<TR>\n");
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access>0)
     {
       print("<TH  WIDTH=\"10%\">\n");
       print("<B>$userstray_AllUsersForm_1</B> \n");
@@ -142,8 +142,7 @@ function AllUsersForm()
 	       print(" CHECKED ");
 	     print("> \n ");
            }
-	 
-	 
+
 	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=usertray&userid=$row[id]&usergroup=$row[group]\"  TARGET=\"tray\">$row[1] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
