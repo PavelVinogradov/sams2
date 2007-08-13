@@ -84,7 +84,7 @@ function UserGroupForm()
   
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access>0)
     {
       print("<TH  WIDTH=\"10%\">\n");
       print(" <B>$grouptray_NewGroupForm_3 </B> \n");
