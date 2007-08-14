@@ -17,7 +17,7 @@
  INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1');
  DROP TABLE IF EXISTS `reconfig`;
  CREATE TABLE `reconfig` ( `number` int(2),`service` varchar (15),`action` varchar(10), `value` varchar(110)) TYPE=MyISAM;
- INSERT INTO reconfig VALUES('1','sams','');
+ INSERT INTO reconfig VALUES('1','sams','', '');
  DROP TABLE IF EXISTS `redirect`;
  CREATE TABLE `redirect` ( `name` varchar(25), `filename` varchar(25), `type` varchar(25), `show` int(10) unsigned, `redirect_to` varchar(100)) TYPE=MyISAM;
  INSERT INTO redirect VALUES('Banners','banners','redir','0','');
