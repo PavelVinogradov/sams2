@@ -219,6 +219,10 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	-@if test ! -d $(datadir)/sams/src; then \
 		rm -f $(datadir)/sams/src; \
 	fi
+	-@if test ! -d $(datadir)/sams/data; then \
+		echo "creating $(datadir)/sams/data"; \
+		mkdir $(datadir)/sams/data; \
+	fi
 	cp -R php/* $(datadir)/sams/;
 	-@if test ! -d $(datadir)/sams/src/lffolder_4_z3_local.php; then \
 		rm -f  $(datadir)/sams/src/lffolder_4_z3_local.php; \
