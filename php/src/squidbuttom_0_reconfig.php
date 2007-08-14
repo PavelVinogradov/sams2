@@ -27,7 +27,7 @@ function ReconfigSquid()
                          $result=mysql_query("INSERT INTO reconfig SET number=\"$i\",service=\"squid\",action=\"reconfig\" ");
         	         for($j=0;$j<10;$j++)
         	           {
-                	      $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"reconfig\" ");
+                	      $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&number=\"$i\"&&action=\"reconfig\" ");
                 	      $row=mysql_fetch_array($result);
             	              if($row[0]==0)
                                 {
@@ -36,7 +36,7 @@ function ReconfigSquid()
             	                 }
             	              else
                 	         { 
-	        	            $str="<FONT color=\"RED\" SIZE=+1> $squidbuttom_0_reconfig_ReconfigSquid_4</FONT><BR>\n";
+	        	            $str="<FONT color=\"RED\" SIZE=+1>  $squidbuttom_0_reconfig_ReconfigSquid_4</FONT><BR>\n";
             	                 }
             	             sleep(1);
             	           }
