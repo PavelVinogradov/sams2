@@ -7,6 +7,7 @@
 
 function AddUsersFromAdLDAP()
 {
+  require_once("adldap.php");
 
   global $SAMSConf;
   
@@ -31,6 +32,11 @@ function AddUsersFromAdLDAP()
        $domain=$domainname;    
 
   $i=0;
+
+   $pdc=array("$SAMSConf->LDAPSERVER");
+   $options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+   ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+   $ldap=new adLDAP($options);
 
   $result=mysql_query("SELECT traffic FROM shablons WHERE name=\"$usershablon\" ");
   $row=mysql_fetch_array($result);
@@ -58,10 +64,14 @@ function AddUsersFromAdLDAP()
        //if(strcmp($row['name'],$user)!=0&&strcmp($row['domain'],$domain)!=0)
        if(strcmp($row['name'],$user)!=0)
           {
-             $userid=TempName();
+ 		$userinfo=$ldap->user_info( $user, $fields=NULL);
+		$aaa2 = $userinfo[0]["givenname"][0];
+		$aaa3 = $userinfo[0]["sn"][0];
+
+                $userid=TempName();
 		$result=mysql_query("INSERT INTO squidusers SET
-			 id=\"$userid\",nick=\"$user\",domain=\"$domain\",name=\"\",
-			 family=\"\",shablon=\"$usershablon\" ,quotes=\"$traffic\",size=\"0\",
+			 id=\"$userid\",nick=\"$user\",domain=\"$domain\",name=\"$aaa2\",
+			 family=\"$aaa3\",shablon=\"$usershablon\" ,quotes=\"$traffic\",size=\"0\",
 			 enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"\",
 			 squidusers.ip=\"\",squidusers.ipmask=\"\",squidusers.passwd=\"none\",hit=\"0\",
 			 squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
@@ -160,7 +170,10 @@ function AddUsersFromAdLDAPForm()
         $result=mysql_query("SELECT * FROM squidusers WHERE nick=\"$user\" ");
         if(mysql_num_rows($result)==0)  
 	  {
-              print("<OPTION VALUE=\"$user\"> $user ($username)");
+		$userinfo=$ldap->user_info( $user, $fields=NULL);
+		$aaa = $userinfo[0]["displayname"][0];
+		//echo "<TD>$aaa ";
+		print("<OPTION VALUE=\"$user\"> <B>$user</B> ($aaa)");
           }
       }
     print("</SELECT>\n");
