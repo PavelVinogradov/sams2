@@ -371,16 +371,15 @@ class adLDAP {
 	}
 
 	// Returns an array of information for a specific user
-	function user_info($username,$fields=NULL){
+	function user_info($username,$fields="*"){
 		if ($username==NULL){ return (false); }
 		if (!$this->_bind){ return (false); }
-
 		$filter="samaccountname=".$username;
-		if ($fields==NULL){ $fields=array("samaccountname","mail","memberof","department","displayname","telephonenumber","primarygroupid"); }
+//		if ($fields==NULL){ $fields=array("samaccountname","mail","memberof","department","displayname","telephonenumber","primarygroupid","username"); }
+		if ($fields==NULL){ $fields=array("samaccountname","displayname","givenname","sn"); }
 		$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
 		$entries = ldap_get_entries($this->_conn, $sr);
-		
-		// AD does not return the primary group in the ldap query, we may need to fudge it
+// AD does not return the primary group in the ldap query, we may need to fudge it
 		if ($this->_real_primarygroup){
 			$entries[0]["memberof"][]=$this->group_cn($entries[0]["primarygroupid"][0]);
 		} else {

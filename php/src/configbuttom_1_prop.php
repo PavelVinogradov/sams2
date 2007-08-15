@@ -8,6 +8,7 @@
 function TestPDC()
 {
   global $SAMSConf;
+$info=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -51,9 +52,13 @@ function TestPDC()
         print("<TH >$SAMSConf->LDAPDOMAIN users");
 	for($i=0;$i<$count;$i++)
    	{
-		//$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
+		$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
 		//$mcount=count($userinfo);
-        	echo "<TR><TD>$i:<TD> $users[$i] <BR>";
+        	echo "<TR><TD>$i:<TD> $users[$i] ";
+		$aaa = $userinfo[0]["displayname"][0];
+		//$aaa2 = $userinfo[0]["givenname"][0];
+		//$aaa3 = $userinfo[0]["sn"][0];
+		echo "<TD>$aaa ";
     	}
 	echo "</TABLE>";
    }
