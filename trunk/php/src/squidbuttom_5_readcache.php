@@ -120,6 +120,7 @@ function ReadCacheFiles()
 {
   global $SAMSConf;
  
+
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
  if(isset($_GET["size"])) $size=$_GET["size"];
    
@@ -231,11 +232,11 @@ function ReadCacheSquidForm()
   print("</FORM>\n");
 
        print("<SCRIPT language=JAVASCRIPT>\n");
-       print("function LoadFile(filename,id)\n");
+       print("function LoadFile(filename,id,url)\n");
        print("{\n");
 //       print("  var path=\"main.php?show=exe&function=loadfile&filename=squidbuttom_5_readcache.php&&id=\" + id + \"&&filename=\" + filename \n");
-//       print("  var path=\"main.php?show=exe&function=loadfile&filename=squidbuttom_5_readcache.php&id=\" + id + \"&name=\" + filename  \n");
-       print("  var txt=\"Load file \"+ filename + \" ? \" \n");
+       print("  var path=\"main.php?show=exe&function=loadfile&filename=squidbuttom_5_readcache.php&id=\" + id + \"&name=\" + filename  \n");
+       print("  var txt=\"Load file \"+ filename + \" ? \\nURL: \" + url \n");
        print("  value=window.confirm(txt );\n");
        print("  if(value==true) \n");
        print("     {\n");
@@ -262,10 +263,10 @@ function ReadCacheSquidForm()
              
              LTableCell($row['id'],15);
 	     
-             print("<TD onclick=LoadFile(\"$row[filepath]\",\"$row[id]\")> $row[url] ");
+             print("<TD onclick=LoadFile(\"$row[filepath]\",\"$row[id]\",\"$row[url]\")> $row[url] ");
              $aaa=FormattedString("$row[size]");
              RTableCell($aaa,20);
-             print("<TD onclick=LoadFile(\"$row[filepath]\",\"$row[id]\")> $row[filepath] ");
+             print("<TD onclick=LoadFile(\"$row[filepath]\",\"$row[id]\",\"$row[url]\")> $row[filepath] ");
              $count=$count+1;
          }
       mysql_free_result($result);
