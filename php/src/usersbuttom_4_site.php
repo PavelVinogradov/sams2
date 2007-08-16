@@ -132,10 +132,10 @@ function UsersSitesPeriod()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
+  if($SAMSConf->access<1)
+      exit(0);
   print("<TABLE CLASS=samstable>");
   print("<TH>No");
-  if($SAMSConf->access<2)
-      exit(0);
   if($SAMSConf->access==2)
     {
       print("<TH>");
