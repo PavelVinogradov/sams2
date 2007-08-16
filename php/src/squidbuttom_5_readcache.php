@@ -11,7 +11,6 @@ function LoadFileForm()
 
    if(isset($_GET["id"])) $id=$_GET["id"];
    if(isset($_GET["name"])) $filename=$_GET["name"];
-   print("<B>$squidbuttom_5_readcache_LoadFileForm_1 $filename $squidbuttom_5_readcache_LoadFileForm_2 $id</B><BR>\n");
    for($i=0;$i<10;$i++)
       { 
                 $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"loadfile\" ");
@@ -66,6 +65,12 @@ function LoadFileForm()
             	   }
 		print("</TABLE>");
              }
+//sleep(5);
+
+      print("<SCRIPT>\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&function=readcachesquidform&filename=squidbuttom_5_readcache.php\";\n");
+      print("</SCRIPT> \n");
+		  	     
 }
 
 
@@ -130,7 +135,7 @@ function ReadCacheFiles()
   if($SAMSConf->access==2)
     {
        PageTop("reconfig_48.jpg","$squidbuttom_5_readcache_ReadCacheFiles_1");
-       if($SAMSConf->PROXYCOUNT>0)
+       if($SAMSConf->PROXYCOUNT>1)
           {
             for($i=0;$i<$SAMSConf->PROXYCOUNT;$i++)
 	       {
