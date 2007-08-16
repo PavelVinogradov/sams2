@@ -17,6 +17,7 @@ struct samsconf {
   char *logdir;
   char *samspath;
   char *squidpath;
+  char *cachedir;
   char *sglogpath;
   char *sgdbpath;
   char *recode;

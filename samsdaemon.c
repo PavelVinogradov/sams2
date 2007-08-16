@@ -2862,7 +2862,7 @@ int main (int argc, char *argv[])
 
                sprintf(&str[0],"INSERT INTO %s.reconfig SET service='squid',action='cachescan',number='%d'",conf.samsdb,conf.cachenum);
                flag=send_mysql_query(conn,&str[0]);
-               listdir("/var/spool/squid",atoi(row[2])*1024, conn2);
+               listdir(conf.cachedir,atoi(row[2])*1024, conn2);
                sprintf(&str[0],"DELETE FROM %s.reconfig WHERE service='squid'&&action='cachescan'&&number='%d'",conf.samsdb,conf.cachenum);
                flag=send_mysql_query(conn,&str[0]);
                sprintf(&str[0],"INSERT INTO %s.reconfig SET service='squid',action='scanoff',number='%d'",conf.samsdb,conf.cachenum);
