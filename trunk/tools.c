@@ -447,6 +447,8 @@ void readconf( void )
                                         conf.squidrootdir=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidlogdir" ) )
                                         conf.logdir=MallocMemory(xstrdup(s));
+				else if( !strcasecmp( buf, "squidcachedir" ) )
+                                        conf.cachedir=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "samspath" ) )
                                         conf.samspath=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidpath" ) )
@@ -496,6 +498,7 @@ void freeconf()
   free(conf.logfile);
   free(conf.squidrootdir);
   free(conf.logdir);
+  free(conf.cachedir);
   free(conf.samspath);
   free(conf.squidpath);
   free(conf.sglogpath);
