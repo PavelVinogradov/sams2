@@ -219,10 +219,6 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	-@if test ! -d $(datadir)/sams/src; then \
 		rm -f $(datadir)/sams/src; \
 	fi
-	-@if test ! -d $(datadir)/sams/data; then \
-		echo "creating $(datadir)/sams/data"; \
-		mkdir $(datadir)/sams/data; \
-	fi
 	cp -R php/* $(datadir)/sams/;
 	-@if test ! -d $(datadir)/sams/src/lffolder_4_z3_local.php; then \
 		rm -f  $(datadir)/sams/src/lffolder_4_z3_local.php; \
@@ -240,6 +236,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	chmod ugo+x $(datadir)/sams/bin/*;
 	rm -f $(datadir)/sams/data/*;
 	cp -R doc $(datadir)/sams/;
+	cp ./mysql/sams_db.sql $(datadir)/sams/data;
+	cp ./mysql/squid_db.sql $(datadir)/sams/data;
 	-@if test ! -d $(HTTPDPATH)/sams; then \
 		echo "creating symlink to sams directory"; \
 		ln -s $(datadir)/sams $(HTTPDPATH)/sams; \

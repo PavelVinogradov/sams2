@@ -1,21 +1,52 @@
-VERSION 2006 06 07
+################################################################################
+#
+# SAMS (Squid Account Management System)
+#
+# Copyleft 2007 Dmitry Chemerik
+# Web: http://sams.perm.ru
+#
+# This code is open source and may be copied and modified as long as the source
+# code is always made freely available.
+# Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
+################################################################################
 
-SAMS 1.0
+How to setup SAMS ?
 
-Пожалуйста, отправляйте свои вопросы/комментарии/пожелания на chemerik@mail.ru 
+SAMS needs the following components:
+- MySQL version 3.23 or higher
+- libmysql-devel 
+- Apache version 1.3.33 or higher / Apache version 2.0.X or higher
+- Apache Mod_php
+- libpcre, libpcre-devel
+- libgd, libgd-devel
+- PHP 4.3.2 or higher
+- Zlib support for PHP.
+- php-mysql: MySQL support for PHP.
+- php-gd: GD support for PHP.
+- Zlib support for PHP.
 
-Эта директория содержит в себе исходные коды программы SAMS, предназначенной для 
-настройки и администрирования доступа пользователей к прокси-серверу SQUID с
-использованием ntlm аутентификации в Windows домене, управления доступом 
-пользователей к ресурсам интернет, а также сбора и предоставления статистики
-об объеме полученной пользователями информации. 
+Compilation:
 
-Системные требования:
-- SQUID - прокси сервер
-- Winbind - входит в состав SAMBA Suite 
-- MySQL - База данных
-- Apache - WEB серверr с модулем php. 
+SAMS now has autoconf: building should just be (in the sams-<version> dir:
 
-Рекомендуемая конфигурация - ipIII-500/128/20Gb
+./configure
+make
 
+If you like you can do a:
 
+make install
+
+after the make. This will place SAMS binaries in  /usr/local/bin, WEB-interface 
+in /usr/local/share/sams.
+
+Fix the /etc/init.d/samsd startup file.
+
+Running samsdaemon: service samsd start
+
+Open the file http://yourserver/sams/index.html in your browser. SAMS should 
+now display a welcome screen and a login dialog. You can be reading the 
+user "Admin" password in the file INSTALL.
+
+Enjoy SAMS ;-)
+
+SAMS Team
