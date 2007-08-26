@@ -280,6 +280,13 @@ class SAMSCONFIG
       require('./config.php');      
       $this->ReadSAMSConfFile($configfile);
       
+if(!function_exists('mysql_connect'))
+  {
+	echo "<br><center><font color=red><b>ERROR: MySql for PHP is not properly installed.<br>Try installing mysql for php package </b></font></center>";
+	die();
+  }
+
+
 $link=mysql_connect("$this->MYSQLHOSTNAME","$this->MYSQLUSER","$this->MYSQLPASSWORD");
 if($link==FALSE)
   {
@@ -309,39 +316,26 @@ if($squidctrldb==FALSE)
 		
 		if($function=="userdoc")
 		  {
-
-       			print("<SCRIPT language=JAVASCRIPT>\n");
-       			print("function Createdb()\n");
-       			print("{\n");
-			print("parent.basefrm.location.href=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup\";\n");  
-       			//print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteuser&filename=userbuttom_9_delete.php&&userid=$userid\";\n");
-       			print("}\n");
-       			print("</SCRIPT> \n");
        			print("<TABLE><TR> \n");
      			echo "<TD><IMG SRC=\"icon/classic/warning.jpg\" ALIGN=LEFT>";
-			echo "<TD>Web интерфейс не смог подсоединиться к базе SAMS.<BR>";
+			echo "<TD>SAMS databases not connected<BR>";
        			print("</TABLE> \n");
 			if($squidlogdb==1)
-				echo "База squidlog несоздана или пользователь $this->MYSQLUSER не имеет прав на подключение к ней<BR>";
+				echo "The base $this->LOGDB not created or the user $this->MYSQLUSER has no rights to connection to it<BR>";
 			if($squidctrldb==1)
-				echo "База squidctrl несоздана или пользователь $this->MYSQLUSER не имеет прав на подключение к ней<BR>";
-			echo "<BR>Как создать базы SAMS: ";
-			echo "<BR>RUS:  <A HREF=\"doc/RU/mysql_install.html\" TARGET=\"basefrm\">Установка и создание базы SAMS в MySQL</A>";
-			//echo "<BR>Сейчас вы сможете создать базы SAMS или проверить соединение с ними";
-  			//print("<FORM NAME=\"createdbform\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup \" METHOD=POST>\n");
-			//print("<P><CENTER><INPUT TYPE=\"SUBMIT\" VALUE=\"Ok\" onclick=CreateDB()></CENTER>\n");
+				echo "The base $this->SAMSDB not created or the user $this->MYSQLUSER has no rights to connection to it<BR>";
 
-			//print("</FORM>\n");
-			//echo "CREATE DATABASE<BR>";
-			//print("<SCRIPT>\n");
-			//print("parent.basefrm.location.href=\"main.php?show=exe&function=loadsamsdbform&filename=createdb.php&setup=setup\";\n");  
-			//print("</SCRIPT> \n");
+  			print("<FORM NAME=\"createdatabase\" ACTION=\"install.php\">\n");
+  			print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Run SAMS database installation script\">\n");
+  			print("</FORM>\n");
 
+  			print("<B>SAMS documentation</B><BR>\n");
+  			print("<A HREF=\"doc/EN/index.html\">english<BR>\n");
+  			print("<A HREF=\"doc/RU/index.html\">russian<BR>\n");
+			
 		  }
 		
 	}
-
-
       $this->ReadSAMSSettings();
 
     }
