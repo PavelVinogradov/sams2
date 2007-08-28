@@ -110,8 +110,6 @@ else
 	   }
 
 //	$result=mysql_query($request);
-echo "LINK=$link= RESULT=$result=<BR>";
-exit(0);
 	CreateDatabase("squid_db.sql");
 	CreateDatabase("sams_db.sql");
 	echo "<CENTER><H1>SAMS databases created</H1>";
