@@ -241,24 +241,15 @@ function UpdateShablonForm()
 	$alist[$acount]="_$row[filename]";
         $acount++;
       }
-        
     
   print("</TABLE>\n");
  
- 
-
-  
-  
-  
-  
   $sguardgroups=array("ads","aggressive","audio-video","drugs","gambling",
    "hacking","mail","porn","proxy","violence","warez");
   $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
   $row=mysql_fetch_array($result);
   print("<TABLE>\n");
 
-
-  
            print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
            print("function EnableDeniedLists(formname)\n");
            print("{\n");
@@ -366,11 +357,11 @@ function UpdateShablonForm()
   $AVALUE="";
   if($row['period']=="M")   
      $MSELECTED="SELECTED";
-  print("<OPTION value=\"M\" $MSELECTED>Месяц\n");
+  print("<OPTION value=\"M\" $MSELECTED>$shablonbuttom_1_prop_UpdateShablonForm_24\n");
   
   if($row['period']=="W")   
      $WSELECTED="SELECTED";
-  print("<OPTION value=\"W\" $WSELECTED>Неделя\n");
+  print("<OPTION value=\"W\" $WSELECTED>$shablonbuttom_1_prop_UpdateShablonForm_25\n");
   
   if($row['period']!="M"&&$row['period']!="W")
     {   

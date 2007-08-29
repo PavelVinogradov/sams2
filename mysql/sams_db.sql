@@ -17,7 +17,7 @@
  INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1');
  DROP TABLE IF EXISTS `reconfig`;
  CREATE TABLE `reconfig` ( `number` int(2),`service` varchar (15),`action` varchar(10), `value` varchar(110)) TYPE=MyISAM;
- INSERT INTO reconfig VALUES('1','sams','', '');
+ INSERT INTO reconfig VALUES('1','sams','');
  DROP TABLE IF EXISTS `redirect`;
  CREATE TABLE `redirect` ( `name` varchar(25), `filename` varchar(25), `type` varchar(25), `show` int(10) unsigned, `redirect_to` varchar(100)) TYPE=MyISAM;
  INSERT INTO redirect VALUES('Banners','banners','redir','0','');
@@ -27,7 +27,7 @@
  INSERT INTO redirect VALUES('Localdomains','localhosts','denied','0','');
  DROP TABLE IF EXISTS `sams`;
  CREATE TABLE `sams` ( `endvalue` bigint(20), `redirect_to` varchar(100), `denied_to` varchar(100), `redirector` varchar(25), `delaypool` char(1), `useraccess` char(1), `auth` varchar(4), `wbinfopath` varchar(100),`urlaccess` char(1),`separator` varchar(15) default '+',`ntlmdomain` char(1),`bigd` char(1),`bigu` char(1),`sleep` int(3),`parser_on` char(1),`parser` varchar(10),`parser_time` int(2),`count_clean` char(1),`nameencode` char(1),`iconset` varchar(25),`days` varchar(14),`shour` tinyint(2),`smin` tinyint(2),`ehour` tinyint(2),`emin` tinyint(2),`autherrorc` tinyint(1), `autherrort` varchar(16), `realsize` varchar(4), `checkdns` varchar(1), `loglevel` tinyint(1) NOT NULL default '0',`defaultdomain` char(25) NOT NULL default 'workgroup', `squidbase` tinyint(2) NOT NULL default '0', udscript char(25) NOT NULL default 'NONE', adminaddr char(25) default '' ) TYPE=MyISAM;
- INSERT INTO sams VALUES('0','http://your.ip.address/sams/icon/classic/blank.gif','http://your.ip.address/sams/messages','sams','Y','Y','ntlm','/usr/bin','Y','+','Y','','','1','','','','Y','N','classic','MTWHFAS','0','0','24','0','0','0','real','N','0','workgroup','0','NONE','');
+ INSERT INTO sams VALUES('0','http://your.ip.address/sams/icon/classic/blank.gif','http://your.ip.address/sams/messages','none','Y','Y','ntlm','/usr/bin','Y','+','Y','','','1','','','','Y','N','classic','MTWHFAS','0','0','24','0','0','0','real','N','0','workgroup','0','NONE','');
  DROP TABLE IF EXISTS `sconfig`;
  CREATE TABLE `sconfig` ( `sname` char(25), `set` char(25)) TYPE=MyISAM;
  DROP TABLE IF EXISTS `sguard`;

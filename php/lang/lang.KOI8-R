@@ -850,6 +850,9 @@
   $logbuttom_9_delete_ClearLogForm_1="Очистить логи";
   $redirbuttom_4_redirstat_ShowRedirStat_1="Статистика списка перенаправления запросов";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
+  $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
