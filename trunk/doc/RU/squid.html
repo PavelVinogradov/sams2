@@ -38,7 +38,7 @@ SQUID может беспечивать доступ пользователей:
 <LI>с авторизацией в домене Windows (NTLM авторизация)
 <BR> Рассмотрим их подробнее.
 
-<H3>Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows NT 4</H3>
+<H3 id="NT4">Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows NT 4</H3>
 
 <P> Для того, чтобы SQUID мог авторизоватьпользователей в домене Windows, необходимо 
 <A HREF="samba.html">установить и настроить SAMBA </A>:
@@ -46,10 +46,10 @@ SQUID может беспечивать доступ пользователей:
 <P>Далее проверяем авторизатор SQUIDа на работу с winbind. Для этого нужно запустить:
 <BR>/usr/lib/squid/wb_auth -d
 <BR>И ввести вручную домен+имя пароль (через пробел).
-<BR>Если все работает корректно, то буден выдан ответ:
-<BR>/wb_auth[91945](wb_basic_auth.c:129): Got 'dmn XXXXX' from squid (length: 10)
+<P>Если все работает корректно, то буден выдан ответ:
+<P><em>/wb_auth[91945](wb_basic_auth.c:129): Got 'dmn XXXXX' from squid (length: 10)
 <BR>/wb_auth[91945](wb_basic_auth.c:55): winbindd result: 1
-<BR>/wb_auth[91945](wb_basic_auth.c:58): sending 'OK' to squid
+<BR>/wb_auth[91945](wb_basic_auth.c:58): sending 'OK' to squid</em>
 
 <P>в файл /etc/squid/squid.conf добавляем строки:
 <BR> auth_param ntlm program /usr/lib/squid/wb_ntlmauth
@@ -62,53 +62,48 @@ SQUID может беспечивать доступ пользователей:
 <BR> auth_param basic credentialsttl 2 hours
 <P>Причем важно чтобы NTLM авторизация шла первой, иначе будет применяться
 авторизация basic, и IE будет спрашивать пароль.
-<P>Разработчики SQUID рекомендубт использовать с Samba3 (Active Directory) хелпер, 
-идущий в составе samba3: 
-<BR>ntlm_auth.
 
-<H3>Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows 2000 и выше</H3>
+<H3 id="WIN2K">Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows 2000 и выше</H3>
 
 <P> Для того, чтобы SQUID мог авторизоватьпользователей в домене Windows 2000, необходимо 
-<A HREF="samba3.html">установить и настроить SAMBA </A>:
+<A HREF="samba3.html">установить и настроить SAMBA</A>:
+
+<P>Разработчики SQUID рекомендуют использовать с Samba3 (Active Directory) хелпер, 
+идущий в составе samba3: 
+<BR>ntlm_auth.
 
 <P>Далее проверяем авторизатор SQUIDа на работу с winbind. Для этого нужно запустить:
-<BR>/usr/lib/squid/wb_auth -d
-<BR>И ввести вручную домен+имя пароль (через пробел).
-<BR>Если все работает корректно, то буден выдан ответ:
-<BR>/wb_auth[91945](wb_basic_auth.c:129): Got 'dmn XXXXX' from squid (length: 10)
-<BR>/wb_auth[91945](wb_basic_auth.c:55): winbindd result: 1
-<BR>/wb_auth[91945](wb_basic_auth.c:58): sending 'OK' to squid
+<BR>/path/to/ntlm_auth --helper-protocol=squid-2.5-basic
+<P>И ввести вручную домен+имя пароль (через пробел).
+<P>Если все работает корректно, то буден выдан ответ:
+<P><em>[2007/08/28 16:11:41, 3] utils/ntlm_auth.c:check_plaintext_auth(292)
+<BR>  NT_STATUS_OK: Success (0x0)
+<BR>OK</em>
 
 <P>в файл /etc/squid/squid.conf добавляем строки:
-<BR> auth_param ntlm program /usr/lib/squid/wb_ntlmauth
+<P> auth_param ntlm program /path/to/ntlm_auth --helper-protocol=squid-2.5-ntlmssp
 <BR> auth_param ntlm children 5
 <BR> auth_param ntlm max_challenge_reuses 0
 <BR> auth_param ntlm max_challenge_lifetime 2 minutes
-<BR> auth_param basic program /usr/local/squid/libexec/wb_auth
+<BR> auth_param basic program /path/to/ntlm_auth --helper-protocol=squid-2.5-basic
 <BR> auth_param basic children 5
 <BR> auth_param basic realm Squid proxy-caching web server
 <BR> auth_param basic credentialsttl 2 hours
 <P>Причем важно чтобы NTLM авторизация шла первой, иначе будет применяться
 авторизация basic, и IE будет спрашивать пароль.
-<P>Разработчики SQUID рекомендубт использовать с Samba3 (Active Directory) хелпер, 
-идущий в составе samba3: 
-<BR>ntlm_auth.
 
 
 
-<H3>Конфигурируем SQUID на авторизацию пользователей через  LDAP в Active Directory</H3>
-
-<P> Для того, чтобы SQUID мог авторизоватьпользователей в домене Windows, необходимо 
-<A HREF="samba3.html">установить и настроить SAMBA </A>:
+<H3 id="ADLD">Конфигурируем SQUID на авторизацию пользователей через  LDAP в Active Directory</H3>
 
 <P>Проверяем авторизатор SQUIDа на работу с Active Directory. Для этого нужно запустить:
-<BR>/usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
+<P>/usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
 <BR>И ввести вручную имя пароль (через пробел).
-<BR>Если все работает корректно, то буден выдан ответ:
+<P>Если все работает корректно, то буден выдан ответ:
 <BR>OK
 
 <P>в файл /etc/squid/squid.conf добавляем строки:
-<BR> auth_param ntlm program /usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
+<P> auth_param ntlm program /usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
 <BR> auth_param ntlm children 5
 <BR> auth_param ntlm max_challenge_reuses 0
 <BR> auth_param ntlm max_challenge_lifetime 2 minutes
@@ -138,8 +133,11 @@ SQUID может беспечивать доступ пользователей:
 <BR>Подробно о настройке редиректора читайте <A HREF="redirector.html">здесь</A>
 
 <H3>Файл squid.conf</H3>
-<BR>Реконфигурированием прокси-сервера squid занимается демон samsdaemon.
+<H3>Дополнительная информация:</H3>
+
+Реконфигурированием прокси-сервера squid занимается демон samsdaemon.
 <BR>Реконфигурирование прокси-сервера squid происходит путем изменения файла squid.conf и подачей сигнала squid на реконфигурацию. 
+
 <P>При внесении изменений в squid.conf samsdaemon привязывается к тэгам начала разделов, например
 <BR>#  TAG:  acl
 <BR>Наличие этих тэгов необходимо!!!

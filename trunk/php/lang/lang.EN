@@ -829,6 +829,9 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $logbuttom_9_delete_ClearLogForm_1="Clear log";
   $redirbuttom_4_redirstat_ShowRedirStat_1="Statistics of the redirection list";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_24="Month";
+  $shablonbuttom_1_prop_UpdateShablonForm_25="Week";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
