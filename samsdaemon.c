@@ -953,32 +953,6 @@ int ChangeSQUIDconf(MYSQL *conn)
          {
            if(DEBUG==1)
              printf("TAG: http_access found...  START\n");
-           
-	   if(disabled_ip>0)
-	     {
-                if(RNONE==1||RSQUID==1)
-		  { 
-		    fprintf(fout,"http_access deny _sams_disabled_ip ");
-                    if(local_ip>0)
-		      fprintf(fout,"!_sams_local_ip ");
-                    if(local_url>0)
-		      fprintf(fout,"!_sams_local_url ");
-		    fprintf(fout,"\n");
-		  }
-	     }
-	   if(disabled_id>0)
-	     {
-                if(RNONE==1||RSQUID==1)
-		  { 
-                    fprintf(fout,"http_access deny _sams_disabled_id ");
-                    if(local_ip>0)
-		      fprintf(fout,"!_sams_local_ip ");
-                    if(local_url>0)
-		      fprintf(fout,"!_sams_local_url ");
-		    fprintf(fout,"\n");
-		  }  
-	     }
-
 //#######	   
 	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth='ip'",conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
@@ -1178,6 +1152,31 @@ int ChangeSQUIDconf(MYSQL *conn)
 		 }
 	     }
            mysql_free_result(res);
+
+	   if(disabled_ip>0)
+	     {
+                if(RNONE==1||RSQUID==1)
+		  { 
+		    fprintf(fout,"http_access deny _sams_disabled_ip ");
+                    if(local_ip>0)
+		      fprintf(fout,"!_sams_local_ip ");
+                    if(local_url>0)
+		      fprintf(fout,"!_sams_local_url ");
+		    fprintf(fout,"\n");
+		  }
+	     }
+	   if(disabled_id>0)
+	     {
+                if(RNONE==1||RSQUID==1)
+		  { 
+                    fprintf(fout,"http_access deny _sams_disabled_id ");
+                    if(local_ip>0)
+		      fprintf(fout,"!_sams_local_ip ");
+                    if(local_url>0)
+		      fprintf(fout,"!_sams_local_url ");
+		    fprintf(fout,"\n");
+		  }  
+	     }
 
            if(DEBUG==1)
              printf("TAG: http_access END\n");
