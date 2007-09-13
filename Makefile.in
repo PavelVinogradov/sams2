@@ -232,6 +232,10 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	-@if test ! -d $(datadir)/sams/src/adminbuttom_1_prop.php; then \
 		rm -f  $(datadir)/sams/src/adminbuttom_1_prop.php; \
 	fi
+	-@if test ! -d $(datadir)/sams/data; then \
+		echo "creating $(datadir)/sams/data"; \
+		mkdir $(datadir)/sams/data; \
+	fi
 	chmod 777 $(datadir)/sams/data; 
 	chmod ugo+x $(datadir)/sams/bin/*;
 	rm -f $(datadir)/sams/data/*;
