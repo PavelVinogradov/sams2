@@ -15,6 +15,7 @@ function ChangeAdminPasswd()
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["adminname"])) $adminname=$_GET["adminname"];
   if(isset($_GET["passw1"])) $newpasswd=$_GET["passw1"];
+  if(isset($_GET["oldpasswd"])) $oldpasswd=$_GET["oldpasswd"];
 
     $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
@@ -24,9 +25,19 @@ function ChangeAdminPasswd()
     {
        db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
-       $result=mysql_query("UPDATE ".$SAMSConf->SAMSDB.".passwd SET pass=\"$passwd\" WHERE user=\"$username\" ");
-       if($result>0)
-          PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
+       $oldpasswd2=crypt($oldpasswd,"00");
+
+	if($oldpasswd2!=mysql_result(mysql_query("SELECT pass FROM passwd WHERE user='$username' "),0))
+		{
+		       PageTop("warning.jpg","$username password wrong");
+		}
+	else
+		{
+			$result=mysql_query("UPDATE ".$SAMSConf->SAMSDB.".passwd SET pass=\"$passwd\" WHERE user=\"$username\" ");
+			if($result>0)
+				PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
+		}
+
     }
   else
     {
@@ -83,7 +94,7 @@ function ChangeAdminPasswdForm()
        print("}\n");
        print("</SCRIPT> \n");
 
-      print("<FORM NAME=\"form1\" ACTION=\"main.php\">\n");
+      print("<FORM NAME=\"form1\" ACTION=\"main.php\" onsubmit=TestUserData(form1)>\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"changeadminpasswd\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"adminbuttom_4_chpasswd.php\">\n");
@@ -106,11 +117,13 @@ function ChangeAdminPasswdForm()
              }
           print("</SELECT>\n");
         }
-	  print("<TR><TD><B>Password:</B><TD>");
+      print("<TR><TD><B>$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6:</B><TD>");
+      print("<BR><INPUT TYPE=\"PASSWORD\" NAME=\"oldpasswd\" SIZE=30> \n");
+      print("<TR><TD><B>$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7:</B><TD>");
       print("<BR><INPUT TYPE=\"PASSWORD\" NAME=\"passw1\" SIZE=30> \n");
-      print("<TR><TD><B>Retype:</B><TD>");
+      print("<TR><TD><B>$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8:</B><TD>");
       print("<BR><INPUT TYPE=\"PASSWORD\" NAME=\"passw2\" SIZE=30> \n");
-      print("<BR><INPUT TYPE=\"BUTTON\" value=\"$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_2\" onclick=TestUserData(form1)>\n");
+      print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_2\">\n");
       print("</FORM>\n");
 
 }

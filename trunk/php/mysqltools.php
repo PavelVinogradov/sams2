@@ -101,11 +101,10 @@ function about()
  
   print("<TABLE WIDTH=\"80%\" BORDER=0 BGCOLOR=\"beige\" >");
   print("<TR><TD ALIGN=CENTER><IMG SRC=\"$SAMSConf->ICONSET/proxy_big.gif\">");
-  print("<TD ALIGN=CENTER><P><H1>SAMS</H1>");
+  print("<TD ALIGN=CENTER><P><H1>SAMS v. 1.0 RC 1</H1>");
   print("<H2>Squid Account Management System</H2>");
-  print("Copyright (C) 2003 - 2005 Dmitry Chemerik");
+  print("Copyright (C) 2003 - 2007 Dmitry Chemerik");
   print("<BR>http://sams.perm.ru");
-  print("<BR>http://sams.irc.perm.ru");
   print("<P>email: chemerik@mail.ru <P></TABLE>");
  
 }

@@ -30,7 +30,7 @@ function ChangeUser()
 
   print("<B>$adminbuttom_2_chuser_ChangeUser_2</B>");
   print("<P>\n");
-  print("<FORM NAME=\"form1\" ACTION=\"main.php\">\n");
+  print("<FORM NAME=\"form1\" ACTION=\"main.php\"  onsubmit=TestUserData(form1)>\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"setcookie\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
@@ -39,9 +39,9 @@ function ChangeUser()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"username\" SIZE=30>\n");
   print("<TR>\n");
   print("<TD><B>password:</B>\n");
-  print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"userid\" SIZE=30> \n");
+  print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"userid\" SIZE=30 > \n");
   print("</TABLE>\n");
-  print("<BR><INPUT TYPE=\"BUTTON\" value=\"Ok\" onclick=TestUserData(form1)>\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Ok\">\n");
   print("</FORM>\n");
 }
 

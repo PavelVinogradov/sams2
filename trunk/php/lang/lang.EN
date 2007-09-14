@@ -338,7 +338,7 @@
   $shablonbuttom_1_prop_UpdateShablonForm_1=" Template editing "; 
   $shablonbuttom_1_prop_UpdateShablonForm_2=" SAMS lists:"; 
   $shablonbuttom_1_prop_UpdateShablonForm_3=" SquidGuard lists:"; 
-  $shablonbuttom_1_prop_UpdateShablonForm_4=" Volume of user template traffic on default.... (Kb)"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_4=" Value of restriction the traffic of the user to default (Kb)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_5=" (byte/s)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_6=" Speed channel for the separate user (byte/s)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_7=" Save changes "; 
@@ -769,7 +769,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablonbuttom_1_prop_UpdateShablonForm_15="Another";
   $shablonbuttom_1_prop_UpdateShablonForm_16="period";
   $shablonbuttom_1_prop_UpdateShablonForm_17=" days";
-  $shablonbuttom_1_prop_UpdateShablonForm_18="Users counters clearing date";
+  $shablonbuttom_1_prop_UpdateShablonForm_18="Date of clearing of users traffic counters";
 
   $shablonnew_NewShablonForm_9="users access to SQUID:";
   $shablonnew_NewShablonForm_10="traffic quota:";
@@ -831,6 +831,11 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $shablonbuttom_1_prop_UpdateShablonForm_24="Month";
   $shablonbuttom_1_prop_UpdateShablonForm_25="Week";
+
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Old password";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Retype new passwd";
+  $shablontray_ShablonUsers_4="Users";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";

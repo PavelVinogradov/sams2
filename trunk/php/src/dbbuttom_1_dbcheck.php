@@ -53,20 +53,20 @@ function dbcheck()
           $result2=mysql_query("check table $row[0]");
           $row2=mysql_fetch_array($result2);
           if($row2[3]=="OK")
-		    {
-		       print("<TD WIDTH=\"10%\">  OK <TD> -");
-			}
+		{
+		       print("<TD WIDTH=\"10%\"><FONT COLOR=\"BLUE\">  OK </FONT><TD> -");
+		}
           else
-		    {
-               $squidctrlerrorcount=$squidctrlerrorcount+1;
-			   $tablecount=$tablecount+1;
-			   $table[$tablecount]="squidctrl.$row[0]";
-		       print(" <TD WIDTH=\"10%\">  ERROR:<TD> $row2[3]");
-		       print("<TD>  repair table  $row[0]: ");
-               $result2=mysql_query("repair table $row[0]");
-               $row2=mysql_fetch_array($result2);
+		{
+			$squidctrlerrorcount=$squidctrlerrorcount+1;
+			$tablecount=$tablecount+1;
+			$table[$tablecount]="squidctrl.$row[0]";
+			print(" <TD WIDTH=\"10%\"><FONT COLOR=\"RED\">   ERROR:</FONT><TD> $row2[3]");
+			print("<TD>  repair table  $row[0]: ");
+			$result2=mysql_query("repair table $row[0]");
+			$row2=mysql_fetch_array($result2);
 		       print(" <TD>  $row2[3]");
-			}
+		}
 	   }
   print("</TABLE> ");
 
@@ -82,14 +82,14 @@ function dbcheck()
           $row2=mysql_fetch_array($result2);
           if($row2[3]=="OK")
 		    {
-		       print("<TD WIDTH=\"10%\">  OK <TD> -");
+		       print("<TD WIDTH=\"10%\"><FONT COLOR=\"BLUE\">  OK </FONT><TD> -");
 			}
           else
 		    {
                $squidlogerrorcount=$squidlogerrorcount+1;
 			   $tablecount=$tablecount+1;
 			   $table[$tablecount]="squidlog.$row[0]";
-		       print(" <TD WIDTH=\"10%\">  ERROR:<TD> $row2[3]");
+		       print(" <TD WIDTH=\"10%\"><FONT COLOR=\"RED\">  ERROR:</FONT><TD> $row2[3]");
 		       print("<TD>  repair table  $row[0]: ");
                $result2=mysql_query("repair table $row[0]");
                $row2=mysql_fetch_array($result2);
