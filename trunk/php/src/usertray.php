@@ -33,7 +33,7 @@ function NotUsersTreeUserAuth()
       
 	$aflag=0;
 	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=exec("testwbinfopasswd $e");
+	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
 	$aflag=0;
 	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	  { 
