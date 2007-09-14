@@ -38,11 +38,37 @@ function ShablonUsers()
   $result=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
   $row=mysql_fetch_array($result);
   $nick1=$row['nick'];
-
   PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$nick1</FONT>");
+
+  print("<TABLE>\n");
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_19</B><TD><FONT COLOR=\"BLUE\">$row[auth]</FONT>\n");
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_4</B><TD><FONT COLOR=\"BLUE\">$row[traffic]</FONT>\n");
+  if( $row['traffic'] == 0 )
+ 	print(" <FONT COLOR=\"BLUE\">(unlimited traffic)</FONT>");  
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_20</B><TD>");
+  if($row['period']=="M")   
+     print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_24</FONT>\n");
+  else if($row['period']=="W")   
+     print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_25</FONT>\n");
+  else
+	{
+		print("<FONT COLOR=\"BLUE\">$row[period] $shablonbuttom_1_prop_UpdateShablonForm_17</FONT>\n");
+		 print("<TR><TD>$shablonbuttom_1_prop_UpdateShablonForm_18:<TD><FONT COLOR=\"BLUE\">$row[clrdate]</FONT>");
+	}
+ $weekday=array("", "M","T","W","H","F","A","S");  
+ print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_14 </B><TD><FONT COLOR=\"BLUE\">\n");
+  for($i=1;$i<8;$i++)
+     {
+	if(strpos(" $row[days]","$weekday[$i]")>0)
+		print("$week[$i] \n");
+     }  
+  print("<TR>\n");
+  print("</TABLE>\n");
+
 
   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon=\"$id\" ORDER BY nick");
 
+ print("<H2>$shablontray_ShablonUsers_4: </H2>\n");
   print("<TABLE>\n");
   while($row=mysql_fetch_array($result))
       {
@@ -87,7 +113,7 @@ function ShablonUsers()
         print("}\n");
 	print("</SCRIPT>\n");
 
-      print("<P><B>$shablontray_ShablonUsers_2 $nick1:</B> ");
+      print("<P><BR><B>$shablontray_ShablonUsers_2 $nick1:</B> ");
       print("<FORM NAME=\"moveform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"moveuserstoshablon\">\n");

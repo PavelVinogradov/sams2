@@ -853,6 +853,11 @@
   $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
   $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Старый пароль";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="Новый пароль";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Подтвердите новый пароль";
+
+  $shablontray_ShablonUsers_4="Шаблон присвоен пользователям";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

@@ -109,7 +109,6 @@ else
 		exit(0);
 	   }
 
-//	$result=mysql_query($request);
 	CreateDatabase("squid_db.sql");
 	CreateDatabase("sams_db.sql");
 	echo "<CENTER><H1>SAMS databases created</H1>";
@@ -138,7 +137,7 @@ else
 				continue;
 			}
 		  }
-		echo "<br><center><font color=green><b>SAMS MySQL user crated</b></font></center>";
+		echo "<br><center><font color=green><b>SAMS MySQL user created</b></font></center>";
 	}
 
       print("<FORM NAME=\"startsams\" ACTION=\"index.html\" TARGET=_parent>\n");

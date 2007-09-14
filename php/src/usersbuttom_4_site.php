@@ -231,8 +231,8 @@ function usersbuttom_4_site()
 
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
-
-   if($SAMSConf->access>0||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[nick]")||$SAMSConf->groupauditor==$row[group])
+//   if($SAMSConf->access>0||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[nick]")||$SAMSConf->groupauditor==$row[group])
+   if($SAMSConf->access>0||(($SAMSConf->groupauditor==$row['group'])&&$SAMSConf->groupauditor!=""))
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=userssitesform&filename=usersbuttom_4_site.php","basefrm","straffic_32.jpg","straffic_48.jpg","$userbuttom_4_site_userbuttom_4_site_1");

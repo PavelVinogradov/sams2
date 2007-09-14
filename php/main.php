@@ -169,7 +169,8 @@ if($function=="setcookie")
          if($time>$autherrort+60)
            {  
              $newpasswd=crypt($userid,mysql_result(mysql_query("SELECT pass FROM passwd WHERE user='$username' "),0));
-
+//echo "username=$username passwd=$userid crypt=$newpasswd";
+//exit(0);
              setcookie("user","$username");
              setcookie("passwd","$newpasswd");
              $SAMSConf->adminname=UserAuthenticate($username,$newpasswd);
@@ -405,6 +406,13 @@ if($function=="autherror")
           print("<h2>next logon after $time2 second</h2> \n");
        }   
   }   
+/*
+if (function_exists('ini_get'))
+  {
+    $safe_switch = @ini_get("safe_mode") ? 1 : 0;
+    echo "safe_switch = $safe_switch<BR>";
+  }
+*/
 print("</center>\n");
 print("</body></html>\n");
 

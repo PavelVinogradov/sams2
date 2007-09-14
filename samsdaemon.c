@@ -2667,7 +2667,7 @@ int main (int argc, char *argv[])
 
                clearflag=0;
 	       //Если настал новый месяц то проверяем необходимость ротации БД
-	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0))
+	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0) && conf.cachenum<2)
 		 {
                    if(DEBUG==1)
   	              printf("New month. We need purge our database.\n");
@@ -2694,7 +2694,7 @@ int main (int argc, char *argv[])
                  }
 
                //если настал новый день, смотрим не пора ли сбросить счетчики трафика
-               if((sams_clr_day!=(t->tm_mday))&&COUNTCLEAN==1)  
+               if((sams_clr_day!=(t->tm_mday))&&COUNTCLEAN==1 && conf.cachenum<2)  
                  {
                    if(DEBUG==1)
   	              printf("New day\n");
