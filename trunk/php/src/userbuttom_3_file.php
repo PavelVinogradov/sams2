@@ -29,6 +29,8 @@ function UserFileSizePeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
+  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
+	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_3_file_UserFileSizePeriod_1 $filesize kb");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");

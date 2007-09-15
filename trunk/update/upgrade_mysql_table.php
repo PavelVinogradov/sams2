@@ -1,12 +1,14 @@
 #!/usr/bin/php
 
-<?
+<?php
 
 function AddShablonFieldAllDenied()
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $result=mysql_query("SELECT shablons.nick,shablons.name,sconfig.sname,redirect.filename,redirect.type FROM redirect LEFT JOIN sconfig ON sconfig.set=redirect.filename LEFT JOIN shablons ON shablons.name=sconfig.sname WHERE redirect.type='allow' GROUP BY shablons.nick");
   while($row=mysql_fetch_array($result))
-      { 
+      {
         echo "UPDATE squidctrl.shablons SET alldenied='1' WHERE name=$row[name] \n";
         $result2=mysql_query("UPDATE squidctrl.shablons SET alldenied='1' WHERE name='$row[name]'");
       }
@@ -17,26 +19,34 @@ function AddShablonFieldAllDenied()
 
 function UpdateShablonsAuth()
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $result=mysql_query("SHOW COLUMNS FROM squidctrl.shablons");
   while($row=mysql_fetch_array($result))
-      { 
+      {
         if($row[0]=="auth"&&$row[1]=="varchar(4)")
-           { 
+           {
              print("Old field type into squidctrl.shablons.auth found... ");
              $result2=mysql_query("ALTER TABLE squidctrl.shablons MODIFY auth varchar(5)");
              $result2=mysql_query("SELECT auth FROM squidctrl.sams");
 	     $row2=mysql_fetch_array($result2);
 	     $result2=mysql_query("UPDATE squidctrl.shablons SET auth='$row2[0]'");
 	     print("Modify\n");
-             return(0);
+ 	     if($action=="web")
+	        print("<BR>");
+         return(0);
 	   }
       }
    print("New field type into squidctrl.shablons.auth found\n");
+ 	    if($action=="web")
+	     print("<BR>");
    return(0);
 }
 
 function RenameTable($tablename,$newtablename)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   print("SEARCH TABLE $newtablename ");
   $result=mysql_query("SELECT * FROM $newtablename");
   if($result==NULL)
@@ -44,10 +54,16 @@ function RenameTable($tablename,$newtablename)
        print("... NOT FOUND \n ");
        $result=mysql_query("ALTER TABLE $tablename RENAME AS $newtablename ");
        print(" TABLE RENAME\n");
+ 	    if($action=="web")
+	     print("<BR>");
        return(1);
     }
   else
+    {
        print("... FOUND\n");
+ 	    if($action=="web")
+	     print("<BR>");
+	}
   return(0);
 }
 
@@ -60,20 +76,26 @@ function InsertData($txt)
 
 function CreatePrimaryKey($basename,$tablename,$fieldname)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $flag=0;
   print("ALTER TABLE $basename.$tablename ADD PRIMARY KEY ($fieldname)...\n");
   $result=mysql_query("SHOW COLUMNS FROM $basename.$tablename");
   while($row=mysql_fetch_array($result))
-      { 
+      {
         print("$row[0]-$row[1]-$row[2]-$row[3]-$row[4]\n");
         if($fieldname==$row[0]&&$row[3]!="PRI")
-           { 
+           {
              $result2=mysql_query("ALTER TABLE $basename.$tablename ADD PRIMARY KEY ($fieldname)");
              print("YES\n");
+ 	         if($action=="web")
+	           print("<BR>");
            }
         if($fieldname==$row[0]&&$row[3]=="PRI")
-           { 
+           {
              print("NO\n");
+ 	         if($action=="web")
+	           print("<BR>");
            }
       }
 }
@@ -81,73 +103,90 @@ function CreatePrimaryKey($basename,$tablename,$fieldname)
 
 function CreateIndex($basename,$tablename,$fieldname)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $flag=0;
   print("CREATE INDEX $basename.$tablename ($fieldname)...");
   $result=mysql_query("SHOW COLUMNS FROM $basename.$tablename");
   while($row=mysql_fetch_array($result))
-      { 
-        if($fieldname==$row[0]&&$row[3]!="MUL")
-           { 
+      {
+        if($fieldname==$row[0]&&$row[3]!="MUL"&&$row[3]!="PRI")
+           {
              $result2=mysql_query("ALTER TABLE $basename.$tablename ADD INDEX ($fieldname)");
              print("YES\n");
+ 	         if($action=="web")
+	           print("<BR>");
            }
-        if($fieldname==$row[0]&&$row[3]=="MUL")
-           { 
+        if($fieldname==$row[0]&&($row[3]=="MUL"||$row[3]=="PRI"))
+           {
              print("NO\n");
+ 	         if($action=="web")
+	           print("<BR>");
            }
-      } 
+      }
 }
 
 function ModifyColumn($tablename,$fieldname,$type,$newtype)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $flag=0;
   print("MODIFY COLUMN $tablename.$fieldname ");
   $result=mysql_query("SHOW COLUMNS FROM $tablename");
   while($row=mysql_fetch_array($result))
-      { 
+      {
         if($row[Field]=="$fieldname"&&$row[Type]=="$type")
           {
             $result2=mysql_query("ALTER TABLE $tablename MODIFY $fieldname $newtype");
             print(" ... MODIFY \n");
-            $flag=1; 
+ 	        if($action=="web")
+	          print("<BR>");
+            $flag=1;
           }
       }
   if($flag==0)
       {
         print(" ... NO \n");
+ 	    if($action=="web")
+	     print("<BR>");
       }
 
 }
 
 function RenameColumn($tablename,$fieldname,$newfieldname,$newtype)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   $flag=0;
   print("RENAME COLUMN $tablename.$fieldname ");
   $result=mysql_query("SHOW COLUMNS FROM $tablename");
   while($row=mysql_fetch_array($result))
-      { 
+      {
         if($row['Field']==$fieldname)
           {
             printf("\nALTER TABLE $tablename CHANGE $fieldname $newfieldname $newtype \n");
             $result2=mysql_query("ALTER TABLE $tablename CHANGE $fieldname $newfieldname $newtype ");
-	    if($result2>0)
-	       { 
+	      if($result2>0)
+	        {
 	          print(" ... MODIFY \n");
-		  $flag=1;
-	 	}   
+	          if($action=="web")
+	            print("<BR>");
+		      $flag=1;
+	 	    }
           }
       }
   if($flag==0)
       {
         print(" ... NO \n");
+ 	    if($action=="web")
+	     print("<BR>");
       }
-// SQL-query : [Edit] [Create PHP Code]
-//ALTER TABLE `sams` CHANGE `lang` `separator` VARCHAR( 15 ) DEFAULT NULL 
-//    ALTER TABLE 'sams' CHANGE 'lang' 'separator' ' VARCHAR(15) DEFAULT '+\' '
 }
 
 function UpgradeTable($tablename,$fieldname,$string)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   print("SEARCH FIELD $tablename.$fieldname ");
   $result=mysql_query("SELECT $fieldname FROM $tablename");
   if($result==NULL)
@@ -155,14 +194,22 @@ function UpgradeTable($tablename,$fieldname,$string)
        print("... NOT FOUND \n ");
        $result=mysql_query("ALTER TABLE $tablename ADD $fieldname $string");
        print(" UPGRADED\n");
-       return(1);
+	   if($action=="web")
+	     print("<BR>");
+	   return(1);
     }
   else
+    {
        print("... FOUND\n");
+	   if($action=="web")
+	     print("<BR>");
+	}
   return(0);
 }
 function UpgradeTable2($tablename,$fieldname,$string,$position)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
+
   print("SEARCH FIELD $tablename.$fieldname ");
   $result=mysql_query("SELECT $fieldname FROM $tablename");
   if($result==NULL)
@@ -170,15 +217,22 @@ function UpgradeTable2($tablename,$fieldname,$string,$position)
        print("... NOT FOUND \n ");
        $result=mysql_query("ALTER TABLE $tablename ADD $fieldname $string AFTER $position ");
        print(" UPGRADED\n");
+	   if($action=="web")
+	     print("<BR>");
        return(1);
     }
   else
+    {
        print("... FOUND\n");
+	   if($action=="web")
+	     print("<BR>");
+	}
   return(0);
 }
 
 function AddTable($basename,$tablename,$fieldname,$string)
 {
+  if(isset($_GET["action"])) $action=$_GET["action"];
   print("SEARCH TABLE $basename.$tablename ");
   $result=mysql_query("SHOW COLUMNS FROM $basename.$tablename");
   if($result==NULL)
@@ -186,30 +240,48 @@ function AddTable($basename,$tablename,$fieldname,$string)
        print("... NOT FOUND \n ");
        $result=mysql_query("CREATE TABLE $basename.$tablename ($fieldname $string)");
        print(" ADDED\n");
+	   if($action=="web")
+	     print("<BR>");
        return(1);
     }
   else
+    {
        print("... FOUND\n");
+	   if($action=="web")
+	     print("<BR>");
+	}
   return(0);
 }
 
-global $SAMSConf;
 
+function upgrade_mysql_table()
+{
+global $SAMSConf;
 global $DELAYPOOL;
 global $USERACCESS;
-global $SAMSDB;    
-global $LOGDB; 
-global $MYSQLHOSTNAME; 
-global $MYSQLUSER;  
-global $MYSQLPASSWORD; 
-global $SQUIDCACHEFILE; 
-global $SQUIDROOTDIR; 
-global $SQUIDLOGDIR; 
+global $SAMSDB;
+global $LOGDB;
+global $MYSQLHOSTNAME;
+global $MYSQLUSER;
+global $MYSQLPASSWORD;
+global $SQUIDCACHEFILE;
+global $SQUIDROOTDIR;
+global $SQUIDLOGDIR;
 global $SGUARDDBPATH;
 global $SGUARDLOGPATH;
 global $REDIRECTOR;
 global $AUTH;
-require('../php/mysqltools.php');
+
+if(isset($_GET["action"])) $action=$_GET["action"];
+
+if($action!="web")
+  require('../php/mysqltools.php');
+else
+  print("<BR>");
+
+ // require('mysqltools.php');
+//else
+//  require('../php/mysqltools.php');
 
 $SAMSConf=new SAMSCONFIG();
 
@@ -358,7 +430,7 @@ if($result==1) InsertData("update globalsettings set mbsize='1024' ");
 
 $result=UpgradeTable("squidctrl.globalsettings","mbsize","char(15) NOT NULL default '1048576'");
 if($result==1) InsertData("update globalsettings set mbsize='1048576' ");
- 
+
 //RenameTable("webisettings","globalsettings");
 
 $result=UpgradeTable("squidctrl.sams","defaultdomain","char(25) NOT NULL default 'workgroup'");
@@ -402,5 +474,8 @@ $result=UpgradeTable("squidlog.files","filepath","varchar(50)");
 $result=UpgradeTable("squidlog.files","url","varchar(120)");
 $result=UpgradeTable("squidlog.files","size","int(12)");
 $result=UpgradeTable("squidctrl.proxyes","endvalue","int(20)");
-  
+}
+
+ upgrade_mysql_table();
+
 ?>
