@@ -242,6 +242,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	cp -R doc $(datadir)/sams/;
 	cp ./mysql/sams_db.sql $(datadir)/sams/data;
 	cp ./mysql/squid_db.sql $(datadir)/sams/data;
+	cp ./update/upgrade_mysql_table.php $(datadir)/sams/data;
 	-@if test ! -d $(HTTPDPATH)/sams; then \
 		echo "creating symlink to sams directory"; \
 		ln -s $(datadir)/sams $(HTTPDPATH)/sams; \
@@ -288,6 +289,7 @@ update-binPROGRAMS:
 	chmod 777 $(datadir)/sams/data; 
 	chmod ugo+x $(datadir)/sams/bin/*;
 	rm -f $(datadir)/sams/data/*;
+	cp ./update/upgrade_mysql_table.php $(datadir)/sams/data;
 	cp -R doc $(datadir)/sams/;
 
 	

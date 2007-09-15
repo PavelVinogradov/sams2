@@ -22,6 +22,8 @@ function SiteUserList()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
+  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
+	exit(0);
   PageTop("usergroup_48.jpg","$userbuttom_4_site_SiteUserList_1 <BR>$site $username");
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
@@ -122,6 +124,8 @@ function UserSitesPeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
+  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
+	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
