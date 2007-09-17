@@ -5,7 +5,7 @@
 DROP DATABASE IF EXISTS squidlog;
 CREATE DATABASE squidlog;
 
-CONNECT squidlog;
+USE squidlog;
 #
 # Структура таблицы `cache`
 #
