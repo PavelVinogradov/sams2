@@ -1952,9 +1952,9 @@ int MakeACLFiles(MYSQL *conn)
                      ncsacount++;
 
 		  }      
-                if(strcmp(row[1],"ip")==0&&RREJIK==0&&strlen(row2[11])>4) 
+                if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4) 
                     fprintf(fout,"%s/255.255.255.255\n",row2[11]);
-                if(strcmp(row[1],"ip")==0&&RREJIK==1) 
+                if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==1) 
 		  {
                     fprintf(fout,"%s/255.255.255.255\n",row2[11]&&strlen(row2[11])>4);
                     if(RREJIK==1&&atoi(row2[10])>0)
