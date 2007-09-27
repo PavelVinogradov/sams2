@@ -858,6 +858,10 @@
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Подтвердите новый пароль";
 
   $shablontray_ShablonUsers_4="Шаблон присвоен пользователям";
+
+  $userbuttom_1_prop_UpdateUserForm_15="Активен";
+  $userbuttom_1_prop_UpdateUserForm_16="Отключен за превышение трафика";
+  $userbuttom_1_prop_UpdateUserForm_17="Отключен";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

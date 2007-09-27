@@ -35,21 +35,6 @@ function UpdateUser()
   else
      $gauditor=0;
   
-  if($enabled=="on")
-    {
-       $enabled=1;
-      UpdateLog("$SAMSConf->adminname","Activate user $usernick","01");
-    }   
-  else
-    {
-      if($saveenabled==1)
-        UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
-      
-      if($saveenabled==0)
-        $enabled=0;
-      else
-        $enabled=-1;
-    }  
      
   $passwd="none";
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
@@ -59,6 +44,7 @@ function UpdateUser()
 
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=userform&userid=$userid\";\n");
   print("</SCRIPT> \n");
 }
 
@@ -176,10 +162,25 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_11:  \n");
   print("<TD>\n");
-  if($row['enabled']>0)
-     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED> \n");
+  print("<SELECT NAME=\"enabled\" ID=\"enabled\" SIZE=1 TABINDEX=10 >\n");
+  if($row['enabled']==1)
+    print("<OPTION VALUE=\"1\" SELECTED> $userbuttom_1_prop_UpdateUserForm_15");
   else
-     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" > \n");
+    print("<OPTION VALUE=\"1\"> $userbuttom_1_prop_UpdateUserForm_15"); 
+  if($row['enabled']==0)
+    print("<OPTION VALUE=\"0\" SELECTED> $userbuttom_1_prop_UpdateUserForm_16");
+  else
+    print("<OPTION VALUE=\"0\"> $userbuttom_1_prop_UpdateUserForm_16");
+  if($row['enabled']==-1)
+    print("<OPTION VALUE=\"-1\" SELECTED> $userbuttom_1_prop_UpdateUserForm_17");
+  else
+    print("<OPTION VALUE=\"-1\"> $userbuttom_1_prop_UpdateUserForm_17");
+  print("</SELECT>\n");
+
+//  if($row['enabled']>0)
+//     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED> \n");
+//  else
+//     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" > \n");
 
   print("<TR>\n");
   print("<TD>\n");

@@ -836,6 +836,9 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Retype new passwd";
   $shablontray_ShablonUsers_4="Users";
+  $userbuttom_1_prop_UpdateUserForm_15="Enabled";
+  $userbuttom_1_prop_UpdateUserForm_16="traffic Off";
+  $userbuttom_1_prop_UpdateUserForm_17="Disabled";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
