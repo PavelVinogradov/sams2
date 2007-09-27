@@ -5272,11 +5272,11 @@ main ()
   p = (char**) ccp;
   ccp = (char const *const *) p;
   { /* SCO 3.2v4 cc rejects this.  */
-    char *t = (char *)0; /* removes 'used unitialized' warning */
+    char *t = (char *) 0;
     char const *s = 0 ? (char *) 0 : (char const *) 0;
 
     *t++ = 0;
-    (void)s; /* this removes 'unused var' warning */
+    (void) s;
   }
   { /* Someone thinks the Sun supposedly-ANSI compiler will reject this.  */
     int x[] = {25, 17};
@@ -5295,10 +5295,10 @@ main ()
   }
   { /* ULTRIX-32 V3.1 (Rev 9) vcc rejects this */
     const int foo = 10;
-    (void)foo; /* this removes 'unused var' warning */
+    (void) foo;
   }
-  (void)x; /* this removes 'unused var' warning */
-  (void)zero; /* this removes 'unused var' warning */
+  (void) x;
+  (void) zero;
 #endif
 
   ;
@@ -5488,6 +5488,9 @@ fi
 : ${CONFIG_FILE="/etc/sams.conf"}
 sysconfdir=$CONFIG_FILE;
 echo "#define CONFIG_FILE \"$CONFIG_FILE\"" >config.h
+VERSION=`cat VERSION`
+echo "#define VERSION \"$VERSION\"" >>config.h
+
 echo "<?php \$configfile=\"$CONFIG_FILE\"; ?>" >php/config.php
 cat >>confdefs.h <<_ACEOF
 #define CONFIG_FILE "$CONFIG_FILE"
@@ -6353,24 +6356,13 @@ fi
 # Create a temporary directory, and hook for its removal unless debugging.
 $debug ||
 {
-  trap 'exit_status=$?; rm -rf $tmp && exit $exit_status' 0
-  trap '{ (exit 1); exit 1; }' 1 2 13 15
+  trap 'exit_status=$?; rm -rf $tmp && exit $exit_status' EXIT
+  trap '{ (exit 1); exit 1; }' PIPE HUP INT TERM
 }
 
 # Create a (secure) tmp directory for tmp files.
+tmp="`mktemp -dt cs.XXXXXXXXXX`" || exit 1
 
-{
-  tmp=`(umask 077 && mktemp -d -q "./confstatXXXXXX") 2>/dev/null` &&
-  test -n "$tmp" && test -d "$tmp"
-}  ||
-{
-  tmp=./confstat$$-$RANDOM
-  (umask 077 && mkdir $tmp)
-} ||
-{
-   echo "$me: cannot create a temporary directory in ." >&2
-   { (exit 1); exit 1; }
-}
 
 _ACEOF
 

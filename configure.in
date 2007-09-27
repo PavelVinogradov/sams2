@@ -48,6 +48,9 @@ fi
 : ${CONFIG_FILE="/etc/sams.conf"}
 sysconfdir=$CONFIG_FILE;
 echo "#define CONFIG_FILE \"$CONFIG_FILE\"" >config.h
+VERSION=`cat VERSION`
+echo "#define VERSION \"$VERSION\"" >>config.h
+
 echo "<?php \$configfile=\"$CONFIG_FILE\"; ?>" >php/config.php
 AC_SUBST(CONFIG_FILE)dnl
 AC_DEFINE_UNQUOTED(CONFIG_FILE,"$CONFIG_FILE")dnl
