@@ -349,10 +349,6 @@ int UserAccess(char *str0, char *str1, char *str2)
 
   strcpy(&userid[0],"\0");
 
-  if(DEBUG==1)
-    {
-      printf("INPUT to UserAccess: %s %s %s\n",str0, str1, str2);
-    }
   LocalIPAddr(str0,&ip[0],&ipmask[0]);
 
   for(i=0;i<samsuserscount;i++)
@@ -461,8 +457,14 @@ int main (int argc, char *argv[])
             printf("Usage: sams [options]\n");
             printf(" -h, --help       show this message.\n");
             printf(" -d, --debug      print debug message.\n");
+            printf(" -V, --version    Print version.\n");
             //printf(" -r, --request      print debug message.\n");
             exit(0);
+          }
+       if(strstr(argv[i],"--version")!=0||strstr(argv[i],"-V")!=0)
+          {
+            printf("Version %s\n", VERSION);
+	    exit(0);
           }
        if(strstr(argv[i],"--debug")!=0||strstr(argv[i],"-d")!=0)
           {
@@ -586,6 +588,13 @@ int main (int argc, char *argv[])
 	        users[i].days[j]=0;
               }
 	  }
+         users[i].ipauth=0;
+         users[i].ntlmauth=0;
+         users[i].ncsaauth=0;
+         users[i].adldauth=0;
+         users[i].alldenied=0;
+
+
         if(strcmp(row[12],"ip")==0)
 	                            users[i].ipauth=1;
         if(strcmp(row[12],"ntlm")==0)

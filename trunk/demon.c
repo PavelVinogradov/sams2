@@ -292,6 +292,8 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                         if(REALTRAF==1)
 			  {
                             users[samsuser-1].traffic+=size-hitsize;
+if(DEBUG>0)
+   printf("REALTRAFfic = %d -%d\n");
 			  }  
                         else
 			  {
@@ -625,7 +627,13 @@ int main (int argc, char *argv[])
             printf(" --export=date:date export squid log database into file (not gzipped!).\n");
             printf("                    for example: --export=2005-01-01:2005-01-31.\n");
             printf(" --empty            export and empty squid log database.\n");
+            printf(" -V, --version      Print version.\n");
             exit(0);
+          }
+       if(strstr(argv[i],"--version")!=0||strstr(argv[i],"-V")!=0)
+          {
+            printf("Version %s\n", VERSION);
+	    exit(0);
           }
        if(strstr(argv[i],"--file")!=0||strstr(argv[i],"-f")!=0)
           {

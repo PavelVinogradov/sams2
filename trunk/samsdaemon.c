@@ -666,7 +666,7 @@ int ChangeSQUIDconf(MYSQL *conn)
   lstat(&filefrom[0],&s);
   if(!s.st_mode&S_IRUSR) printf("1");
 //  if(S_IRUSR(s.st_mode)) printf("1");
-
+   
   mode=0;
   if(s.st_mode&S_IRUSR) mode+=256;
   if(s.st_mode&S_IWUSR) mode+=128;
@@ -2479,7 +2479,7 @@ int main (int argc, char *argv[])
   pid_t pid,childpid,parentpid;
   time_t tt,tt2;
   struct tm *t,*t2;
-    struct   stat st;
+  struct stat st, s;
   int sams_sec;
   int sams_clr_month;
   int sams_clr_day;
@@ -2500,7 +2500,6 @@ int main (int argc, char *argv[])
   SDELAY=0;
   sams_sec=0;
   clearflag=0;
-  printf("Starting samsdaemon\n");
 
   for(i=0;i<argc;i++)
      {
@@ -2510,7 +2509,13 @@ int main (int argc, char *argv[])
             printf(" -h, --help       show this message.\n");
             printf(" -p, --print      print additional information.\n");
             printf(" -d, --debug      print debug message.\n");
+            printf(" -V, --version    Print version.\n");
             exit(0);
+          }
+       if(strstr(argv[i],"--version")!=0||strstr(argv[i],"-V")!=0)
+          {
+            printf("Version %s\n", VERSION);
+	    exit(0);
           }
        if(strstr(argv[i],"--print")!=0||strstr(argv[i],"-p")!=0)
           {
@@ -2531,6 +2536,7 @@ int main (int argc, char *argv[])
           }
      }
 
+  printf("Starting samsdaemon\n");
   pid = getpid();
   if(DEBUG==1||SD==1)
     {
@@ -2964,7 +2970,11 @@ int main (int argc, char *argv[])
 			   printf("restarting samsf = %d\n",flag);
 			 AddLog(conn2,0,"samsdaemon","Restarting samsf");
                       }
+/* swap.state*/
+//  sprintf(&str[0],"%s/swap.state",conf.cachedir);
+//  lstat(&str[0],&s);
 
+/* */
                     sprintf(&str[0],"%s/squid  -k reconfigure",conf.squidpath);
                     flag=system(&str[0]);
                     if(flag==0)

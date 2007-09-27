@@ -512,7 +512,13 @@ int main (int argc, char *argv[])
             printf(" -h, --help       show this message.\n");
             printf(" -p, --print      print additional information.\n");
             printf(" -d, --debug      print debug message.\n");
+            printf(" -V, --version    Print version.\n");
             exit(0);
+          }
+       if(strstr(argv[i],"--version")!=0||strstr(argv[i],"-V")!=0)
+          {
+            printf("Version %s\n", VERSION);
+	    exit(0);
           }
        if(strstr(argv[i],"--print")!=0||strstr(argv[i],"-p")!=0)
           {
