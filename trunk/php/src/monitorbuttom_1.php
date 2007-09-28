@@ -8,16 +8,26 @@
 function Monitor_1()
 {
   global $SAMSConf;
+  $timeout=10;
+  if(isset($_GET["timeout"])) $timeout=$_GET["timeout"];
   
   printf("<SCRIPT LANGUAGE=\"javascript\">\n");
   printf("function Refr() \n");
   printf("{\n");
-  printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_1.php'};\n");
-  printf("setTimeout('Refr();',5000);\n");
+  printf("document.location='main.php?show=exe&function=monitor_1&filename=monitorbuttom_1.php&timeout=$timeout'};\n");
+  printf("setTimeout('Refr();',$timeout*1000);\n");
   printf("</SCRIPT>\n");
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
 
+  print("<FORM NAME=\"timeoutform\" ACTION=\"main.php\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"monitor_1\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"monitorbuttom_1.php\">\n");
+  print("<B>Timeout:</B> <INPUT TYPE=\"TEXT\" NAME=\"timeout\" SIZE=\"3\" value=\"$timeout\"> sec\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" VALUE=\"Set new timeout\">\n");
+  print("</FORM>\n");
+ 
   $result=mysql_query("SELECT * FROM squidusers ORDER BY nick");
   $count=0;
   print("<TABLE WIDTH=\"95%\" BORDER=0>");
@@ -35,21 +45,22 @@ function Monitor_1()
         print("<B>$row[nick] <BR>");
 
         if($SAMSConf->realtraffic=="real")
-	   $traffic=$row['size']-$row['hit'];
+          {
+	      $traffic=ReturnTrafficFormattedSize($row['size']-$row['hit']);
+              $trafsize=$row['size']-$row['hit'];
+          }
         else
-	   $traffic=$row['size'];
-	$gsize=floor($traffic/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
-        $ostatok=$traffic%($SAMSConf->KBSIZE*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE);
-        $msize=floor($ostatok/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
-        $ostatok=$traffic%($SAMSConf->KBSIZE*$SAMSConf->KBSIZE);
-        $ksize=floor($ostatok/$SAMSConf->KBSIZE);         
+          {
+	     $traffic=ReturnTrafficFormattedSize($row['size']);
+             $trafsize=$row['size'];
+          }
+	$quote=ReturnTrafficFormattedSize($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE);
+
+        if($trafsize>$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE && $row['quotes']>0)
+              print("<FONT COLOR=\"RED\">$traffic</FONT></B>\n");
+        else
+	      print("<FONT COLOR=\"BLUE\">$traffic</FONT></B>\n");
 	
-
-        if($traffic>$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE)
-          print("<FONT COLOR=\"RED\">$gsize g  $msize m $ksize k</FONT></B>\n");
-        else
-	      print("<FONT COLOR=\"BLUE\">$gsize g $msize m $ksize k</FONT></B>\n");
-
         $count=$count+1;
         if($count>2)
           {
