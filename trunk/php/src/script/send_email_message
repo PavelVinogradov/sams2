@@ -1,2 +1,2 @@
 DATE=`date`
-echo "$DATE: user $SAMSUSERNAME disabled" | mail $SAMSADMINADDR -s "user $SAMSUSERNAME disabled"
+echo "$DATE: user $SAMSUSERNAME disabled" | mail -s "user $SAMSUSERNAME disabled" $SAMSADMINADDR
