@@ -217,7 +217,7 @@ function groupbuttom_3_site($groupname)
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
 
-   if($SAMSConf->access==2)
+   if($SAMSConf->access>0)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=groupsitesform&filename=groupbuttom_3_site.php&groupname=$groupname","basefrm","straffic_32.jpg","straffic_48.jpg","$groupbuttom_3_site_groupbuttom_3_site_1");
