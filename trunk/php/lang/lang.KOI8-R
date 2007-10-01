@@ -568,7 +568,7 @@
   $adminbuttom_1_prop_SamsReConfigForm_34="Запускать обработчик логов через N минут";
   $adminbuttom_1_prop_SamsReConfigForm_35="обрабатывать через";
   $adminbuttom_1_prop_SamsReConfigForm_36="минут";
-  $adminbuttom_1_prop_SamsReConfigForm_37="Автоматически очищать счетчики трафика пользователей в начале месяца";
+  $adminbuttom_1_prop_SamsReConfigForm_37="Автоматически очищать счетчики трафика пользователей";
   $adminbuttom_1_prop_SamsReConfigForm_38="Обрабатывать логи SQUID";
 
   $adminbuttom_1_prop_adminbuttom_1_propadmintray_1="Настройки SAMS";
