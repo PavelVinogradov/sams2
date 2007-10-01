@@ -411,6 +411,7 @@ char *MallocMemory(char *str)
 void readconf( void )
 {
 	static char buf[BUFFER_SIZE], *s;
+	int setcachedir=0;
 	FILE *fp=NULL;
 
         conf.cachenum=0;
@@ -448,7 +449,10 @@ void readconf( void )
 				else if( !strcasecmp( buf, "squidlogdir" ) )
                                         conf.logdir=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidcachedir" ) )
+				    {
                                         conf.cachedir=MallocMemory(xstrdup(s));
+					setcachedir=1;
+				    }
 				else if( !strcasecmp( buf, "samspath" ) )
                                         conf.samspath=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidpath" ) )
@@ -469,6 +473,12 @@ void readconf( void )
 		}
           fclose(fp);
 	}       
+
+ if( setcachedir == 0 )
+   {
+      conf.cachedir=MallocMemory("/var/spool/squid");
+   }
+
 /*
 printf("MySQL DB            = %s \n",&conf.samsdb[0]);
 printf("SQUID log DB        = %s \n",&conf.logdb[0]);
