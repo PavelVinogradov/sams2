@@ -474,6 +474,8 @@ $result=UpgradeTable("squidlog.files","filepath","varchar(50)");
 $result=UpgradeTable("squidlog.files","url","varchar(120)");
 $result=UpgradeTable("squidlog.files","size","int(12)");
 $result=UpgradeTable("squidctrl.proxyes","endvalue","int(20)");
+ModifyColumn("squidctrl.sams","adminaddr","char(25)","char(60)");
+
 }
 
  upgrade_mysql_table();
