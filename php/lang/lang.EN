@@ -570,7 +570,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_34=" Discret parser "; 
   $adminbuttom_1_prop_SamsReConfigForm_35=" Read through "; 
   $adminbuttom_1_prop_SamsReConfigForm_36=" minute "; 
-  $adminbuttom_1_prop_SamsReConfigForm_37=" Automatically clear up the users traffic in the first day of month"; 
+  $adminbuttom_1_prop_SamsReConfigForm_37=" Automatically clear up the users traffic"; 
   $adminbuttom_1_prop_SamsReConfigForm_38=" Insert SQUID logs in database";
 
   $adminbuttom_1_prop_adminbuttom_1_propadmintray_1=" SAMS settings "; 
