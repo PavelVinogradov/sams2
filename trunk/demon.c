@@ -683,6 +683,10 @@ int main (int argc, char *argv[])
           }
 #endif
      }
+
+  openlog("samslogparser",LOG_PID | LOG_CONS , LOG_DAEMON);
+//  openlog("samslogparser",LOG_PID | LOG_CONS );
+
   readconf();
 
   conn = do_connect(conf.host, conf.user, conf.passwd, conf.samsdb, def_port_num, def_socket_name, 0);
@@ -1138,5 +1142,6 @@ int main (int argc, char *argv[])
   free(RUCm);
   freeconf();
 
+ closelog();
  return(0);
 }
