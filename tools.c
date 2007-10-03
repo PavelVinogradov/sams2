@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <syslog.h>
 #include <dirent.h>
 #include <sys/un.h>
 #include <unistd.h>
@@ -168,6 +169,8 @@ int send_mysql_query(MYSQL *conn, char *str)
      error=mysql_error(conn);
      if(strlen(error)>0)
        {
+	 sprintf(&str[0],"MySQL query error: %s", error);
+         syslog(LOG_LOCAL0|LOG_INFO,&str[0]);
          printf("Error\n %s\n",error);
          if(DEBUG>0)
            printf(" into MySQL query:\n %s\n",str);
@@ -186,6 +189,7 @@ void AddLog(MYSQL *conn, int level, char *demon, char *str)
     {
       tt=time(NULL);
       t=localtime(&tt);
+      syslog(LOG_LOCAL0|LOG_INFO, str);
       sprintf(&log[0],"INSERT INTO %s.log SET user='%s',date='%d-%d-%d',time='%d:%d:%d',value='%s',code='10'",conf.samsdb,demon,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,str);
       send_mysql_query(conn,&log[0]);
     }  
@@ -411,7 +415,6 @@ char *MallocMemory(char *str)
 void readconf( void )
 {
 	static char buf[BUFFER_SIZE], *s;
-	int setcachedir=0;
 	FILE *fp=NULL;
 
         conf.cachenum=0;
@@ -449,10 +452,7 @@ void readconf( void )
 				else if( !strcasecmp( buf, "squidlogdir" ) )
                                         conf.logdir=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidcachedir" ) )
-				    {
                                         conf.cachedir=MallocMemory(xstrdup(s));
-					setcachedir=1;
-				    }
 				else if( !strcasecmp( buf, "samspath" ) )
                                         conf.samspath=MallocMemory(xstrdup(s));
 				else if( !strcasecmp( buf, "squidpath" ) )
@@ -473,12 +473,6 @@ void readconf( void )
 		}
           fclose(fp);
 	}       
-
- if( setcachedir == 0 )
-   {
-      conf.cachedir=MallocMemory("/var/spool/squid");
-   }
-
 /*
 printf("MySQL DB            = %s \n",&conf.samsdb[0]);
 printf("SQUID log DB        = %s \n",&conf.logdb[0]);

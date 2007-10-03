@@ -2536,7 +2536,7 @@ int main (int argc, char *argv[])
           }
      }
 
-  printf("Starting samsdaemon\n");
+//  printf("Starting samsdaemon\n");
   pid = getpid();
   if(DEBUG==1||SD==1)
     {
@@ -2547,6 +2547,9 @@ int main (int argc, char *argv[])
       if(TestPID("/var/run/samsdaemon.pid")!=0)
          exit(0);
     }
+
+  openlog("samsdaemon",LOG_PID | LOG_CONS , LOG_DAEMON);
+  syslog(LOG_LOCAL0|LOG_INFO,"Starting\n");
 
   if(DEBUG==1||SD==1)
      printf("Read SAMS configuration... ");
@@ -2618,8 +2621,6 @@ int main (int argc, char *argv[])
        sigchld_action.sa_handler=&clean_up_child_process;
        sigaction (SIGCHLD, &sigchld_action, NULL);
   
-       if(DEBUG==0)
-         openlog("samsdaemon",LOG_PID | LOG_CONS , LOG_DAEMON);
        while(SLEEP>0)
          {
            sams_sec-=SLEEP;
@@ -2683,7 +2684,7 @@ int main (int argc, char *argv[])
 		   if(DEBUG==1)
                      printf("Save SQUID base\n");
                    if(DEBUG==0)
-		     syslog(LOG_DEBUG,"SAMS: SQUID base saved to disk\n");
+		     syslog(LOG_LOCAL0|LOG_INFO,"SAMS: SQUID base saved to disk\n");
                    
                    sprintf(&str[0],"SQUID base saved to disk");
 		   AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2998,5 +2999,6 @@ tt=time(NULL);
 t=localtime(&tt);
 freeconf();
 free(SEPARATOR);
+closelog();
 return(0);
 }

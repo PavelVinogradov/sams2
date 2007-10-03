@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/un.h>
+#include <syslog.h>
 #include <unistd.h>
 #include "config.h"
 #include "define.h"
