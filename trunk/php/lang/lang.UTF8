@@ -862,6 +862,10 @@
   $userbuttom_1_prop_UpdateUserForm_15="Активен";
   $userbuttom_1_prop_UpdateUserForm_16="Отключен за превышение трафика";
   $userbuttom_1_prop_UpdateUserForm_17="Отключен";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Показать пользователей всех групп домена";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Ввести название группы вручную";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Поле ручного ввода группы";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
