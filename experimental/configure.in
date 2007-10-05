@@ -1,0 +1,158 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_INIT([src/defines.h])
+AM_INIT_AUTOMAKE(samsnegen, 1.0)
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_LN_S
+
+# Checks for libraries.
+
+# Checks for header files.
+#AC_CHECK_HEADERS([strings.h iostream.h string vector stdio.h mysql.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+
+dnl define various options
+AC_ARG_WITH(configfile, [  --with-configfile=PATH  default runtime config file (/etc/sams.conf)])
+if test "X$with_configfile" != "Xno" && test "X$with_configfile" != "Xyes" && test "X$with_configfile" != "X"; then
+        CONFIG_FILE=$with_configfile
+fi
+: ${CONFIG_FILE="/etc/sams.conf"}
+sysconfdir=$CONFIG_FILE;
+echo "#define CONFIG_FILE \"$CONFIG_FILE\"" >config.h
+AC_SUBST(CONFIG_FILE)dnl
+AC_DEFINE_UNQUOTED(CONFIG_FILE,"$CONFIG_FILE")dnl
+####
+
+AC_MSG_CHECKING(for the SAMS startup scripts locations)
+AC_ARG_WITH(rcd-locations,
+[  --with-rcd-locations=PATH   specify path for the startup rc.d script locations],
+    use_rcd_locations="$withval", use_rcd_locations="unspec")
+case "$use_rcd_locations" in
+    unspec)
+        DST_RCD_LOC='/etc/init.d'
+        for ac_dir in /etc/init.d /usr/local/etc/rc.d; do
+            if test -f "$ac_dir"; then
+                DST_RCD_LOC=$ac_dir
+                break;
+            fi
+        done
+        AC_MSG_RESULT($DST_RCD_LOC)
+        ;;
+    yes)
+        AC_MSG_ERROR([--with-rcd-locations must specify a path])
+        ;;
+    *)
+        DST_RCD_LOC="$use_rcd_locations"
+        AC_MSG_RESULT($DST_RCD_LOC)
+        ;;
+esac
+RCDPATH="$DST_RCD_LOC"
+
+
+####
+AC_MSG_CHECKING(for mysql.h)
+AC_ARG_WITH(mysql-includes,
+[  --with-mysql-includes=PATH   specify path for MYSQL includes],
+    use_mysql_includes="$withval", use_mysql_includes="unspec")
+
+case "$use_mysql_includes" in
+    unspec)
+        DST_MYSQL_INC='/usr/include/mysql'
+        for ac_dir in /usr/local/mysql/include/mysql /usr/local/include/mysql /usr/include/mysql /usr/local/include /usr/include; do
+            if test -f "$ac_dir/mysql.h"; then
+                DST_MYSQL_INC=$ac_dir
+                break;
+            fi
+        done
+        AC_MSG_RESULT($DST_MYSQL_INC)
+        ;;
+    yes)
+        AC_MSG_ERROR([--with-mysql-includes must specify a path])
+        ;;
+    *)
+        DST_MYSQL_INC="$use_mysql_includes"
+        AC_MSG_RESULT($DST_MYSQL_INC)
+        ;;
+esac
+
+
+AC_MSG_CHECKING(for mysql.h usability)
+if test -r "$DST_MYSQL_INC/mysql.h"; then
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_ERROR(Cannot find mysql.h in $DST_MYSQL_INC)
+fi
+MYSQLHEADERS="-I$DST_MYSQL_INC"
+
+
+
+#
+# was --with-mysql-libpath specified?
+#
+AC_MSG_CHECKING(for libmysqlclient.so)
+AC_ARG_WITH(mysql-libpath,
+[  --with-mysql-libpath=PATH    specify path for MYSQL library],
+    use_mysql_lib="$withval", use_mysql_lib="unspec")
+
+case "$use_mysql_lib" in
+    unspec)
+        DST_MYSQL_LIBS='/usr/lib'
+        for ac_dir in /usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib /usr/lib64/mysql; do
+            if test -f "$ac_dir/libmysqlclient.so"; then
+                DST_MYSQL_LIBS=$ac_dir
+                break;
+            fi
+        done
+        AC_MSG_RESULT($DST_MYSQL_LIBS)
+        ;;
+    yes)
+        AC_MSG_ERROR([--with-mysql-libpath must specify a path])
+        ;;
+    *)
+        DST_MYSQL_LIBS="$use_mysql_lib"
+        AC_MSG_RESULT($DST_MYSQL_LIBS)
+        ;;
+esac
+
+
+AC_MSG_CHECKING(for libmysqlclient.so usability)
+if test -r "$DST_MYSQL_LIBS/libmysqlclient.so"; then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_ERROR(Cannot find MySQL's libmysqlclient in $DST_MYSQL_LIBS)
+fi
+MYSQLLIBS="-L$DST_MYSQL_LIBS -lmysqlclient"
+CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
+
+
+
+
+
+#AC_SUBST(SUBDIRS)
+AC_SUBST(RCDPATH)
+AC_SUBST(HTTPDPATH)
+AC_SUBST(MYSQLLIBS)
+AC_SUBST(MYSQLHEADERS)
+
+
+AC_MSG_RESULT([])
+AC_MSG_RESULT([***** Options and locations *****])
+AC_MSG_RESULT([system:                                 $OS])
+AC_MSG_RESULT([default path:                           $prefix])
+AC_MSG_RESULT([default runtime config file:            $CONFIG_FILE])
+AC_MSG_RESULT([location mysql includes:                $DST_MYSQL_INC])
+AC_MSG_RESULT([location mysql libraries:               $DST_MYSQL_LIBS])
+AC_MSG_RESULT([])
+AC_MSG_RESULT([Type 'make'])
+AC_MSG_RESULT([])
+
+
+# Checks for library functions.
+
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT
