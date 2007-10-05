@@ -1,3 +1,2 @@
-sams.conf
-apache.conf
-cherokee.conf
+/etc/sams.conf
+/etc/apache2/conf.d/sams.conf

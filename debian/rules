@@ -110,16 +110,13 @@ binary-common:
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
-#	dh_python
 	dh_installinit
 #	dh_installcron
-#	dh_installinfo
 	dh_installman
 	dh_link
 	dh_strip
 	dh_compress 
 	dh_fixperms
-#	dh_perl
 	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
