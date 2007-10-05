@@ -99,6 +99,7 @@ function AddUsersFromAdLDAPForm()
   require($lang);
 
   if(isset($_GET["ldapgroup"])) $ldapgroup=$_GET["ldapgroup"];
+  if(isset($_GET["getgroup"])) $getgroup=$_GET["getgroup"];
    
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access!=2)     {       exit;     }
@@ -115,10 +116,14 @@ function AddUsersFromAdLDAPForm()
    ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
    $ldap=new adLDAP($options);
 
-    if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
+    if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
       {
 	  $a=$ldap->group_users($ldapgroup);
-//	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	  $acount=count($a);
+      }
+    else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
+      {
+	  $a=$ldap->group_users($getgroup);
 	  $acount=count($a);
       }
     else
@@ -137,28 +142,46 @@ function AddUsersFromAdLDAPForm()
     print("function SelectADGroup(formname)\n");
     print("{\n");
     print("  var group=formname.addgroupname.value; \n");
-    print("  var str=\"main.php?show=exe&ldapgroup=\"+group+\"&function=addusersfromadldapform&filename=usersbuttom_1_adldap.php\"; \n");
-    //print("                 window.confirm(str);\n");
+    print("  var getgroup=formname.getgroup.value; \n");
+    print("  var str=\"main.php?show=exe&ldapgroup=\"+group+\"&getgroup=\"+getgroup+\"&function=addusersfromadldapform&filename=usersbuttom_1_adldap.php\"; \n");
     print("  parent.basefrm.location.href=str;\n");
+    print("}\n");
+    print("function EnableTxtInput(formname)\n");
+    print("{\n");
+    print("  value=document.forms[\"AddDomainUsers\"].elements[\"addgroupname\"].value;\n");
+    print("  if(value==\"_gettxtinput_\") \n");
+    print("     {\n");
+     print("       document.forms[\"AddDomainUsers\"].elements[\"getgroup\"].disabled=false\n");
+    print("     }\n");
+    print("  else \n");
+    print("     {\n");
+     print("       document.forms[\"AddDomainUsers\"].elements[\"getgroup\"].disabled=true\n");
+    print("     }\n");
     print("}\n");
     print("</SCRIPT> \n");
     print("<TABLE>\n");
     print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1\n");
-    print("<TD><SELECT NAME=\"addgroupname\">\n");
-    print("<OPTION VALUE=\"_allgroups_\" SELECT> ALL GROUPS");
+    print("<TD><SELECT NAME=\"addgroupname\" onChange=EnableTxtInput(AddDomainUsers)>\n");
+    print("<OPTION VALUE=\"_allgroups_\" SELECT  onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5");
+    print("<OPTION VALUE=\"_gettxtinput_\" onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6");
     for($i=0;$i<$gcount;$i++)
       {
 	$groupname=$groupinfo[$i];
-        print("<OPTION VALUE=\"$groupname\"> $groupname");
+        print("<OPTION VALUE=\"$groupname\"  onselect=EnableTxtInput(AddDomainUsers)> $groupname");
       }
     print("</SELECT>\n");
+    print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7\n");
+    print("<TD><INPUT TYPE=\"TEST\" NAME=\"getgroup\" SIZE=\"20\" DISABLED>\n");
     print("</TABLE>\n");
     print("<INPUT TYPE=\"BUTTON\" value=\"$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2\" onclick=SelectADGroup(AddDomainUsers)>\n");
     print("<P>\n");
 /* */    
+
     
-    if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_")
+    if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
       printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $ldapgroup</B><BR>");
+    else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
+      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $getgroup</B><BR>");
     else
       print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
     print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
