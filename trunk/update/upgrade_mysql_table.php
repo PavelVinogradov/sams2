@@ -474,8 +474,16 @@ $result=UpgradeTable("squidlog.files","filepath","varchar(50)");
 $result=UpgradeTable("squidlog.files","url","varchar(120)");
 $result=UpgradeTable("squidlog.files","size","int(12)");
 $result=UpgradeTable("squidctrl.proxyes","endvalue","int(20)");
-ModifyColumn("squidctrl.sams","adminaddr","char(25)","char(60)");
 
+ModifyColumn("squidctrl.sams","shour","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.sams","smin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.sams","ehour","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.sams","emin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+
+ModifyColumn("squidctrl.shablons","shour","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.shablons","smin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.shablons","ehour","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+ModifyColumn("squidctrl.shablons","emin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
 }
 
  upgrade_mysql_table();
