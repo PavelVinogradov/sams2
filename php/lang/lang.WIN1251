@@ -866,6 +866,8 @@
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Показать пользователей всех групп домена";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Ввести название группы вручную";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Поле ручного ввода группы";
+
+  $userstray_AllUsersForm_13="Искать пользователей:";  
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

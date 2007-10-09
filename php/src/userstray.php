@@ -44,7 +44,7 @@ function DisableSelectedUsers()
      }
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
-     print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm\";\n");
+     print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm&type=all\";\n");
      print("</SCRIPT> \n");
 
 }
@@ -61,14 +61,28 @@ function AllUsersForm()
   $SAMSConf->access=UserAccess();
 
   $groupname="";
-  if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
+//  if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
+  $type="all";
+  if(isset($_GET["type"])) $type=$_GET["type"];
+  if(isset($_GET["username"])) $username=$_GET["username"];
 
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB)
        or print("Error\n");
-  $result=mysql_query("SELECT * FROM groups WHERE groups.name=\"$groupname\" ");
-  $row=mysql_fetch_array($result);
+
   PageTop("user.jpg","$grouptray_UserGroupForm_1");
+  if($SAMSConf->access==2)
+    {
+      print("<FORM NAME=\"searchform\" ACTION=\"main.php\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"AllUsersForm\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"type\" value=\"search\">\n");
+      print("$userstray_AllUsersForm_13 \n");
+      print("<INPUT TYPE=\"TEXT\" NAME=\"username\" >\n");
+      print("<INPUT TYPE=\"SUBMIT\" VALUE=\"Search\" >\n");
+      print("</FORM>\n");
+//show=exe&function=AllUsersForm&type=all
+    } 
 
   if($SAMSConf->access==2)
     {
@@ -100,7 +114,12 @@ function AllUsersForm()
     }  
   $count=0;
   
- $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SAMSDB.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SAMSDB.shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
+  if($type=="search")
+  {
+    $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SAMSDB.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SAMSDB.shablons ON squidusers.shablon=shablons.name WHERE squidusers.nick like \"%$username%\" ORDER BY squidusers.group,squidusers.nick");
+  }
+  else
+    $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SAMSDB.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SAMSDB.shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
   
   while($row=mysql_fetch_array($result))
       {
@@ -218,7 +237,7 @@ function UsersTray()
   $SAMSConf->access=UserAccess();
 
   print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm&type=all\";\n");
   print("</SCRIPT> \n");
 
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
