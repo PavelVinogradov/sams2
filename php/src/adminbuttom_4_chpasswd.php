@@ -18,7 +18,7 @@ function ChangeAdminPasswd()
   if(isset($_GET["oldpasswd"])) $oldpasswd=$_GET["oldpasswd"];
 
     $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+   if($SAMSConf->access<1)     {       exit;     }
   
  $passwd=crypt($newpasswd,"00");
   if(strstr($username,$SAMSConf->adminname)||strstr("Admin",$SAMSConf->adminname))
@@ -53,7 +53,7 @@ function ChangeAdminPasswdForm()
   require($lang);
 
    $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+   if($SAMSConf->access<1)     {       exit;     }
   
   PageTop("userpasswd_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_1");
   print("<P>\n");
@@ -137,7 +137,7 @@ function adminbuttom_4_chpasswd()
   require($lang);
 
   $SAMSConf->access=UserAccess();
-  if($SAMSConf->access==2)
+  if($SAMSConf->access>0)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=changeadminpasswdform&filename=adminbuttom_4_chpasswd.php",
