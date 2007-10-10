@@ -48,6 +48,7 @@ if(isset($_GET["groups"]))    $groups=$_GET["groups"];
 if(isset($_GET["users"]))      $users=$_GET["users"];
 if(isset($_GET["lists"]))        $lists=$_GET["lists"];
 if(isset($_GET["shablons"])) $shablons=$_GET["shablons"];
+if(isset($_GET["samsconfig"])) $samsconfig=$_GET["samsconfig"];
 if(isset($_GET["tmp_name"])) $tmp_name=$_GET["tmp_name"];
 
    $SAMSConf->access=UserAccess();
@@ -61,6 +62,19 @@ if(isset($_GET["tmp_name"])) $tmp_name=$_GET["tmp_name"];
          {
            $string=gzgets($finp, 10000);
            $string2=strtok($string,";");
+           if($samsconfig=="on"&&strstr($string,"IF EXISTS")&&strstr($string,"sams"))
+             {
+               $result=mysql_query("$string2");
+             }
+           if($samsconfig=="on"&&strstr($string,"CREATE TABLE")&&strstr($string,"sams"))
+             {
+               $result=mysql_query("$string2");
+             }
+           if($samsconfig=="on"&&strstr($string,"INSERT INTO sams" ))
+             {
+               $result=mysql_query("$string2");
+             }
+
            if($groups=="on"&&strstr($string,"groups" ))
              {
                $result=mysql_query("$string2");
@@ -145,6 +159,9 @@ function LoadBackUp()
   print("<TR>\n");
   print("<TD><B>$backupbuttom_2_loadbase_LoadBackUp_8</B>\n");
   print("<TD><INPUT TYPE=\"CHECKBOX\" name=\"shablons\">\n");
+  print("<TR>\n");
+  print("<TD><B>$backupbuttom_2_loadbase_LoadBackUp_10</B>\n");
+  print("<TD><INPUT TYPE=\"CHECKBOX\" name=\"samsconfig\">\n");
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$backupbuttom_2_loadbase_LoadBackUp_9\">\n");
   print("</FORM>\n");
