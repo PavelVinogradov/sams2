@@ -2,6 +2,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <fnmatch.h>
+#include <errno.h>
 
 #include "samsfile.h"
 #include "debug.h"

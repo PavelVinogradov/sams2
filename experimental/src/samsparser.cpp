@@ -3,14 +3,11 @@
 
 
 #include "debug.h"
-#include "dbmysql.h"
 #include "samsconfig.h"
 #include "samsfile.h"
 #include "tools.h"
+#include "samsdb.h"
 
-#define MYSQL_PORT_NUMBER 0
-#define MYSQL_SOCKET      ""
-#define MYSQL_FLAGS       0
 
 /*!
  *  Выводит список опций командной строки с кратким описанием
@@ -69,6 +66,7 @@ main (int argc, char *argv[])
   int err;
   uint dbglevel;
   string optname = "";
+  DB db;
 
 
   // Сначала прочитаем конфигурацию, параметры командной строки
@@ -145,19 +143,30 @@ main (int argc, char *argv[])
    * никакой смысловой нагрузки они не несут
    * и не соответствуют никакому стилю
    */
-  MYSQL *connSams = dbMySQLConnect ("localhost", "sams", "samsdb",
-				    "squidctrl",
-				    MYSQL_PORT_NUMBER, MYSQL_SOCKET,
-				    MYSQL_FLAGS);
-  MYSQL *connSquid = dbMySQLConnect ("localhost", "sams", "samsdb",
-				     "squidlog",
-				     MYSQL_PORT_NUMBER, MYSQL_SOCKET,
-				     MYSQL_FLAGS);
 
 
+  db.Connect("sams", "sams", "qwerty");
+
+  char username[30];
+  char userpass[70];
+  long accessid;
+  db.AddCol(1, SQL_C_CHAR, &username[0], 30);
+  db.AddCol(2, SQL_C_CHAR, &userpass[0], 70);
+  db.AddCol(3, SQL_C_LONG, &accessid,    15);
+
+  if (db.SendQuery("SELECT user, pass, access from passwd"))
+  {
+    INFO("Rows: " << db.RowsCount());
+    while (db.Fetch() != SQL_NO_DATA)
+    {
+      INFO("user: " << username);
+      INFO("pass: " << userpass);
+      INFO("access: " << accessid);
+    }
+  }
 
 
+  
+  db.Disconnect();
 
-  dbMySQLDisconnect (connSams);
-  dbMySQLDisconnect (connSquid);
 }

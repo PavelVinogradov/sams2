@@ -22,10 +22,10 @@ samsparser_SOURCES = \
 	samsfile.h \
 	samsuser.cpp \
 	samsuser.h \
+	samsdb.cpp \
+	samsdb.h \
 	debug.cpp \
 	debug.h \
-	dbmysql.cpp \
-	dbmysql.h \
 	tools.cpp \
 	tools.h \
 	defines.h
@@ -35,9 +35,9 @@ DEFPATH="\".:$(datadir)\""
 
 DEFS= -DDEFPATH=$(DEFPATH) -DHAVE_CONFIG_H -DLOCALEDIR="\"$(datadir)/locale\""
 
-INCLUDES = -I. $(MYSQLHEADERS) 
+INCLUDES = -I. $(MYSQLHEADERS) $(ODBCHEADERS)
 
-LIBS = -L. $(MYSQLLIBS) 
+LIBS = -L. $(MYSQLLIBS) $(ODBCLIBS)
 
 # We want hard links for install-exec-hook, below
 LN= ln

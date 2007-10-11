@@ -54,90 +54,58 @@ esac
 RCDPATH="$DST_RCD_LOC"
 
 
-####
-AC_MSG_CHECKING(for mysql.h)
-AC_ARG_WITH(mysql-includes,
-[  --with-mysql-includes=PATH   specify path for MYSQL includes],
-    use_mysql_includes="$withval", use_mysql_includes="unspec")
+AC_ARG_WITH(unixODBC,
+            [  --with-unixODBC[=DIR]     Use unixODBC located in DIR],
+            [ unixODBC="$withval" ], [ unixODBC="" ])
 
-case "$use_mysql_includes" in
-    unspec)
-        DST_MYSQL_INC='/usr/include/mysql'
-        for ac_dir in /usr/local/mysql/include/mysql /usr/local/include/mysql /usr/include/mysql /usr/local/include /usr/include; do
-            if test -f "$ac_dir/mysql.h"; then
-                DST_MYSQL_INC=$ac_dir
-                break;
-            fi
-        done
-        AC_MSG_RESULT($DST_MYSQL_INC)
-        ;;
-    yes)
-        AC_MSG_ERROR([--with-mysql-includes must specify a path])
-        ;;
-    *)
-        DST_MYSQL_INC="$use_mysql_includes"
-        AC_MSG_RESULT($DST_MYSQL_INC)
-        ;;
-esac
+AC_DEFINE([USE_UNIXODBC], [1], [use unixODBC])
 
-
-AC_MSG_CHECKING(for mysql.h usability)
-if test -r "$DST_MYSQL_INC/mysql.h"; then
-    AC_MSG_RESULT(yes)
-else
-    AC_MSG_ERROR(Cannot find mysql.h in $DST_MYSQL_INC)
+# Default to /usr if not specified
+if test "x$unixODBC" = "x" -o "x$unixODBC" = "xyes"
+then
+  unixODBC="/usr";
 fi
-MYSQLHEADERS="-I$DST_MYSQL_INC"
 
-
-
-#
-# was --with-mysql-libpath specified?
-#
-AC_MSG_CHECKING(for libmysqlclient.so)
-AC_ARG_WITH(mysql-libpath,
-[  --with-mysql-libpath=PATH    specify path for MYSQL library],
-    use_mysql_lib="$withval", use_mysql_lib="unspec")
-
-case "$use_mysql_lib" in
-    unspec)
-        DST_MYSQL_LIBS='/usr/lib'
-        for ac_dir in /usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib /usr/lib64/mysql; do
-            if test -f "$ac_dir/libmysqlclient.so"; then
-                DST_MYSQL_LIBS=$ac_dir
-                break;
-            fi
-        done
-        AC_MSG_RESULT($DST_MYSQL_LIBS)
-        ;;
-    yes)
-        AC_MSG_ERROR([--with-mysql-libpath must specify a path])
-        ;;
-    *)
-        DST_MYSQL_LIBS="$use_mysql_lib"
-        AC_MSG_RESULT($DST_MYSQL_LIBS)
-        ;;
-esac
-
-
-AC_MSG_CHECKING(for libmysqlclient.so usability)
-if test -r "$DST_MYSQL_LIBS/libmysqlclient.so"; then
-  AC_MSG_RESULT(yes)
+AC_MSG_CHECKING([for unixODBC version])
+AC_PATH_PROG(isql, isql, no, ["$unixODBC/bin:$PATH"])
+if test "$isql" != "no"
+then
+  unixodbc_version=`$isql --version`
 else
-  AC_MSG_ERROR(Cannot find MySQL's libmysqlclient in $DST_MYSQL_LIBS)
+  unixodbc_version="unknown"
 fi
-MYSQLLIBS="-L$DST_MYSQL_LIBS -lmysqlclient"
-CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
+AC_MSG_RESULT([$unixodbc_version])
 
+AC_ARG_WITH(unixODBC-includes,
+            [  --with-unixODBC-includes=DIR Find unixODBC headers in DIR],
+            unixODBC_includes="$withval",
+            unixODBC_includes="$unixODBC/include")
 
+AC_ARG_WITH(unixODBC-libs,
+            [  --with-unixODBC-libs=DIR Find unixODBC libraries in DIR],
+            unixODBC_libs="$withval", unixODBC_libs="$unixODBC/lib")
 
+AC_CHECK_UNIXODBC($unixODBC_includes, $unixODBC_libs)
+
+AC_ARG_WITH(odbc-ini,
+            [  --with-odbc-ini=PATH    Location of system ODBC.INI [UnixODBCDIR/etc/odbc.ini]],
+            odbc_ini="$withval", odbc_ini="$unixODBC/etc/odbc.ini")
+
+if test "x$have_odbcinst" != "xyes"
+then
+  AC_DEFINE_UNQUOTED(SYSTEM_ODBC_INI,"$odbc_ini",
+                     [Define path to system ODBC.INI file])
+fi
+
+ODBCHEADERS="-I$unixODBC_includes"
+ODBCLIBS="-L$unixODBC_libs -lodbc"
 
 
 #AC_SUBST(SUBDIRS)
 AC_SUBST(RCDPATH)
 AC_SUBST(HTTPDPATH)
-AC_SUBST(MYSQLLIBS)
-AC_SUBST(MYSQLHEADERS)
+AC_SUBST(ODBCHEADERS)
+AC_SUBST(ODBCLIBS)
 
 
 AC_MSG_RESULT([])
@@ -145,8 +113,8 @@ AC_MSG_RESULT([***** Options and locations *****])
 AC_MSG_RESULT([system:                                 $OS])
 AC_MSG_RESULT([default path:                           $prefix])
 AC_MSG_RESULT([default runtime config file:            $CONFIG_FILE])
-AC_MSG_RESULT([location mysql includes:                $DST_MYSQL_INC])
-AC_MSG_RESULT([location mysql libraries:               $DST_MYSQL_LIBS])
+AC_MSG_RESULT([unixODBC includes:                      $unixODBC_includes])
+AC_MSG_RESULT([unixODBC libraries:                     $unixODBC_libs])
 AC_MSG_RESULT([])
 AC_MSG_RESULT([Type 'make'])
 AC_MSG_RESULT([])

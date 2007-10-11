@@ -71,8 +71,8 @@ DEPDIR = @DEPDIR@
 HTTPDPATH = @HTTPDPATH@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LN_S = @LN_S@
-MYSQLHEADERS = @MYSQLHEADERS@
-MYSQLLIBS = @MYSQLLIBS@
+ODBCHEADERS = @ODBCHEADERS@
+ODBCLIBS = @ODBCLIBS@
 PACKAGE = @PACKAGE@
 RCDPATH = @RCDPATH@
 STRIP = @STRIP@
@@ -80,6 +80,7 @@ VERSION = @VERSION@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+isql = @isql@
 EXTRA_DIST = README
 SUBDIRS = src
 subdir = .
@@ -92,8 +93,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = README COPYING INSTALL Makefile.am Makefile.in aclocal.m4 \
-	configure configure.in depcomp install-sh missing mkinstalldirs
+DIST_COMMON = README COPYING INSTALL Makefile.am Makefile.in \
+	acinclude.m4 aclocal.m4 configure configure.in depcomp \
+	install-sh missing mkinstalldirs
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
@@ -112,7 +114,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4):  configure.in 
+$(ACLOCAL_M4):  configure.in acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 uninstall-info-am:
 

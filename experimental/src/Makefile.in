@@ -78,8 +78,8 @@ DEPDIR = @DEPDIR@
 HTTPDPATH = @HTTPDPATH@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LN_S = @LN_S@
-MYSQLHEADERS = @MYSQLHEADERS@
-MYSQLLIBS = @MYSQLLIBS@
+ODBCHEADERS = @ODBCHEADERS@
+ODBCLIBS = @ODBCLIBS@
 PACKAGE = @PACKAGE@
 RCDPATH = @RCDPATH@
 STRIP = @STRIP@
@@ -87,6 +87,7 @@ VERSION = @VERSION@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
+isql = @isql@
 
 # This insures that make flags get passed down to child makes.
 #AM_MAKEFLAGS = 'CFLAGS=$(CFLAGS)' 'LDFLAGS=$(LDFLAGS)'
@@ -105,10 +106,10 @@ samsparser_SOURCES = \
 	samsfile.h \
 	samsuser.cpp \
 	samsuser.h \
+	samsdb.cpp \
+	samsdb.h \
 	debug.cpp \
 	debug.h \
-	dbmysql.cpp \
-	dbmysql.h \
 	tools.cpp \
 	tools.h \
 	defines.h
@@ -119,9 +120,9 @@ DEFPATH = "\".:$(datadir)\""
 
 DEFS = -DDEFPATH=$(DEFPATH) -DHAVE_CONFIG_H -DLOCALEDIR="\"$(datadir)/locale\""
 
-INCLUDES = -I. $(MYSQLHEADERS) 
+INCLUDES = -I. $(MYSQLHEADERS) $(ODBCHEADERS)
 
-LIBS = -L. $(MYSQLLIBS) 
+LIBS = -L. $(MYSQLLIBS) $(ODBCLIBS)
 
 # We want hard links for install-exec-hook, below
 LN = ln
@@ -132,8 +133,8 @@ bin_PROGRAMS = samsparser$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_samsparser_OBJECTS = samsparser.$(OBJEXT) samsconfig.$(OBJEXT) \
-	samsfile.$(OBJEXT) samsuser.$(OBJEXT) debug.$(OBJEXT) \
-	dbmysql.$(OBJEXT) tools.$(OBJEXT)
+	samsfile.$(OBJEXT) samsuser.$(OBJEXT) samsdb.$(OBJEXT) \
+	debug.$(OBJEXT) tools.$(OBJEXT)
 samsparser_OBJECTS = $(am_samsparser_OBJECTS)
 samsparser_LDADD = $(LDADD)
 samsparser_DEPENDENCIES =
@@ -142,8 +143,8 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 LDFLAGS = @LDFLAGS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/dbmysql.Po ./$(DEPDIR)/debug.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/samsconfig.Po ./$(DEPDIR)/samsfile.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/debug.Po ./$(DEPDIR)/samsconfig.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/samsdb.Po ./$(DEPDIR)/samsfile.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/samsparser.Po ./$(DEPDIR)/samsuser.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tools.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -204,9 +205,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbmysql.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsconfig.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsdb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsuser.Po@am__quote@

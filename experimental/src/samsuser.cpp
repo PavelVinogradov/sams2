@@ -17,7 +17,7 @@ struct SAMSuser
   string   id;
   string   date;
   int      updated;
-  AuthType auth;
+  usrAuthType auth;
 };
 
 
@@ -36,7 +36,7 @@ usrAddToDB()
 }
 
 bool
-usrLoadFromDB(MYSQL *con)
+usrLoadFromDB()
 {
   return true;
 }
