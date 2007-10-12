@@ -102,7 +102,7 @@ function AllUsersForm()
        print("             }\n");
        print("        }\n");
        print("   var strr= \"main.php?show=exe&function=disableselectedusers&disable=\" + disable + \"&delete=\" + userdel + \"&defen=\" + defen + \"&delcount=\"+delcount+\"&discount=\"+discount  \n");
-       print("   var value=window.confirm( strr );\n");
+//       print("   var value=window.confirm( strr );\n");
        print("   parent.basefrm.location.href=strr;\n");
        print("}\n");
        print("</SCRIPT> \n");
