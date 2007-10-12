@@ -6,12 +6,17 @@
  */
 function DisableSelectedUsers()
 {
+  global $SAMSConf;
+  if($SAMSConf->access!=2)
+    exit(0);
+
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
  if(isset($_GET["disable"])) $disable=$_GET["disable"];
  if(isset($_GET["defen"])) $defen=$_GET["defen"];
  if(isset($_GET["delete"])) $delete=$_GET["delete"];
  if(isset($_GET["discount"])) $discount=$_GET["discount"];
  if(isset($_GET["delcount"])) $delcount=$_GET["delcount"];
+
 
  $disable=explode(",",$disable);
  $count1=count($disable);
