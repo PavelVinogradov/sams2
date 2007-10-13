@@ -26,52 +26,64 @@ class DATE
 }
 
 
+function UsersTrafficPeriodPDFHeader($page) {
+
+	global $pdfFile;
+	global $DATE;
+	global $SAMSConf;
+
+  	if($SAMSConf->LANG=="KOI8-R")
+		$lang="./lang/lang.WIN1251";
+	else
+		$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+
+	$sdate=$DATE->sdate();
+	$edate=$DATE->edate();
+
+  	$pdfFile->AddPage();
+	$imagefile = "$SAMSConf->ICONSET/usergroup_48.jpg";
+	$pdfFile->Image($imagefile,20,10,20,20);
+
+	$pdfFile->SetFont('Nimbus','',15);
+  	//$pdfFile->SetFont('SUSESerif-Roman','',16);
+  	$pdfFile->SetXY(50, 15);
+  	$pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1 $sdate - $edate (Page $page)");
+  	$pdfFile->SetXY(50, 25);
+  	$pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_2 ");
+
+
+  	$pdfFile->SetFont('Nimbus','',11);
+	//$pdfFile->SetFont('SUSESerif-Roman','',11);
+	$ycount=40;
+	$pdfFile->SetXY(30, $ycount);
+	$pdfFile->Write(0, "N");
+	$pdfFile->SetXY(40, $ycount);
+	$pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_4");
+	$pdfFile->SetXY(130, $ycount);
+	$pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_7");
+  
+ 
+	$pdfFile->SetFont('Nimbus','',11);
+	//$pdfFile->SetFont('SUSESerif-Roman','',11);
+  }
+
 
 function UsersTrafficPeriodPDF()
 {
   global $SAMSConf;
   global $DATE;
-  global $pdfFile;
-  
-  if($SAMSConf->LANG=="KOI8-R")
-    $lang="./lang/lang.WIN1251";
-  else
-    $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
+  global $pdfFile; 
 
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
-  $bdate=$DATE->BeginDate();
-  $eddate=$DATE->EndDate();
+  $currentPage = 1;
 
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-  $pdfFile->AddPage();
-  $imagefile = "$SAMSConf->ICONSET/usergroup_48.jpg";
-  $pdfFile->Image($imagefile,20,10,20,20);
+  UsersTrafficPeriodPDFHeader($currentPage);
 
-  $pdfFile->SetFont('Nimbus','',15);
-  //$pdfFile->SetFont('SUSESerif-Roman','',16);
-  $pdfFile->SetXY(50, 15);
-  $pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1 ");
-  $pdfFile->SetXY(50, 25);
-  $pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_2 ");
-
-
-  $pdfFile->SetFont('Nimbus','',11);
-  //$pdfFile->SetFont('SUSESerif-Roman','',11);
-  $ycount=40;
-  $pdfFile->SetXY(30, $ycount);
-  $pdfFile->Write(0, "N");
-  $pdfFile->SetXY(40, $ycount);
-  $pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_4");
-  $pdfFile->SetXY(130, $ycount);
-  $pdfFile->Write(0, "$usersbuttom_2_traffic_UsersTrafficPeriod_7");
-  
- 
-  $pdfFile->SetFont('Nimbus','',11);
-  //$pdfFile->SetFont('SUSESerif-Roman','',11);
   $ycount=50;
   $count=0;
   $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
@@ -96,7 +108,13 @@ function UsersTrafficPeriodPDF()
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
          $traf=$traf+$row[0]-$row[1];
-         $ycount+=7;
+	 $ycount+=7;
+
+	 if ($count % 20 == 0) {
+		$currentPage = $currentPage + 1;
+		UsersTrafficPeriodPDFHeader($currentPage);
+		$ycount = 50;
+	 }
        }
   mysql_free_result($result);  
  
