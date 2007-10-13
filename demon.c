@@ -164,241 +164,242 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
         {
            LOCALURL=0;
            count++;
-           while(TestInputString(fgets( &buf[0], BUFFER_SIZE-1, finp ))==-1)
+	   if (TestInputString(fgets( &buf[0], BUFFER_SIZE-1, finp ))==-1) 
 	     {
                if(DEBUG>0||PRINT>0)
 	         printf("input string: \n%s\n",&buf[0]);
                ENDVALUE2=ftell(finp);
 	       strcpy(&buf[0],"\0");	       
 	     }
-           for(i=0;i<strlen(&buf[0]);i++)
-             {
-               if(iscntrl(buf[i])!=0)
-                  break;
-             }
-           if(DEBUG>0||PRINT>0)
-             {
-               printf("\n%ld SQUID log string:\n%s",count,&buf[0]);
-             }
-           flag0=ReplaceCHR(&buf[0]);
-           if(strstr( &buf[0], "TCP_DENIED" )==0&&strstr( &buf[0], "UDP_DENIED" )==0&&strstr( &buf[0], "NONE/400" )==0&&flag0==0)
-             {
+	   else
+	     {
+               for(i=0;i<strlen(&buf[0]);i++)
+                 {
+                   if(iscntrl(buf[i])!=0)
+                      break;
+                 }
+               if(DEBUG>0||PRINT>0)
+                 {
+                   printf("\n%ld SQUID log string:\n%s",count,&buf[0]);
+                 }
+               flag0=ReplaceCHR(&buf[0]);
+               if(strstr( &buf[0], "TCP_DENIED" )==0&&strstr( &buf[0], "UDP_DENIED" )==0&&strstr( &buf[0], "NONE/400" )==0&&flag0==0)
+                 {
 
-                STR[0]=strtok(&buf[0]," ");
-                for(i=1;i<9;i++)
-                  {
-                     STR[i]=strtok(NULL," ");
-                  }
-                flag=0;
-                str7len=0;
-                userflag=0;
-                hitsize=0;
-                samsuser=0;
-
-                str2lower(STR[7]);
-
-	        if(DEBUG!=0)
-                  printf("Serch SAMS user:");
-		// аутентификация NTLM domain+user?
-		if(strcmp(STR[7],"-")!=0)
-		  {
-                    if(NTLM>0||NCSA>0)
+                    STR[0]=strtok(&buf[0]," ");
+                    for(i=1;i<9;i++)
                       {
-                        if(strstr(STR[7],"+")!=0)
-                          {
-			    domain=strtok(STR[7],"+");
-                            user=strtok(NULL,"+");
-                            samsuser=ReturnSAMSUser(user, domain, STR[2], 1);
-                            if(samsuser>0)
-			      {
-			        if(DEBUG!=0)
-                                  printf(" %s/%s user found \n",domain,user);
-                                userflag=1;
-			      }
-                          }
-                        else if(strstr(STR[7],"\\")!=0)
-                          {
-                            domain=strtok(STR[7],"\\");
-                            user=strtok(NULL,"\\");
-                            samsuser=ReturnSAMSUser(user,domain, STR[2], 1);
-                            if(samsuser>0)
-			      {
-                                if(DEBUG!=0)
-                                  printf(" %s/%s user found \n",domain,user);
-                                userflag=1;
-			      }
-                          }
-		        else
-		          {
-                            strcpy(str,STR[7]);
-                            if((samsuser=ReturnSAMSUser(str,"", STR[2], 2))>0)
-                              {
-                                 domain=users[samsuser-1].domain;
-                                 user=users[samsuser-1].user;
-                                 if(samsuser>0)
-			           {
-                                     if(DEBUG!=0)
-                                       printf(" %s/%s user found \n",domain,user);
-                                     userflag=1;
-				   }  
-		              }	  
-		          }
+                         STR[i]=strtok(NULL," ");
                       }
-                  }
-                if(userflag==0)
-                  {
-                     if((samsuser=ReturnSAMSUser("","", STR[2], 0))>0)
-                       {
-                          domain=users[samsuser-1].domain;
-                          user=users[samsuser-1].user;
-                          if(DEBUG!=0)
-                            printf(" %s/%s user found \n",domain,user);
-                          userflag=1;
-		       }	  
-                  }
-                if(userflag==0&&DEBUG!=0)
-                  {
-                    printf(" not found \n");
-                  }
-                
-		tt=atol(STR[0]);
-                t=localtime(&tt);
+                    flag=0;
+                    str7len=0;
+                    userflag=0;
+                    hitsize=0;
+                    samsuser=0;
 
-                status=strtok(STR[3],"/");
-                if(DEBUG!=0)
-                  {
-                    printf("Test local domain: ");
-                  }
-                LOCALURL=0;
-                LOCALURL=TestLocalURL(STR[6]);
-                if(LOCALURL==0&&DEBUG!=0)
-                  {
-                    printf(" local domain not found \n");
-                  }
-                
-		if(strcmp( status, "TCP_DENIED" )!=0&&strcmp( status, "UDP_DENIED" )!=0&&userflag!=0&&LOCALURL==0)
-                  {
-		    size=atof(STR[4]);
-		    users[samsuser-1].size+=size;
-                    users[samsuser-1].updated=1;
-		    if(strstr( status, "_HIT" )!=0&&strstr( status, "_NEGATIVE_" )==0)
-                      {
-		        users[samsuser-1].hit+=size;
-                        hitsize=size;
-                      }
+                    str2lower(STR[7]);
 
-                    if(users[samsuser-1].quote>0)
+	            if(DEBUG!=0)
+                      printf("Serch SAMS user:");
+		    // аутентификация NTLM domain+user?
+		    if(strcmp(STR[7],"-")!=0)
 		      {
-                        if(REALTRAF==1)
-			  {
-                            users[samsuser-1].traffic+=size-hitsize;
-if(DEBUG>0)
-   printf("REALTRAFfic = %d -%d\n");
-			  }  
-                        else
-			  {
-                            users[samsuser-1].traffic+=size;
-			  }  
-                        if(users[samsuser-1].traffic>=users[samsuser-1].quote)
+                        if(NTLM>0||NCSA>0)
+                          {
+                            if(strstr(STR[7],"+")!=0)
+                              {
+			        domain=strtok(STR[7],"+");
+                                user=strtok(NULL,"+");
+                                samsuser=ReturnSAMSUser(user, domain, STR[2], 1);
+                                if(samsuser>0)
+			          {
+			            if(DEBUG!=0)
+                                      printf(" %s/%s user found \n",domain,user);
+                                    userflag=1;
+			          }
+                              }
+                            else if(strstr(STR[7],"\\")!=0)
+                              {
+                                domain=strtok(STR[7],"\\");
+                                user=strtok(NULL,"\\");
+                                samsuser=ReturnSAMSUser(user,domain, STR[2], 1);
+                                if(samsuser>0)
+			          {
+                                    if(DEBUG!=0)
+                                      printf(" %s/%s user found \n",domain,user);
+                                    userflag=1;
+			          }
+                              } 
+		            else
+		              {
+                                strcpy(str,STR[7]);
+                                if((samsuser=ReturnSAMSUser(str,"", STR[2], 2))>0)
+                                  {
+                                     domain=users[samsuser-1].domain;
+                                     user=users[samsuser-1].user;
+                                     if(samsuser>0)
+			               {
+                                         if(DEBUG!=0)
+                                           printf(" %s/%s user found \n",domain,user);
+                                         userflag=1;
+				       }  
+		                  }	  
+		              }
+                          }
+                      }
+                    if(userflag==0)
+                      {
+                         if((samsuser=ReturnSAMSUser("","", STR[2], 0))>0)
+                           {
+                              domain=users[samsuser-1].domain;
+                              user=users[samsuser-1].user;
+                              if(DEBUG!=0)
+                                printf(" %s/%s user found \n",domain,user);
+                              userflag=1;
+		           }	  
+                      }
+                    if(userflag==0&&DEBUG!=0)
+                      {
+                        printf(" not found \n");
+                      }
+                
+		    tt=atol(STR[0]);
+                    t=localtime(&tt);
+
+                    status=strtok(STR[3],"/");
+                    if(DEBUG!=0)
+                      {
+                        printf("Test local domain: ");
+                      }
+                    LOCALURL=0;
+                    LOCALURL=TestLocalURL(STR[6]);
+                    if(LOCALURL==0&&DEBUG!=0)
+                      {
+                        printf(" local domain not found \n");
+                      }
+                
+		    if(strcmp( status, "TCP_DENIED" )!=0&&strcmp( status, "UDP_DENIED" )!=0&&userflag!=0&&LOCALURL==0)
+                      {
+		        size=atof(STR[4]);
+		        users[samsuser-1].size+=size;
+                        users[samsuser-1].updated=1;
+		        if(strstr( status, "_HIT" )!=0&&strstr( status, "_NEGATIVE_" )==0)
+                          {
+		            users[samsuser-1].hit+=size;
+                            hitsize=size;
+                          }
+
+                        if(users[samsuser-1].quote>0)
 		          {
-
-                            if(users[samsuser-1].disabled==0)
+                            if(REALTRAF==1)
 			      {
-			        users[samsuser-1].disabled=1;
-			        users[samsuser-1].enabled=0;
-                                if(DEBUG!=0||PRINT!=0)
-                                  printf("User %s/%s disabled.  traffic %f usertraffic %12.0f < %12.0f\n",users[samsuser-1].domain,users[samsuser-1].user, size, users[samsuser-1].traffic,users[samsuser-1].quote);
+                                users[samsuser-1].traffic+=size-hitsize;
+				if(DEBUG>0)
+				  printf("REALTRAFfic = %d -%d\n");
+			      }  
+                            else
+			      {
+                                users[samsuser-1].traffic+=size;
+			      }  
+                            if(users[samsuser-1].traffic>=users[samsuser-1].quote)
+		              {
 
-			        sprintf(&str[0],"UPDATE %s.squidusers SET enabled='0' WHERE id='%s'",conf.samsdb,users[samsuser-1].id);
-                                flag=send_mysql_query(conn2,&str[0]);
-			        if(UDSCRIPT>0)
-				  {
-				    exec_script(UDSCRIPTFILE, users[samsuser-1].user);
-				  }  
-				sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachenum);
-                                flag=send_mysql_query(conn2,&str[0]);
-				if(flag==0)
-				  {
-                                    sprintf(&str[0],"Disable user %s traffic %.0f>%.0f",users[samsuser-1].user,users[samsuser-1].size,users[samsuser-1].quote);
-                                    AddLog(conn2,0,"sams",&str[0]);
+                                if(users[samsuser-1].disabled==0)
+			          {
+			            users[samsuser-1].disabled=1;
+			            users[samsuser-1].enabled=0;
+                                    if(DEBUG!=0||PRINT!=0)
+                                      printf("User %s/%s disabled.  traffic %f usertraffic %12.0f < %12.0f\n",users[samsuser-1].domain,users[samsuser-1].user, size, users[samsuser-1].traffic,users[samsuser-1].quote);
+
+			            sprintf(&str[0],"UPDATE %s.squidusers SET enabled='0' WHERE id='%s'",conf.samsdb,users[samsuser-1].id);
+                                    flag=send_mysql_query(conn2,&str[0]);
 			            if(UDSCRIPT>0)
 				      {
-                                        sprintf(&str[0],"Send message to admin. script %s",UDSCRIPTFILE);
-				        AddLog(conn2,0,"samsdaemon",&str[0]);
-				      }
-				  }    
-			      }
+				        exec_script(UDSCRIPTFILE, users[samsuser-1].user);
+				      }  
+				    sprintf(&str[0],"INSERT INTO %s.reconfig SET number='%d',action='reconfig',service='squid'",conf.samsdb,conf.cachenum);
+                                    flag=send_mysql_query(conn2,&str[0]);
+				    if(flag==0)
+				      {
+                                        sprintf(&str[0],"Disable user %s traffic %.0f>%.0f",users[samsuser-1].user,users[samsuser-1].size,users[samsuser-1].quote);
+                                        AddLog(conn2,0,"sams",&str[0]);
+			                if(UDSCRIPT>0)
+				          {
+                                            sprintf(&str[0],"Send message to admin. script %s",UDSCRIPTFILE);
+				            AddLog(conn2,0,"samsdaemon",&str[0]);
+				          }
+				      }    
+			          }
 
-		          }
-                      }
-                    if(DEBUG!=0)
-                      printf("user %s/%s, ip=%d.%d.%d.%d  traffic: %.0f+%.0f=%.0f  limit:%.0f\n",users[samsuser-1].domain,users[samsuser-1].user,users[samsuser-1].ip[0],users[samsuser-1].ip[1],users[samsuser-1].ip[2],users[samsuser-1].ip[3],size,users[samsuser-1].traffic,size+users[samsuser-1].traffic,users[samsuser-1].quote);
+		              }
+                          }
+                        if(DEBUG!=0)
+                          printf("user %s/%s, ip=%d.%d.%d.%d  traffic: %.0f+%.0f=%.0f  limit:%.0f\n",users[samsuser-1].domain,users[samsuser-1].user,users[samsuser-1].ip[0],users[samsuser-1].ip[1],users[samsuser-1].ip[2],users[samsuser-1].ip[3],size,users[samsuser-1].traffic,size+users[samsuser-1].traffic,users[samsuser-1].quote);
 
-                    ReplaceURL(STR[6],user,domain);
-                    TestURL(&path[0]);
+                        ReplaceURL(STR[6],user,domain);
+                        TestURL(&path[0]);
 
-                    sprintf(&str[0],"INSERT INTO %s.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
+                        sprintf(&str[0],"INSERT INTO %s.cache SET date='%d-%d-%d',time='%d:%d:%d',size='%s',ipaddr='%s',url='%s',user='%s',domain='%s',hit='%lu'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,STR[4],STR[2],&path[0],user,domain,hitsize);
 
-                    flag=send_mysql_query(conn,&str[0]);
-                    if(PRINT!=0||DEBUG!=0)
-                       printf("update db: %d-%d-%d %d:%d:%d %s/%s %s %s\n",t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,user,domain,STR[4],&path[0]);
-                    if(flag!=0)
-                      {
-                         printf("error: %s\n",&str[0]);
-                         printf("Error %u (%s)\n",mysql_errno(conn),mysql_error(conn));
-                         NEWENDVALUE=ENDVALUE2;
-                         SaveNewEndFileValue(conn2, NEWENDVALUE);
-                         for(i=0;i<samsuserscount;i++)
-                            {
-  	                      sprintf(&str[0],"UPDATE %s.squidusers SET size='%20.0f',hit='%20.0f' WHERE id='%s'",conf.samsdb,users[i].size,users[i].hit,users[i].id);
-                              flag=send_mysql_query(conn2,&str[0]);
-                              if(DEBUG!=0)
-                                printf("update user traffic size: %s/%s %20.0f %20.0f\n",users[i].domain,users[i].user,users[i].size,users[i].hit);
-	                    }    
-                         exit(1);
-                      }
-                     sprintf(&str[0],"%d-%d-%d",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+                        flag=send_mysql_query(conn,&str[0]);
+                        if(PRINT!=0||DEBUG!=0)
+                          printf("update db: %d-%d-%d %d:%d:%d %s/%s %s %s\n",t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec,user,domain,STR[4],&path[0]);
+                        if(flag!=0)
+                          {
+                            printf("error: %s\n",&str[0]);
+                            printf("Error %u (%s)\n",mysql_errno(conn),mysql_error(conn));
+                            NEWENDVALUE=ENDVALUE2;
+                            SaveNewEndFileValue(conn2, NEWENDVALUE);
+                            for(i=0;i<samsuserscount;i++)
+                              {
+  	                        sprintf(&str[0],"UPDATE %s.squidusers SET size='%20.0f',hit='%20.0f' WHERE id='%s'",conf.samsdb,users[i].size,users[i].hit,users[i].id);
+                                flag=send_mysql_query(conn2,&str[0]);
+                                if(DEBUG!=0)
+                                  printf("update user traffic size: %s/%s %20.0f %20.0f\n",users[i].domain,users[i].user,users[i].size,users[i].hit);
+	                      }    
+                            exit(1);
+                          }
+                         sprintf(&str[0],"%d-%d-%d",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
 
-		     if(strcmp(&str[0],users[samsuser-1].date)!=0)
-		       {
-                         sprintf(&str[0],"SELECT count(*) FROM %s.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
-                         flag=send_mysql_query(conn,&str[0]);
-                         res=mysql_store_result(conn);
-                         row=mysql_fetch_row(res);
-                         if(atoi(row[0])==0)
-                           {
-			     strncpy(users[samsuser-1].date,&str[0],10);
-                             sprintf(&str[0],"INSERT %s.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+		         if(strcmp(&str[0],users[samsuser-1].date)!=0)
+		           {
+                             sprintf(&str[0],"SELECT count(*) FROM %s.cachesum WHERE date='%d-%d-%d'&&user='%s'&&domain='%s'",conf.logdb,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);
-			   }  
-			 else
-			   {
+                             res=mysql_store_result(conn);
+                             row=mysql_fetch_row(res);
+                             if(atoi(row[0])==0)
+                               {
+			         strncpy(users[samsuser-1].date,&str[0],10);
+                                 sprintf(&str[0],"INSERT %s.cachesum SET size='%s',hit='%lu',date='%d-%d-%d',user='%s',domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                                 flag=send_mysql_query(conn,&str[0]);
+			       }  
+			     else
+			       {
+                                 sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
+                                 flag=send_mysql_query(conn,&str[0]);
+			       }  
+                             mysql_free_result(res);
+
+		           }
+                         else
+		           {
                              sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
-                             flag=send_mysql_query(conn,&str[0]);
-			   }  
-                         mysql_free_result(res);
+                             flag=send_mysql_query(conn,&str[0]);		      
+		           } 
+                         ENDVALUE2=ftell(finp);
+                         SaveNewEndFileValue(conn2, ENDVALUE2);
 
-		       }
-                     else
-		       {
-                         sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
-                         flag=send_mysql_query(conn,&str[0]);
-		      
-		       } 
-                     ENDVALUE2=ftell(finp);
-                     SaveNewEndFileValue(conn2, ENDVALUE2);
-
-
-                    if(DEBUG>0)
-                      {
-                          printf("database appended\n");
-                      }
+                        if(DEBUG>0)
+                          {
+                            printf("database appended\n");
+                          }
 		                  
-                  }
-             }
+                      }
+                 }
 
-           ENDVALUE2=ftell(finp);
-        }
+               ENDVALUE2=ftell(finp);
+            }
+	}
       fclose(finp);
       if(DEBUG!=0)
          printf("\n");
