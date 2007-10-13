@@ -846,6 +846,14 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $userstray_AllUsersForm_13="Users search:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="SAMS configuration";
+
+  $lang_pdfReport_page="Page";
+  $lang_pdfReport_user="User";
+  $lang_pdfReport_date="Date";
+  $lang_pdfReport_site="Site";
+  $lang_pdfReport_size="Download";
+  $lang_pdfReport_cache="Cache";
+  $lang_pdfReport_traffic="Traffic";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

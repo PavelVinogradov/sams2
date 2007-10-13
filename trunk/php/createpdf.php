@@ -32,7 +32,7 @@ function UsersTrafficPeriodPDFHeader($page) {
 	global $DATE;
 	global $SAMSConf;
 
-  	if($SAMSConf->LANG=="KOI8-R")
+  	if($SAMSConf->LANGCODE=="RU")
 		$lang="./lang/lang.WIN1251";
 	else
 		$lang="./lang/lang.$SAMSConf->LANG";
@@ -48,7 +48,7 @@ function UsersTrafficPeriodPDFHeader($page) {
 	$pdfFile->SetFont('Nimbus','',15);
   	//$pdfFile->SetFont('SUSESerif-Roman','',16);
   	$pdfFile->SetXY(50, 15);
-  	$pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1 $sdate - $edate (Page $page)");
+  	$pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1 $sdate - $edate ($lang_pdfReport_page $page)");
   	$pdfFile->SetXY(50, 25);
   	$pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_2 ");
 
@@ -110,7 +110,7 @@ function UsersTrafficPeriodPDF()
          $traf=$traf+$row[0]-$row[1];
 	 $ycount+=7;
 
-	 if ($count % 20 == 0) {
+	 if ($count % 30 == 0) {
 		$currentPage = $currentPage + 1;
 		UsersTrafficPeriodPDFHeader($currentPage);
 		$ycount = 50;
@@ -124,15 +124,13 @@ function UsersTrafficPeriodPDF()
 function AllUsersTrafficPDF()
 {
   //define('FPDF_FONTPATH','lib/font/');
-  //require('lib/fpdf.php');
-  
-  
+  //require('lib/fpdf.php'); 
   
   global $SAMSConf;
   global $DATE;
   global $pdfFile;
   
-  if($SAMSConf->LANG=="KOI8-R")
+  if($SAMSConf->LANGCODE=="RU")
     $lang="./lang/lang.WIN1251";
   else
     $lang="./lang/lang.$SAMSConf->LANG";
@@ -158,9 +156,19 @@ function AllUsersTrafficPDF()
               $pdfFile->SetFont('Nimbus','',14);
               //$pdfFile->SetFont('SUSESerif-Roman','',16);
               $pdfFile->SetXY(50, 15);
-              $pdfFile->Write(0, " User $row[nick] ");
+              $pdfFile->Write(0, " $lang_pdfReport_user $row[nick] ($sdate - $edate)");
  
-              $ycount=50;
+	      $pdfFile->SetXY(30, 40);
+              $pdfFile->Write(0, $lang_pdfReport_date);
+               
+	      $pdfFile->SetXY(60, 40);
+              $pdfFile->Write(0, $lang_pdfReport_size);
+              $pdfFile->SetXY(90, 40);
+              $pdfFile->Write(0, $lang_pdfReport_cache);
+              $pdfFile->SetXY(130, 40);
+	      $pdfFile->Write(0, $lang_pdfReport_traffic);
+	      
+	      $ycount=50;
               $pdfFile->SetFont('Nimbus','',11);
               //$pdfFile->SetFont('SUSESerif-Roman','',11);
               $result2=mysql_query("SELECT sum(cachesum.size),cachesum.date,cachesum.user,cachesum.domain,sum(cachesum.hit) FROM cachesum WHERE cachesum.user=\"$row[nick]\" &&cachesum.date>=\"$sdate\" &&cachesum.date<=\"$edate\" &&cachesum.domain=\"$row[domain]\" GROUP BY date");
@@ -188,13 +196,17 @@ function AllUsersTrafficPDF()
 
               $ycount+=20;
           
+	      $pdfFile->SetXY(30, $ycount-10);
+              $pdfFile->Write(0, $lang_pdfReport_site);
+	      $pdfFile->SetXY(130, $ycount-10);
+              $pdfFile->Write(0, $lang_pdfReport_size);
+              $pdfFile->SetXY(160, $ycount-10);
+	      $pdfFile->Write(0, $lang_pdfReport_cache);
+
 	      $query="select trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url,sum(size) as url_size,sum(hit) as hit_size from cache where user=\"$row[nick]\"&&domain=\"$row[domain]\"&&date>=\"$sdate\"&&date<=\"$edate\" group by norm_url order by url_size desc limit 50";
               $result3=mysql_query($query);
               while($row3=mysql_fetch_array($result3))
-                {
-	           $pdfFile->SetXY(20, $ycount);
-                   $pdfFile->Write(0, $ycount);
-	       
+                {	      
 	           $pdfFile->SetXY(30, $ycount);
                    $pdfFile->Write(0, $row3['norm_url']);
 	           $pdfFile->SetXY(130, $ycount);
@@ -223,7 +235,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
   global $DATE;
   global $PAGE;
       
-  if($SAMSConf->LANG=="KOI8-R")
+  if($SAMSConf->LANGCODE=="RU")
     $lang="./lang/lang.WIN1251";
   else
     $lang="./lang/lang.$SAMSConf->LANG";
@@ -252,8 +264,8 @@ function UsersTrafficPeriodPDFlib($pdfFile)
        {
          if($ycount==700)
 	   {
-             pdf_begin_page($pdfFile, 595, 842);
-              if($SAMSConf->LANG=="KOI8-R"||$SAMSConf->LANG=="WIN1251")
+              pdf_begin_page($pdfFile, 595, 842);
+              if($SAMSConf->LANGCODE=="RU")
                 {
                   $font = PDF_findfont($pdfFile, "Nimbus", "cp1251",1);
                   PDF_setfont($pdfFile, $font, 16);
@@ -274,7 +286,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
              pdf_show_xy($pdfFile, "$usersbuttom_2_traffic_UsersTrafficPeriod_7", 410, $ycount);  
              
 	     PDF_setfont($pdfFile, $font, 11);
-             $ycount-=30;
+             $ycount-=40;
   
 	   }
 	 $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
@@ -304,7 +316,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
 	 if($ycount==40)
 	   {
              PDF_setfont($pdfFile, $font, 9);
-             pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2006", 250, 20);  
+             pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2007", 250, 20);  
              pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
 	     pdf_end_page($pdfFile);
 	     $ycount=700;
@@ -314,7 +326,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
        }
   PDF_close_image($pdfFile, $image);
   PDF_setfont($pdfFile, $font, 9);
-  pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2006", 250, 20);  
+  pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2007", 250, 20);  
   pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
   pdf_end_page($pdfFile);
   $PAGE+=1;
@@ -330,7 +342,7 @@ function AllUsersTrafficPDFlib()
   global $pdfFile;
   global $PAGE;
   
-  if($SAMSConf->LANG=="KOI8-R")
+  if($SAMSConf->LANGCODE=="RU")
     $lang="./lang/lang.WIN1251";
   else
     $lang="./lang/lang.$SAMSConf->LANG";
@@ -366,7 +378,7 @@ function AllUsersTrafficPDFlib()
                 {
                    if($ycount>=700)
 	             {
-                       if($SAMSConf->LANG=="KOI8-R"||$SAMSConf->LANG=="WIN1251")
+                       if($SAMSConf->LANGCODE=="RU")
                          {
                            $font = PDF_findfont($pdfFile, "Nimbus", "cp1251",1);
                            PDF_setfont($pdfFile, $font, 16);
@@ -411,7 +423,7 @@ function AllUsersTrafficPDFlib()
 	           if($ycount==40)
 	             {
                        PDF_setfont($pdfFile, $font, 9);
-                       pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2006", 250, 20);  
+                       pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2007", 250, 20);  
                        pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
 	               pdf_end_page($pdfFile);
                        pdf_begin_page($pdfFile, 595, 842);
@@ -423,7 +435,7 @@ function AllUsersTrafficPDFlib()
 	                    
 	     //if($ycount!=500)
               PDF_setfont($pdfFile, $font, 9);
-              pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2006", 250, 20);  
+              pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2007", 250, 20);  
               pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
               pdf_end_page($pdfFile);
               $PAGE+=1;
@@ -456,7 +468,7 @@ function AllUsersTrafficPDFlib()
 
   $DATE=new DATE(Array( 1, $mon, $year, 0, 31, $mon, $year, 23), $sdate, $edate);
   $SAMSConf=new SAMSCONFIG();
-  if($SAMSConf->LANG=="KOI8-R")
+  if($SAMSConf->LANGCODE=="RU")
     $lang="./lang/lang.WIN1251";
   else
     $lang="./lang/lang.$SAMSConf->LANG";
