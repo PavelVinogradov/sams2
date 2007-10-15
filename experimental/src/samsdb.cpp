@@ -86,9 +86,9 @@ void DB::reset()
   source = "";
   user = "";
   pass = "";
-  env = SQL_TYPE_NULL;
-  conn = SQL_TYPE_NULL;
-  statement = SQL_TYPE_NULL;
+  env = SQL_NULL_HENV;
+  conn = SQL_NULL_HDBC;
+  statement = SQL_NULL_HSTMT;
   connected = false;
 }
 

@@ -145,23 +145,51 @@ main (int argc, char *argv[])
    */
 
 
-  db.Connect("sams", "sams", "qwerty");
+  db.Connect("sams_pg", "sams", "qwerty");
 
-  char username[30];
-  char userpass[70];
-  long accessid;
-  db.AddCol(1, SQL_C_CHAR, &username[0], 30);
-  db.AddCol(2, SQL_C_CHAR, &userpass[0], 70);
-  db.AddCol(3, SQL_C_LONG, &accessid,    15);
+  char usr_nick[30];
+  char usr_domain[30];
+  char usr_ip[20];
+  char usr_ipmask[20];
+  long usr_enabled;
+  long usr_size;
+  long usr_quote;
+  char usr_id[30];
+  long usr_hit;
+  char usr_tpl[30];
+  char tpl_auth[5];
+  db.AddCol( 1, SQL_C_CHAR, &usr_nick[0],   30);
+  db.AddCol( 2, SQL_C_CHAR, &usr_domain[0], 30);
+  db.AddCol( 3, SQL_C_CHAR, &usr_ip[0],     20);
+  db.AddCol( 4, SQL_C_CHAR, &usr_ipmask[0], 20);
+  db.AddCol( 5, SQL_C_LONG, &usr_enabled,   15);
+  db.AddCol( 6, SQL_C_LONG, &usr_size,      15);
+  db.AddCol( 7, SQL_C_LONG, &usr_quote,     15);
+  db.AddCol( 8, SQL_C_CHAR, &usr_id[0],     30);
+  db.AddCol( 9, SQL_C_LONG, &usr_hit,       15);
+  db.AddCol(10, SQL_C_CHAR, &usr_tpl[0],    30);
+  db.AddCol(11, SQL_C_CHAR, &tpl_auth[0],    5);
 
-  if (db.SendQuery("SELECT user, pass, access from passwd"))
+string query = "SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name";
+
+
+  if (db.SendQuery(query))
   {
     INFO("Rows: " << db.RowsCount());
     while (db.Fetch() != SQL_NO_DATA)
     {
-      INFO("user: " << username);
-      INFO("pass: " << userpass);
-      INFO("access: " << accessid);
+      INFO("--------------------");
+      INFO("squidusers.nick:    " << usr_nick);
+      INFO("squidusers.domain:  " << usr_domain);
+      INFO("squidusers.ip:      " << usr_ip);
+      INFO("squidusers.ipmask:  " << usr_ipmask);
+      INFO("squidusers.enabled: " << usr_enabled);
+      INFO("squidusers.size:    " << usr_size);
+      INFO("squidusers.quotes:  " << usr_quote);
+      INFO("squidusers.id:      " << usr_id);
+      INFO("squidusers.hit:     " << usr_hit);
+      INFO("squidusers.shablon: " << usr_tpl);
+      INFO("shablons.auth:      " << tpl_auth);
     }
   }
 
