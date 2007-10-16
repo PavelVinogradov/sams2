@@ -4,12 +4,18 @@
 #include "defines.h"
 
 enum usrAuthType {
-  AUTH_NONE, //! Не используется
-  AUTH_NTLM, //! Авторизация в домене Windows через SMB протокол
-  AUTH_ADLD, //! Авторизация в домене ActiveDirectory
-  AUTH_OPLD, //! Авторизация в OpenLDAP
-  AUTH_NCSA, //! Авторизация NCSA
-  AUTH_IP    //! Авторизация по сетевому адресу клиента
+  //! Не используется
+  AUTH_NONE,
+  //! Авторизация в домене Windows через SMB протокол
+  AUTH_NTLM,
+  //! Авторизация в домене ActiveDirectory
+  AUTH_ADLD,
+  //! Авторизация в OpenLDAP
+  AUTH_OPLD,
+  //! Авторизация NCSA
+  AUTH_NCSA,
+  //! Авторизация по сетевому адресу клиента
+  AUTH_IP
 };
 
 enum usrUseAutoTemplate {
