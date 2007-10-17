@@ -1050,6 +1050,19 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
+	   if(disabled_ip>0)
+	     {
+                if(RNONE==1||RSQUID==1)
+		  { 
+		    fprintf(fout,"http_access deny _sams_disabled_ip ");
+                    if(local_ip>0)
+		      fprintf(fout,"!_sams_local_ip ");
+                    if(local_url>0)
+		      fprintf(fout,"!_sams_local_url ");
+		    fprintf(fout,"\n");
+		  }
+	     }
+
 	   if(ADLD==1)
 	     sprintf(&str[0],"SELECT * FROM %s.shablons WHERE auth!='ip' ORDER BY auth DESC",conf.samsdb);
            else
@@ -1153,18 +1166,6 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-	   if(disabled_ip>0)
-	     {
-                if(RNONE==1||RSQUID==1)
-		  { 
-		    fprintf(fout,"http_access deny _sams_disabled_ip ");
-                    if(local_ip>0)
-		      fprintf(fout,"!_sams_local_ip ");
-                    if(local_url>0)
-		      fprintf(fout,"!_sams_local_url ");
-		    fprintf(fout,"\n");
-		  }
-	     }
 	   if(disabled_id>0)
 	     {
                 if(RNONE==1||RSQUID==1)
