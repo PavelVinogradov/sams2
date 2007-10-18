@@ -23,25 +23,31 @@ function UsersPercentTrafficGB()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
-  $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
+  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size,sum(hit) as user_hit FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
+  $cresult=mysql_query("SELECT sum(user_size),sum(user_hit) FROM cache_ ");
   $row=mysql_fetch_array($cresult);
-  $all=$row[0];
+  if($SAMSConf->realtraffic=="real")
+	$all=$row[0] - $row[1];
+  else
+	$all=$row[0];
   if($all==0) $all=1;
-  $percent=$all/100;
+	$percent=$all/100;
 
-  $result=mysql_query("SELECT user,domain,user_size,round(user_size/$percent,2) as percent from cache_ order by user_size desc");
+  if($SAMSConf->realtraffic=="real")
+    $result=mysql_query("SELECT user,domain,user_size,round((user_size-user_hit)/$percent,2) as percent,user_hit from cache_ order by user_size desc");
+  else
+    $result=mysql_query("SELECT user,domain,user_size,round(user_size/$percent,2) as percent from cache_ order by user_size desc");
   $count=0;
   while($row=mysql_fetch_array($result))
     {
-      // print("<BR> $row[user] $row[user_size]");
-      $SIZE[$count]=$row['user_size'];
-      //$USERS[$count]=$row['user'];
+      if($SAMSConf->realtraffic=="real")
+          $SIZE[$count]=$row['user_size']-$row['user_hit'];
+      else
+          $SIZE[$count]=$row['user_size'];
       $USERS[$count]=$count+1;
       $count++;
     }
 
-  //$circle=new CIRCLE3D(500, 300, $SIZE, $count, $USERS);
   $circle=new CIRCLE3D(500, $count*15, $SIZE, $count, $USERS);
   $circle->ShowCircle();
 }
@@ -63,21 +69,24 @@ function GroupsPercentTrafficGB()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
-  $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
+  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size,sum(hit) as user_hit FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
+  $cresult=mysql_query("SELECT sum(user_size),sum(user_hit) FROM cache_ ");
   $row=mysql_fetch_array($cresult);
-  $all=$row[0];
+  if($SAMSConf->realtraffic=="real")
+	$all=$row[0] - $row[1];
+  else
+	$all=$row[0];
   if($all==0) $all=1;
-  $percent=$all/100;
+	$percent=$all/100;
   
-  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size,sum(user_hit) as grp_hit FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
   $count=0;
   while($row=mysql_fetch_array($result))
     {
-
-      // print("<BR> $row[user] $row[user_size]");
-      $SIZE[$count]=$row['grp_size'];
-      // $USERS[$count]=$row['nick'];
+	if($SAMSConf->realtraffic=="real")
+          $SIZE[$count]=$row['grp_size']-$row['grp_hit'];
+	else
+          $SIZE[$count]=$row['grp_size'];
       $USERS[$count]=$count+1;
       $count++;
     }
@@ -118,13 +127,16 @@ function UsersPercentTraffic()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
-  $cresult=mysql_query("SELECT sum(user_size) FROM cache_ ");
+  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size,sum(hit) as hit_size FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
+  $cresult=mysql_query("SELECT sum(user_size),sum(hit_size) FROM cache_ ");
   $row=mysql_fetch_array($cresult);
   
-  $all=$row[0];
+  if($SAMSConf->realtraffic=="real")
+	$all=$row[0] - $row[1];
+  else
+	$all=$row[0];
   if($all==0) $all=1;
-  $percent=$all/100;
+	$percent=$all/100;
 
   print("<TABLE  CLASS=samstable><TH>No");
   print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_3");
@@ -135,7 +147,10 @@ function UsersPercentTraffic()
   print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
   print("<TH>%");
 
-  $result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain from cache_  LEFT JOIN $SAMSConf->SAMSDB.squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
+  if($SAMSConf->realtraffic=="real")
+	$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round((cache_.user_size-cache_.hit_size)/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain,cache_.hit_size from cache_  LEFT JOIN $SAMSConf->SAMSDB.squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
+  else
+	$result=mysql_query("SELECT cache_.user,cache_.domain,cache_.user_size,round(cache_.user_size/$percent,2) as percent,squidusers.name,squidusers.family,squidusers.nick,cache_.domain from cache_  LEFT JOIN $SAMSConf->SAMSDB.squidusers ON cache_.user=squidusers.nick order by cache_.user_size desc");
   $ap=0;
   $count=1;
 
@@ -159,11 +174,17 @@ function UsersPercentTraffic()
         LTableCell($row['domain'],20);
       if($SAMSConf->access==2)
         {
-          $aaa=FormattedString("$row[user_size]");
+	  if($SAMSConf->realtraffic=="real")
+          	$aaa=FormattedString($row['user_size']-$row['hit_size']);
+	  else
+          	$aaa=FormattedString($row['user_size']);
           RTableCell($aaa,20);
         }	 
      
-      RTableCell(ReturnTrafficFormattedSize($row['user_size']),25);
+      if($SAMSConf->realtraffic=="real")
+      	RTableCell(ReturnTrafficFormattedSize($row['user_size']-$row['hit_size']),25);
+      else
+      	RTableCell(ReturnTrafficFormattedSize($row['user_size']),25);
       RTableCell($row['percent'],15);
       $ap=$ap+$row['percent'];
       $count++;
@@ -194,7 +215,7 @@ function UsersPercentTraffic()
   print("<TH>$usersbuttom_4_percent_UsersPercentTraffic_6");
   print("<TH>%");
 
-  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
+  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size,sum(hit_size) as grp_hit FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
   
   $count=1;
   while($row=mysql_fetch_array($result))
@@ -206,10 +227,16 @@ function UsersPercentTraffic()
       
       if($SAMSConf->access==2)
         {
-          $aaa=FormattedString($row['grp_size']);
+ 	   if($SAMSConf->realtraffic=="real")
+              $aaa=FormattedString($row['grp_size']-$row['grp_hit']);
+	   else
+              $aaa=FormattedString($row['grp_size']);
           RTableCell($aaa,30);
         }	 
-      RTableCell(ReturnTrafficFormattedSize($row['grp_size']),35);
+      if($SAMSConf->realtraffic=="real")
+          RTableCell(ReturnTrafficFormattedSize($row['grp_size']-$row['grp_hit']),35);
+      else
+          RTableCell(ReturnTrafficFormattedSize($row['grp_size']),35);
       $aaa=round($row['grp_size']/$percent,2);
       RTableCell($aaa,15);
       $count++;
