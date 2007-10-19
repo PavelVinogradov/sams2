@@ -23,7 +23,7 @@ function UpdateUser()
   if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
   if(isset($_GET["gauditor"])) $gauditor=$_GET["gauditor"];
   if(isset($_GET["saveenabled"])) $saveenabled=$_GET["saveenabled"];
-  if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
+  if(isset($_GET["auth"])) $auth=$_GET["auth"];
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
@@ -37,8 +37,10 @@ function UpdateUser()
   
      
   $passwd="none";
-  if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
-    $passwd=$_GET["passwd"];
+  if($auth=="ncsa"||$auth=="ip")
+   {
+     if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
+   }
 
   $result=mysql_query("UPDATE squidusers SET gauditor=\"$gauditor\",domain=\"$domain\",nick=\"$usernick\",family=\"$userfamily\",name=\"$username\",squidusers.soname=\"$usersoname\",squidusers.group=\"$usergroup\",squidusers.quotes=\"$userquote\",enabled=\"$enabled\",shablon=\"$usershablon\",ip=\"$userip\",ipmask=\"$useripmask\",passwd=\"$passwd\" WHERE id=\"$userid\" ");
 
@@ -46,6 +48,7 @@ function UpdateUser()
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("        parent.basefrm.location.href=\"main.php?show=exe&function=userform&userid=$userid\";\n");
   print("</SCRIPT> \n");
+
 }
 
 
@@ -65,7 +68,7 @@ function UpdateUserForm()
   
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
+  $result=mysql_query("SELECT squidusers.*,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 
   PageTop("user.jpg","$userbuttom_1_prop_UpdateUserForm_1 <FONT COLOR=\"BLUE\">$row[nick]</FONT>");
@@ -75,6 +78,7 @@ function UpdateUserForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"updateuser\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"userbuttom_1_prop.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"userid\" value=\"$row[id]\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$row[auth]\">\n");
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
@@ -88,7 +92,7 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" VALUE=\"$row[domain]\" NAME=\"domain\" SIZE=15> \n");
 
-  if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
+  if( $row['auth']=="ncsa"||$row['auth']=="ip")
     {
        print("<TR>\n");
        print("<TD>\n");

@@ -11,7 +11,6 @@ function NotUsersTreeUserAuth()
 
      if(isset($_GET["userid"])) $password=$_GET["userid"];
      if(isset($_GET["user"])) $userdomain=$_GET["user"];
-
   $grauditor=0;
   $SAMSConf->domainusername="";
   if($SAMSConf->AUTH=="adld")
@@ -30,7 +29,6 @@ function NotUsersTreeUserAuth()
     }
   if($SAMSConf->AUTH=="ntlm")
     {
-      
 	$aflag=0;
 	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
 	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
@@ -67,12 +65,10 @@ function NotUsersTreeUserAuth()
            $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE nick=\"$SAMSConf->domainusername\" ");
            $row=mysql_fetch_array($result);
            $SAMSConf->domainusername="$row[nick]";
-           //$gauditor=$row['gauditor'];
        }
-
- //exit(0);   
     }
-  if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
+  if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
+//  if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
        db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
@@ -84,12 +80,11 @@ function NotUsersTreeUserAuth()
            $SAMSConf->domainusername="$row[nick]";
          }
      }
+
   $grauditor=0;
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
      $grauditor=$row['group'];
      
- //echo "<P>USER = $SAMSConf->domainusername SAMSConf->NTLMDOMAIN==$SAMSConf->NTLMDOMAIN SAMSConf->domainusername=$SAMSConf->domainusername<BR> ";
- //exit(0);    
  return($grauditor);
 }
  
@@ -101,11 +96,11 @@ function UserAuth()
   if(isset($_GET["userdomain"])) $domain=$_GET["userdomain"];
   if(isset($_GET["userid"])) $password=$_GET["userid"];
   if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["authtype"])) $auth=$_GET["authtype"];
   $SAMSConf->grauditor=0;
   $SAMSConf->domainusername="";
   $aflag=0;
-
-  if($SAMSConf->AUTH=="ntlm")
+  if($auth=="ntlm")
     {
       if($SAMSConf->NTLMDOMAIN=="Y")
         {
@@ -165,7 +160,7 @@ function UserAuth()
 // echo"USER = $SAMSConf->domainusername<BR>";
 // exit(0);   
     }
-  if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
+  if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
     {
       db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
@@ -184,7 +179,7 @@ function UserAuth()
            $SAMSConf->domainusername="$row[nick]";
          }
      }
-  if($SAMSConf->AUTH=="adld")
+  if($auth=="adld")
     {
 
 	require_once("adldap.php");
@@ -229,7 +224,7 @@ function UserAuthForm()
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   
-  $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
+  $result=mysql_query("SELECT squidusers.*,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 
   PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$row[nick]</FONT>");
@@ -241,7 +236,8 @@ function UserAuthForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"usergroup\" value=\"$row[group]\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"userdomain\" value=\"$row[domain]\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"usernick\" value=\"$row[nick]\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$row[id]\">\n");
+//  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$row[id]\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"authtype\" value=\"$row[auth]\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
   print("<TR>\n");
   print("<TD><B>login:</B>\n");
@@ -364,7 +360,7 @@ function UserForm()
        print("<TD>\n");
        print("<B>$usertray_UserForm_12: \n");
        print("<TD>\n");
-       print("$row3[nick]\n");
+       print("<A HREF=\"tray.php?show=exe&function=shablontray&id=$row3[name]\" TARGET=\"tray\">$row3[nick]</A>\n");
        print("</TABLE>\n");
     }
 }
