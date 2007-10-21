@@ -30,8 +30,7 @@ function NotUsersTreeUserAuth()
   if($SAMSConf->AUTH=="ntlm")
     {
 	$aflag=0;
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+	$aaa=ExecuteShellScript("testwbinfopasswd", escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
 	$aflag=0;
 	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	  { 
@@ -119,7 +118,7 @@ function UserAuth()
 		  $separator=$mas[$j];
 		}  
                 $userdomain="$domain$separator$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
+                $aaa=ExecuteShellScript("testwbinfopasswd", escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password"));
 		$aflag=0;
 		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 		  { 
@@ -130,7 +129,7 @@ function UserAuth()
            if($aflag==0)
 	     {
 	        $userdomain="$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
+                $aaa=ExecuteShellScript("testwbinfopasswd", escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password"));
 		$aflag=0;
 		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 		  { 
@@ -142,7 +141,7 @@ function UserAuth()
        else
          {
                 $userdomain="$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
+                $aaa=ExecuteShellScript("testwbinfopasswd", escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password"));
 		$aflag=0;
 		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 		  { 
