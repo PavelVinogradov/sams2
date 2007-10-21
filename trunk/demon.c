@@ -304,7 +304,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                             if(users[samsuser-1].traffic>=users[samsuser-1].quote)
 		              {
 
-                                if(users[samsuser-1].disabled==0)
+                                if(users[samsuser-1].enabled==1)
 			          {
 			            users[samsuser-1].disabled=1;
 			            users[samsuser-1].enabled=0;
