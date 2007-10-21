@@ -1966,12 +1966,7 @@ int MakeACLFiles(MYSQL *conn)
 //                if(RREJIK==1&&atoi(row2[10])>0)
 //                  fprintf(fout2,"\n");
 	     }
-           if(strcmp(row[1],"ncsa")==0) 
-	     {
-                sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
-                chmod(&str[0],0644);
-             }   
-           mysql_free_result(res2);
+	   mysql_free_result(res2);
 
            fclose(fout);
            if(RREJIK==1)
@@ -1998,7 +1993,24 @@ int MakeACLFiles(MYSQL *conn)
 	     }      
      
 	 }
+         //If we use ncsa auth but don't have any enabled users - we must have
+	 //ncsa.sams for our auth_helper.
+         if(strcmp(row[1],"ncsa")==0) 
+	   {
+             sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
+	     if(access(&str[0],F_OK)!=0) {
+  	       
+	       FILE *ncsa=NULL;
 
+	       if (DEBUG==1)
+	         printf("Used ncsa auth, but nsca.sams don't exist! Create empty one.\n");
+		   if((ncsa = fopen(&str[0], "wt")) == NULL) {		 
+		     printf("Can't create file %s\n", &str[0]);
+		   }
+		   fclose(ncsa);
+	     }
+             chmod(&str[0],0644);
+           }              
      }  
   mysql_free_result(res);
   /* END    создаем списки пользователей      */
