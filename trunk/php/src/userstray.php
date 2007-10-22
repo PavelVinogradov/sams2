@@ -27,15 +27,33 @@ function DisableSelectedUsers()
 
  for($i=0; $i<$count1; $i++)
     {
-       $result=mysql_query("UPDATE squidusers SET enabled=\"-1\" WHERE squidusers.id=\"$disable[$i]\"");
-    }
+       if($SAMSConf->LOGLEVEL >= 3&&strlen($disable[$i])>0)
+         {
+            $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$disable[$i]\" ");
+            $row=mysql_fetch_array($result);
+            UpdateLog("$SAMSConf->adminname","Deactivate user $row[nick]","01");
+         }
+       $result2=mysql_query("UPDATE squidusers SET enabled=\"-1\" WHERE squidusers.id=\"$disable[$i]\"");
+   }
  for($i=0; $i<$count3; $i++)
     {
-       $result=mysql_query("UPDATE squidusers SET enabled=\"1\" WHERE squidusers.id=\"$defen[$i]\"");
+       if($SAMSConf->LOGLEVEL >= 3&&strlen($defen[$i])>0)
+         {
+             $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$defen[$i]\" ");
+             $row=mysql_fetch_array($result);
+            UpdateLog("$SAMSConf->adminname","Activate user $row[nick]","01");
+         }
+       $result2=mysql_query("UPDATE squidusers SET enabled=\"1\" WHERE squidusers.id=\"$defen[$i]\"");
     }
  for($i=0; $i<$count2; $i++)
     {
-        $result=mysql_query("DELETE FROM squidusers WHERE id=\"$delete[$i]\" ");
+       if($SAMSConf->LOGLEVEL >= 3&&strlen($delete[$i])>0)
+         {
+             $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$delete[$i]\" ");
+             $row=mysql_fetch_array($result);
+            UpdateLog("$SAMSConf->adminname","Delete user $row[nick] ","01");
+         }
+        $result2=mysql_query("DELETE FROM squidusers WHERE id=\"$delete[$i]\" ");
     }
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
