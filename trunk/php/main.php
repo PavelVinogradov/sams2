@@ -123,6 +123,16 @@ if(isset($_GET["show"])) $user=$_GET["show"];
 if(isset($_GET["function"])) $function=$_GET["function"];
 if(isset($_GET["filename"])) $filename=$_GET["filename"];
 
+if(isset($_POST["show"])) $user=$_POST["show"];
+if(isset($_POST["function"])) $function=$_POST["function"];
+if(isset($_POST["filename"])) $filename=$_POST["filename"];
+if(isset($_POST["username"])) $username=$_POST["username"];
+if(isset($_POST["userid"])) $userid=$_POST["userid"];
+if(isset($_POST["id"])) $userid=$_POST["id"];
+if(isset($_POST["usergroup"])) $usergroup=$_POST["usergroup"];
+if(isset($_POST["usernick"])) $usernick=$_POST["usernick"];
+if(isset($_POST["userid"])) $userid=$_POST["userid"];
+
 if(isset($_GET["username"])) $username=$_GET["username"];
 if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];
@@ -202,6 +212,7 @@ if($function=="setcookie")
 if($function=="userauth")
   {   
      if(isset($_GET["id"])) $id=$_GET["id"];
+     if(isset($_POST["id"])) $id=$_POST["id"];
      $SAMSConf->groupauditor=UserAuth();
 
      $time=time();
@@ -237,17 +248,17 @@ if($function=="userauth")
      $row=mysql_fetch_array($result);
      $autherrorc=$row[autherrorc];
      $autherrort=$row[autherrort];
+//echo "=$id=$SAMSConf->domainusername=<BR>";
+//exit(0);
   }  
 
 if($function=="nuserauth")
   {   
      $user="";
-     if(isset($_GET["userid"])) $id=$_GET["userid"];
-     if(isset($_GET["user"])) $nick=$_GET["user"];
+     if(isset($_POST["userid"])) $id=$_POST["userid"];
+     if(isset($_POST["user"])) $nick=$_POST["user"];
      $SAMSConf->groupauditor=NotUsersTreeUserAuth();
      $nick=$SAMSConf->domainusername;
-// echo "<P>main.php<BR> nick=$nick<BR>USER = $SAMSConf->domainusername SAMSConf->NTLMDOMAIN==$SAMSConf->NTLMDOMAIN SAMSConf->domainusername=$SAMSConf->domainusername<BR> ";
-// exit(0);    
      
      $time=time();
      $result=mysql_query("SELECT * FROM squidusers WHERE nick=\"$nick\" ");
