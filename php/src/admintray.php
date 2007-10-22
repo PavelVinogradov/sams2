@@ -29,7 +29,7 @@ function UserDoc()
 /***/
       print("<P><B>$AdminTray_UserDoc_5</B>\n");
       print("<P>");
-      print("<FORM NAME=\"NUSERPASSWORD\" ACTION=\"main.php\">\n");
+      print("<FORM NAME=\"NUSERPASSWORD\" ACTION=\"main.php\" METHOD=\"POST\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"nuserauth\">\n");
       print("<TABLE WIDTH=\"90%\">\n");

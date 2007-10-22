@@ -9,8 +9,8 @@ function NotUsersTreeUserAuth()
 {
   global $SAMSConf;
 
-     if(isset($_GET["userid"])) $password=$_GET["userid"];
-     if(isset($_GET["user"])) $userdomain=$_GET["user"];
+  if(isset($_POST["userid"])) $password=$_POST["userid"];
+  if(isset($_POST["user"])) $userdomain=$_POST["user"];
   $grauditor=0;
   $SAMSConf->domainusername="";
   if($SAMSConf->AUTH=="adld")
@@ -91,11 +91,12 @@ function UserAuth()
 {
   global $SAMSConf;
   
-  if(isset($_GET["usernick"])) $user=$_GET["usernick"];
-  if(isset($_GET["userdomain"])) $domain=$_GET["userdomain"];
-  if(isset($_GET["userid"])) $password=$_GET["userid"];
-  if(isset($_GET["id"])) $id=$_GET["id"];
-  if(isset($_GET["authtype"])) $auth=$_GET["authtype"];
+  if(isset($_POST["usernick"])) $user=$_POST["usernick"];
+  if(isset($_POST["userdomain"])) $domain=$_POST["userdomain"];
+  if(isset($_POST["userid"])) $password=$_POST["userid"];
+  if(isset($_POST["id"])) $id=$_POST["id"];
+  if(isset($_POST["authtype"])) $auth=$_POST["authtype"];
+
   $SAMSConf->grauditor=0;
   $SAMSConf->domainusername="";
   $aflag=0;
@@ -222,13 +223,13 @@ function UserAuthForm()
   require($lang);
 
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
-  
+
   $result=mysql_query("SELECT squidusers.*,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
 
   PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$row[nick]</FONT>");
   print("<P>\n");
-  print("<FORM NAME=\"USERPASSWORD\" ACTION=\"main.php\">\n");
+  print("<FORM NAME=\"USERPASSWORD\" ACTION=\"main.php\" method=\"POST\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"userauth\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$row[id]\">\n");
