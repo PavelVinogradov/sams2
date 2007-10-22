@@ -24,6 +24,7 @@ function UpdateUser()
   if(isset($_GET["gauditor"])) $gauditor=$_GET["gauditor"];
   if(isset($_GET["saveenabled"])) $saveenabled=$_GET["saveenabled"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
+  if(isset($_GET["defstatus"])) $defstatus=$_GET["defstatus"];
 
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {      exit;    }
@@ -34,7 +35,16 @@ function UpdateUser()
      $gauditor=1;
   else
      $gauditor=0;
-  
+ 
+  if($defstatus!=$enabled)
+    {
+      if($enabled==1)
+           UpdateLog("$SAMSConf->adminname","Activate user $usernick","01");
+      if($enabled==-1)
+           UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
+      if($enabled==0)
+           UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
+    }
      
   $passwd="none";
   if($auth=="ncsa"||$auth=="ip")
@@ -79,6 +89,7 @@ function UpdateUserForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"userbuttom_1_prop.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"userid\" value=\"$row[id]\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$row[auth]\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"defstatus\" value=\"$row[enabled]\">\n");
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
