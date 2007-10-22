@@ -129,11 +129,11 @@ WEB интерфейса SAMS выбрать пункт "Администрирование SAMS", далее в нижнем фрейм
 <P>Разработчики squid рекомендуют использовать при работе с samba 3.x хелпер, идущий с samba 3.x ntlm_auth.
 
 <P>в файл /etc/squid/squid.conf добавляем строки:
-<BR> auth_param ntlm program /usr/lib/squid/wb_ntlmauth
+<P> auth_param ntlm program /path/to/ntlm_auth --helper-protocol=squid-2.5-ntlmssp
 <BR> auth_param ntlm children 5
 <BR> auth_param ntlm max_challenge_reuses 0
 <BR> auth_param ntlm max_challenge_lifetime 2 minutes
-<BR> auth_param basic program /usr/local/squid/libexec/wb_auth
+<BR> auth_param basic program /path/to/ntlm_auth --helper-protocol=squid-2.5-basic
 <BR> auth_param basic children 5
 <BR> auth_param basic realm Squid proxy-caching web server
 <BR> auth_param basic credentialsttl 2 hours
