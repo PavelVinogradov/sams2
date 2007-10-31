@@ -32,7 +32,20 @@ function NewGroupForm()
 
   PageTop("usergroup_48.jpg","$grouptray_NewGroupForm_1");
 
-  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\">\n");
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function TestName(formname)\n");
+       print("{\n");
+       print("  var shablonname=formname.groupnick.value; \n");
+       print("  if(shablonname.length==0) \n");
+       print("    {\n");
+       print("       alert(\"$grouptray_NewGroupForm_12\");\n");
+       print("       return false");
+       print("    }\n");
+       print("  return true");
+       print("}\n");
+       print("</SCRIPT> \n");
+ 
+  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\" onsubmit=\"return TestName(NEWUSER)\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addgroup\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"newgrpbuttom_5_addgroup.php\">\n");

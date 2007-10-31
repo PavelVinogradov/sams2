@@ -191,6 +191,7 @@ function AddUsersFromDomainForm()
 
   $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
   $a=explode(" ",$value);
+  sort($a);
   $acount=count($a);
   print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B>");
   print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");

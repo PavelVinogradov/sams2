@@ -17,6 +17,7 @@ $info=array();
 
   $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH");
   $a=explode(" ",$value);
+  sort($a);
   $acount=count($a);
 	  
   if($auth=="ntlm")
@@ -104,6 +105,7 @@ function SamsReConfig()
 
   if(isset($_GET["udscript"])) $udscript=$_GET["udscript"];
   if(isset($_GET["adminaddr"])) $adminaddr=$_GET["adminaddr"];
+  if(isset($_GET["defauth"])) $defauth=$_GET["defauth"];
    
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
@@ -130,6 +132,8 @@ function SamsReConfig()
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("UPDATE sams SET loglevel=\"$loglevel\",sams.separator=\"0$plus$at$slashe$slashe\",checkdns=\"$checkdns\", realsize=\"$traffic\",nameencode=\"$nameencode\",sleep=\"$sleep\",count_clean=\"$count_clean\",parser_on=\"$parser_on\",parser=\"$parser\",parser_time=\"$parser_time\",bigd=\"$bigdomain\",bigu=\"$bigusername\",ntlmdomain=\"$ntlmdomain\",delaypool=\"$delaypool\",redirect_to=\"$redirect_to\",denied_to=\"$denied_to\",redirector=\"$redirector\",auth=\"$auth\", wbinfopath=\"$wbinfopath\", defaultdomain=\"$defaultdomain\", squidbase=\"$squidbase\", udscript=\"$udscript\", adminaddr=\"$adminaddr\" ");
+  if($defauth!=$auth)
+    $result=mysql_query("UPDATE shablons SET auth=\"$auth\" WHERE shablons.auth!=\"ip\" ");
   $SAMSConf->LoadConfig();
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
 
@@ -201,6 +205,7 @@ function SamsReConfigForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"samsreconfig\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"configbuttom_1_prop.php\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"defauth\" value=\"$row[auth]\">\n");
 
   print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_45:</B>\n");
   

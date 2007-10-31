@@ -12,6 +12,7 @@ function AddShablon()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $period="M";
   if(isset($_GET["groupnick"])) $snick=$_GET["groupnick"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
   if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
@@ -80,10 +81,24 @@ function NewShablonForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\">\n");
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function TestShablonName(formname)\n");
+       print("{\n");
+       print("  var shablonname=formname.groupnick.value; \n");
+       print("  if(shablonname.length==0) \n");
+       print("    {\n");
+       print("       alert(\"$shablonnew_NewShablonForm_19\");\n");
+       print("       return false");
+       print("    }\n");
+       print("  return true");
+       print("}\n");
+       print("</SCRIPT> \n");
+
+  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\" onsubmit=\"return TestShablonName(NEWUSER)\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addshablon\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"shablonnew.php\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$shablonnew_NewShablonForm_6\">\n");
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
@@ -139,12 +154,15 @@ function NewShablonForm()
            print("}\n");
            print("</SCRIPT> \n");
   
-  
+  $CCLEAN="";
+  if($SAMSConf->CCLEAN!="Y")  
+    $CCLEAN="DISABLED";
+
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$shablonnew_NewShablonForm_10\n");
   print("<TD>\n");
-  print("<SELECT NAME=\"period\" onchange=EnterPeriod(NEWUSER)> \n");
+  print("<SELECT NAME=\"period\" onchange=EnterPeriod(NEWUSER)  $CCLEAN> \n");
   print("<OPTION value=\"M\" SELECTED>$shablonnew_NewShablonForm_11\n");
   print("<OPTION value=\"W\">$shablonnew_NewShablonForm_12\n");
   print("<OPTION value=\"A\">$shablonnew_NewShablonForm_13\n");
@@ -157,7 +175,7 @@ function NewShablonForm()
            print("  var clryear=formname.clryear.value; \n");
            print("  var clrmonth=formname.clrmonth.value; \n");
            print("  var clrday=formname.clrday.value; \n");
-      print("  value=window.confirm(\"1? \" );\n");
+      //print("  value=window.confirm(\"1? \" );\n");
             print("  if(period==\"A\") \n");
            print("    {\n");
            print("      formname.newperiod.disabled=false;  \n");
@@ -193,7 +211,10 @@ function NewShablonForm()
        else
         $DCLRVALUE+=1; 	
      
-  print("<TR><TD><TD> $shablonnew_NewShablonForm_14: \n");
+  print("<TR><TD>\n");
+  if($SAMSConf->CCLEAN!="Y")
+    print("<FONT COLOR=\"RED\">$shablonnew_NewShablonForm_18</FONT>\n");
+  print("<TD> $shablonnew_NewShablonForm_14: \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"newperiod\" SIZE=5 DISABLED>$shablonnew_NewShablonForm_15\n");
  
   print("<TR><TD><TD> $shablonnew_NewShablonForm_16: \n");

@@ -67,8 +67,8 @@ function NotUsersTreeUserAuth()
        }
     }
   if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
-//  if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
+echo "123456";
        db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$password\" ");
@@ -82,7 +82,12 @@ function NotUsersTreeUserAuth()
 
   $grauditor=0;
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
-     $grauditor=$row['group'];
+    {
+         $grauditor=$row['group'];
+         print("<SCRIPT>\n");
+         print(" parent.lframe.location.href=\"lframe.php\"; \n");
+         print("</SCRIPT> \n");
+    }
      
  return($grauditor);
 }

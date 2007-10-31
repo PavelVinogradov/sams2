@@ -150,7 +150,21 @@ function AddRedirListForm()
   
   PageTop("redirect_48.jpg","$redirlisttray_AddRedirListForm_1 ");
   print("<BR>\n");
-  print("<FORM NAME=\"REDIRECT\" ACTION=\"main.php\">\n");
+ 
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function TestName(formname)\n");
+       print("{\n");
+       print("  var shablonname=formname.name.value; \n");
+       print("  if(shablonname.length==0) \n");
+       print("    {\n");
+       print("       alert(\"$redirlisttray_AddRedirListForm_5\");\n");
+       print("       return false");
+       print("    }\n");
+       print("  return true");
+       print("}\n");
+       print("</SCRIPT> \n");
+ 
+  print("<FORM NAME=\"REDIRECT\" ACTION=\"main.php\" onsubmit=\"return TestName(REDIRECT)\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addnewlist\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"execute\" id=execute value=\"redirlisttray\">\n");
