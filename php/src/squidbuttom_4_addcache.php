@@ -89,7 +89,20 @@ function CacheForm()
   
       print("<P>\n");
       print("<H2>$CacheForm_squidbuttom_4_addcache_6</H2>\n");
-      print("<FORM NAME=\"ADDCACHE\" ACTION=\"main.php\">\n");
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function TestName(formname)\n");
+       print("{\n");
+       print("  var shablonname=formname.description.value; \n");
+       print("  if(shablonname.length==0) \n");
+       print("    {\n");
+       print("       alert(\"$CacheForm_squidbuttom_4_addcache_9\");\n");
+       print("       return false");
+       print("    }\n");
+       print("  return true");
+       print("}\n");
+       print("</SCRIPT> \n");
+ 
+      print("<FORM NAME=\"ADDCACHE\" ACTION=\"main.php\" onsubmit=\"return TestName(ADDCACHE)\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addcache\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"squidbuttom_4_addcache.php\">\n");
