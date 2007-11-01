@@ -14,8 +14,7 @@ function UpdateShablon()
   $SAMSConf->access=UserAccess();
   if($SAMSConf->access!=2)     {       exit;     }
 
-   $period="M";
- if(isset($_GET["id"])) $sname=$_GET["id"];
+  if(isset($_GET["id"])) $sname=$_GET["id"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
   if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
   if(isset($_GET["userip"])) $userpool=$_GET["userip"];
@@ -344,16 +343,13 @@ function UpdateShablonForm()
            print("}\n");
            print("</SCRIPT> \n");
   
-  $CCLEAN="";
-  if($SAMSConf->CCLEAN!="Y")  
-    $CCLEAN="DISABLED";
-
+  
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$shablonbuttom_1_prop_UpdateShablonForm_20\n");
   print("<TD>\n");
-  print("<SELECT NAME=\"period\" onchange=EnterPeriod(UPDATESHABLON) $CCLEAN> \n");
-
+  print("<SELECT NAME=\"period\" onchange=EnterPeriod(UPDATESHABLON)> \n");
+  
   $MSELECTED="";
   $WSELECTED="";
   $ASELECTED="";
@@ -399,10 +395,7 @@ function UpdateShablonForm()
   print("<OPTION value=\"A\" $ASELECTED>$shablonbuttom_1_prop_UpdateShablonForm_15\n");
   print("</SELECT>\n");
    
-  print("<TR><TD>\n");
-  if($SAMSConf->CCLEAN!="Y")
-    print("<FONT COLOR=\"RED\"> $shablonbuttom_1_prop_UpdateShablonForm_26</FONT>\n");
-  print("<TD> $shablonbuttom_1_prop_UpdateShablonForm_16: \n");
+  print("<TR><TD><TD> $shablonbuttom_1_prop_UpdateShablonForm_16: \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"newperiod\" SIZE=5 $ADISABLED VALUE=\"$AVALUE\"> $shablonbuttom_1_prop_UpdateShablonForm_17\n");
   
   print("<TR><TD><TD>$shablonbuttom_1_prop_UpdateShablonForm_18: \n");
