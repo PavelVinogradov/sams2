@@ -870,6 +870,14 @@
   $userstray_AllUsersForm_13="Искать пользователей:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="Настройки SAMS";
 
+  $lang_pdfReport_page="Стр.";
+  $lang_pdfReport_user="Пользователь";
+  $lang_pdfReport_date="Дата";
+  $lang_pdfReport_site="Сайт";
+  $lang_pdfReport_size="Скачано";
+  $lang_pdfReport_cache="Кэш";
+  $lang_pdfReport_traffic="Трафик";
+
   $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_18="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
@@ -881,8 +889,4 @@
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
-
-
-
-
 ?>
