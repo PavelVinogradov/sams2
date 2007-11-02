@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<H2>Building, Installing and Configuring Samba</H2>
+<P>If your Samba not support winbind, uninstall it.    Winbind is the Samba component that allows a 
+linux box to act as a Windows machine in various ways.  You can download the latest Samba source from www.samba.org, 
+but be aware that using and combining different versions of Samba and Squid may result in neither package working as expected.  
+For this procedure, it is recommend to use exact version used here.  The version of Samba used in this procedure is 2.2.6-1.
+
+ 
+<P><B>Building and Installing Samba</B>
+<P>Samba needs to be compiled to include support for winbind.  To do so, compile it with the --with-winbind --with-winbind-auth-challenge options i.e.
+
+<P>./configure --with-winbind --with-winbind-auth-challenge
+
+<P>Next make the binaries for Samba using the make command... then make install.
+ 
+<P><B>Configuring Samba</B>
+
+<P>Copy the libnss_winbind.so file from source/nsswitch directory  to /lib.  Create a symlink for this file as follows: 
+<BR>ln -s /lib/libnss_winbind.so /lib/libnss_winbind.so.2.
+
+ <P>To link these newly created libraries, run the following command: 
+ <BR>root#/sbin/ldconfig -v | grep winbind.
+
+<P>Next, the /etc/nsswitch.conf file needs to be altered to include winbind support.  
+Find the passwd, shadow, and group lines, and insert winbind as shown below:
+
+<P>passwd:            files winbind nisplus
+<BR>shadow:             files winbind nisplus
+<BR>group:               files winbind nisplus
+ 
+<P>Now, the smb.conf needs to be configured by adding a few lines to the Global Settings section.  
+Copy the default RedHat smb.conf from the samba-2.2.6/packaging/RedHat directory to the /usr/local/samba/lib directory.  
+Contrary to the Samba/Winbind documentation, for this procedure no winbind separator needs to be specified[2].  
+The following lines can be added to the top of the Global Settings section.
+
+ 
+
+<P>winbind cache time = 15
+<BR>template shell = /bin/false  #or /bin/bash (only needed if ssh (or similar) access allowed for users)
+<BR>winbind uid = 10000-20000
+<BR>winbind gid = 10000-20000
+<BR>winbind enum users = yes
+<BR>winbind enum groups = yes
+
+<P>The following options are already present in the smb.conf file, but need to be configured correctly.  Find these options and edit them accordingly.
+
+<P>workgroup =             EXAMPLE
+<BR>security = domain
+<BR>password server = opmast.example.com
+<BR>encrypt passwords = yes
+
+<P>To ensure that the password server listed in the smb.conf file is accessible, add the following line to the /etc/hosts file.
+
+<P>192.168.1.30            opmast.example.com            opmast
+
+<P>In addition, it is important that the linux box is configured to use the DNS server which is the holds the PDC role in the 
+Windows 2000 domain, which in this scenario is opmast.example.com (192.168.1.30), or another DC for this domain.  
+It is preferable to set the dns server on the linux box to a windows DC within the same site for performance reasons.
+
+<P>The machine now needs to be joined to the Windows2000 domain.  Use the following command to join to the domain:  
+<BR>root#/usr/local/samba/bin/smbpasswd -j EXAMPLE -r OPMAST -U administrator 
+(where administrator is a username of someone with access to join machines to the domain).  
+<BR>If the join process was successful, a message will appear stating so.
+
+<P>Start winbind and test it using the wbinfo tool found in /usr/local/samba i.e. /usr/local/samba/bin/wbinfo -u.  
+If you see all domain users, winbind is operating correctly.  Note that with the default winbind separator, the syntax of the test 
+for wbinfo -a is example\\username%password... you have to add an extra backslash.
+
+<P>If problems are encountered at this point, the most commonly found issues that I've encountered have been related to 
+security in Active Directory preventing the linux box from accessing group and account information, or name resolution related to DNS problems.
+</BODY>
+</HTML>
