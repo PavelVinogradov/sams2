@@ -101,8 +101,8 @@ function ReadCacheFilesList()
   printf("</SCRIPT>\n");
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
-  $today = getdate();
-  print("Scanning cache directory<BR>please, wait...");
+$today = getdate();
+print_r($today);
   $result=mysql_query("SELECT count(*) FROM reconfig WHERE  service=\"squid\"&&action=\"cachescan\" ");
   $row=mysql_fetch_array($result);
   if($row[0]>0)
@@ -137,7 +137,7 @@ function ReadCacheFiles()
        PageTop("reconfig_48.jpg","$squidbuttom_5_readcache_ReadCacheFiles_1");
        if($SAMSConf->PROXYCOUNT>1)
           {
-            for($i=1;$i<$SAMSConf->PROXYCOUNT+1;$i++)
+            for($i=0;$i<$SAMSConf->PROXYCOUNT;$i++)
 	       {
 	           if($cache[$i]=="on")
 	              {

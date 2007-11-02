@@ -124,15 +124,14 @@ function UserSitesPeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-//  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
-//	exit(0);
+  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
+	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"username\" id=UserName value=\"$username\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"userdomain\" id=UserDomain value=\"$userdomain\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"usergroup\" id=UserGroup value=\"$usergroup\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersitesperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_site.php\">\n");

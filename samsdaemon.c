@@ -1427,8 +1427,9 @@ int MakeACLFiles(MYSQL *conn)
                AddLog(conn,8,"samsdaemon",&str[0]);
                mysql_free_result(res2);
 	     }
+           //mysql_free_result(res2);
          }  
-      mysql_free_result(res);
+
 
   /***************************************************************************************/
   /*                   Создаем списки перенаправления запросов                           */
@@ -1519,8 +1520,9 @@ int MakeACLFiles(MYSQL *conn)
                AddLog(conn,8,"samsdaemon",&str[0]);
                mysql_free_result(res2);
 	     }
+           //mysql_free_result(res2);
          }  
-      mysql_free_result(res);
+
     }
   /***************************************************************************************/
   /*                           Создаем списки запрета доступа                            */
@@ -1817,26 +1819,7 @@ int MakeACLFiles(MYSQL *conn)
   /* создаем списки пользователей      */
   ncsacount=0;
   ucount=0; 
-
-  if(NCSA==1) 
-     {
-        sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
-        if(access(&str[0],F_OK)==-1)
-           {
-              if((fout2=fopen(&str[0], "wt" ))==NULL)
-                {
-                  printf("Don't open file %s\n",&str[0]);
-                  return(0);
-                }
-              fclose(fout2);  
-            }
-	if(access("htpasswd",F_OK)==0)
-	  {
-	     if(DEBUG==1)
-	       printf(" htpasswd not found \n");
-	  }
-     }
-
+//  sprintf(&str[0],"SELECT * FROM %s.shablons",conf.samsdb);
   sprintf(&str[0],"SELECT name,auth FROM %s.shablons",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
@@ -1936,15 +1919,38 @@ int MakeACLFiles(MYSQL *conn)
                      if(RREJIK==1&&atoi(row2[10])>0)
                        fprintf(fout2,"%s\n",row2[1]);
 
-                     if(DEBUG==1)
-                        printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                     sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                     flag=system(&str[0]);
-                     if(flag==0)
-                        sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
+                     if(ncsacount==0)
+		       {
+                          
+			  if(access("htpasswd",F_OK)==0)
+			    {
+			      if(DEBUG==1)
+			        printf(" htpasswd not found \n");
+			    }
+			    
+			  if(DEBUG==1)
+                            printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
+                          sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+                          if(flag==0)
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
+                          else
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
+                          AddLog(conn,9,"samsdaemon",&str[0]);
+		       } 
                      else
-                        sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
-                     AddLog(conn,9,"samsdaemon",&str[0]);
+		       {
+                          if(DEBUG==1)
+                            printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
+                          sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+                          if(flag==0)
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
+                          else
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
+                          AddLog(conn,9,"samsdaemon",&str[0]);
+		       } 
+                     ncsacount++;
 
 		  }      
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4) 
@@ -2923,7 +2929,6 @@ int main (int argc, char *argv[])
 
 	       AddLog(conn2,0,"samsdaemon","Reading request to reconfigure SQUID");
                freeconf();
-               free(SEPARATOR);
 	       readconf();
                ReadSAMSFlags(conn2);
 
