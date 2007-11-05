@@ -1256,7 +1256,7 @@ int MakeACLFiles(MYSQL *conn)
   char shablonname[256];
   MYSQL_ROW row,row2;
   MYSQL_RES *res,*res2;
-  FILE *fout=NULL, *fout2=NULL;
+  FILE *fout=NULL, *fout2=NULL, *fout3=NULL;
   struct local_url host;
   struct stat s;
 
@@ -1823,18 +1823,12 @@ int MakeACLFiles(MYSQL *conn)
         sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
         if(access(&str[0],F_OK)==-1)
            {
-              if((fout2=fopen(&str[0], "wt" ))==NULL)
+              if((fout3=fopen(&str[0], "wt" ))==NULL)
                 {
                   printf("Don't open file %s\n",&str[0]);
                   return(0);
                 }
-              fclose(fout2);  
             }
-	if(access("htpasswd",F_OK)==0)
-	  {
-	     if(DEBUG==1)
-	       printf(" htpasswd not found \n");
-	  }
      }
 
   sprintf(&str[0],"SELECT name,auth FROM %s.shablons",conf.samsdb);
@@ -1929,7 +1923,6 @@ int MakeACLFiles(MYSQL *conn)
                       fprintf(fout2,"%s\n",row2[1]);
 
 		  }      
-                //if(NCSA==1) 
 		if(strcmp(row[1],"ncsa")==0)
 		  {
                      fprintf(fout,"%s\n",row2[1]);
@@ -1938,20 +1931,14 @@ int MakeACLFiles(MYSQL *conn)
 
                      if(DEBUG==1)
                         printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                     sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                     flag=system(&str[0]);
-                     if(flag==0)
-                        sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
-                     else
-                        sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
-                     AddLog(conn,9,"samsdaemon",&str[0]);
-
+                     fprintf(fout3,"%s:%s\n",row2[1],row2[13]);
 		  }      
+
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4) 
                     fprintf(fout,"%s/255.255.255.255\n",row2[11]);
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==1) 
 		  {
-                    fprintf(fout,"%s/255.255.255.255\n",row2[11]&&strlen(row2[11])>4);
+                    fprintf(fout,"%s/255.255.255.255\n",row2[11]);
                     if(RREJIK==1&&atoi(row2[10])>0)
                       fprintf(fout2,"%s",row2[11]);
 		  }  
@@ -2007,6 +1994,11 @@ int MakeACLFiles(MYSQL *conn)
            }              
      }  
   mysql_free_result(res);
+  if(NCSA==1) 
+     {
+        fclose(fout3);  
+     }
+
   /* END    создаем списки пользователей      */
 
   if(RSQUID==1||RNONE==1||RREJIK==1)
@@ -2385,7 +2377,7 @@ int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
     char filename[1024];
     char filebuf[1024];
     char url[1024];
-    char urlcode[1024];
+//    char urlcode[1024];
     char letter;
     int flag;
 
@@ -2486,7 +2478,7 @@ int main (int argc, char *argv[])
   pid_t pid,childpid,parentpid;
   time_t tt,tt2;
   struct tm *t,*t2;
-  struct stat st, s;
+  struct stat st; 
   int sams_sec;
   int sams_clr_month;
   int sams_clr_day;
@@ -2495,7 +2487,6 @@ int main (int argc, char *argv[])
   int sleepcounter;
     char buf[1024];
     char url[1024];
-    char urlcode[1024];
     char letter;
   FILE *finp,*fout;
   unsigned char symbol[3];

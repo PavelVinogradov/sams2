@@ -68,10 +68,10 @@ function NotUsersTreeUserAuth()
     }
   if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
     {
-echo "123456";
        db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$password\" ");
+       $passwd=crypt($password, substr($password, 0, 2));
+       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$passwd\" ");
        $row=mysql_fetch_array($result);
        //$gauditor=$row['gauditor'];
        if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
@@ -79,6 +79,24 @@ echo "123456";
            $SAMSConf->domainusername="$row[nick]";
          }
      }
+/*
+  if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
+    {
+      db_connect($SAMSConf->SAMSDB) or exit();
+       mysql_select_db($SAMSConf->SAMSDB);
+//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
+       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
+       $row2=mysql_fetch_array($result2);
+       $passwd=crypt($password, substr($password, 0, 2));
+       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
+       $row=mysql_fetch_array($result);
+       $gauditor=$row['gauditor'];
+       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
+         {
+           $SAMSConf->domainusername="$row[nick]";
+         }
+     }
+*/
 
   $grauditor=0;
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
@@ -169,13 +187,10 @@ function UserAuth()
     {
       db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
-       
-       $result2=mysql_query("SELECT nick,id FROM squidusers WHERE id=\"$id\" ");
+//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
+       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
        $row2=mysql_fetch_array($result2);
-       $passwd=$password;
-       $password=crypt($passwd,$row2['nick']);
-       //echo "password=$password<BR>";
-       
+       $passwd=crypt($password, substr($password, 0, 2));
        $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
        $row=mysql_fetch_array($result);
        $gauditor=$row['gauditor'];
