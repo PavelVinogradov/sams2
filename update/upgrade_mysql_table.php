@@ -484,6 +484,8 @@ ModifyColumn("squidctrl.shablons","shour","tinyint(2)","tinyint(2) UNSIGNED ZERO
 ModifyColumn("squidctrl.shablons","smin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
 ModifyColumn("squidctrl.shablons","ehour","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
 ModifyColumn("squidctrl.shablons","emin","tinyint(2)","tinyint(2) UNSIGNED ZEROFILL");
+
+InsertData("update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2))"); 
 }
 
  upgrade_mysql_table();
