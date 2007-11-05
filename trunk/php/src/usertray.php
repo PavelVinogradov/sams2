@@ -186,19 +186,19 @@ function UserAuth()
   if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
     {
       db_connect($SAMSConf->SAMSDB) or exit();
-       mysql_select_db($SAMSConf->SAMSDB);
+      mysql_select_db($SAMSConf->SAMSDB);
 //update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
-       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
-       $row2=mysql_fetch_array($result2);
-       $passwd=crypt($password, substr($password, 0, 2));
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
-       $row=mysql_fetch_array($result);
-       $gauditor=$row['gauditor'];
-       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-         {
-           $SAMSConf->domainusername="$row[nick]";
-         }
-     }
+//       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
+//       $row2=mysql_fetch_array($result2);
+      $passwd=crypt($password, substr($password, 0, 2));
+      $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
+      $row=mysql_fetch_array($result);
+      $gauditor=$row['gauditor'];
+      if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
+        {
+          $SAMSConf->domainusername="$row[nick]";
+        }
+    }
   if($auth=="adld")
     {
 
