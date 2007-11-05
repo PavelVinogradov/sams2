@@ -4,6 +4,7 @@
 
 function AddShablonFieldAllDenied()
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $result=mysql_query("SELECT shablons.nick,shablons.name,sconfig.sname,redirect.filename,redirect.type FROM redirect LEFT JOIN sconfig ON sconfig.set=redirect.filename LEFT JOIN shablons ON shablons.name=sconfig.sname WHERE redirect.type='allow' GROUP BY shablons.nick");
@@ -19,6 +20,7 @@ function AddShablonFieldAllDenied()
 
 function UpdateShablonsAuth()
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $result=mysql_query("SHOW COLUMNS FROM squidctrl.shablons");
@@ -45,6 +47,7 @@ function UpdateShablonsAuth()
 
 function RenameTable($tablename,$newtablename)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   print("SEARCH TABLE $newtablename ");
@@ -76,6 +79,7 @@ function InsertData($txt)
 
 function CreatePrimaryKey($basename,$tablename,$fieldname)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $flag=0;
@@ -103,6 +107,7 @@ function CreatePrimaryKey($basename,$tablename,$fieldname)
 
 function CreateIndex($basename,$tablename,$fieldname)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $flag=0;
@@ -128,6 +133,7 @@ function CreateIndex($basename,$tablename,$fieldname)
 
 function ModifyColumn($tablename,$fieldname,$type,$newtype)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $flag=0;
@@ -135,7 +141,7 @@ function ModifyColumn($tablename,$fieldname,$type,$newtype)
   $result=mysql_query("SHOW COLUMNS FROM $tablename");
   while($row=mysql_fetch_array($result))
       {
-        if($row[Field]=="$fieldname"&&$row[Type]=="$type")
+        if($row['Field']=="$fieldname"&&$row['Type']=="$type")
           {
             $result2=mysql_query("ALTER TABLE $tablename MODIFY $fieldname $newtype");
             print(" ... MODIFY \n");
@@ -155,6 +161,7 @@ function ModifyColumn($tablename,$fieldname,$type,$newtype)
 
 function RenameColumn($tablename,$fieldname,$newfieldname,$newtype)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   $flag=0;
@@ -185,6 +192,7 @@ function RenameColumn($tablename,$fieldname,$newfieldname,$newtype)
 
 function UpgradeTable($tablename,$fieldname,$string)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   print("SEARCH FIELD $tablename.$fieldname ");
@@ -208,6 +216,7 @@ function UpgradeTable($tablename,$fieldname,$string)
 }
 function UpgradeTable2($tablename,$fieldname,$string,$position)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
 
   print("SEARCH FIELD $tablename.$fieldname ");
@@ -232,6 +241,7 @@ function UpgradeTable2($tablename,$fieldname,$string,$position)
 
 function AddTable($basename,$tablename,$fieldname,$string)
 {
+  $action="";
   if(isset($_GET["action"])) $action=$_GET["action"];
   print("SEARCH TABLE $basename.$tablename ");
   $result=mysql_query("SHOW COLUMNS FROM $basename.$tablename");
@@ -272,6 +282,7 @@ global $SGUARDLOGPATH;
 global $REDIRECTOR;
 global $AUTH;
 
+$action="";
 if(isset($_GET["action"])) $action=$_GET["action"];
 
 if($action!="web")
