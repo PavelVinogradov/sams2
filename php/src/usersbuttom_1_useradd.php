@@ -147,12 +147,9 @@ function AddUser()
   mysql_select_db($SAMSConf->SAMSDB);
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
-      $pass=$_GET["passwd"];
+	$pass=crypt($_GET["passwd"], substr($_GET["passwd"],0,2));
     }
-  else
-    {
-      $pass="none";
-    }
+
   if($enabled=="on")
      $enabled=1;
   else
