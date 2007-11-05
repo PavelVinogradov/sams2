@@ -45,11 +45,14 @@ function UpdateUser()
       if($enabled==0)
            UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
     }
-     
-  $passwd="none";
+
+
+  $result=mysql_query("SELECT passwd FROM squidusers WHERE id=\"$userid\" ");
+  $row=mysql_fetch_array($result);
+  $passwd=$row[0];
   if($auth=="ncsa"||$auth=="ip")
    {
-     if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
+     if(isset($_GET["passwd"])) $passwd=crypt($_GET["passwd"], substr($_GET["passwd"], 0, 2));
    }
 
   $result=mysql_query("UPDATE squidusers SET gauditor=\"$gauditor\",domain=\"$domain\",nick=\"$usernick\",family=\"$userfamily\",name=\"$username\",squidusers.soname=\"$usersoname\",squidusers.group=\"$usergroup\",squidusers.quotes=\"$userquote\",enabled=\"$enabled\",shablon=\"$usershablon\",ip=\"$userip\",ipmask=\"$useripmask\",passwd=\"$passwd\" WHERE id=\"$userid\" ");
@@ -109,7 +112,8 @@ function UpdateUserForm()
        print("<TD>\n");
        print("<B>$userbuttom_1_prop_UpdateUserForm_3:");
        print("<TD>\n");
-       print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\"");
+       //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\">");
+       print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20>");
     }
 
   print("<TR>\n");
