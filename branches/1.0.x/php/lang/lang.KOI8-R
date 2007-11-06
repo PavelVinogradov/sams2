@@ -674,7 +674,7 @@
   $userbuttom_6_chpasswd_ChUserPasswd_1="Сменен пароль пользователя ";
 
   $adminbuttom_1_prop_SamsReConfigForm_44="Домен пользователя в access.log записывается МАЛЕНЬКИМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывть";
+  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывать";
   $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫМИ";
   $adminbuttom_1_prop_SamsReConfigForm_20b="строчными";
   $adminbuttom_1_prop_SamsReConfigForm_20c="Без изменения";
