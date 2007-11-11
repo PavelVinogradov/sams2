@@ -1,16 +1,16 @@
 #!/bin/bash
 #
 # Author: Kudryashov Dmitriy (overmailed)
-# License: Unknown
+# License: GPL2
 #
 # DESCRIPTION
 # 1. из логов сквида выгрепываем последнюю запись о нашем юзере, из которой берём его ip
 # 2. из netstat выгрепываем ESTABLISHED соединения с этого ip до сквида
 # 3. на каждое соединение натравиливаем tcpkill
-
+#
 # BUGS
 # tcpkill вешается только на ethernet-интерфейсы, при том на все разом
-
+#
 # имя пользователя получается параметром. закомментируйте, чтобы запускать напрямую из SAMS
 # SAMSUSERNAME=$1
 
