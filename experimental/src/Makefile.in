@@ -108,6 +108,10 @@ samsparser_SOURCES = \
 	samsuser.h \
 	samsdb.cpp \
 	samsdb.h \
+	samshosts.cpp \
+	samshosts.h \
+	logparser.cpp \
+	logparser.h \
 	debug.cpp \
 	debug.h \
 	tools.cpp \
@@ -134,7 +138,8 @@ PROGRAMS = $(bin_PROGRAMS)
 
 am_samsparser_OBJECTS = samsparser.$(OBJEXT) samsconfig.$(OBJEXT) \
 	samsfile.$(OBJEXT) samsuser.$(OBJEXT) samsdb.$(OBJEXT) \
-	debug.$(OBJEXT) tools.$(OBJEXT)
+	samshosts.$(OBJEXT) logparser.$(OBJEXT) debug.$(OBJEXT) \
+	tools.$(OBJEXT)
 samsparser_OBJECTS = $(am_samsparser_OBJECTS)
 samsparser_LDADD = $(LDADD)
 samsparser_DEPENDENCIES =
@@ -143,8 +148,9 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 LDFLAGS = @LDFLAGS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/debug.Po ./$(DEPDIR)/samsconfig.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/samsdb.Po ./$(DEPDIR)/samsfile.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/debug.Po ./$(DEPDIR)/logparser.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/samsconfig.Po ./$(DEPDIR)/samsdb.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/samsfile.Po ./$(DEPDIR)/samshosts.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/samsparser.Po ./$(DEPDIR)/samsuser.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/tools.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -206,9 +212,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsconfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsdb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsfile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samshosts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsparser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/samsuser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tools.Po@am__quote@

@@ -2,13 +2,18 @@
 #define SAMS_CONFIG_H
 
 #include "defines.h"
+#include "samsdb.h"
+
+#define defDBSOURCE          "DBSOURCE"
+#define defDBUSER            "DBUSER"
+#define defDBPASSWORD        "DBPASSWORD"
+#define defSQUIDLOGDIR       "SQUIDLOGDIR"
+#define defSQUIDCACHEFILE    "SQUIDCACHEFILE"
 
 #define SQUID_DB          "SQUID_DB"
 #define SAMS_DB           "SAMS_DB"
 #define SAMSDEBUG         "SAMSDEBUG"
-#define SQUIDCACHEFILE    "SQUIDCACHEFILE"
 #define SQUIDROOTDIR      "SQUIDROOTDIR"
-#define SQUIDLOGDIR       "SQUIDLOGDIR"
 #define SAMSPATH          "SAMSPATH"
 #define SQUIDPATH         "SQUIDPATH"
 #define SQUIDGUARDLOGPATH "SQUIDGUARDLOGPATH"
@@ -23,76 +28,90 @@
 #define SHUTDOWNCOMMAND   "SHUTDOWNCOMMAND"
 
 /*!
- *  Чтение файла конфигурации.
- *  \return true при отсутствии ошибок и false в противном случае
- *  \param filename Имя файла настроек.
+ *  п╖я┌п╣п╫п╦п╣ я└п╟п╧п╩п╟ п╨п╬п╫я└п╦пЁя┐я─п╟я├п╦п╦.
+ *  \return true п©я─п╦ п╬я┌я│я┐я┌я│я┌п╡п╦п╦ п╬я┬п╦п╠п╬п╨ п╦ false п╡ п©я─п╬я┌п╦п╡п╫п╬п╪ я│п╩я┐я┤п╟п╣
+ *  \param filename п≤п╪я▐ я└п╟п╧п╩п╟ п╫п╟я│я┌я─п╬п╣п╨.
  *  \retval true
  *  \retval false
  */
 bool cfgRead (const string filename);
 
 /*!
- *  Возвращает строковое значение параметра \c attrname.
- *  При возникновении ошибки \c err устанавливается в ненулевое значение.
- *  \param attrname Интересуемое имя параметра
- *  \param err Код ошибки
- *  \return Значение параметра
+ *  п▓п╬п╥п╡я─п╟я┴п╟п╣я┌ я│я┌я─п╬п╨п╬п╡п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟ \c attrname.
+ *  п÷я─п╦ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦п╦ п╬я┬п╦п╠п╨п╦ \c err я┐я│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌я│я▐ п╡ п╫п╣п╫я┐п╩п╣п╡п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣.
+ *  \param attrname п≤п╫я┌п╣я─п╣я│я┐п╣п╪п╬п╣ п╦п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param err п п╬п╢ п╬я┬п╦п╠п╨п╦
+ *  \return п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 string cfgGetString (const string attrname, int &err);
 
 /*!
- *  Возвращает целочисленное значение параметра \c attrname.
- *  При возникновении ошибки \c err устанавливается в ненулевое значение.
- *  \param attrname Интересуемое имя параметра
- *  \param err Код ошибки
- *  \return Значение параметра
+ *  п▓п╬п╥п╡я─п╟я┴п╟п╣я┌ я├п╣п╩п╬я┤п╦я│п╩п╣п╫п╫п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟ \c attrname.
+ *  п÷я─п╦ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦п╦ п╬я┬п╦п╠п╨п╦ \c err я┐я│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌я│я▐ п╡ п╫п╣п╫я┐п╩п╣п╡п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣.
+ *  \param attrname п≤п╫я┌п╣я─п╣я│я┐п╣п╪п╬п╣ п╦п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param err п п╬п╢ п╬я┬п╦п╠п╨п╦
+ *  \return п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 int cfgGetInt (const string attrname, int &err);
 
 /*!
- *  Возвращает дробное значение параметра \c attrname.
- *  При возникновении ошибки \c err устанавливается в ненулевое значение.
- *  \param attrname Интересуемое имя параметра
- *  \param err Код ошибки
- *  \return Значение параметра
+ *  п▓п╬п╥п╡я─п╟я┴п╟п╣я┌ п╢я─п╬п╠п╫п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟ \c attrname.
+ *  п÷я─п╦ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦п╦ п╬я┬п╦п╠п╨п╦ \c err я┐я│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌я│я▐ п╡ п╫п╣п╫я┐п╩п╣п╡п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣.
+ *  \param attrname п≤п╫я┌п╣я─п╣я│я┐п╣п╪п╬п╣ п╦п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param err п п╬п╢ п╬я┬п╦п╠п╨п╦
+ *  \return п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 double cfgGetDouble (const string attrname, int &err);
 
 /*!
- *  Возвращает логическое значение параметра \c attrname.
- *  При возникновении ошибки \c err устанавливается в ненулевое значение.
- *  \param attrname Интересуемое имя параметра
- *  \param err Код ошибки
- *  \return Значение параметра
+ *  п▓п╬п╥п╡я─п╟я┴п╟п╣я┌ п╩п╬пЁп╦я┤п╣я│п╨п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟ \c attrname.
+ *  п÷я─п╦ п╡п╬п╥п╫п╦п╨п╫п╬п╡п╣п╫п╦п╦ п╬я┬п╦п╠п╨п╦ \c err я┐я│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌я│я▐ п╡ п╫п╣п╫я┐п╩п╣п╡п╬п╣ п╥п╫п╟я┤п╣п╫п╦п╣.
+ *  \param attrname п≤п╫я┌п╣я─п╣я│я┐п╣п╪п╬п╣ п╦п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param err п п╬п╢ п╬я┬п╦п╠п╨п╦
+ *  \return п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 bool cfgGetBool (const string attrname, int &err);
 
 /*!
- *  Устанавливает строковый параметр \c attrname в значение \c value.
- *  \param attrname Имя параметра
- *  \param value Значение параметра
+ *  пёя│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌ я│я┌я─п╬п╨п╬п╡я▀п╧ п©п╟я─п╟п╪п╣я┌я─ \c attrname п╡ п╥п╫п╟я┤п╣п╫п╦п╣ \c value.
+ *  \param attrname п≤п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param value п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 void cfgSetString (const string attrname, const string value);
 
 /*!
- *  Устанавливает целочисленный параметр \c attrname в значение \c value.
- *  \param attrname Имя параметра
- *  \param value Значение параметра
+ *  пёя│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌ я├п╣п╩п╬я┤п╦я│п╩п╣п╫п╫я▀п╧ п©п╟я─п╟п╪п╣я┌я─ \c attrname п╡ п╥п╫п╟я┤п╣п╫п╦п╣ \c value.
+ *  \param attrname п≤п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param value п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 void cfgSetInt (const string attrname, const int value);
 
 /*!
- *  Устанавливает дробный параметр \c attrname в значение \c value.
- *  \param attrname Имя параметра
- *  \param value Значение параметра
+ *  пёя│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌ п╢я─п╬п╠п╫я▀п╧ п©п╟я─п╟п╪п╣я┌я─ \c attrname п╡ п╥п╫п╟я┤п╣п╫п╦п╣ \c value.
+ *  \param attrname п≤п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param value п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 void cfgSetDouble (const string attrname, const double value);
 
 /*!
- *  Устанавливает логический параметр \c attrname в значение \c value.
- *  \param attrname Имя параметра
- *  \param value Значение параметра
+ *  пёя│я┌п╟п╫п╟п╡п╩п╦п╡п╟п╣я┌ п╩п╬пЁп╦я┤п╣я│п╨п╦п╧ п©п╟я─п╟п╪п╣я┌я─ \c attrname п╡ п╥п╫п╟я┤п╣п╫п╦п╣ \c value.
+ *  \param attrname п≤п╪я▐ п©п╟я─п╟п╪п╣я┌я─п╟
+ *  \param value п≈п╫п╟я┤п╣п╫п╦п╣ п©п╟я─п╟п╪п╣я┌я─п╟
  */
 void cfgSetBool (const string attrname, const bool value);
 
+class Config
+{
+public:
+  Config ();
+  ~Config ();
+  bool Read (DB * database);
+  float getKBSize ();
+  float getMBSize ();
+  bool useRealTraf ();
+protected:
+    DB * db;
+  float kb_size;
+  float mb_size;
+};
 #endif /* #ifndef SAMS_CONFIG_H */

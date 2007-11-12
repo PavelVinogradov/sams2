@@ -24,6 +24,10 @@ samsparser_SOURCES = \
 	samsuser.h \
 	samsdb.cpp \
 	samsdb.h \
+	samshosts.cpp \
+	samshosts.h \
+	logparser.cpp \
+	logparser.h \
 	debug.cpp \
 	debug.h \
 	tools.cpp \

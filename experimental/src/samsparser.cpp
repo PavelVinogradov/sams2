@@ -7,13 +7,14 @@
 #include "samsfile.h"
 #include "tools.h"
 #include "samsdb.h"
-
+#include "samsuser.h"
+#include "samshosts.h"
+#include "logparser.h"
 
 /*!
- *  Выводит список опций командной строки с кратким описанием
+ *  п▓я▀п╡п╬п╢п╦я┌ я│п©п╦я│п╬п╨ п╬п©я├п╦п╧ п╨п╬п╪п╟п╫п╢п╫п╬п╧ я│я┌я─п╬п╨п╦ я│ п╨я─п╟я┌п╨п╦п╪ п╬п©п╦я│п╟п╫п╦п╣п╪
  */
-void
-usage ()
+void usage ()
 {
   cout << endl;
   cout << "NAME" << endl;
@@ -42,23 +43,20 @@ usage ()
 }
 
 /*!
- *  Выводит версию программы и немного информации
+ *  п▓я▀п╡п╬п╢п╦я┌ п╡п╣я─я│п╦я▌ п©я─п╬пЁя─п╟п╪п╪я▀ п╦ п╫п╣п╪п╫п╬пЁп╬ п╦п╫я└п╬я─п╪п╟я├п╦п╦
  */
-void
-version ()
+void version ()
 {
   //cout << "samsparser " << VERSION << endl;
   cout << "samsparser VERSION" << endl;
   cout << "Written by anonymous." << endl;
   cout << endl;
-  cout << "This program comes with NO WARRANTY; not even for MERCHANTABILITY"
-    << endl;
+  cout << "This program comes with NO WARRANTY; not even for MERCHANTABILITY" << endl;
   cout << "or FITNESS FOR A PARTICULAR PURPOSE." << endl;
 }
 
 
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   string cmd = "";
   int parse_errors = 0;
@@ -67,68 +65,68 @@ main (int argc, char *argv[])
   uint dbglevel;
   string optname = "";
   DB db;
+  DBQuery query (&db);
 
+  // п║п╫п╟я┤п╟п╩п╟ п©я─п╬я┤п╦я┌п╟п╣п╪ п╨п╬п╫я└п╦пЁя┐я─п╟я├п╦я▌, п©п╟я─п╟п╪п╣я┌я─я▀ п╨п╬п╪п╟п╫п╢п╫п╬п╧ я│я┌я─п╬п╨п╦
+  // п╦п╪п╣я▌я┌ п©я─п╦п╬я─п╦я┌п╣я┌, п©п╬я┌п╬п╪я┐ п╟п╫п╟п╩п╦п╥п╦я─я┐я▌я┌я│я▐ п©п╬п╥п╤п╣
+  cfgRead ("/etc/sams.conf");
 
-  // Сначала прочитаем конфигурацию, параметры командной строки
-  // имеют приоритет, потому анализируются позже
-  cfgRead("/etc/sams.conf");
-
-  dbglevel = cfgGetInt(SAMSDEBUG, err);
+  dbglevel = cfgGetInt (SAMSDEBUG, err);
 
   if (err == ERR_OK)
-    dbgSetLevel(dbglevel);
+    dbgSetLevel (dbglevel);
 
 
   static struct option long_options[] = {
     // Commands
-    {"help", 1, 0, 'h'},	// Show help screen
-    {"version", 0, 0, 'V'},	// Show version
+    {"help", 1, 0, 'h'},        // Show help screen
+    {"version", 0, 0, 'V'},     // Show version
     // General options
-    {"verbose", 0, 0, 'v'},	// Print more informaion
-    {"debug", 1, 0, 'd'},	// Print lots of debugging messages
+    {"verbose", 0, 0, 'v'},     // Print more informaion
+    {"debug", 1, 0, 'd'},       // Print lots of debugging messages
     {0, 0, 0, 0}
   };
 
   while (1)
     {
-      int this_option_optind = optind ? optind : 1;
+//      int this_option_optind = optind ? optind : 1;
       int option_index = 0;
 
       c = getopt_long (argc, argv, "hVvd:", long_options, &option_index);
-      if (c == -1)		// no more options
-	break;
+      if (c == -1)              // no more options
+        break;
       switch (c)
-	{
-	case 0:
-	  optname = long_options[option_index].name;
-	  DEBUG (DEBUG2, "option: " << optname << "=" << optarg);
-	  break;
-	case 'h':
-	  DEBUG (DEBUG2, "option: --help");
-	  usage ();
-	  exit (0);
-	  break;
-	case 'V':
-	  DEBUG (DEBUG2, "option: --version");
-	  version ();
-	  exit (0);
-	  break;
-	case 'v':
-	  DEBUG (DEBUG2, "option: --verbose");
-	  dbgSetVerbose(true);
-	  break;
-	case 'd':
-	  if (sscanf (optarg, "%d", &dbglevel) != 1)
-	    dbglevel = 0;
-          dbgSetLevel(dbglevel);
-	  DEBUG (DEBUG2, "option: --debug=" << dbglevel);
-	  break;
-	case '?':
-	  break;
+        {
+        case 0:
+          optname = long_options[option_index].name;
+          DEBUG (DEBUG2, "option: " << optname << "=" << optarg);
+          break;
+        case 'h':
+          DEBUG (DEBUG2, "option: --help");
+          usage ();
+          exit (0);
+          break;
+        case 'V':
+          DEBUG (DEBUG2, "option: --version");
+          version ();
+          exit (0);
+          break;
+        case 'v':
+          DEBUG (DEBUG2, "option: --verbose");
+          dbgSetVerbose (true);
+          break;
+        case 'd':
+          if (sscanf (optarg, "%d", &dbglevel) != 1)
+            dbglevel = 0;
+          dbgSetLevel (dbglevel);
+          DEBUG (DEBUG2, "option: --debug=" << dbglevel);
+          break;
+        case '?':
+          break;
 
-	default:
-	  printf ("?? getopt returned character code 0%o ??\n", c);
-	}
+        default:
+          printf ("?? getopt returned character code 0%o ??\n", c);
+        }
     }
 
   if (parse_errors > 0)
@@ -137,50 +135,182 @@ main (int argc, char *argv[])
       exit (parse_errors);
     }
 
+  string datasource = cfgGetString (defDBSOURCE, err);
+  string user = cfgGetString (defDBUSER, err);
+  string pass = cfgGetString (defDBPASSWORD, err);
 
+  string squidlogdir = cfgGetString (defSQUIDLOGDIR, err);
+  string squidcachefile = cfgGetString (defSQUIDCACHEFILE, err);
 
-  /* Далее идут просто примеры, тесты различных функций
-   * никакой смысловой нагрузки они не несут
-   * и не соответствуют никакому стилю
-   */
-
-
-  db.Connect("sams_pg", "sams", "qwerty");
-
-  DBQuery query(&db);
-  char usr_nick[30];
-  long usr_enabled;
-  long usr_size;
-  long usr_quote;
-  char usr_tpl[30];
-  char tpl_auth[5];
-  query.BindCol( 1, SQL_C_CHAR, &usr_nick[0],   30);
-  query.BindCol( 2, SQL_C_LONG, &usr_enabled,   15);
-  query.BindCol( 3, SQL_C_LONG, &usr_size,      15);
-  query.BindCol( 4, SQL_C_LONG, &usr_quote,     15);
-  query.BindCol( 5, SQL_C_CHAR, &usr_tpl[0],    30);
-  query.BindCol( 6, SQL_C_CHAR, &tpl_auth[0],    5);
-
-string SQLcmd = "SELECT squidusers.nick,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.shablon,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name";
-
-
-  if (query.SendQueryDirect(SQLcmd))
-  {
-    INFO("Rows: " << query.RowsCount());
-    while (query.Fetch() != SQL_NO_DATA)
+  if (squidlogdir.empty () || squidcachefile.empty ())
     {
-      INFO("--------------------");
-      INFO("squidusers.nick:    " << usr_nick);
-      INFO("squidusers.enabled: " << usr_enabled);
-      INFO("squidusers.size:    " << usr_size);
-      INFO("squidusers.quotes:  " << usr_quote);
-      INFO("squidusers.shablon: " << usr_tpl);
-      INFO("shablons.auth:      " << tpl_auth);
+      ERROR ("Either " << defSQUIDLOGDIR << " or " << defSQUIDCACHEFILE << " not defined. Check SAMS config file.");
+      exit (1);
     }
-  }
-  query.reset();
 
-  
-  db.Disconnect();
+  if (datasource.empty ())
+    {
+      ERROR ("No datasource defined");
+      exit (1);
+    }
 
+
+  if (datasource.empty ())
+    {
+      ERROR ("No datasource defined");
+      exit (1);
+    }
+
+  if (db.Connect (datasource, user, pass) != true)
+    {
+      exit (1);
+    }
+
+  Config cfg;
+  cfg.Read (&db);
+
+
+
+/*
+// п÷я─п╬п╡п╣я─п╨п╟ я─п╟п╥п╩п╦я┤п╫я▀я┘ п╡п╦п╢п╬п╡ url. п·п╠я┴п╦п╧ я└п╬я─п╪п╟я┌ п╥п╟п©п╦я│п╦ п╡п╬я┌ я┌п╟п╬п╧:
+// [protocol://][user[@password]:]<canonical.name.dom|ip.address>[:port][/path]
+// п╡я─п╬п╢п╣ п╫п╦я┤п╣пЁп╬ п╫п╣ п©я─п╬п©я┐я│я┌п╦п╩ :)
+
+ std::vector<string> testUrl;
+ testUrl.push_back("www.domain.com");
+ testUrl.push_back("www.domain.com:3128");
+ testUrl.push_back("www.domain.com:3128/path/to/something");
+ testUrl.push_back("ftp://www.domain.com");
+ testUrl.push_back("http://www.domain.com:3128");
+ testUrl.push_back("smb://www.domain.com:3128/path/to/something");
+ testUrl.push_back("user:www.domain.com");
+ testUrl.push_back("user:www.domain.com:3128");
+ testUrl.push_back("user:www.domain.com:3128/path/to/something");
+ testUrl.push_back("ftp://user:www.domain.com");
+ testUrl.push_back("http://user:www.domain.com:3128");
+ testUrl.push_back("smb://user:www.domain.com:3128/path/to/something");
+ testUrl.push_back("user@password:www.domain.com");
+ testUrl.push_back("user@password:www.domain.com:3128");
+ testUrl.push_back("user@password:www.domain.com:3128/path/to/something");
+ testUrl.push_back("ftp://user@password:www.domain.com");
+ testUrl.push_back("http://user@password:www.domain.com:3128");
+ testUrl.push_back("smb://user@password:www.domain.com:3128/path/to/something");
+
+  std::vector<string>::iterator it;
+  Url *u = new Url();
+  for(it=testUrl.begin(); it != testUrl.end(); it++)
+    {
+      INFO("Testing " << (*it));
+      u->setUrl( (*it) );
+      INFO("proto:    " << u->getProto());
+      INFO("user:     " << u->getUser());
+      INFO("password: " << u->getPass());
+      INFO("address:  " << u->getAddress());
+      INFO("port:     " << u->getPort());
+      INFO("path:     " << u->getPath());
+      INFO("");
+      INFO("");
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Users users;
+  users.Read (&db);
+  users.Print ();
+
+  LocalNets local;
+  local.Read (&db);
+  local.Print ();
+
+  FILE *finp;
+  string access_log_path = squidlogdir + "/" + squidcachefile;
+  finp = fopen (access_log_path.c_str (), "r");
+  if (finp == NULL)
+    {
+      ERROR ("Cannot open input file");
+      exit (1);
+    }
+
+  string line;
+  char buf[1024];
+  SquidLogLine sll;
+  SAMSuser *usr;
+  while (!feof (finp))
+    {
+      if (fgets (&buf[0], 1023, finp) == NULL)
+        continue;
+      line = buf;
+      if (sll.setLine (line) != true)
+        continue;
+
+      INFO ("-----------------------------------");
+      INFO ("Parsing " << line);
+      usr = users.findByIdent (sll.getIdent ());
+
+      if (usr == NULL)
+        continue;
+
+      INFO ("Found user " << usr->asString ());
+
+      if (local.isLocal (sll.getUrl ()))
+        {
+          INFO ("Consider url is local");
+          continue;
+        }
+
+      switch (sll.getCacheResult ())
+        {
+        case CR_UNKNOWN:
+          ERROR ("Unknown cache result");
+          break;
+        case TCP_DENIED:
+        case UDP_DENIED:
+          break;
+        case TCP_HIT:
+        case TCP_MEM_HIT:
+        case TCP_REFRESH_HIT:
+        case TCP_REF_FAIL_HIT:
+        case TCP_IMS_HIT:
+        case UDP_HIT:
+          usr->addHit (sll.getSize ());
+        case TCP_NEGATIVE_HIT:
+        case TCP_MISS:
+        case TCP_REFRESH_MISS:
+        case TCP_CLIENT_REFRESH:
+        case TCP_CLIENT_REFRESH_MISS:
+        case TCP_IMS_MISS:
+        case TCP_SWAPFAIL:
+        case UDP_HIT_OBJ:
+        case UDP_MISS:
+        case UDP_INVALID:
+        case UDP_RELOADING:
+        case ERR_CLIENT_ABORT:
+        case ERR_NO_CLIENTS:
+        case ERR_READ_ERROR:
+        case ERR_CONNECT_FAIL:
+          usr->addSize (sll.getSize ());
+          break;
+        }
+
+    }
+
+  INFO ("End of parsing");
+
+  users.saveToDB (&db);
+
+  users.Print ();
+
+
+  db.Disconnect ();
 }

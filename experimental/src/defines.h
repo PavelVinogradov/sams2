@@ -6,6 +6,6 @@
 
 #define ERR_OK    0
 
-typedef std::basic_string<char> string;
+typedef std::basic_string < char >string;
 
 #endif

@@ -1,0 +1,1 @@
+indent --line-length 200 --comment-line-length 200 --dont-break-procedure-type --preserve-mtime --no-tabs src/*.cpp src/*.h
