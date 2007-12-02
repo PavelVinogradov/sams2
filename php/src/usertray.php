@@ -82,7 +82,9 @@ function NotUsersTreeUserAuth()
      }
 
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
-     $grauditor=$row['group'];
+    {
+      $grauditor=$row['group'];
+    }
      
  return($grauditor);
 }
