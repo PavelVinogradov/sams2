@@ -289,6 +289,13 @@ if($function=="nuserauth")
                $function="autherror";
            }
        }
+
+     if($SAMSConf->groupauditor != "")
+       {
+         print("<SCRIPT>\n");
+         print(" parent.lframe.location.href=\"lframe.php\"; \n");
+	 print("</SCRIPT> \n");
+       }
      $result=mysql_query("SELECT * FROM squidusers WHERE nick=\"$nick\" ");
      $row=mysql_fetch_array($result);
      $autherrorc=$row[autherrorc];
