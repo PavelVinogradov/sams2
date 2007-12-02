@@ -33,7 +33,7 @@
 #include "tools.h"
 
 struct samsusers {
-  char user[25];
+  char user[26];
   char domain[25];
   int ip[6];
   int ipmask[6];

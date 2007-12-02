@@ -38,7 +38,7 @@
 #include "tools.h"
 
 struct url_replace {
-  char user[25];
+  char user[26];
   char domain[25];
   char url[50];
   char newurl[50];
@@ -47,7 +47,7 @@ struct url_replace {
 
 struct samsusers 
 {
-  char user[25];
+  char user[26];
   char domain[25];
   int  ip[6];
   int  mask[6];
