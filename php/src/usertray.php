@@ -11,7 +11,7 @@ function NotUsersTreeUserAuth()
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["user"])) $userdomain=$_POST["user"];
-  $grauditor=0;
+  $grauditor="";
   $SAMSConf->domainusername="";
   if($SAMSConf->AUTH=="adld")
     {
@@ -99,7 +99,6 @@ function NotUsersTreeUserAuth()
      }
 */
 
-  $grauditor=0;
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
     {
          $grauditor=$row['group'];
