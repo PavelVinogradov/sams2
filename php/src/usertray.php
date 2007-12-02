@@ -102,9 +102,6 @@ function NotUsersTreeUserAuth()
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
     {
          $grauditor=$row['group'];
-         print("<SCRIPT>\n");
-         print(" parent.lframe.location.href=\"lframe.php\"; \n");
-         print("</SCRIPT> \n");
     }
      
  return($grauditor);
