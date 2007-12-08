@@ -1959,7 +1959,7 @@ int MakeACLFiles(MYSQL *conn)
 		  {
                     fprintf(fout,"%s/255.255.255.255\n",row2[11]&&strlen(row2[11])>4);
                     if(RREJIK==1&&atoi(row2[10])>0)
-                      fprintf(fout2,"%s",row2[11]);
+                      fprintf(fout2,"%s\n",row2[11]);
 		  }  
 		  
 //                fprintf(fout,"\n");
