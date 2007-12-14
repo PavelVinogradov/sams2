@@ -1,0 +1,13 @@
+Index: etc/sams.conf
+===================================================================
+--- etc/sams.conf	(revision 214)
++++ etc/sams.conf	(working copy)
+@@ -12,7 +12,7 @@
+ SAMSPATH=/usr/local
+ SQUIDPATH=/usr/sbin
+ SQUIDGUARDLOGPATH=/var/log
+-SQUIDGUARDDBPATH=/var/db/squidguard
++SQUIDGUARDDBPATH=/etc/squid
+ RECODECOMMAND=iconv -f KOI8-R -t 866 %finp > %fout
+ LDAPSERVER=servername_or_ipadress
+ LDAPBASEDN=your.domain
