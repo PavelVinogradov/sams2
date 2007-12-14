@@ -1349,7 +1349,8 @@ int MakeACLFiles(MYSQL *conn)
      system(&shablonname[0]);
      sprintf(&shablonname[0],"%s/_sams_banlists",conf.sgdbpath);
      flag = mkdir(&shablonname[0], 0755);
-
+     sprintf(&shablonname[0],"chown -R %s %s/_sams_banlists", &squiduser[0], conf.sgdbpath);
+     system(&shablonname[0]);
    }
 
 
