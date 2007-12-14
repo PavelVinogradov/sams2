@@ -9,6 +9,6 @@ Package: sams
 Architecture: any
 Depends: ${shlibs:Depends}, apache2 | httpd, php5, php5-mysql
 Recommends: mysql-server
-Suggests: php5-gd, php5-ldap 
+Suggests: php5-gd, php5-ldap, squidguard
 Description: Squid Account Management System (SAMS)
  Long description there
