@@ -56,7 +56,7 @@ build-indep-stamp:  config.status
 	#$(MAKE) doc
 	touch $@
 
-clean:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
