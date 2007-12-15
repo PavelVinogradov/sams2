@@ -1,7 +1,6 @@
-Index: etc/sams.conf
-===================================================================
---- etc/sams.conf	(revision 214)
-+++ etc/sams.conf	(working copy)
+diff -urN 1.0.x.orig/etc/sams.conf 1.0.x.debian/etc/sams.conf
+--- 1.0.x.orig/etc/sams.conf	2007-11-02 20:45:42.000000000 +0400
++++ 1.0.x.debian/etc/sams.conf	2007-12-15 00:06:23.000000000 +0400
 @@ -12,7 +12,7 @@
  SAMSPATH=/usr/local
  SQUIDPATH=/usr/sbin

@@ -1,8 +1,7 @@
-Index: samsdaemon.c
-===================================================================
---- samsdaemon.c	(revision 214)
-+++ samsdaemon.c	(working copy)
-@@ -2582,7 +2582,7 @@
+diff -urN 1.0.x.orig/samsdaemon.c 1.0.x.debian/samsdaemon.c
+--- 1.0.x.orig/samsdaemon.c	2007-12-14 23:30:58.000000000 +0400
++++ 1.0.x.debian/samsdaemon.c	2007-12-15 00:05:12.000000000 +0400
+@@ -2583,7 +2583,7 @@
       printf("Ok \n");
  
    
@@ -11,7 +10,7 @@ Index: samsdaemon.c
    i=0;
    tt=time(NULL);
    t=localtime(&tt);
-@@ -2955,7 +2955,7 @@
+@@ -2956,7 +2956,7 @@
  	         {
                      sprintf(&str[0],"squidGuard -C all -c %s/squidGuard.conf",conf.sgdbpath);
                      system(&str[0]);
