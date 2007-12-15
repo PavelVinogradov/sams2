@@ -13,6 +13,9 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+# quilt support
+include /usr/share/quilt/quilt.make
+
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
@@ -30,7 +33,7 @@ else
 	CFLAGS += -O2
 endif
 
-config.status: configure
+config.status: configure patch
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
