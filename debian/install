@@ -3,4 +3,4 @@ sams samsdaemon samsf samsredir bin
 php/* usr/share/sams
 doc/* usr/share/doc/sams/html
 mysql usr/share/sams/data
-debian/etc/apache.conf etc/apache2/conf.d/sams.conf
+debian/etc/apache.sams.conf etc/apache2/conf.d
