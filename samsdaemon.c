@@ -2481,7 +2481,7 @@ int main (int argc, char *argv[])
   struct tm *t,*t2;
   struct stat st; 
   int sams_sec;
-  int sams_clr_month;
+  int sams_cur_month;
   int sams_clr_day;
   int SD=0;
   int clearflag;
@@ -2590,7 +2590,7 @@ int main (int argc, char *argv[])
        sprintf(&str[0],"%s/bin/samsf ", conf.samspath);
        system(&str[0]);
     }
-  sams_clr_month=t->tm_mon+1;
+  sams_cur_month=t->tm_mon;
   sams_clr_day=t->tm_mday;
   sams_sec=(60*sams_step)-t->tm_sec;
 
@@ -2668,17 +2668,14 @@ int main (int argc, char *argv[])
 		 
 		 }
 
-               //if(DEBUG==1)
-  	          //printf("sams_clr_month=%d month=%d sams_clr_day=%d day=%d COUNTCLEAN=%d\n", sams_clr_month, t->tm_mon+1, sams_clr_day, t->tm_mday, COUNTCLEAN);
-
                clearflag=0;
 	       //Если настал новый месяц то проверяем необходимость ротации БД
-	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0) && conf.cachenum<2)
+	       if((sams_cur_month!=t->tm_mon && SQUIDBASE>0) && conf.cachenum<2)
 		 {
                    if(DEBUG==1)
   	              printf("New month. We need purge our database.\n");
 
-                   sams_clr_month=t->tm_mon+1;
+                   sams_cur_month=t->tm_mon;
                   
 		   if(DEBUG==1)
                      printf("Save SQUID base\n");
