@@ -295,7 +295,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 			      {
                                 users[samsuser-1].traffic+=size-hitsize;
 				if(DEBUG>0)
-				  printf("REALTRAFfic = %d -%d\n");
+				  printf("REALTRAFfic = %15.0lf - %ld\n", size, hitsize);
 			      }  
                             else
 			      {
