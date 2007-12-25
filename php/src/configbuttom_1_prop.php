@@ -148,8 +148,8 @@ function SamsReConfigForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  $SAMSConf->access=UserAccess();
+  if($SAMSConf->access!=2)     {       exit;     }
   
 
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfigForm_1");
@@ -166,8 +166,8 @@ function SamsReConfigForm()
            print("    formname.plus.disabled=false; \n");
            print("    formname.at.disabled=false; \n");
            print("    formname.slashe.disabled=false; \n");
-//		   print("    document.getElementById('c1').innerHTML='YES'; ");
-		   print("}\n");
+           print("}\n");
+           
            print("function DisableCheckBox(formname)\n");
            print("{\n");
            print("    formname.ntlmdomain.disabled=true; \n");
@@ -194,18 +194,17 @@ function SamsReConfigForm()
 
            print("</SCRIPT>\n");
 
-           print("</SCRIPT>\n");
-
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
   $result=mysql_query("SELECT * FROM sams");
   $row=mysql_fetch_array($result);
+  
   print("<FORM NAME=\"samsreconfigform\" ACTION=\"main.php\">\n");
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
+  print("<BR>\n");
+  print("<INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"samsreconfig\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"configbuttom_1_prop.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"defauth\" value=\"$row[auth]\">\n");
 
   print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_45:</B>\n");
   
@@ -215,55 +214,53 @@ function SamsReConfigForm()
   print("<TD><SELECT NAME=\"traffic\">\n");
   if($row['realsize']=="real")
     {
-       print("<OPTION VALUE=\"real\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_47");
-       print("<OPTION VALUE=\"full\"> $adminbuttom_1_prop_SamsReConfigForm_48");
+      print("<OPTION VALUE=\"real\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_47\n");
+      print("<OPTION VALUE=\"full\"> $adminbuttom_1_prop_SamsReConfigForm_48\n");
     }  
   else
     {
-       print("<OPTION VALUE=\"real\"> $adminbuttom_1_prop_SamsReConfigForm_47");
-       print("<OPTION VALUE=\"full\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_48");
+      print("<OPTION VALUE=\"real\"> $adminbuttom_1_prop_SamsReConfigForm_47\n");
+      print("<OPTION VALUE=\"full\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_48\n");
     }   
   print("</SELECT>\n");
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_49</B>\n");
   if($row['checkdns']=="Y")
-            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"checkdns\" CHECKED>\n");
+    print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"checkdns\" CHECKED>\n");
   else
-     {
-	        print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"checkdns\" > \n");
-    }
+    print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"checkdns\" > \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_51</B>\n");
   print("<TD><SELECT NAME=\"loglevel\">\n");
   for($i=0;$i<10;$i++)
     {
-        if($row['loglevel']==$i)
-             print("<OPTION VALUE=\"$i\" SELECTED> $i");
-	 else    
-             print("<OPTION VALUE=\"$i\"> $i");
+      if($row['loglevel']==$i)
+        print("<OPTION VALUE=\"$i\" SELECTED> $i\n");
+      else    
+        print("<OPTION VALUE=\"$i\"> $i\n");
     }
-
+  print("</SELECT>\n");
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_52</B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"defaultdomain\" value=\"$row[defaultdomain]\">\n");
             
   $scount=0;
-    if ($handle2 = opendir("./src/script"))
+  if ($handle2 = opendir("./src/script"))
+    {
+      while (false !== ($file = readdir($handle2)))
         {
-	  while (false !== ($file = readdir($handle2)))
+	  if($file!="."&&$file!=".."&&$file!=".svn")
             {
-		if($file!="."&&$file!=".."&&$file!=".svn")
-		  {
-			       if(strlen($file)>0)
-			         {
-					$script[$scount]=$file;
-					$scount++;
-				}  
-
-		  }
+	      if(strlen($file)>0)
+                {
+		  $script[$scount]=$file;
+		  $scount++;
+		}  
             }
         }
+    }
+
   print("<TR>\n");
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_56</B>\n");
   print("<TD><SELECT NAME=\"udscript\" ID=\"udscript\" >\n");
@@ -285,10 +282,8 @@ function SamsReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adminaddr\" value=\"$row[adminaddr]\">\n");
   
   print("</TABLE>\n");
-
-  
+ 
   print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_17</B>\n");
-
 
   print("<TABLE WIDTH=\"90%\" BORDER=0 >\n");
   print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2</B><TD>\n");
@@ -298,19 +293,19 @@ function SamsReConfigForm()
   $ADLDCHECKED="";
   $DOMAINDISABLE="DISABLED";
   if($row['auth']=="ip")
-	        		$IPCHECKED="CHECKED";
+    $IPCHECKED="CHECKED";
   else if($row['auth']=="ncsa")
-    	   			 $NCSACHECKED="CHECKED";
+    $NCSACHECKED="CHECKED";
   else if($row['auth']=="adld")
-        {
-    	   			 $ADLDCHECKED="CHECKED";
-				 $DOMAINDISABLE="ENABLED";
-	} 
+    {
+      $ADLDCHECKED="CHECKED";
+      $DOMAINDISABLE="ENABLED";
+    } 
   else
-        {
-       				 $NTLMCHECKED="CHECKED";
-				 $DOMAINDISABLE="ENABLED";
-	}
+    {
+      $NTLMCHECKED="CHECKED";
+      $DOMAINDISABLE="ENABLED";
+    }
   print("<TR bgcolor=blanchedalmond><TD VALIGN=TOP >");
   print("<INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ntlm\" $NTLMCHECKED  onclick=EnableCheckBox(samsreconfigform) onchange=EnableDomainName(samsreconfigform)>\n");
   $sdomain="";
@@ -328,7 +323,7 @@ function SamsReConfigForm()
   print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
   print("  </B>\n<B>)</B>\n");
   print("<BR><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"adld\" $ADLDCHECKED  onclick=EnableCheckBox(samsreconfigform) onchange=EnableDomainName(samsreconfigform)>\n");
-  print("  <B>Active Directory</B><BR>(Experim≈ntal)\n");
+  print("  <B>Active Directory</B><BR>(Experimental)\n");
   
   print("<TD name=c1  ID=\"c1\">");
   if($row['ntlmdomain']=="Y")
@@ -336,47 +331,48 @@ function SamsReConfigForm()
   else
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"ntlmdomain\" $DOMAINDISABLE onchange=EnableDomainName(samsreconfigform)>$adminbuttom_1_prop_SamsReConfigForm_19\n");
   
-//  print("<BR>$adminbuttom_1_prop_SamsReConfigForm_20\n");
   print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
   print("<SELECT NAME=\"bigdomain\" onchange=EnableDomainName(samsreconfigform)>\n");
   if($row['bigd']=="Y")
-            print("<OPTION VALUE=\"Y\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+    print("<OPTION VALUE=\"Y\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
   else
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+    print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
      
   if($row['bigd']=="S")
-            print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  
   if($row['bigd']!="Y"&&$row['bigd']!="S")
-            print("<OPTION VALUE=\"N\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+    print("<OPTION VALUE=\"N\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   else
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+    print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+
   if($row['bigd']=="A")
-            print("<OPTION VALUE=\"A\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"A\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   
-  
-  
-  print("</SELECT > $adminbuttom_1_prop_SamsReConfigForm_20d\n");
+  print("</SELECT> $adminbuttom_1_prop_SamsReConfigForm_20d\n");
 
   print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
   print("<SELECT NAME=\"bigusername\" onchange=EnableDomainName(samsreconfigform)>\n");
   if($row['bigu']=="Y")
-            print("<OPTION VALUE=\"Y\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+    print("<OPTION VALUE=\"Y\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
   else
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+    print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
      
   if($row['bigu']=="S")
-            print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+    print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+
   if($row['bigu']!="Y"&&$row['bigu']!="S")
-            print("<OPTION VALUE=\"N\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+    print("<OPTION VALUE=\"N\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   else
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-  print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
+    print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+
+  print("</SELECT> $adminbuttom_1_prop_SamsReConfigForm_20d\n");
   
   print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
   if(strpos($row['separator'],"+")!=false)
@@ -392,11 +388,8 @@ function SamsReConfigForm()
   else
      print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"  $DOMAINDISABLE> <B>@</B> \n");
      
-
+  print("<P>\n");
   
-  print("<P >\n");
-
-     
   if($row['auth']=="ntlm"||$row['auth']=="adld")
      print("<BR><INPUT TYPE=\"BUTTON\" NAME=\"testpdc\" VALUE=\"$adminbuttom_1_prop_SamsReConfigForm_39\" onclick=TestPDC(samsreconfigform) >\n");
   else
@@ -406,6 +399,7 @@ function SamsReConfigForm()
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"nameencode\" $DOMAINDISABLE CHECKED >\n");
   else
      print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"nameencode\" $DOMAINDISABLE >\n");
+
   print("$adminbuttom_1_prop_SamsReConfigForm_28");
   print("<BR>$adminbuttom_1_prop_SamsReConfigForm_29");
   print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ncsa\" $NCSACHECKED  onclick=DisableCheckBox(samsreconfigform)><B>NCSA</B><TD>\n");
@@ -459,28 +453,27 @@ function SamsReConfigForm()
   print("<TR><TD> $adminbuttom_1_prop_SamsReConfigForm_25\n");
   print("<TR><TD><LI> $adminbuttom_1_prop_SamsReConfigForm_26\n");
   print("<TR><TD><LI> $adminbuttom_1_prop_SamsReConfigForm_27\n");
+  print("</TABLE>");
+       print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+       print("function EnableParser(formname)\n");
+       print("{");
+       print("  var parser_on=formname.parser_on.checked; \n");
+       print("  if(parser_on==true) \n");
+       print("    {\n");
+       print("      formname.parser.disabled=false; \n");
+       print("      formname.parser_time.disabled=false; \n");
+       print("      DisableParserTime(formname); \n");
+       print("    }\n");
+       print("  else \n");
+       print("    {\n");
+       print("      formname.parser.disabled=true; \n");
+       print("      formname.parser_time.disabled=true; \n");
+       print("    }\n");
+       print("}\n");
+       print("</SCRIPT>\n");
 
-           print("<SCRIPT LANGUAGE=JAVASCRIPT>");
-           print("function EnableParser(formname)");
-           print("{");
-           print("  var parser_on=formname.parser_on.checked; \n");
-  	       print("  if(parser_on==true) \n");
-           print("    {\n");
-           print("      formname.parser.disabled=false; ");
-           print("      formname.parser_time.disabled=false; ");
-           print("      DisableParserTime(formname); ");
-		   print("    }\n");
-  	       print("  else \n");
-           print("    {\n");
-           print("      formname.parser.disabled=true; ");
-           print("      formname.parser_time.disabled=true; ");
-           print("    }\n");
-           print("}\n");
-           print("</SCRIPT>");
 
-
-  print("<P>\n");
-  print("<P><CENTER><B>$adminbuttom_1_prop_SamsReConfigForm_30</B></CENTER>\n");
+  print("<CENTER><B>$adminbuttom_1_prop_SamsReConfigForm_30</B></CENTER>\n");
   print("<TABLE WIDTH=\"90%\" BORDER=0 >\n");
 
   $SLEEP=1;
@@ -492,36 +485,42 @@ function SamsReConfigForm()
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_38</B>\n");
   if($row['parser_on']=="Y")
-            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"parser_on\" CHECKED onchange=EnableParser(samsreconfigform)>\n");
+    print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"parser_on\" CHECKED onchange=EnableParser(samsreconfigform)>\n");
   else
-     {
-            $DISABLED_PARSER="DISABLED";
-	        print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"parser_on\" onchange=EnableParser(samsreconfigform)> \n");
+    {
+      $DISABLED_PARSER="DISABLED";
+      print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"parser_on\" onchange=EnableParser(samsreconfigform)> \n");
     }
 
   print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B> $adminbuttom_1_prop_SamsReConfigForm_40</B>\n");
   print("<TD><SELECT NAME=\"parser\" $DISABLED_PARSER  onchange=DisableParserTime(samsreconfigform)>\n");
+
   if($row['parser']=="analog")
     {
-	   print("<OPTION VALUE=\"analog\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
+       print("<OPTION VALUE=\"analog\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
        $DISABLED_PARSER="DISABLED";
-	}
+    }
   else
     {
        print("<OPTION VALUE=\"analog\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
-	}
+    }
+
   if($row['parser']=="diskret")
      print("<OPTION VALUE=\"diskret\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
   else
      print("<OPTION VALUE=\"diskret\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+
   print("</SELECT>\n");
+
   if($row['parser_time']>0)
      $time=$row['parser_time'];
   else
      $time=1;
+
   print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B>$adminbuttom_1_prop_SamsReConfigForm_35 </B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"parser_time\" SIZE=5 VALUE=\"$time\" $DISABLED_PARSER> $adminbuttom_1_prop_SamsReConfigForm_36\n");
   print("<TR bgcolor=blanchedalmond><TD><B>$adminbuttom_1_prop_SamsReConfigForm_37 </B>\n");
+
   if($row['count_clean']=="Y")
      print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"count_clean\" CHECKED >\n");
   else
@@ -529,24 +528,20 @@ function SamsReConfigForm()
 
   print("</TABLE >\n");
 
-           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
-           print("function DisableParserTime(formname) \n");
-           print("{ \n");
-           print("  var parser_on=formname.parser.value; \n");
-  	       print("  if(parser_on==\"diskret\") \n");
-           print("    {\n");
-           print("      formname.parser_time.disabled=false;  \n");
-           print("    }\n");
-  	       print("  else \n");
-           print("    {\n");
-           print("      formname.parser_time.disabled=true;  \n");
-           print("    }\n");
-           print("}\n");
-           print("</SCRIPT> \n");
-
-
-
-
+       print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
+       print("function DisableParserTime(formname) \n");
+       print("{ \n");
+       print("  var parser_on=formname.parser.value; \n");
+       print("  if(parser_on==\"diskret\") \n");
+       print("    {\n");
+       print("      formname.parser_time.disabled=false;  \n");
+       print("    }\n");
+       print("  else \n");
+       print("    {\n");
+       print("      formname.parser_time.disabled=true;  \n");
+       print("    }\n");
+       print("}\n");
+       print("</SCRIPT> \n");
 
 
   print("<P><TABLE WIDTH=\"90%\" BORDER=0 >\n");
@@ -562,56 +557,60 @@ function SamsReConfigForm()
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_6</B>\n");
   print("<TD><SELECT NAME=\"redirector\">\n");
+
   if($row['redirector']=="none")
-            print("<OPTION VALUE=\"none\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_43");
+    print("<OPTION VALUE=\"none\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_43\n");
   else
-            print("<OPTION VALUE=\"none\" > $adminbuttom_1_prop_SamsReConfigForm_43");
+    print("<OPTION VALUE=\"none\" > $adminbuttom_1_prop_SamsReConfigForm_43\n");
+
   if($row['redirector']=="sams")
-            print("<OPTION VALUE=\"sams\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_7");
+    print("<OPTION VALUE=\"sams\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_7\n");
   else
-            print("<OPTION VALUE=\"sams\" > $adminbuttom_1_prop_SamsReConfigForm_7");
+    print("<OPTION VALUE=\"sams\" > $adminbuttom_1_prop_SamsReConfigForm_7\n");
   
   if($row['redirector']=="rejik")
-            print("<OPTION VALUE=\"rejik\" SELECTED> Rejik");
+    print("<OPTION VALUE=\"rejik\" SELECTED> Rejik\n");
   else
-            print("<OPTION VALUE=\"rejik\"> Rejik");
+    print("<OPTION VALUE=\"rejik\"> Rejik\n");
   
   if($row['redirector']=="squidguard")
-            print("<OPTION VALUE=\"squidguard\" SELECTED> SquidGuard");
+    print("<OPTION VALUE=\"squidguard\" SELECTED> SquidGuard\n");
   else
-            print("<OPTION VALUE=\"squidguard\"> SquidGuard");
+    print("<OPTION VALUE=\"squidguard\"> SquidGuard\n");
+
   if($row['redirector']=="squid")
-            print("<OPTION VALUE=\"squid\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_8");
+    print("<OPTION VALUE=\"squid\" SELECTED> $adminbuttom_1_prop_SamsReConfigForm_8\n");
   else
-            print("<OPTION VALUE=\"squid\"> $adminbuttom_1_prop_SamsReConfigForm_8");
+    print("<OPTION VALUE=\"squid\"> $adminbuttom_1_prop_SamsReConfigForm_8\n");
+
   print("</SELECT>\n");
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_9</B>\n");
+
   if($row['delaypool']=="Y")
-            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"delaypool\" CHECKED> \n");
+    print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"delaypool\" CHECKED> \n");
   else
-            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"delaypool\" > \n");
+    print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"delaypool\" > \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_53</B>\n");
   print("<TD><SELECT NAME=\"squidbase\">\n");
   $SELECTED="";
   if($row['squidbase']==0)
-      $SELECTED="SELECTED";
-  print("<OPTION VALUE=\"0\" $SELECTED> $configbuttom_1_prop_SamsReConfigForm_54");
+    $SELECTED="SELECTED";
+  print("<OPTION VALUE=\"0\" $SELECTED> $configbuttom_1_prop_SamsReConfigForm_54\n");
   for($i=1;$i<=12;$i++)
     {
       $SELECTED="";
       if($row['squidbase']==$i)
         $SELECTED="SELECTED";
-      print("<OPTION VALUE=\"$i\" $SELECTED> $i");
+      print("<OPTION VALUE=\"$i\" $SELECTED> $i\n");
     } 
   print("</SELECT>\n");
   print("$configbuttom_1_prop_SamsReConfigForm_55\n");
 
-  
-  
   print("</TABLE>\n");
+  print("</P>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
   print("</FORM>\n");
 }
@@ -634,11 +633,5 @@ function configbuttom_1_prop()
     }
 
 }
-
-
-
-
-
-
 
 ?>
