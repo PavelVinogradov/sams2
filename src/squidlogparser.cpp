@@ -120,8 +120,6 @@ void SquidLogParser::parseFile (const string & fname)
     {
       #ifdef USE_MYSQL
       connMYSQL = new MYSQLConn();
-      MYSQL_RES *res = NULL;
-      MYSQL_ROW row = NULL;
       if (!connMYSQL->connect ())
         {
           delete connMYSQL;
@@ -157,6 +155,20 @@ void SquidLogParser::parseFile (const string & fname)
   if (strcmp (s_version, VERSION) != 0)
     {
       ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << s_version);
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          delete connODBC;
+          delete queryODBC;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          delete connMYSQL;
+          delete queryMYSQL;
+          #endif
+        }
       return;
     }
   else
@@ -286,7 +298,77 @@ void SquidLogParser::parseFile (const string & fname)
         }
       #endif
     }
-
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      if (!queryMYSQL->prepareQuery (sql_cmd.str ()))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (1, MYSQL_TYPE_DATE, &date_time, sizeof (date_time)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (2, MYSQL_TYPE_TIME, &date_time, sizeof (date_time)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (3, MYSQL_TYPE_STRING, s_user, sizeof (s_user)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (4, MYSQL_TYPE_STRING, s_domain, sizeof (s_domain)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (5, MYSQL_TYPE_LONG, &s_size, 0))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (6, MYSQL_TYPE_LONG, &s_hit, 0))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (7, MYSQL_TYPE_STRING, s_ipaddr, sizeof (s_ipaddr)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (8, MYSQL_TYPE_LONG, &s_period, 0))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (9, MYSQL_TYPE_STRING, s_method, sizeof (s_method)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (10, MYSQL_TYPE_STRING, s_url, sizeof (s_url)))
+        {
+          delete connMYSQL;
+          delete queryMYSQL;
+          return;
+        }
+      #endif
+    }
 
 
   fstream in;
@@ -294,6 +376,20 @@ void SquidLogParser::parseFile (const string & fname)
   if (!in.is_open ())
     {
       ERROR ("Failed to open file " << fname);
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          delete connODBC;
+          delete queryODBC;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          delete connMYSQL;
+          delete queryMYSQL;
+          #endif
+        }
       return;
     }
 
@@ -390,6 +486,13 @@ void SquidLogParser::parseFile (const string & fname)
               continue;
           #endif
         }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          if (!queryMYSQL->sendQuery ())
+              continue;
+          #endif
+        }
     }
   in.close ();
 
@@ -404,7 +507,19 @@ void SquidLogParser::parseFile (const string & fname)
       #ifdef USE_UNIXODBC
       if (!queryODBC->sendQueryDirect (sql_cmd.str ()))
         {
+          delete queryODBC;
           delete connODBC;
+          return;
+        }
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      if (!queryMYSQL->sendQueryDirect (sql_cmd.str ()))
+        {
+          delete queryMYSQL;
+          delete connMYSQL;
           return;
         }
       #endif
@@ -421,11 +536,20 @@ void SquidLogParser::parseFile (const string & fname)
     {
       #ifdef USE_UNIXODBC
       queryODBC->sendQueryDirect (sql_cmd.str ());
+      delete queryODBC;
       delete connODBC;
       return;
       #endif
     }
-
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      queryMYSQL->sendQueryDirect (sql_cmd.str ());
+      delete queryMYSQL;
+      delete connMYSQL;
+      return;
+      #endif
+    }
 
   delete proxy;
 

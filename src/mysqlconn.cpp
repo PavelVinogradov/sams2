@@ -15,6 +15,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "mysqlconn.h"
+
+#ifdef USE_MYSQL
+
 #include "debug.h"
 
 #include "samsconfig.h"
@@ -76,3 +79,4 @@ void MYSQLConn::disconnect ()
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnected.");
 }
 
+#endif // #ifdef USE_MYSQL

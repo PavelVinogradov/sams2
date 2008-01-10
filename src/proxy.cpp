@@ -24,7 +24,11 @@
 #include "odbcquery.h"
 #endif
 
-#include "dbconn.h"
+#ifdef USE_MYSQL
+#include "mysqlconn.h"
+#include "mysqlquery.h"
+#endif
+
 #include "proxy.h"
 #include "debug.h"
 #include "tools.h"
@@ -154,31 +158,46 @@ void Proxy::load ()
   char s_realsize[5];
   basic_stringstream < char >sqlcmd;
 
+  sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize from proxy";
+  sqlcmd << " where s_proxy_id=" << _id;
   if (_conn->getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
       ODBCQuery queryODBC( (ODBCConn*)_conn );
 
-      if (!queryODBC.bindCol (1, SQL_C_CHAR, &s_auth[0], sizeof (s_auth)))
+      if (!queryODBC.bindCol (1, SQL_C_CHAR, s_auth, sizeof (s_auth)))
           return;
       if (!queryODBC.bindCol (2, SQL_C_LONG, &s_checkdns, 0))
           return;
-      if (!queryODBC.bindCol (3, SQL_C_CHAR, &s_realsize[0], sizeof (s_realsize)))
+      if (!queryODBC.bindCol (3, SQL_C_CHAR, s_realsize, sizeof (s_realsize)))
           return;
       if (!queryODBC.bindCol (4, SQL_C_LONG, &_kbsize, 0))
           return;
-      if (!queryODBC.bindCol (5, SQL_C_LONG, &_mbsize, 0))
-          return;
 
-      sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_mbsize from proxy";
-      sqlcmd << " where s_proxy_id=" << _id;
       if (!queryODBC.sendQueryDirect (sqlcmd.str ()))
           return;
       if (!queryODBC.fetch ())
-        {
-          ERROR ("Unable to load proxy settings.");
           return;
-        }
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      MYSQLQuery queryMYSQL( (MYSQLConn*)_conn );
+
+      if (!queryMYSQL.bindCol (1, MYSQL_TYPE_STRING, s_auth, sizeof (s_auth)))
+          return;
+      if (!queryMYSQL.bindCol (2, MYSQL_TYPE_LONG, &s_checkdns, 0))
+          return;
+      if (!queryMYSQL.bindCol (3, MYSQL_TYPE_STRING, s_realsize, sizeof (s_realsize)))
+          return;
+      if (!queryMYSQL.bindCol (4, MYSQL_TYPE_LONG, &_kbsize, 0))
+          return;
+
+      if (!queryMYSQL.sendQueryDirect (sqlcmd.str ()))
+          return;
+      if (!queryMYSQL.fetch ())
+          return;
       #endif
     }
 
@@ -214,6 +233,7 @@ void Proxy::load ()
   DEBUG (DEBUG_PROXY, "Authentication: " << toString (_auth));
   DEBUG (DEBUG_PROXY, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
   DEBUG (DEBUG_PROXY, "Traffic type: " << toString (_trafType));
+  DEBUG (DEBUG_PROXY, "Kilobyte size: " << _kbsize);
 }
 
 
@@ -236,6 +256,10 @@ void Proxy::commitChanges ()
 
   #ifdef USE_UNIXODBC
   ODBCQuery *queryODBC = NULL;
+  #endif
+
+  #ifdef USE_UNIXODBC
+  MYSQLQuery *queryMYSQL = NULL;
   #endif
 
   DBConn::DBEngine engine = _conn->getEngine();
@@ -270,6 +294,37 @@ void Proxy::commitChanges ()
         }
       #endif
     }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      queryMYSQL = new MYSQLQuery((MYSQLConn*)_conn);
+      if (!queryMYSQL->prepareQuery (update_cmd.str ()))
+        {
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (1, MYSQL_TYPE_LONG, &s_size, 0))
+        {
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (2, MYSQL_TYPE_LONG, &s_hit, 0))
+        {
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (3, MYSQL_TYPE_LONG, &s_enabled, 0))
+        {
+          delete queryMYSQL;
+          return;
+        }
+      if (!queryMYSQL->bindParam (4, MYSQL_TYPE_LONG, &s_user_id, 0))
+        {
+          delete queryMYSQL;
+          return;
+        }
+      #endif
+    }
 
 
 
@@ -277,7 +332,7 @@ void Proxy::commitChanges ()
   for (it=_users->_users.begin(); it != _users->_users.end(); it++)
     {
       usr = *it;
-      allowed_limit = usr->getQuote() * _mbsize;
+      allowed_limit = usr->getQuote() * _kbsize * _kbsize;
       s_size = usr->getSize();
       s_hit = usr->getHit();
       s_user_id = usr->getId();
@@ -308,6 +363,13 @@ void Proxy::commitChanges ()
         {
           #ifdef USE_UNIXODBC
           if (!queryODBC->sendQuery ())
+              continue;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          if (!queryMYSQL->sendQuery ())
               continue;
           #endif
         }

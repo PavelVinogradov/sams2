@@ -22,7 +22,11 @@
 #include "odbcquery.h"
 #endif
 
-#include "dbconn.h"
+#ifdef USE_MYSQL
+#include "mysqlconn.h"
+#include "mysqlquery.h"
+#endif
+
 #include "samsusers.h"
 #include "samsuser.h"
 #include "debug.h"
@@ -54,6 +58,7 @@ bool SAMSUsers::load (DBConn * conn)
 
   DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << conn);
 
+  string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip from squiduser";
   if (conn->getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
@@ -79,7 +84,7 @@ bool SAMSUsers::load (DBConn * conn)
       if (!queryODBC.bindCol (10, SQL_C_CHAR, s_ip, sizeof(s_ip)))
         return false;
 
-      if (!queryODBC.sendQueryDirect ("select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip from squiduser"))
+      if (!queryODBC.sendQueryDirect (sqlcmd.c_str()))
         return false;
 
       while (queryODBC.fetch ())
@@ -101,7 +106,53 @@ bool SAMSUsers::load (DBConn * conn)
 
       #endif
     }
+  else if (conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_UNIXODBC
+      MYSQLQuery queryMYSQL( (MYSQLConn*)conn );
+      if (!queryMYSQL.bindCol (1, MYSQL_TYPE_LONG, &s_user_id, 0))
+        return false;
+      if (!queryMYSQL.bindCol (2, MYSQL_TYPE_LONG, &s_group_id, 0))
+        return false;
+      if (!queryMYSQL.bindCol (3, MYSQL_TYPE_LONG, &s_shablon_id, 0))
+        return false;
+      if (!queryMYSQL.bindCol (4, MYSQL_TYPE_STRING, s_nick, sizeof(s_nick)))
+        return false;
+      if (!queryMYSQL.bindCol (5, MYSQL_TYPE_STRING, s_domain, sizeof(s_domain)))
+        return false;
+      if (!queryMYSQL.bindCol (6, MYSQL_TYPE_LONG, &s_quote, 0))
+        return false;
+      if (!queryMYSQL.bindCol (7, MYSQL_TYPE_LONG, &s_size, 0))
+        return false;
+      if (!queryMYSQL.bindCol (8, MYSQL_TYPE_LONG, &s_hit, 0))
+        return false;
+      if (!queryMYSQL.bindCol (9, MYSQL_TYPE_LONG, &s_enabled, 0))
+        return false;
+      if (!queryMYSQL.bindCol (10, MYSQL_TYPE_STRING, s_ip, sizeof(s_ip)))
+        return false;
 
+      if (!queryMYSQL.sendQueryDirect (sqlcmd.c_str()))
+        return false;
+
+      while (queryMYSQL.fetch ())
+        {
+          usr = new SAMSUser ();
+          usr->setId (s_user_id);
+          usr->setGroupId (s_group_id);
+          usr->setShablonId (s_shablon_id);
+          usr->setNick (s_nick);
+          usr->setDomain (s_domain);
+          usr->setQuote (s_quote);
+          usr->setSize (s_size);
+          usr->setHit (s_hit);
+          usr->setEnabled (s_enabled);
+          usr->setIP (s_ip);
+
+          _users.push_back (usr);
+        }
+
+      #endif
+    }
   return true;
 }
 
