@@ -258,7 +258,7 @@ void Proxy::commitChanges ()
   ODBCQuery *queryODBC = NULL;
   #endif
 
-  #ifdef USE_UNIXODBC
+  #ifdef USE_MYSQL
   MYSQLQuery *queryMYSQL = NULL;
   #endif
 
