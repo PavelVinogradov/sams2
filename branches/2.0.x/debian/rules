@@ -34,10 +34,12 @@ else
 endif
 
 config.status: configure patch
+
+configure:
 	dh_testdir
 	# Add here commands to configure the package.
+	make -f Makefile.cvs
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
-
 
 #Architecture 
 build: build-arch build-indep
@@ -104,7 +106,7 @@ install-arch:
 binary-common:
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs CHANGELOG
+	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
 #	dh_installmenu
