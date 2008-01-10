@@ -130,7 +130,7 @@ bool ODBCQuery::prepareQuery (const string & query)
       ERROR ("Not connected to a DB.");
       return false;
     }
-  if (createStatement () != true)
+  if (!createStatement ())
     {
       return false;
     }

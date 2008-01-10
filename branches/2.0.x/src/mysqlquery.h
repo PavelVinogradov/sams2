@@ -17,6 +17,10 @@
 #ifndef MYSQLQUERY_H
 #define MYSQLQUERY_H
 
+#include "config.h"
+
+#ifdef USE_MYSQL
+
 using namespace std;
 
 #include <vector>
@@ -39,7 +43,7 @@ public:
 
   bool bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen);
 
-  bool bindParam (uint num, VarType dstType, void *buf, int bufLen);
+  bool bindParam (uint num, enum_field_types dstType, void *buf, int bufLen);
 
   bool prepareQuery (const string & query);
 
@@ -54,14 +58,32 @@ private:
     void *dst;
     int len;
   };
+  struct Param
+  {
+    enum_field_types t;
+    void *dst;
+    int len;
+  };
   vector<struct Column> _columns;
+  vector<struct Param> _params;
   MYSQL_STMT *_statement;
   MYSQL_BIND *_bind;
+  ulong *_param_real_len;
   MYSQL_RES *_res;
   MYSQLConn *_conn;
+
+  /**
+   * @brief Выделяет память для запроса
+   *
+   * @return true если память выделена успешно и false в противном случае
+   */
+  bool createStatement ();
+
 protected:
   void destroy ();
 
 };
+
+#endif // #ifdef USE_MYSQL
 
 #endif

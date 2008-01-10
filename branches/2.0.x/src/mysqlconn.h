@@ -17,6 +17,10 @@
 #ifndef MYSQLCONN_H
 #define MYSQLCONN_H
 
+#include "config.h"
+
+#ifdef USE_MYSQL
+
 using namespace std;
 
 #include <mysql.h>
@@ -49,5 +53,7 @@ protected:
   string _pass;                 ///< Пароль
   string _host;                 ///< Имя сервера
 };
+
+#endif // #ifdef USE_MYSQL
 
 #endif

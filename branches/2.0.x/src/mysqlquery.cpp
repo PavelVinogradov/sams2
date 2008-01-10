@@ -15,6 +15,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "mysqlquery.h"
+
+#ifdef USE_MYSQL
+
 #include "mysqlconn.h"
 #include "debug.h"
 
@@ -22,6 +25,7 @@ MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
 {
   _conn = conn;
   _bind = NULL;
+  _param_real_len = NULL;
   _statement = NULL;
 /*
   if (conn)
@@ -63,7 +67,12 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
 
   if (colNum == 1 && _columns.size()>0)
-    _columns.clear();
+    {
+      _columns.clear();
+//      if (_bind)
+//        free(_bind);
+//      _bind = NULL;
+    }
 
   if (_columns.size()+1 != colNum)
     {
@@ -74,38 +83,120 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
   struct Column col;
   col.t = dstType;
   col.dst = buf;
-  col.len = bufLen;
+  col.len = bufLen-1;
   _columns.push_back(col);
 
   return true;
 }
 
-bool MYSQLQuery::bindParam (uint num, VarType dstType, void *buf, int bufLen)
+bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int bufLen)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << num);
-  ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Not implemented.");
-  return false;
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
+
+  if (num == 1 && _params.size()>0)
+    {
+      _params.clear();
+      if (_bind)
+        free (_bind);
+      if (_param_real_len)
+        free (_param_real_len);
+      _bind = NULL;
+      _param_real_len = NULL;
+    }
+
+  if (_params.size()+1 != num)
+    {
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unexpected marker number.");
+      return false;
+    }
+
+  if ((dstType != MYSQL_TYPE_STRING) && (dstType != MYSQL_TYPE_LONG))
+    {
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported marker type.");
+      return false;
+    }
+  struct Param par;
+  par.t = dstType;
+  par.dst = buf;
+  par.len = bufLen;
+  _params.push_back(par);
+
+  return true;
 }
 
 bool MYSQLQuery::prepareQuery (const string & query)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << query);
-  ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Not implemented.");
-  return false;
+
+  if (!createStatement ())
+    {
+      return false;
+    }
+
+  if (mysql_stmt_prepare(_statement, query.c_str(), query.size()))
+  {
+    ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
+    return false;
+  }
+
+  return true;
 }
 
 bool MYSQLQuery::sendQuery ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
-  ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Not implemented.");
-  return false;
+
+  //Маркеры определены, но еще не привязаны
+  bool ok = true;
+  if (!_bind && !_params.empty())
+    {
+      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Bind markers.");
+
+      _bind = (MYSQL_BIND*) malloc (sizeof (MYSQL_BIND) * _params.size());
+      _param_real_len = (ulong*) malloc (sizeof (ulong) * _params.size());
+      memset (_bind, 0, sizeof (MYSQL_BIND) * _params.size());
+      for (uint i=0; i<_params.size(); i++)
+        {
+          switch (_params[i].t)
+            {
+              case MYSQL_TYPE_STRING:
+                _bind[i].buffer_type = MYSQL_TYPE_STRING;
+                _bind[i].buffer = (char *)_params[i].dst;
+                _bind[i].buffer_length = _params[i].len;
+                _bind[i].is_null = 0;
+                _bind[i].length = &(_param_real_len[i]);
+                break;
+              case MYSQL_TYPE_LONG:
+                _bind[i].buffer_type = MYSQL_TYPE_LONG;
+                _bind[i].buffer = (char *)_params[i].dst;
+                _bind[i].is_null = 0;
+                _bind[i].length = 0;
+                break;
+              default:
+                ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported parameter type");
+                ok = false;
+                break;
+            }
+          if (!ok)
+            break;
+        }
+    }
+
+  if (!ok)
+    return false;
+
+  if (mysql_stmt_execute(_statement))
+  {
+    ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
+    return false;
+  }
+
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ok");
+  return true;
 }
 
 bool MYSQLQuery::fetch ()
 {
   MYSQL_ROW row = NULL;
-
-//  ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Not implemented.");
 
   if (!_res)
     {
@@ -121,22 +212,62 @@ bool MYSQLQuery::fetch ()
     }
 
   bool ok = true;
+  int res_len;
+  int use_len;
   for (uint i=0; i<_columns.size(); i++)
     {
       switch (_columns[i].t)
         {
           case MYSQL_TYPE_STRING:
-            sprintf((char*)_columns[i].dst, "%s", row[i]);
+            res_len = strlen(row[i])+1;
+            use_len = (res_len<_columns[i].len)?(res_len):(_columns[i].len);
+            strncpy((char*)_columns[i].dst, row[i], use_len);
+            ((char*)_columns[i].dst)[use_len] = 0;
+            //sprintf((char*)_columns[i].dst, "%s", row[i]);
+            break;
+          case MYSQL_TYPE_LONG:
+            if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
+              ok = false;
             break;
           default:
             ok = false;
             break;
         }
+      if (!ok)
+        break;
     }
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << ((ok) ? ("ok") : ("failed")));
 
   return ok;
+}
+
+bool MYSQLQuery::createStatement ()
+{
+
+  if (!_conn)
+    {
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "No connection associated. Invalid query.");
+      return false;
+    }
+  if (!(_conn->_connected))
+    {
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Not connected to the DB.");
+      return false;
+    }
+
+  destroy ();
+
+  _statement = mysql_stmt_init(_conn->_mysql);
+  if (!_statement)
+    {
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Cannot initialize statement.");
+      return false;
+    }
+
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ok");
+
+  return true;
 }
 
 void MYSQLQuery::destroy ()
@@ -151,3 +282,5 @@ void MYSQLQuery::destroy ()
   _statement = NULL;
   _bind = NULL;
 }
+
+#endif // #ifdef USE_MYSQL

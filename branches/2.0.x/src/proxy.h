@@ -115,7 +115,6 @@ protected:
   TrafficType _trafType;        ///< Тип учитываемого трафика
   long _id;                     ///< Идентификатор прокси
   long _kbsize;                 ///< Размер килобайта
-  long _mbsize;                 ///< Размер мегабайта
   bool _needResolve;            ///< Необходимость обращения к DNS
   DBConn *_conn;                ///< Соединение с БД
   SAMSUsers *_users;            ///< Список пользователей
