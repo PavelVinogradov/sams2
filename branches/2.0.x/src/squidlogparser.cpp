@@ -179,9 +179,17 @@ void SquidLogParser::parseFile (const string & fname)
   Proxy *proxy = NULL;
 
   if (engine == DBConn::DB_UODBC)
-    proxy = new Proxy (_proxyid, connODBC);
+    {
+      #ifdef USE_UNIXODBC
+      proxy = new Proxy (_proxyid, connODBC);
+      #endif
+    }
   else if (engine == DBConn::DB_MYSQL)
-    proxy = new Proxy (_proxyid, connMYSQL);
+    {
+      #ifdef USE_MYSQL
+      proxy = new Proxy (_proxyid, connMYSQL);
+      #endif
+    }
   else
     {
       return;
@@ -190,9 +198,17 @@ void SquidLogParser::parseFile (const string & fname)
 
   LocalNetworks lnets;
   if (engine == DBConn::DB_UODBC)
-    lnets.load (connODBC);
+    {
+      #ifdef USE_UNIXODBC
+      lnets.load (connODBC);
+      #endif
+    }
   else if (engine == DBConn::DB_MYSQL)
-    lnets.load (connMYSQL);
+    {
+      #ifdef USE_MYSQL
+      lnets.load (connMYSQL);
+      #endif
+    }
   else
     {
       return;
