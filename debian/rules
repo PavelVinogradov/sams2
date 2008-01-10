@@ -71,8 +71,6 @@ endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
-
-
 	dh_clean 
 
 install: install-indep install-arch
@@ -96,10 +94,8 @@ install-arch:
 
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
-	#$(MAKE) prefix=$(CURDIR)/debian/sams install
 
 	dh_install -s
-	#ln -s ../doc/sams/html $(CURDIR)/debian/sams/usr/share/sams/doc 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep
 # in another 'make' thread.
@@ -118,7 +114,7 @@ binary-common:
 	dh_installinit
 #	dh_installcron
 	dh_installman
-	dh_link
+#	dh_link
 	dh_strip
 	dh_compress 
 	dh_fixperms
