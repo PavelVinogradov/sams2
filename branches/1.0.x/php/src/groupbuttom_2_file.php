@@ -123,15 +123,11 @@ function groupbuttom_2_file($groupname)
   $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
   $row=mysql_fetch_array($result);
 
-   if($SAMSConf->access==2)
+  if($SAMSConf->access>0||$SAMSConf->groupauditor==$row[name])
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
-       GraphButton("main.php?show=exe&function=groupfilesizeform&filename=groupbuttom_2_file.php&groupname=$groupname","basefrm","ftraffic_32.jpg","ftraffic_48.jpg","$groupbuttom_2_file_groupbuttom_2_file_1");
-	}
-
+      print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+      GraphButton("main.php?show=exe&function=groupfilesizeform&filename=groupbuttom_2_file.php&groupname=$groupname","basefrm","ftraffic_32.jpg","ftraffic_48.jpg","$groupbuttom_2_file_groupbuttom_2_file_1");
+    }
 }
-
-
-
 
 ?>
