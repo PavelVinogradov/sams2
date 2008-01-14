@@ -90,8 +90,7 @@ Proxy::Proxy (long id, DBConn * connection)
 
   DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "using connection " << _conn);
 
-  _users = new SAMSUsers ();
-  _users->load (_conn);
+  _users = new SAMSUsers (_conn);
   load ();
 }
 
@@ -107,6 +106,20 @@ long Proxy::getId ()
   return _id;
 }
 
+void Proxy::setEndValue(long endvalue)
+{
+  DEBUG (DEBUG_PROXY, "[" << this << "->" << __FUNCTION__ << "] " << endvalue);
+
+  _endvalue = endvalue;
+
+  if (_endvalue < 0)
+    _endvalue = 0;
+}
+
+long Proxy::getEndValue()
+{
+  return _endvalue;
+}
 
 SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 {
@@ -150,55 +163,111 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   return usr;
 }
 
-
 void Proxy::load ()
 {
   char s_auth[5];
   long s_checkdns;
   char s_realsize[5];
+  long s_usedomain;
+  char s_defaultdomain[25];
+  long s_autouser;
+  long s_autotpl;
+  char s_autotpl_val[30];
+  long s_autogrp;
+  char s_autogrp_val[30];
+
+  DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
 
-  sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize from proxy";
-  sqlcmd << " where s_proxy_id=" << _id;
   if (_conn->getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      ODBCQuery queryODBC( (ODBCConn*)_conn );
-
-      if (!queryODBC.bindCol (1, SQL_C_CHAR, s_auth, sizeof (s_auth)))
-          return;
-      if (!queryODBC.bindCol (2, SQL_C_LONG, &s_checkdns, 0))
-          return;
-      if (!queryODBC.bindCol (3, SQL_C_CHAR, s_realsize, sizeof (s_realsize)))
-          return;
-      if (!queryODBC.bindCol (4, SQL_C_LONG, &_kbsize, 0))
-          return;
-
-      if (!queryODBC.sendQueryDirect (sqlcmd.str ()))
-          return;
-      if (!queryODBC.fetch ())
-          return;
+      query = new ODBCQuery((ODBCConn*)_conn);
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      MYSQLQuery queryMYSQL( (MYSQLConn*)_conn );
-
-      if (!queryMYSQL.bindCol (1, MYSQL_TYPE_STRING, s_auth, sizeof (s_auth)))
-          return;
-      if (!queryMYSQL.bindCol (2, MYSQL_TYPE_LONG, &s_checkdns, 0))
-          return;
-      if (!queryMYSQL.bindCol (3, MYSQL_TYPE_STRING, s_realsize, sizeof (s_realsize)))
-          return;
-      if (!queryMYSQL.bindCol (4, MYSQL_TYPE_LONG, &_kbsize, 0))
-          return;
-
-      if (!queryMYSQL.sendQueryDirect (sqlcmd.str ()))
-          return;
-      if (!queryMYSQL.fetch ())
-          return;
+      query = new MYSQLQuery((MYSQLConn*)_conn);
       #endif
+    }
+  else
+    return;
+
+  if (!query->bindCol (1, DBQuery::T_CHAR, s_auth, sizeof (s_auth)))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (2, DBQuery::T_LONG, &s_checkdns, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (3, DBQuery::T_CHAR, s_realsize, sizeof (s_realsize)))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (4, DBQuery::T_LONG, &_kbsize, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (5, DBQuery::T_LONG, &_endvalue, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (6, DBQuery::T_LONG, &s_usedomain, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (7, DBQuery::T_CHAR, s_defaultdomain, sizeof(s_defaultdomain)))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (8, DBQuery::T_LONG, &s_autouser, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (9, DBQuery::T_LONG, &s_autotpl, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (10, DBQuery::T_CHAR, s_autotpl_val, sizeof(s_autotpl_val)))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (11, DBQuery::T_LONG, &s_autogrp, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindCol (12, DBQuery::T_CHAR, s_autogrp_val, sizeof(s_autogrp_val)))
+    {
+      delete query;
+      return;
+    }
+
+  sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
+  sqlcmd << ", s_autouser, s_autotpl, s_autotpl_val, s_autogrp, s_autogrp_val";
+  sqlcmd << " from proxy where s_proxy_id=" << _id;
+
+  if (!query->sendQueryDirect (sqlcmd.str ()))
+    {
+      delete query;
+      return;
+    }
+  if (!query->fetch ())
+    {
+      delete query;
+      return;
     }
 
   if (strcmp (s_auth, "ip") == 0)
@@ -221,6 +290,23 @@ void Proxy::load ()
   else
     _needResolve = false;
 
+  if (s_usedomain > 0)
+    _usedomain = true;
+  else
+    _usedomain = false;
+
+  _defaultdomain = s_defaultdomain;
+
+  if (s_autouser > 0)
+    _autouser = true;
+  else
+    _autouser = false;
+
+  _autotpl = (usrUseAutoTemplate) s_autotpl;
+  _defaulttpl = s_autotpl_val;
+  _autogrp = (usrUseAutoGroup) s_autogrp;
+  _defaultgrp = s_autogrp_val;
+
   if (strcmp (s_realsize, "real") == 0)
     _trafType = TRAF_REAL;
   else if (strcmp (s_realsize, "full") == 0)
@@ -234,105 +320,118 @@ void Proxy::load ()
   DEBUG (DEBUG_PROXY, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
   DEBUG (DEBUG_PROXY, "Traffic type: " << toString (_trafType));
   DEBUG (DEBUG_PROXY, "Kilobyte size: " << _kbsize);
-}
 
+  if (_usedomain)
+    {
+      DEBUG (DEBUG_PROXY, "Default domain: " << _defaultdomain);
+    }
+
+  if (_autouser)
+    {
+      switch (_autotpl)
+        {
+          case TPL_DEFAULT:
+            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << "Default");
+            break;
+          case TPL_SPECIFIED:
+            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
+            break;
+          case TPL_TAKE_FROM_GROUP:
+            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << "take name from user primary group");
+            break;
+        }
+      switch (_autogrp)
+        {
+          case GRP_DEFAULT:
+            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << "Default");
+            break;
+          case GRP_SPECIFIED:
+            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
+            break;
+          case GRP_TAKE_FROM_GROUP:
+            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << "take name from user primary group");
+            break;
+        }
+    }
+  delete query;
+}
 
 void Proxy::commitChanges ()
 {
   vector < SAMSUser * >::iterator it;
   SAMSUser *usr;
-  long allowed_limit;
-  long s_size;
-  long s_hit;
+  long long allowed_limit;
+  long long s_size;
+  long long s_hit;
   long s_enabled;
   long s_user_id;
   basic_stringstream < char > update_cmd;
 
-  update_cmd << "update squiduser set";
-  update_cmd << " s_size=?";
-  update_cmd << ",s_hit=?";
-  update_cmd << ",s_enabled=?";
-  update_cmd << " where s_user_id=?";
 
-  #ifdef USE_UNIXODBC
-  ODBCQuery *queryODBC = NULL;
-  #endif
-
-  #ifdef USE_MYSQL
-  MYSQLQuery *queryMYSQL = NULL;
-  #endif
+  DBQuery *query = NULL;
 
   DBConn::DBEngine engine = _conn->getEngine();
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      queryODBC = new ODBCQuery((ODBCConn*)_conn);
-      if (!queryODBC->prepareQuery (update_cmd.str ()))
-        {
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (1, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_size, 0))
-        {
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (2, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_hit, 0))
-        {
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (3, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_enabled, 0))
-        {
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (4, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_user_id, 0))
-        {
-          delete queryODBC;
-          return;
-        }
+      query = new ODBCQuery((ODBCConn*)_conn);
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      queryMYSQL = new MYSQLQuery((MYSQLConn*)_conn);
-      if (!queryMYSQL->prepareQuery (update_cmd.str ()))
-        {
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (1, MYSQL_TYPE_LONG, &s_size, 0))
-        {
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (2, MYSQL_TYPE_LONG, &s_hit, 0))
-        {
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (3, MYSQL_TYPE_LONG, &s_enabled, 0))
-        {
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (4, MYSQL_TYPE_LONG, &s_user_id, 0))
-        {
-          delete queryMYSQL;
-          return;
-        }
+      query = new MYSQLQuery((MYSQLConn*)_conn);
       #endif
+    }
+  else
+    return;
+
+  update_cmd << "update proxy set s_endvalue=" << _endvalue << " where s_proxy_id=" << _id;
+  if (!query->sendQueryDirect( update_cmd.str ()))
+    {
+      delete query;
+      return;
+    }
+
+  update_cmd.str("");
+  update_cmd << "update squiduser set";
+  update_cmd << " s_size=?";
+  update_cmd << ",s_hit=?";
+  update_cmd << ",s_enabled=?";
+  update_cmd << " where s_user_id=?";
+  if (!query->prepareQuery (update_cmd.str ()))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindParam (1, DBQuery::T_LONGLONG, &s_size, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindParam (2, DBQuery::T_LONGLONG, &s_hit, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindParam (3, DBQuery::T_LONG, &s_enabled, 0))
+    {
+      delete query;
+      return;
+    }
+  if (!query->bindParam (4, DBQuery::T_LONG, &s_user_id, 0))
+    {
+      delete query;
+      return;
     }
 
 
-
-  long used_size;
+  long long used_size;
   for (it=_users->_users.begin(); it != _users->_users.end(); it++)
     {
       usr = *it;
-      allowed_limit = usr->getQuote() * _kbsize * _kbsize;
+      allowed_limit = usr->getQuote();
+      allowed_limit *= _kbsize * _kbsize;
       s_size = usr->getSize();
       s_hit = usr->getHit();
       s_user_id = usr->getId();
@@ -352,27 +451,107 @@ void Proxy::commitChanges ()
 
       DEBUG(DEBUG_USER, *usr << " size="<<used_size<<" limit="<<allowed_limit);
 
-      if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == STAT_ACTIVE) )
+      if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == SAMSUser::STAT_ACTIVE) )
         {
-          usr->setEnabled( STAT_INACTIVE );
+          usr->setEnabled( SAMSUser::STAT_INACTIVE );
           INFO("User " << *usr << " deactivated.");
         }
 
       s_enabled = (long)usr->getEnabled();
-      if (engine == DBConn::DB_UODBC)
-        {
-          #ifdef USE_UNIXODBC
-          if (!queryODBC->sendQuery ())
-              continue;
-          #endif
-        }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          if (!queryMYSQL->sendQuery ())
-              continue;
-          #endif
-        }
+
+      if (!query->sendQuery ())
+        continue;
     }
 
+  delete query;
+}
+
+long Proxy::getShablonId(const string &name) const
+{
+  DBQuery *query = NULL;
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery((ODBCConn*)_conn);
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery((MYSQLConn*)_conn);
+      #endif
+    }
+  else
+    return -1;
+
+  long s_shablon_id;
+  if (!query->bindCol(1, DBQuery::T_LONG, &s_shablon_id, 0))
+    {
+      delete query;
+      return -1;
+    }
+  basic_stringstream < char >sqlcmd;
+
+  sqlcmd << "select s_shablon_id from shablon where s_name=" << name;
+
+  if (!query->sendQueryDirect (sqlcmd.str ()))
+    {
+      delete query;
+      return -1;
+    }
+  if (!query->fetch ())
+    {
+      delete query;
+      return -1;
+    }
+
+  delete query;
+
+  return s_shablon_id;
+}
+
+long Proxy::getGroupId(const string &name) const
+{
+  DBQuery *query = NULL;
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery((ODBCConn*)_conn);
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery((MYSQLConn*)_conn);
+      #endif
+    }
+  else
+    return -1;
+
+  long s_group_id;
+  if (!query->bindCol(1, DBQuery::T_LONG, &s_group_id, 0))
+    {
+      delete query;
+      return -1;
+    }
+  basic_stringstream < char >sqlcmd;
+
+  sqlcmd << "select s_group_id from sgroup where s_name=" << name;
+
+  if (!query->sendQueryDirect (sqlcmd.str ()))
+    {
+      delete query;
+      return -1;
+    }
+  if (!query->fetch ())
+    {
+      delete query;
+      return -1;
+    }
+
+  delete query;
+
+  return s_group_id;
 }

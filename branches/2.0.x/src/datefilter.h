@@ -61,7 +61,7 @@ public:
    * DateFilter flt;
    * flt.setDateInterval("2007-11-01,2007-11-30");
    * flt.setDateInterval(",2007-12-31"); // c 1 января 2000 по 31 декабря 2007
-   * flt.setDateInterval("2007-01-01,"); // с 1 января до текущего дня
+   * flt.setDateInterval("2007-01-01,"); // с 1 января 2007 до текущего дня
    * flt.setDateInterval("2007-10-15");  // только 15 октября 2007
    * @endcode
    *
@@ -93,8 +93,9 @@ public:
   string getEndDateAsString () const;
 
 protected:
-    time_t _date_start;         ///< Начало интервала
+  time_t _date_start;           ///< Начало интервала
   time_t _date_end;             ///< Окончание интервала
 };
 
 #endif
+

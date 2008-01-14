@@ -14,15 +14,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include <fstream>
 
 #include "configmake.h"
+#include "config.h"
+
+#ifdef USE_UNIXODBC
+#include "odbcconn.h"
+#include "odbcquery.h"
+#endif
+
+#ifdef USE_MYSQL
+#include "mysqlconn.h"
+#include "mysqlquery.h"
+#endif
 
 #include "samsconfig.h"
 #include "debug.h"
 #include "tools.h"
-
-#include "dbquery.h"
+#include "global.h"
 
 SamsConfig::SamsConfig ()
 {
@@ -110,11 +121,7 @@ bool SamsConfig::readFile ()
 
 bool SamsConfig::readDB ()
 {
-/*
   int err;
-  basic_stringstream < char >s;
-
-  DBConn conn;
 
   int proxyid = getInt (defPROXYID, err);
 
@@ -124,13 +131,36 @@ bool SamsConfig::readDB ()
       return false;
     }
 
+  DBConn::DBEngine engine = config->getEngine();
 
-  if (!conn.connect ())
+  DBConn *conn;
+  DBQuery *query = NULL;
+
+  if (engine == DBConn::DB_UODBC)
     {
+      #ifdef USE_UNIXODBC
+      conn = new ODBCConn();
+      query = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      conn = new MYSQLConn();
+      query = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else
+    return false;
+
+  if (!conn->connect ())
+    {
+      delete query;
+      delete conn;
       return false;
     }
 
-  DBQuery *query = conn.newQuery ();
+  basic_stringstream < char >s;
 
   int s_sleep;
   int s_parser_time;
@@ -139,30 +169,39 @@ bool SamsConfig::readDB ()
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_sleep, 0))
     {
+      delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_LONG, &s_parser_time, 0))
     {
+      delete query;
+      delete conn;
       return false;
     }
 
   if (!query->sendQueryDirect (s.str ()))
     {
+      delete query;
+      delete conn;
       return false;
     }
 
   if (!query->fetch ())
     {
       WARNING ("No settings for proxy " << proxyid << ". Somethig wrong?");
+      delete query;
+      delete conn;
       return false;
     }
 
   setInt (defSLEEPTIME, s_sleep);
   setInt (defDAEMONSTEP, s_parser_time);
 
+  delete query;
+  delete conn;
+
   return true;
-*/
-  return false;
 }
 
 string SamsConfig::getString (const string & attrname, int &err)

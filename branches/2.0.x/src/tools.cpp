@@ -234,23 +234,5 @@ bool fileDelete (const string & path)
 
 bool fileExist (const string & path)
 {
-  if (path.empty ())
-    {
-      WARNING ("Empty path");
-      return false;
-    }
-
-  struct stat buffer;
-  int status;
-
-  status = stat (path.c_str (), &buffer);
-  if (status == 0)
-    {
-      DEBUG (DEBUG_FILE, path << ": file exists.");
-      return true;
-    }
-
-  DEBUG (DEBUG_FILE, path << ": " << strerror (errno));
-
-  return false;
+  return (access (path.c_str (), F_OK) == 0);
 }

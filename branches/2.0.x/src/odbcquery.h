@@ -28,6 +28,8 @@ using namespace std;
 #include <sqlext.h>
 #include <sqltypes.h>
 
+#include "dbquery.h"
+
 /// Размер буфера для строковых переменных. Значение в БД не может быть длиннее.
 #define COLUMN_BUFFER_SIZE 1024
 
@@ -36,7 +38,7 @@ class ODBCConn;
 /**
  * @brief Выполненяет запросы к базе данных через ODBC
  */
-class ODBCQuery
+class ODBCQuery : public DBQuery
 {
   friend class ODBCConn;
 
@@ -73,6 +75,8 @@ public:
    */
   int affectedRows ();
 
+  bool bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen);
+
   /**
    * @brief Привязывает буферы данных прикладных программ к столбцам в наборе результатов
    *
@@ -89,15 +93,15 @@ public:
    * @retval false При возникновении ошибки.
    * @sa sendQuery(), fetch()
    */
-    bool bindCol (SQLUSMALLINT colNum, SQLSMALLINT dstType, SQLPOINTER dstValue, SQLLEN dstLength);
+  bool bindCol (SQLUSMALLINT colNum, SQLSMALLINT dstType, SQLPOINTER dstValue, SQLLEN dstLength);
+
+  bool bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
 
   /**
    * @brief Привязывает буфер к маркеру параметра в инструкции SQL
    *
    * @param num Номер параметра, упорядоченный последовательно
    *        в увеличивающемся порядке, начинающемся с 1.
-   * @param ioType Тип параметра.
-   *        Возможные значения: SQL_PARAM_INPUT, SQL_PARAM_INPUT_OUTPUT, SQL_PARAM_OUTPUT.
    * @param dstType Тип данных для C параметра. Наиболее часто используемые значения:
    *        SQL_C_CHAR, SQL_C_LONG, SQL_C_SHORT, SQL_C_FLOAT, SQL_C_DOUBLE,
    *        SQL_C_NUMERIC, SQL_C_DATE, SQL_C_TIME, SQL_C_TIMESTAMP,
@@ -110,7 +114,7 @@ public:
    * @retval false Произошла ошибка при выполнении запроса.
    * @sa prepareQuery(), sendQuery()
    */
-  bool bindParam (SQLUSMALLINT num, SQLSMALLINT ioType, SQLSMALLINT dstType, SQLSMALLINT srcType, SQLPOINTER dstValue, SQLLEN dstLength);
+  bool bindParam (SQLUSMALLINT num, SQLSMALLINT dstType, SQLSMALLINT srcType, SQLPOINTER dstValue, SQLLEN dstLength);
 
 private:
   /**

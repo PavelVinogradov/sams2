@@ -44,10 +44,11 @@ public:
    * текущего процесса.
    *
    * @param procname Имя процесса
+   * @param wait_myself Если обнаружена работающая копия программы, то ждать ее завершения
    * @retval true Текущий процесс запущен успешно
    * @retval false Найден идентичный процесс или произошла ошибка
    */
-  bool start (const string & procname);
+  bool start (const string & procname, bool wait_myself=false);
 
   /**
    * @brief Остановка текущего процесса

@@ -32,3 +32,6 @@
    * DateFilter
    * ProcessManager
    * Logger
+
+4) Результаты тестирования
+  Файл access.log размером 4.2 ГБ был обработан без ошибок (DB_ENGINE=MySQL)

@@ -27,6 +27,7 @@ MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
   _bind = NULL;
   _param_real_len = NULL;
   _statement = NULL;
+  _binded = false;
 /*
   if (conn)
     {
@@ -62,6 +63,28 @@ bool MYSQLQuery::sendQueryDirect (const string & query)
   return true;
 }
 
+bool MYSQLQuery::bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen)
+{
+  enum_field_types dType;
+  switch (dstType)
+    {
+      case DBQuery::T_LONG:
+        dType = MYSQL_TYPE_LONG;
+        break;
+      case DBQuery::T_LONGLONG:
+        dType = MYSQL_TYPE_LONGLONG;
+        break;
+      case DBQuery::T_CHAR:
+        dType = MYSQL_TYPE_STRING;
+        break;
+      default:
+        return false;
+        break;
+    }
+
+  return bindCol (colNum, dType, buf, bufLen);
+}
+
 bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
@@ -69,9 +92,6 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
   if (colNum == 1 && _columns.size()>0)
     {
       _columns.clear();
-//      if (_bind)
-//        free(_bind);
-//      _bind = NULL;
     }
 
   if (_columns.size()+1 != colNum)
@@ -89,6 +109,28 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
   return true;
 }
 
+bool MYSQLQuery::bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen)
+{
+  enum_field_types dType;
+  switch (dstType)
+    {
+      case DBQuery::T_LONG:
+        dType = MYSQL_TYPE_LONG;
+        break;
+      case DBQuery::T_LONGLONG:
+        dType = MYSQL_TYPE_LONGLONG;
+        break;
+      case DBQuery::T_CHAR:
+        dType = MYSQL_TYPE_STRING;
+        break;
+      default:
+        return false;
+        break;
+    }
+
+  return bindParam (num, dType, buf, bufLen);
+}
+
 bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int bufLen)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
@@ -102,6 +144,7 @@ bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int b
         free (_param_real_len);
       _bind = NULL;
       _param_real_len = NULL;
+      _binded = false;
     }
 
   if (_params.size()+1 != num)
@@ -110,11 +153,6 @@ bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int b
       return false;
     }
 
-  if ((dstType != MYSQL_TYPE_STRING) && (dstType != MYSQL_TYPE_LONG))
-    {
-      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported marker type.");
-      return false;
-    }
   struct Param par;
   par.t = dstType;
   par.dst = buf;
@@ -144,45 +182,74 @@ bool MYSQLQuery::prepareQuery (const string & query)
 
 bool MYSQLQuery::sendQuery ()
 {
-
+  uint i;
   //Маркеры определены, но еще не привязаны
   bool ok = true;
   if (!_bind && !_params.empty())
     {
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Bind markers.");
-
       _bind = (MYSQL_BIND*) malloc (sizeof (MYSQL_BIND) * _params.size());
       _param_real_len = (ulong*) malloc (sizeof (ulong) * _params.size());
       memset (_bind, 0, sizeof (MYSQL_BIND) * _params.size());
-      for (uint i=0; i<_params.size(); i++)
+      memset (_param_real_len, 0, sizeof (ulong) * _params.size());
+      for (i=0; i<_params.size(); i++)
         {
+          DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill marker " << i);
           switch (_params[i].t)
             {
               case MYSQL_TYPE_STRING:
-                _bind[i].buffer_type = MYSQL_TYPE_STRING;
+                _bind[i].buffer_type = _params[i].t;
                 _bind[i].buffer = (char *)_params[i].dst;
                 _bind[i].buffer_length = _params[i].len;
                 _bind[i].is_null = 0;
-                _bind[i].length = &(_param_real_len[i]);
+                _bind[i].length = &_param_real_len[i];
                 break;
               case MYSQL_TYPE_LONG:
-                _bind[i].buffer_type = MYSQL_TYPE_LONG;
+              case MYSQL_TYPE_LONGLONG:
+                _bind[i].buffer_type = _params[i].t;
                 _bind[i].buffer = (char *)_params[i].dst;
                 _bind[i].is_null = 0;
                 _bind[i].length = 0;
                 break;
               default:
-                ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported parameter type");
+                ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported marker type (" << _params[i].t << ")");
                 ok = false;
                 break;
             }
           if (!ok)
             break;
         }
+      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill bind structure: ok");
     }
+
 
   if (!ok)
     return false;
+
+  if (_bind && !_binded)
+    {
+      if (mysql_stmt_bind_param(_statement, _bind))
+        {
+          ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
+          return false;
+        }
+      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Bind markers: ok");
+      _binded = true;
+    }
+
+  if (!_params.empty())
+    {
+      for (i=0; i<_params.size(); i++)
+        {
+          switch (_params[i].t)
+            {
+              case MYSQL_TYPE_STRING:
+                _param_real_len[i] = strlen((char *)_params[i].dst);
+                break;
+              default:
+                break;
+            }
+        }
+    }
 
   if (mysql_stmt_execute(_statement))
   {
@@ -227,6 +294,10 @@ bool MYSQLQuery::fetch ()
             break;
           case MYSQL_TYPE_LONG:
             if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
+              ok = false;
+            break;
+          case MYSQL_TYPE_LONGLONG:
+            if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
               ok = false;
             break;
           default:

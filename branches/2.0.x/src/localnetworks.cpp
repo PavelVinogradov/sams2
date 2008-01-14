@@ -45,44 +45,44 @@ bool LocalNetworks::load (DBConn * conn)
 {
   char s_url[1024];
   Net *net;
+  DBQuery *query = NULL;
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
   string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
+
   if (conn->getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      ODBCQuery queryODBC( (ODBCConn*)conn );
-      if (!queryODBC.bindCol (1, SQL_C_CHAR, s_url, sizeof (s_url)))
-          return false;
-      if (!queryODBC.sendQueryDirect (sqlcmd.c_str()))
-          return false;
-      while (queryODBC.fetch ())
-        {
-          net = Net::fromString (s_url);
-          _nets.push_back (net);
-        }
-      #else
-      return false;
+      query = new ODBCQuery ((ODBCConn*)conn);
       #endif
     }
   else if (conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      MYSQLQuery queryMYSQL( (MYSQLConn*)conn );
-      if (!queryMYSQL.bindCol (1, MYSQL_TYPE_STRING, s_url, sizeof (s_url)))
-          return false;
-      if (!queryMYSQL.sendQueryDirect (sqlcmd.c_str()))
-          return false;
-      while (queryMYSQL.fetch ())
-        {
-          net = Net::fromString (s_url);
-          _nets.push_back (net);
-        }
-      #else
-      return false;
+      query = new MYSQLQuery ((MYSQLConn*)conn);
       #endif
     }
+  else
+    return false;
+
+  if (!query->bindCol (1, DBQuery::T_CHAR, s_url, sizeof (s_url)))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->sendQueryDirect (sqlcmd.c_str()))
+    {
+      delete query;
+      return false;
+    }
+  while (query->fetch ())
+    {
+      net = Net::fromString (s_url);
+      _nets.push_back (net);
+    }
+
+  delete query;
 
   return true;
 }
