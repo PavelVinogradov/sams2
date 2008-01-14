@@ -1,4 +1,4 @@
-sams (1.0.0-1) unstable; urgency=low
+sams (1.0.1-1) unstable; urgency=low
 
   * Initial release 
   * Fix some problems with Makefile
