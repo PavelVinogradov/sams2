@@ -44,7 +44,8 @@ function UsersPercentTrafficGB()
           $SIZE[$count]=$row['user_size']-$row['user_hit'];
       else
           $SIZE[$count]=$row['user_size'];
-      $USERS[$count]=$count+1;
+      $USERS[$count]=$count+1 .( strlen( $count+1) > 1 ? ' ' : '  ') . $row['user'];
+
       $count++;
     }
 
@@ -87,7 +88,7 @@ function GroupsPercentTrafficGB()
           $SIZE[$count]=$row['grp_size']-$row['grp_hit'];
 	else
           $SIZE[$count]=$row['grp_size'];
-      $USERS[$count]=$count+1;
+      $USERS[$count]=$count+1 .( strlen( $count+1) > 1 ? ' ' : '  ') . $row['user'];
       $count++;
     }
    $circle=new CIRCLE3D(500, $count*15, $SIZE, $count, $USERS);
