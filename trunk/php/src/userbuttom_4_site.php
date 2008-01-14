@@ -106,7 +106,7 @@ function UserSitesPeriod()
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 
-  if($SAMSConf->domainusername!=$username&&$SAMSConf->groupauditor!=$usergroup&&strlen($SAMSConf->adminname)==0)
+  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
     exit(0);
 
   $sdate=$DATE->sdate();
@@ -124,8 +124,6 @@ function UserSitesPeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-//  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
-//	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$username</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
@@ -254,8 +252,5 @@ function userbuttom_4_site($userid)
 	}
 
 }
-
-
-
 
 ?>
