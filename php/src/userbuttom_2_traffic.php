@@ -75,7 +75,7 @@ function UserTrafficPeriod()
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 
-  if($SAMSConf->domainusername!=$username&&$SAMSConf->groupauditor!=$usergroup&&strlen($SAMSConf->adminname)==0)
+  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
     exit(0);
   
   $sdate=$DATE->sdate();
@@ -85,8 +85,6 @@ function UserTrafficPeriod()
 
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
-  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
-	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $username</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
