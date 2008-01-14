@@ -37,26 +37,23 @@ function UserTrafficPeriodGB()
     }
   $result=mysql_query("SELECT SUM(size), SUM(hit), MONTH(date), DAYOFMONTH(date), YEAR(date) FROM cachesum WHERE user=\"$username\" &&date>=\"$sdate\" &&date<=\"$edate\" &&domain=\"$userdomain\" GROUP BY date");
   while($row=mysql_fetch_array($result))
-       {
-         $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
-	 $day=ceil(($time-$stime)/(60*60*24));
-         if($SAMSConf->realtraffic=="real")
-	     $data1[$day]=$row['0']-$row['1'];
-         else
-	     $data1[$day]=$row['0'];
-//         $data1[$day]=$row[0];
-//         $data2[$day]=$row[1];
-       }
+     {
+        $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
+        $day=ceil(($time-$stime)/(60*60*24));
+        if($SAMSConf->realtraffic=="real")
+	  $data1[$day]=$row['0']-$row['1'];
+        else
+	  $data1[$day]=$row['0'];
+     }
   
-$chart = new chart(400, 200, "");
-//$chart->plot($data1);
-$chart->plot($data1, false, "MidnightBlue", "lines");
-
-$chart->set_background_color("white", "white");
-$chart->set_title("Traffic of user $username");
-$chart->set_labels("", "Mb");
-$chart->stroke();  
-
+  $chart = new chart(400, 200, "");
+  //$chart->plot($data1);
+  $chart->plot($data1, false, "MidnightBlue", "lines");
+  
+  $chart->set_background_color("white", "white");
+  $chart->set_title("Traffic of user $username");
+  $chart->set_labels("", "Mb");
+  $chart->stroke(); 
 }
 
 
@@ -75,7 +72,7 @@ function UserTrafficPeriod()
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 
-  if($SAMSConf->domainusername!=$username&&$SAMSConf->groupauditor!=$usergroup&&strlen($SAMSConf->adminname)==0)
+  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
     exit(0);
   
   $sdate=$DATE->sdate();
@@ -86,8 +83,6 @@ function UserTrafficPeriod()
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
 
-//  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
-//	exit(0);
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $username</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
