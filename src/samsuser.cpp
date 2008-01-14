@@ -20,7 +20,7 @@
 #include "debug.h"
 
 
-string toString (usrStatus s)
+string SAMSUser::toString (usrStatus s)
 {
   string res;
   switch (s)
@@ -102,12 +102,12 @@ void SAMSUser::setEnabled (usrStatus enabled)
   _enabled = enabled;
 }
 
-usrStatus SAMSUser::getEnabled ()
+SAMSUser::usrStatus SAMSUser::getEnabled ()
 {
   return _enabled;
 }
 
-void SAMSUser::setSize (long size)
+void SAMSUser::setSize (long long size)
 {
   DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << size);
   _size = size;
@@ -118,16 +118,16 @@ void SAMSUser::addSize (long size)
   _size += size;
   if (_hit > _size)
     {
-      WARNING ("hit more then size");
+      WARNING ("hit more then size (" << _hit << ">" << _size << ")");
     }
 }
 
-long SAMSUser::getSize ()
+long long SAMSUser::getSize ()
 {
   return _size;
 }
 
-void SAMSUser::setHit (long hit)
+void SAMSUser::setHit (long long hit)
 {
   DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << hit);
   _hit = hit;
@@ -138,7 +138,7 @@ void SAMSUser::addHit (long hit)
   _hit += hit;
 }
 
-long SAMSUser::getHit ()
+long long SAMSUser::getHit ()
 {
   return _hit;
 }
@@ -160,10 +160,20 @@ void SAMSUser::setShablonId (long id)
   _tpl_id = id;
 }
 
+long SAMSUser::getShablonId()
+{
+  return _tpl_id;
+}
+
 void SAMSUser::setGroupId (long id)
 {
   DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << id);
   _grp_id = id;
+}
+
+long SAMSUser::getGroupId()
+{
+  return _grp_id;
 }
 
 string SAMSUser::asString ()

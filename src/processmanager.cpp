@@ -37,7 +37,7 @@ ProcessManager::~ProcessManager ()
 /**
  * @todo Использовать директорию для создания файла с номером процесса в соответствии с опциями configure
  */
-bool ProcessManager::start (const string & procname)
+bool ProcessManager::start (const string & procname, bool wait_myself)
 {
   fstream f;
   pid_t pid;
@@ -55,13 +55,24 @@ bool ProcessManager::start (const string & procname)
       f >> pid;
       f.close ();
 
-      if (kill (pid, 0) == 0)
+      bool is_runing = (kill (pid, 0) == 0);
+      if (is_runing && !wait_myself)
         {
           ERROR ("Already running with pid " << pid);
           return false;
         }
-
-      WARNING ("Pid file exists, but no program running. Unexpected crash?");
+      else if (is_runing && wait_myself)
+        {
+          while (is_runing)
+            {
+              sleep(2);
+              is_runing = (kill (pid, 0) == 0);
+            }
+        }
+      else
+        {
+          WARNING ("Pid file exists, but no program running. Unexpected crash?");
+        }
     }
 
   pid = getpid ();

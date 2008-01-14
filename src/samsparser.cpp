@@ -83,6 +83,9 @@ void usage ()
   cout << "                In case of file you can set filename for output (DEFAULT: samsparser.log)." << endl;
   cout << "                E.g. -l syslog" << endl;
   cout << "                E.g. -l file:/path/to/file" << endl;
+  cout << "    -w, --wait-myself" << endl;
+  cout << "                If already running program found, do not exit immediatly," << endl;
+  cout << "                but wait until it ends and finish the task." << endl;
   cout << endl;
   cout << "DESCRIPTION" << endl;
   cout << "    If no one command is listed, program updates database (--update)." << endl;
@@ -122,6 +125,7 @@ int main (int argc, char *argv[])
   int c;
   int err;
   uint dbglevel;
+  bool wait_myself = false;
   string optname = "";
   string logfilename = "";
   DateFilter *dateFilter = NULL;
@@ -141,18 +145,19 @@ int main (int argc, char *argv[])
 
 
   static struct option long_options[] = {
-    {"help", 0, 0, 'h'},        // Показывает справку по опциям командной строки и завершает работу
-    {"version", 0, 0, 'V'},     // Показывает версию программы и завершает работу
-    {"update", 0, 0, 'u'},      // Обновляет кэш в БД и счетчики пользователей
-    {"export", 0, 0, 'e'},      // Экспортирует кэш в файл
-    {"clear", 0, 0, 'c'},       // Очищает счетчики пользователей
-    {"truncate", 0, 0, 't'},    // Очищает кэш в БД
-    {"file", 1, 0, 'f'},        // Имя файла для импорта или экспорта
-    {"user", 1, 0, 'U'},        // Фильтр по пользователям
-    {"date", 1, 0, 'D'},        // Фильтр по датам
-    {"verbose", 0, 0, 'v'},     // Устанавливает режим многословности
-    {"debug", 1, 0, 'd'},       // Устанавливает уровень отладки
-    {"logger", 1, 0, 'l'},      // Устанавливает движок вывода сообщений
+    {"help",        0, 0, 'h'},    // Показывает справку по опциям командной строки и завершает работу
+    {"version",     0, 0, 'V'},    // Показывает версию программы и завершает работу
+    {"update",      0, 0, 'u'},    // Обновляет кэш в БД и счетчики пользователей
+    {"export",      0, 0, 'e'},    // Экспортирует кэш в файл
+    {"clear",       0, 0, 'c'},    // Очищает счетчики пользователей
+    {"truncate",    0, 0, 't'},    // Очищает кэш в БД
+    {"file",        1, 0, 'f'},    // Имя файла для импорта или экспорта
+    {"user",        1, 0, 'U'},    // Фильтр по пользователям
+    {"date",        1, 0, 'D'},    // Фильтр по датам
+    {"verbose",     0, 0, 'v'},    // Устанавливает режим многословности
+    {"debug",       1, 0, 'd'},    // Устанавливает уровень отладки
+    {"logger",      1, 0, 'l'},    // Устанавливает движок вывода сообщений
+    {"wait-myself", 0, 0, 'w'},    // Устанавливает движок вывода сообщений
     {0, 0, 0, 0}
   };
 
@@ -161,7 +166,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVuectf:U:D:vd:l:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVuectf:U:D:vd:l:w", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -223,6 +228,10 @@ int main (int argc, char *argv[])
           DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
           logger->setEngine (optarg);
           break;
+        case 'w':
+          DEBUG (DEBUG_CMDARG, "option: --wait-myself");
+          wait_myself = true;
+          break;
         case '?':
           break;
         default:
@@ -254,7 +263,7 @@ int main (int argc, char *argv[])
 
   ProcessManager process;
 
-  if (!process.start ("samsparser"))
+  if (!process.start ("samsparser", wait_myself))
     {
       exit (2);
     }
@@ -272,19 +281,23 @@ int main (int argc, char *argv[])
   if (commands == CMD_NONE)
     commands += CMD_UPDATE;
 
+  bool parseFromBegin = true;
   while (commands != CMD_NONE)
     {
       if ((commands & CMD_UPDATE) == CMD_UPDATE)
         {
           INFO ("+++ Updating database");
           if (logfilename.empty ())
-            logfilename = squidlogdir + "/" + squidcachefile;
+            {
+              logfilename = squidlogdir + "/" + squidcachefile;
+              parseFromBegin = false;
+            }
 
           parser = new SquidLogParser (proxyid);
 
           parser->setDateFilter (dateFilter);
           parser->setUserFilter (userFilter);
-          parser->parseFile (logfilename);
+          parser->parseFile (logfilename, parseFromBegin);
 
           delete parser;
 

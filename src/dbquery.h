@@ -32,29 +32,35 @@ class DBQuery
 
 public:
 
+  /*
+   * @brief Тип переменной
+   */ 
   enum VarType
   {
-    T_LONG,
-    T_CHAR,
-    T_DATE,
-    T_TIME,
-    T_DATETIME,
-    T_TIMESTAMP
+    T_LONG,        ///< long (tinyint, smallint, integer)
+    T_LONGLONG,    ///< long long (bigint)
+    T_CHAR,        ///< char (char, varchar)
   };
 
+  /*
+   * @brief Преобразование типа переменной в строку
+   * @param t Тип переменной
+   * @return Тип переменной в виде строке
+   */
   static string toString (VarType t);
 
+  /*
+   * @brief Деструктор
+   */
   virtual ~ DBQuery ();
 
   /**
    * @brief Выполняет прямой запрос @a query
    *
+   * Метод должен быть переопределен наследником.
    * Прямое выполнение представляет собой самый простой способ выполнить инструкцию.
    * Например, следующий код формирует инструкции SQL и выполняет их один раз:
    * @code
-   * DBConn conn;
-   * DBQuery * query = conn.newQuery();
-   * conn.connect();
    * query->sendQueryDirect("CREATE TABLE my_test(id int, name text)");
    * query->sendQueryDirect("INSERT INTO my_test VALUES(20, 'hello')");
    * @endcode
@@ -72,34 +78,28 @@ public:
    * @code
    * long num;
    * char desc[50];
-   * DBConn conn;
-   * conn.connect();
-   * DBQuery *query = conn.newQuery();
    * query->bindCol( 1, DBQuery::T_LONG, &num, 0);
    * query->bindCol( 2, DBQuery::T_CHAR, desc, sizeof(desc));
-   * query->sendQuery("SELECT id, name from my_test");
+   * query->sendQueryDirect("SELECT id, name from my_test");
    * while (query->fetch())
-   * {
    *   printf("id=%ld, name=%s\n", num, desc);
-   * }
-   * conn.disconnect();
    * @endcode
    *
-   * @param colNum Номер параметра, упорядоченный последовательно
+   * @param colNum Номер столбца, упорядоченный последовательно
    *        в увеличивающемся порядке, начинающемся с 1.
-   * @param dstType Тип данных для C параметра. Наиболее часто используемые значения:
-   *        SQL_C_CHAR, SQL_C_LONG, SQL_C_SHORT, SQL_C_FLOAT, SQL_C_DOUBLE,
-   *        SQL_C_NUMERIC, SQL_C_DATE, SQL_C_TIME, SQL_C_TIMESTAMP,
-   *        SQL_C_BINARY, SQL_C_BIT, SQL_C_SBIGINT, SQL_C_UBIGINT,
-   *        SQL_C_TINYINT, SQL_C_ULONG, SQL_C_USHORT, SQL_C_UTINYINT
-   * @param dstValue Указатель на буфер для данных параметра.
-   * @param dstLength Длина буфера @a dstValue в байтах.
-   * @retval true При успешном добавлении колонки.
+   * @param dstType Тип данных для C параметра.
+   * @param buf Указатель на буфер для данных столбца.
+   * @param bufLen Длина буфера @a buf в байтах.
+   * @retval true При успешном добавлении столбца.
    * @retval false При возникновении ошибки.
-   * @sa sendQuery(), fetch(), useConnection()
+   * @sa sendQuery(), fetch()
    */
   virtual bool bindCol (uint colNum, VarType dstType, void *buf, int bufLen);
 
+  /**
+   * @brief Привязывает буферы данных прикладных программ к маркерам в SQL запросе
+   *
+   */
   virtual bool bindParam (uint num, VarType dstType, void *buf, int bufLen);
 
   /**
@@ -124,9 +124,6 @@ public:
    * @code
    * long id;
    * char name[30];
-   * DBConn conn;
-   * conn.connect();
-   * DBQuery *query = conn.newQuery();
    * query->prepareQuery("INSERT INTO EMP(ID, NAME) VALUES(?, ?)");
    * query->bindParam(1, DBQuery::T_LONG, &id,  0);
    * query->bindParam(2, DBQuery::T_CHAR, name, sizeof(name));
@@ -154,11 +151,15 @@ public:
   virtual bool fetch ();
 
 protected:
+  /**
+   * @brief Конструктор
+   */
   DBQuery ();
 
+  /**
+   * @brief Освобождает все ресурсы
+   */
   virtual void destroy ();
-
-  DBConn *_conn;
 };
 
 #endif

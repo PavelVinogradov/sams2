@@ -4,6 +4,12 @@
         1.3) В таблице websettings поле s_version должно соответствовать значению VERSION
              всего пакета, иначе никакие операции с БД производится не будут
 	1.4) В таблице reconfig удалить поле s_number
+	1.5) В таблице squiduser в поля s_size и s_hit добавить атрибут UNSIGNED
+	1.6) ALTER TABLE proxy  ADD s_autouser    INT           NOT NULL DEFAULT 0
+				ADD s_autotpl     INT           NULL DEFAULT 0,
+				ADD s_autotpl_val VARCHAR( 30 ) NULL ,
+				ADD s_autogrp     INT           NULL DEFAULT 0,
+				ADD s_autogrp_val VARCHAR( 30 ) NULL ;
 
 2) WEB интерфейс
   2.1) Редактирование списка локальных адресов (доменов): не работает изменение

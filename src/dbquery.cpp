@@ -30,6 +30,7 @@ string DBQuery::toString (VarType t)
     case T_CHAR:
       res = "char";
       break;
+/*
     case T_DATE:
       res = "date";
       break;
@@ -42,6 +43,7 @@ string DBQuery::toString (VarType t)
     case T_TIMESTAMP:
       res = "timestamp";
       break;
+*/
     default:
       res = "unknown";
       break;

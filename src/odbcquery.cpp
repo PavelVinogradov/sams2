@@ -42,6 +42,28 @@ ODBCQuery::~ODBCQuery ()
     ((ODBCConn *) _conn)->unregisterQuery (this);
 }
 
+bool ODBCQuery::bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen)
+{
+  SQLSMALLINT dType;
+  switch (dstType)
+    {
+      case DBQuery::T_LONG:
+        dType = SQL_C_LONG;
+        break;
+      case DBQuery::T_LONGLONG:
+        dType = SQL_C_UBIGINT;
+        break;
+      case DBQuery::T_CHAR:
+        dType = SQL_C_CHAR;
+        break;
+      default:
+        return false;
+        break;
+    }
+
+  return bindCol ((SQLUSMALLINT) colNum, dType, (SQLPOINTER) buf, (SQLLEN) bufLen);
+}
+
 bool ODBCQuery::bindCol (SQLUSMALLINT colNum, SQLSMALLINT dstType, SQLPOINTER dstValue, SQLLEN dstLength)
 {
   long err;
@@ -81,8 +103,33 @@ bool ODBCQuery::bindCol (SQLUSMALLINT colNum, SQLSMALLINT dstType, SQLPOINTER ds
   return true;
 }
 
+bool ODBCQuery::bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen)
+{
+  SQLSMALLINT dType;
+  SQLSMALLINT sType;
+  switch (dstType)
+    {
+      case DBQuery::T_LONG:
+        dType = SQL_C_LONG;
+        sType = SQL_INTEGER;
+        break;
+      case DBQuery::T_LONGLONG:
+        dType = SQL_C_UBIGINT;
+        sType = SQL_BIGINT;
+        break;
+      case DBQuery::T_CHAR:
+        dType = SQL_C_CHAR;
+        sType = SQL_VARCHAR;
+        break;
+      default:
+        return false;
+        break;
+    }
 
-bool ODBCQuery::bindParam (SQLUSMALLINT num, SQLSMALLINT ioType, SQLSMALLINT dstType, SQLSMALLINT srcType, SQLPOINTER dstValue, SQLLEN dstLength)
+  return bindParam ((SQLUSMALLINT) num, dType, sType, (SQLPOINTER) buf, (SQLLEN) bufLen);
+}
+
+bool ODBCQuery::bindParam (SQLUSMALLINT num, SQLSMALLINT dstType, SQLSMALLINT srcType, SQLPOINTER dstValue, SQLLEN dstLength)
 {
   long err;
 
@@ -103,7 +150,7 @@ bool ODBCQuery::bindParam (SQLUSMALLINT num, SQLSMALLINT ioType, SQLSMALLINT dst
       return false;
     }
 
-  err = SQLBindParameter (statement, num, ioType, dstType, srcType, 0, 0, dstValue, dstLength, 0);
+  err = SQLBindParameter (statement, num, SQL_PARAM_INPUT, dstType, srcType, 0, 0, dstValue, dstLength, 0);
   if ((err != SQL_SUCCESS) && (err != SQL_SUCCESS_WITH_INFO))
     {
       ERROR ("SQLBindParameter [" << err << "] " << ODBCConn::getErrorMessage (SQL_HANDLE_STMT, statement));

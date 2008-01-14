@@ -52,7 +52,7 @@ bool Net::hasHost (const string & host)
       pos = host.find (_net);
       if (pos != -1)
         {
-          DEBUG (DEBUG5, "[" << this << "] " << _net << " contains " << host);
+          DEBUG (DEBUG5, "[" << this << "] " << host << " is part of " << _net);
           return true;
         }
       else

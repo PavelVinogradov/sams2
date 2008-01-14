@@ -28,17 +28,30 @@ using namespace std;
 class DBConn
 {
 public:
+  /**
+   * @brief Используемый API для работы с БД
+   */
   enum DBEngine
   {
     DB_MYSQL,                   ///< Использовать функции MySQL для доступа к БД
-//    DB_PGSQL,                   ///< Использовать функции PostgreSQL для доступа к БД
+    DB_PGSQL,                   ///< Использовать функции PostgreSQL для доступа к БД
     DB_UODBC                    ///< Использовать функции unixODBC для доступа к БД
   };
 
-  DBConn (DBEngine engine);
-
+  /*
+   * @brief Деструктор
+   *
+   * При вызове этого деструктора, автоматически вызывается деструктор наследника
+   */
   virtual ~DBConn ();
 
+  /*
+   * @brief Подключение к БД
+   *
+   * Метод должен быть переопределен у наследника.
+   *
+   * @return true если соединение установлено и false при какой либо ошибке
+   */
   virtual bool connect ();
 
   /**
@@ -48,19 +61,34 @@ public:
    */
   bool isConnected ();
 
+  /**
+   * @brief Возвращает используемый API
+   *
+   * @return true если соединение уже установлено и false в противном случае
+   */
   DBEngine getEngine();
 
   /**
-   * Закрывает соединение с источником данных и освобождает все используемые ресурсы
+   * @brief Закрывает соединение
+   *
+   * Метод должен быть переопределен у наследника.
    */
   virtual void disconnect ();
 
 private:
 
 protected:
+  /*
+   * @brief Конструктор
+   *
+   * @param engine способ работы с БД
+   */
+  DBConn (DBEngine engine);
+
   bool _connected;            ///< Guess yourself
-  DBEngine _engine;
+  DBEngine _engine;           ///< Используемый API
 //  map < string, DBQuery * >_queries;  ///< Список подключенных запросов
 };
 
 #endif
+

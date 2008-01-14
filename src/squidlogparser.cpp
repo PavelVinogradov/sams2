@@ -40,6 +40,7 @@
 #include "userfilter.h"
 #include "debug.h"
 #include "global.h"
+#include "tools.h"
 
 SquidLogParser::SquidLogParser (int proxyid)
 {
@@ -65,110 +66,67 @@ void SquidLogParser::setDateFilter (DateFilter * filt)
   _date_filter = filt;
 }
 
-void SquidLogParser::parseFile (const string & fname)
+void SquidLogParser::parseFile (const string & fname, bool from_begin)
 {
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname);
 
-  #ifdef USE_UNIXODBC
-  ODBCConn *connODBC = NULL;
-  ODBCQuery *queryODBC = NULL;
-  #endif
-
-  #ifdef USE_MYSQL
-  MYSQLConn *connMYSQL = NULL;
-  MYSQLQuery *queryMYSQL = NULL;
-  #endif
+  DBConn *conn = NULL;
+  DBQuery *query = NULL;
 
   DBConn::DBEngine engine = config->getEngine();
 
-  char s_version[5];
-
-  //После if'ов переменная s_version должна содержать значение, взятое из БД
-  basic_stringstream < char >sql_cmd;
-  sql_cmd << "select s_version from websettings";
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      connODBC = new ODBCConn();
-      if (!connODBC->connect ())
-        {
-          delete connODBC;
-          return;
-        }
-      queryODBC = new ODBCQuery(connODBC);
-      if (!queryODBC->bindCol (1, SQL_C_CHAR, s_version, sizeof (s_version)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->sendQueryDirect (sql_cmd.str()) )
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->fetch ())
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
+      conn = new ODBCConn();
+      query = new ODBCQuery((ODBCConn*)conn);
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      connMYSQL = new MYSQLConn();
-      if (!connMYSQL->connect ())
-        {
-          delete connMYSQL;
-          return;
-        }
-      queryMYSQL = new MYSQLQuery(connMYSQL);
-      if (!queryMYSQL->bindCol (1, MYSQL_TYPE_STRING, s_version, sizeof (s_version)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->sendQueryDirect (sql_cmd.str()) )
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->fetch ())
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
+      conn = new MYSQLConn();
+      query = new MYSQLQuery((MYSQLConn*)conn);
       #endif
     }
   else
+    return;
+
+  if (!conn->connect ())
     {
+      delete query;
+      delete conn;
       return;
     }
 
+  char s_version[5];
+  basic_stringstream < char >sql_cmd;
+  sql_cmd << "select s_version from websettings";
+
+  if (!query->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->sendQueryDirect (sql_cmd.str()) )
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->fetch ())
+    {
+      delete query;
+      delete conn;
+      return;
+    }
 
   if (strcmp (s_version, VERSION) != 0)
     {
       ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << s_version);
-      if (engine == DBConn::DB_UODBC)
-        {
-          #ifdef USE_UNIXODBC
-          delete connODBC;
-          delete queryODBC;
-          #endif
-        }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          delete connMYSQL;
-          delete queryMYSQL;
-          #endif
-        }
+      delete query;
+      delete conn;
       return;
     }
   else
@@ -176,44 +134,10 @@ void SquidLogParser::parseFile (const string & fname)
       DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Database version ok.");
     }
 
-  Proxy *proxy = NULL;
-
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      proxy = new Proxy (_proxyid, connODBC);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      proxy = new Proxy (_proxyid, connMYSQL);
-      #endif
-    }
-  else
-    {
-      return;
-    }
-
+  Proxy proxy (_proxyid, conn);
 
   LocalNetworks lnets;
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      lnets.load (connODBC);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      lnets.load (connMYSQL);
-      #endif
-    }
-  else
-    {
-      return;
-    }
-
+  lnets.load (conn);
 
   INFO ("Reading file " << fname);
 
@@ -230,184 +154,108 @@ void SquidLogParser::parseFile (const string & fname)
   struct tm date_time;
 
   sql_cmd.str("");
-  sql_cmd << "insert into squidcache set";
-  sql_cmd << " s_proxy_id=" << _proxyid;
-  sql_cmd << ",s_date=?";
-  sql_cmd << ",s_time=?";
-  sql_cmd << ",s_user=?";
-  sql_cmd << ",s_domain=?";
-  sql_cmd << ",s_size=?";
-  sql_cmd << ",s_hit=?";
-  sql_cmd << ",s_ipaddr=?";
-  sql_cmd << ",s_period=?";
-  sql_cmd << ",s_method=?";
-  sql_cmd << ",s_url=?";
 
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      if (!queryODBC->prepareQuery (sql_cmd.str ()))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_DATE, s_date, sizeof (s_date)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_DATE, s_time, sizeof (s_time)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (3, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, s_user, sizeof (s_user)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (4, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, s_domain, sizeof (s_domain)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (5, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_size, 0))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_hit, 0))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (7, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, s_ipaddr, sizeof (s_ipaddr)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (8, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER, &s_period, 0))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (9, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, s_method, sizeof (s_method)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      if (!queryODBC->bindParam (10, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, s_url, sizeof (s_url)))
-        {
-          delete connODBC;
-          delete queryODBC;
-          return;
-        }
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      if (!queryMYSQL->prepareQuery (sql_cmd.str ()))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (1, MYSQL_TYPE_DATE, &date_time, sizeof (date_time)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (2, MYSQL_TYPE_TIME, &date_time, sizeof (date_time)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (3, MYSQL_TYPE_STRING, s_user, sizeof (s_user)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (4, MYSQL_TYPE_STRING, s_domain, sizeof (s_domain)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (5, MYSQL_TYPE_LONG, &s_size, 0))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (6, MYSQL_TYPE_LONG, &s_hit, 0))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (7, MYSQL_TYPE_STRING, s_ipaddr, sizeof (s_ipaddr)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (8, MYSQL_TYPE_LONG, &s_period, 0))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (9, MYSQL_TYPE_STRING, s_method, sizeof (s_method)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      if (!queryMYSQL->bindParam (10, MYSQL_TYPE_STRING, s_url, sizeof (s_url)))
-        {
-          delete connMYSQL;
-          delete queryMYSQL;
-          return;
-        }
-      #endif
-    }
+  sql_cmd << "insert into squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_ipaddr, s_period, s_method, s_url)";
+  sql_cmd << " VALUES ("<<_proxyid<<", ?,?,?,?,?,?,?,?,?,?)";
 
+  if (!query->prepareQuery (sql_cmd.str ()))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (5, DBQuery::T_LONG, &s_size, 0))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (6, DBQuery::T_LONG, &s_hit, 0))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (8, DBQuery::T_LONG, &s_period, 0))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+  if (!query->bindParam (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
 
   fstream in;
   in.open (fname.c_str (), ios_base::in);
   if (!in.is_open ())
     {
       ERROR ("Failed to open file " << fname);
-      if (engine == DBConn::DB_UODBC)
-        {
-          #ifdef USE_UNIXODBC
-          delete connODBC;
-          delete queryODBC;
-          #endif
-        }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          delete connMYSQL;
-          delete queryMYSQL;
-          #endif
-        }
+      delete query;
+      delete conn;
       return;
     }
+
+  in.seekg (0, ios::end);
+  long fsize = in.tellg();
+  in.seekg (0, ios::beg);
+
+  long fpos = 0;
+
+  if (!from_begin)
+    fpos = proxy.getEndValue();
+
+  if (fpos > fsize)
+    fpos = 0;
+
+  if (fpos == fsize)
+    {
+      INFO("No new values");
+      delete query;
+      delete conn;
+      return;
+    }
+
+
 
   string line;
   SquidLogLine sll;
@@ -420,7 +268,7 @@ void SquidLogParser::parseFile (const string & fname)
       if (sll.setLine (line) != true)
         continue;
 
-      usr = proxy->findUser (sll.getIP (), sll.getIdent ());
+      usr = proxy.findUser (sll.getIP (), sll.getIdent ());
 
       if (usr == NULL)
         continue;
@@ -446,6 +294,13 @@ void SquidLogParser::parseFile (const string & fname)
           DEBUG (DEBUG_URL, "Consider url is local");
           continue;
         }
+
+      memset (s_user, 0, sizeof(s_user));
+      memset (s_domain, 0, sizeof(s_domain));
+      memset (s_ipaddr, 0, sizeof(s_ipaddr));
+      memset (s_method, 0, sizeof(s_method));
+      memset (s_url, 0, sizeof(s_url));
+
 
       s_hit = 0;
       switch (sll.getCacheResult ())
@@ -495,50 +350,24 @@ void SquidLogParser::parseFile (const string & fname)
 
       sprintf (s_method, "method");
 
-      if (engine == DBConn::DB_UODBC)
-        {
-          #ifdef USE_UNIXODBC
-          if (!queryODBC->sendQuery ())
-              continue;
-          #endif
-        }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          if (!queryMYSQL->sendQuery ())
-              continue;
-          #endif
-        }
+      if (!query->sendQuery ())
+        continue;
+
+      if (!from_begin)
+        proxy.setEndValue (in.tellg());
     }
   in.close ();
 
-  proxy->commitChanges ();
+  proxy.commitChanges ();
 
   sql_cmd.str("");
   sql_cmd << "delete from cachesum where s_proxy_id=" << _proxyid;
 
-
-  if (engine == DBConn::DB_UODBC)
+  if (!query->sendQueryDirect (sql_cmd.str ()))
     {
-      #ifdef USE_UNIXODBC
-      if (!queryODBC->sendQueryDirect (sql_cmd.str ()))
-        {
-          delete queryODBC;
-          delete connODBC;
-          return;
-        }
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      if (!queryMYSQL->sendQueryDirect (sql_cmd.str ()))
-        {
-          delete queryMYSQL;
-          delete connMYSQL;
-          return;
-        }
-      #endif
+      delete query;
+      delete conn;
+      return;
     }
 
   sql_cmd.str("");
@@ -547,26 +376,8 @@ void SquidLogParser::parseFile (const string & fname)
   sql_cmd << " from squidcache where s_proxy_id=" << _proxyid;
   sql_cmd << " group by s_date, s_domain, s_user";
 
-
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      queryODBC->sendQueryDirect (sql_cmd.str ());
-      delete queryODBC;
-      delete connODBC;
-      return;
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      queryMYSQL->sendQueryDirect (sql_cmd.str ());
-      delete queryMYSQL;
-      delete connMYSQL;
-      return;
-      #endif
-    }
-
-  delete proxy;
-
+  query->sendQueryDirect (sql_cmd.str ());
+  delete query;
+  delete conn;
+  return;
 }

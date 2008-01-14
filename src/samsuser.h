@@ -24,22 +24,6 @@ using namespace std;
 #include "ip.h"
 
 
-/**
- * @brief Статус пользователя
- */
-enum usrStatus
-{
-  STAT_OFF = -1,                ///< Пользователь отключен
-  STAT_INACTIVE,                ///< Пользователь превысил лимит
-  STAT_ACTIVE                   ///< Пользователь активен
-};
-
-/**
- * @brief Преобразование статуса пользователя в строку
- * @param s Статус пользователя
- * @return Статус пользователя в виде строки
- */
-string toString (usrStatus s);
 
 #define DOMAIN_SEPARATORS "+@\\"
 
@@ -49,6 +33,23 @@ string toString (usrStatus s);
 class SAMSUser
 {
 public:
+  /**
+  * @brief Статус пользователя
+  */
+  enum usrStatus
+  {
+    STAT_OFF = -1,                ///< Пользователь отключен
+    STAT_INACTIVE,                ///< Пользователь превысил лимит
+    STAT_ACTIVE                   ///< Пользователь активен
+  };
+
+  /**
+  * @brief Преобразование статуса пользователя в строку
+  * @param s Статус пользователя
+  * @return Статус пользователя в виде строки
+  */
+  string toString (usrStatus s);
+
   /**
    * @brief Конструктор
    */
@@ -141,7 +142,7 @@ public:
    *
    * @param size Объем
    */
-  void setSize (long size);
+  void setSize (long long size);
 
   /**
    * @brief Увеличивает объем израсходованного трафика на @a size
@@ -155,13 +156,13 @@ public:
    *
    * @return Объем израсходованного трафика.
    */
-  long getSize ();
+  long long getSize ();
 
   /** @brief Устанавливает объем трафика из кэша
    *
    *  @param hit Объем
    */
-  void setHit (long hit);
+  void setHit (long long hit);
 
   /**
    * @brief Увеличивает объем трафика из кэша на @a hit
@@ -175,7 +176,7 @@ public:
    *
    * @return Объем трафика из кэша
    */
-  long getHit ();
+  long long getHit ();
 
   /**
    * @brief Устанавливает квоту трафика в МБ
@@ -199,11 +200,25 @@ public:
   void setShablonId (long id);
 
   /**
+   * @brief Возвращает идентификатор шаблона пользователя
+   *
+   * @return Идентификатор шаблона пользователя
+   */
+  long getShablonId();
+
+  /**
    * @brief Устанавливает идентификатор группы пользователя
    *
    * @param id Идентификатор группы
    */
   void setGroupId (long id);
+
+  /**
+   * @brief Возвращает идентификатор группы пользователя
+   *
+   * @return Идентификатор группы пользователя
+   */
+  long getGroupId();
 
   /**
    * @brief Формирует значения экземпляра класса в виде строки
@@ -225,8 +240,8 @@ protected:
   string _domain;               ///< Домен
   IP _ip;                       ///< IP адрес пользователя
   usrStatus _enabled;           ///< Тип активности пользователя
-  long _size;                   ///< Объем использованного трафика
-  long _hit;                    ///< Объем трафика, взятого из кэша
+  long long _size;              ///< Объем использованного трафика
+  long long _hit;               ///< Объем трафика, взятого из кэша
   long _quote;                  ///< Квота
   int _tpl_id;                  ///< Идентификатор шаблона
   int _grp_id;                  ///< Идентификатор группы

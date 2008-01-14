@@ -36,7 +36,7 @@ public:
   /**
    * @brief Конструктор
    */
-    SAMSUsers ();
+    SAMSUsers (DBConn * conn);
 
   /**
    * @brief Деструктор
@@ -49,7 +49,7 @@ public:
    * @param conn Соединение с БД
    * @return true при успешном завершении и false при любой ошибке
    */
-  bool load (DBConn * conn);
+  bool load ();
 
   /**
    * @brief Поиск пользователя по нику и домену
@@ -70,8 +70,17 @@ public:
    */
   SAMSUser *findUserByIP (const IP & ip);
 
+  /**
+   * @brief Добавление пользователя, не существующего в БД
+   *
+   * @param user Пользователь
+   * @return true если пользователь успешно добавлен и false в противном случае
+   */
+  bool addNewUser(SAMSUser *user);
+
 private:
-    vector < SAMSUser * >_users;        ///< список пользователей
+  vector < SAMSUser * >_users;        ///< список пользователей
+  DBConn * _conn;                     ///< Используемое соединение с БД
 };
 
 #endif

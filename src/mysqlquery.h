@@ -41,8 +41,10 @@ public:
 
   bool sendQueryDirect (const string & query);
 
+  bool bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen);
 
+  bool bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindParam (uint num, enum_field_types dstType, void *buf, int bufLen);
 
   bool prepareQuery (const string & query);
@@ -69,6 +71,7 @@ private:
   MYSQL_STMT *_statement;
   MYSQL_BIND *_bind;
   ulong *_param_real_len;
+  bool _binded;
   MYSQL_RES *_res;
   MYSQLConn *_conn;
 

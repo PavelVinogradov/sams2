@@ -68,9 +68,6 @@ public:
   void clearCache ();
 
 protected:
-    string _datasource;         ///< Источник данных ODBC
-  string _user;                 ///< Имя пользователя для подключения к БД
-  string _pass;                 ///< Пароль для подключения к БД
   int _proxyid;                 ///< Идентификатор прокси
   DateFilter *_date_filter;     ///< Текущий фильтр по датам
   UserFilter *_user_filter;     ///< Текущий фильтр по пользователям

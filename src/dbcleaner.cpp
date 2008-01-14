@@ -43,7 +43,6 @@ DBCleaner::DBCleaner (int proxyid)
   _user_filter = NULL;
 }
 
-
 DBCleaner::~DBCleaner ()
 {
 }
@@ -98,6 +97,8 @@ void DBCleaner::clearCounters ()
         }
       #endif
     }
+  else
+    return;
 }
 
 void DBCleaner::clearCache ()
@@ -105,76 +106,51 @@ void DBCleaner::clearCache ()
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
   basic_stringstream < char >sqlcmd;
-
-  #ifdef USE_UNIXODBC
-  ODBCConn *connODBC = NULL;
-  ODBCQuery *queryODBC = NULL;
-  #endif
-
-  #ifdef USE_MYSQL
-  MYSQLConn *connMYSQL = NULL;
-  MYSQLQuery *queryMYSQL = NULL;
-  #endif
+  DBConn *conn = NULL;
+  DBQuery *query = NULL;
 
   DBConn::DBEngine engine = config->getEngine();
 
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      connODBC = new ODBCConn();
-      if (!connODBC->connect ())
+      conn = new ODBCConn();
+      if (!conn->connect ())
         {
-          delete connODBC;
+          delete conn;
           return;
         }
-      queryODBC = new ODBCQuery(connODBC);
+      query = new ODBCQuery((ODBCConn*)conn);
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      connMYSQL = new MYSQLConn();
-      if (!connMYSQL->connect ())
+      conn = new MYSQLConn();
+      if (!conn->connect ())
         {
-          delete connMYSQL;
+          delete conn;
           return;
         }
-      queryMYSQL = new MYSQLQuery(connMYSQL);
+      query = new MYSQLQuery((MYSQLConn*)conn);
       #endif
     }
+  else
+    return;
 
 
-  if (engine == DBConn::DB_UODBC)
+  if (!query->sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
     {
-      #ifdef USE_UNIXODBC
-      if (!queryODBC->sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
-        {
-          delete connODBC;
-          return;
-        }
-      if (!queryODBC->sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-        {
-          delete connODBC;
-          return;
-        }
-      #endif
+      delete query;
+      delete conn;
+      return;
     }
-  else if (engine == DBConn::DB_MYSQL)
+  if (!query->sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
     {
-      #ifdef USE_MYSQL
-      if (!queryMYSQL->sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
-        {
-          delete connMYSQL;
-          return;
-        }
-      if (!queryMYSQL->sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-        {
-          delete connMYSQL;
-          return;
-        }
-      #endif
+      delete query;
+      delete conn;
+      return;
     }
-
 
   sqlcmd << "delete from squidcache where s_proxy_id=" << _proxyid;
   if (_date_filter != NULL)
@@ -183,54 +159,22 @@ void DBCleaner::clearCache ()
       sqlcmd << " and s_date<='" << _date_filter->getEndDateAsString () << "' ";
     }
 
-
-  if (engine == DBConn::DB_UODBC)
+  if (!query->sendQueryDirect (sqlcmd.str ()))
     {
-      #ifdef USE_UNIXODBC
-      if (!queryODBC->sendQueryDirect (sqlcmd.str ()))
-        {
-          delete connODBC;
-          return;
-        }
-      #endif
+      delete query;
+      delete conn;
+      return;
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      if (!queryMYSQL->sendQueryDirect (sqlcmd.str ()))
-        {
-          delete connMYSQL;
-          return;
-        }
-      #endif
-    }
-
 
   sqlcmd.str("");
   sqlcmd << "delete from cachesum where s_proxy_id=" << _proxyid;
 
-
-  if (engine == DBConn::DB_UODBC)
+  if (!query->sendQueryDirect (sqlcmd.str ()))
     {
-      #ifdef USE_UNIXODBC
-      if (!queryODBC->sendQueryDirect (sqlcmd.str ()))
-        {
-          delete connODBC;
-          return;
-        }
-      #endif
+      delete query;
+      delete conn;
+      return;
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      if (!queryMYSQL->sendQueryDirect (sqlcmd.str ()))
-        {
-          delete connMYSQL;
-          return;
-        }
-      #endif
-    }
-
 
   sqlcmd.str("");
   sqlcmd << "insert into cachesum select " << _proxyid;
@@ -238,21 +182,9 @@ void DBCleaner::clearCache ()
   sqlcmd << " from squidcache where s_proxy_id=" << _proxyid;
   sqlcmd << " group by s_date, s_domain, s_user";
 
+  query->sendQueryDirect (sqlcmd.str ());
+  delete query;
+  delete conn;
 
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      queryODBC->sendQueryDirect (sqlcmd.str ());
-      delete connODBC;
-      return;
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      queryMYSQL->sendQueryDirect (sqlcmd.str ());
-      delete connMYSQL;
-      return;
-      #endif
-    }
+  return;
 }

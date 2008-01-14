@@ -68,6 +68,27 @@ public:
   string toString (usrAuthType t);
 
   /**
+   * @brief Используемый шаблон при автоматическом создании пользователя
+   */
+  enum usrUseAutoTemplate
+  {
+    TPL_DEFAULT,                  //!< Использовать шаблон по умолчанию
+    TPL_SPECIFIED,                //!< Использовать указанный шаблон
+    TPL_TAKE_FROM_GROUP           //!< Имя шаблона сопадает с именем первичной группы пользователя
+  };
+
+  /**
+   * @brief Используемая группа при автоматическом создании пользователя
+   */
+  enum usrUseAutoGroup
+  {
+    GRP_DEFAULT,                  //!< Использовать группу по умолчанию
+    GRP_SPECIFIED,                //!< Использовать указанную группу
+    GRP_TAKE_FROM_GROUP           //!< Имя группы сопадает с именем первичной группы пользователя
+  };
+
+
+  /**
    * @brief Конструктор
    *
    * @param id Идентификатор прокси
@@ -88,6 +109,20 @@ public:
   long getId ();
 
   /**
+   * @brief Устанавливает смещение в файле, откуда нужно читать значения
+   *
+   * @param endvalue Смещение в файле
+   */
+  void setEndValue(long endvalue);
+
+  /**
+   * @brief Возвращает смещение в файле, откуда нужно читать значения
+   *
+   * @return Смещение в файле
+   */
+  long getEndValue();
+
+  /**
    * @brief Поиск пользователя SAMS
    *
    * Поиск происходит в зависимости от настроек прокси.
@@ -105,17 +140,31 @@ public:
    */
   void commitChanges ();
 
+  long getShablonId(const string &name) const;
+
+  long getGroupId(const string &name) const;
+
 protected:
   /**
    * @brief Загружает настройки
    */
   void load ();
 
+  void createUser();
+
   usrAuthType _auth;            ///< Способ авторизации пользователей
   TrafficType _trafType;        ///< Тип учитываемого трафика
   long _id;                     ///< Идентификатор прокси
   long _kbsize;                 ///< Размер килобайта
+  long _endvalue;               ///< Смещение в файле, начиная с которого нужно считывать данные
   bool _needResolve;            ///< Необходимость обращения к DNS
+  bool _usedomain;              ///< Использовать или нет домен по умолчанию
+  string _defaultdomain;        ///< Домен по умолчанию
+  bool _autouser;               ///< Создавать или нет пользователя, если он не существует
+  usrUseAutoTemplate _autotpl;
+  string _defaulttpl;
+  usrUseAutoGroup _autogrp;
+  string _defaultgrp;
   DBConn *_conn;                ///< Соединение с БД
   SAMSUsers *_users;            ///< Список пользователей
 };

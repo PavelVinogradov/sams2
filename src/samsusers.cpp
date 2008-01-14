@@ -31,9 +31,11 @@
 #include "samsuser.h"
 #include "debug.h"
 
-SAMSUsers::SAMSUsers ()
+SAMSUsers::SAMSUsers (DBConn * conn)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "Using connection "<< conn);
+  _conn = conn;
+  load();
 }
 
 
@@ -41,7 +43,7 @@ SAMSUsers::~SAMSUsers ()
 {
 }
 
-bool SAMSUsers::load (DBConn * conn)
+bool SAMSUsers::load ()
 {
   SAMSUser *usr;
 
@@ -51,108 +53,107 @@ bool SAMSUsers::load (DBConn * conn)
   char s_nick[50];
   char s_domain[50];
   int s_quote;
-  long s_size;
-  long s_hit;
+  long long s_size;
+  long long s_hit;
   long s_enabled;
   char s_ip[15];
+  DBQuery *query = NULL;
 
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << conn);
+  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] ");
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery( (ODBCConn*)_conn );
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #endif
+    }
+  else
+    return false;
+
+
+  if (!query->bindCol (1, DBQuery::T_LONG, &s_user_id, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (2, DBQuery::T_LONG, &s_group_id, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (3, DBQuery::T_LONG, &s_shablon_id, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (4, DBQuery::T_CHAR, s_nick, sizeof(s_nick)))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (5, DBQuery::T_CHAR, s_domain, sizeof(s_domain)))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (6, DBQuery::T_LONG, &s_quote, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (7, DBQuery::T_LONGLONG, &s_size, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (8, DBQuery::T_LONGLONG, &s_hit, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (9, DBQuery::T_LONG, &s_enabled, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (10, DBQuery::T_CHAR, s_ip, sizeof(s_ip)))
+    {
+      delete query;
+      return false;
+    }
 
   string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip from squiduser";
-  if (conn->getEngine() == DBConn::DB_UODBC)
+  if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
-      #ifdef USE_UNIXODBC
-      ODBCQuery queryODBC( (ODBCConn*)conn );
-      if (!queryODBC.bindCol (1, SQL_C_LONG, &s_user_id, 0))
-        return false;
-      if (!queryODBC.bindCol (2, SQL_C_LONG, &s_group_id, 0))
-        return false;
-      if (!queryODBC.bindCol (3, SQL_C_LONG, &s_shablon_id, 0))
-        return false;
-      if (!queryODBC.bindCol (4, SQL_C_CHAR, s_nick, sizeof(s_nick)))
-        return false;
-      if (!queryODBC.bindCol (5, SQL_C_CHAR, s_domain, sizeof(s_domain)))
-        return false;
-      if (!queryODBC.bindCol (6, SQL_C_LONG, &s_quote, 0))
-        return false;
-      if (!queryODBC.bindCol (7, SQL_C_LONG, &s_size, 0))
-        return false;
-      if (!queryODBC.bindCol (8, SQL_C_LONG, &s_hit, 0))
-        return false;
-      if (!queryODBC.bindCol (9, SQL_C_LONG, &s_enabled, 0))
-        return false;
-      if (!queryODBC.bindCol (10, SQL_C_CHAR, s_ip, sizeof(s_ip)))
-        return false;
-
-      if (!queryODBC.sendQueryDirect (sqlcmd.c_str()))
-        return false;
-
-      while (queryODBC.fetch ())
-        {
-          usr = new SAMSUser ();
-          usr->setId (s_user_id);
-          usr->setGroupId (s_group_id);
-          usr->setShablonId (s_shablon_id);
-          usr->setNick (s_nick);
-          usr->setDomain (s_domain);
-          usr->setQuote (s_quote);
-          usr->setSize (s_size);
-          usr->setHit (s_hit);
-          usr->setEnabled (s_enabled);
-          usr->setIP (s_ip);
-
-          _users.push_back (usr);
-        }
-
-      #endif
+      delete query;
+      return false;
     }
-  else if (conn->getEngine() == DBConn::DB_MYSQL)
+
+  while (query->fetch ())
     {
-      #ifdef USE_UNIXODBC
-      MYSQLQuery queryMYSQL( (MYSQLConn*)conn );
-      if (!queryMYSQL.bindCol (1, MYSQL_TYPE_LONG, &s_user_id, 0))
-        return false;
-      if (!queryMYSQL.bindCol (2, MYSQL_TYPE_LONG, &s_group_id, 0))
-        return false;
-      if (!queryMYSQL.bindCol (3, MYSQL_TYPE_LONG, &s_shablon_id, 0))
-        return false;
-      if (!queryMYSQL.bindCol (4, MYSQL_TYPE_STRING, s_nick, sizeof(s_nick)))
-        return false;
-      if (!queryMYSQL.bindCol (5, MYSQL_TYPE_STRING, s_domain, sizeof(s_domain)))
-        return false;
-      if (!queryMYSQL.bindCol (6, MYSQL_TYPE_LONG, &s_quote, 0))
-        return false;
-      if (!queryMYSQL.bindCol (7, MYSQL_TYPE_LONG, &s_size, 0))
-        return false;
-      if (!queryMYSQL.bindCol (8, MYSQL_TYPE_LONG, &s_hit, 0))
-        return false;
-      if (!queryMYSQL.bindCol (9, MYSQL_TYPE_LONG, &s_enabled, 0))
-        return false;
-      if (!queryMYSQL.bindCol (10, MYSQL_TYPE_STRING, s_ip, sizeof(s_ip)))
-        return false;
+      usr = new SAMSUser ();
+      usr->setId (s_user_id);
+      usr->setGroupId (s_group_id);
+      usr->setShablonId (s_shablon_id);
+      usr->setNick (s_nick);
+      usr->setDomain (s_domain);
+      usr->setQuote (s_quote);
+      usr->setSize (s_size);
+      usr->setHit (s_hit);
+      usr->setEnabled (s_enabled);
+      usr->setIP (s_ip);
 
-      if (!queryMYSQL.sendQueryDirect (sqlcmd.c_str()))
-        return false;
-
-      while (queryMYSQL.fetch ())
-        {
-          usr = new SAMSUser ();
-          usr->setId (s_user_id);
-          usr->setGroupId (s_group_id);
-          usr->setShablonId (s_shablon_id);
-          usr->setNick (s_nick);
-          usr->setDomain (s_domain);
-          usr->setQuote (s_quote);
-          usr->setSize (s_size);
-          usr->setHit (s_hit);
-          usr->setEnabled (s_enabled);
-          usr->setIP (s_ip);
-
-          _users.push_back (usr);
-        }
-
-      #endif
+      _users.push_back (usr);
     }
+
+  delete query;
+
   return true;
 }
 
@@ -188,4 +189,83 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
         }
     }
   return usr;
+}
+
+bool SAMSUsers::addNewUser(SAMSUser *user)
+{
+  if (!user)
+    return false;
+
+  if (user->getId() > 0)
+    {
+      DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "User must have id < 0");
+      return false;
+    }
+
+  DBQuery *query = NULL;
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery( (ODBCConn*)_conn );
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #endif
+    }
+  else
+    return false;
+
+  basic_stringstream < char >sql_cmd;
+  sql_cmd << "insert into squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip)";
+  sql_cmd << " VALUES (";
+  sql_cmd << user->getGroupId();
+  sql_cmd << "," << user->getShablonId();
+  sql_cmd << "," << user->getNick();
+  sql_cmd << "," << user->getDomain();
+  sql_cmd << "," << user->getQuote();
+  sql_cmd << "," << user->getSize();
+  sql_cmd << "," << user->getHit();
+  sql_cmd << "," << (int)user->getEnabled();
+  sql_cmd << "," << user->getIP();
+  sql_cmd << ")";
+
+  if (!query->sendQueryDirect( sql_cmd.str()))
+    {
+      delete query;
+      return false;
+    }
+
+  long s_user_id;
+  if (!query->bindCol(1, DBQuery::T_LONG, &s_user_id, 0))
+    {
+      delete query;
+      return false;
+    }
+
+  sql_cmd.str("");
+  sql_cmd << "select s_user_id from squiduser where";
+  sql_cmd << " s_nick=" << user->getNick();
+  sql_cmd << " and s_domain=" << user->getDomain();
+  sql_cmd << " and s_ip=" << user->getIP();
+  if (!query->sendQueryDirect( sql_cmd.str()))
+    {
+      delete query;
+      return false;
+    }
+
+  if (!query->fetch())
+    {
+      delete query;
+      return false;
+    }
+
+  user->setId (s_user_id);
+
+  _users.push_back (user);
+
+  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << user->getNick() << " successfully added");
 }
