@@ -30,8 +30,9 @@ function NotUsersTreeUserAuth()
   if($SAMSConf->AUTH=="ntlm")
     {
 	$aflag=0;
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+//	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+//	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+	$aaa=ExecuteShellScript("testwbinfopasswd", "$SAMSConf->WBINFOPATH $userdomain $password");
 	$aflag=0;
 	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	  { 
