@@ -17,8 +17,12 @@
    + Ограниченная функциональность
    * Полная функциональность
 
+   * DBConn
+   * DBQuery
    * ODBCConn
    * ODBCQuery
+   * MYSQLConn
+   * MYSQLQuery
    * Url
    * IP
    * Net

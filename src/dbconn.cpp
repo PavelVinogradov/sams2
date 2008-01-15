@@ -24,8 +24,6 @@
 
 #include "debug.h"
 
-#include "global.h"
-
 DBConn::DBConn (DBEngine engine)
 {
   _connected = false;

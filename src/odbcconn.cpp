@@ -24,7 +24,6 @@
 #include "samsconfig.h"
 #include "odbcquery.h"
 #include "debug.h"
-#include "global.h"
 
 ODBCConn::ODBCConn () : DBConn(DBConn::DB_UODBC)
 {
@@ -47,9 +46,9 @@ bool ODBCConn::connect ()
   int err;
   string errmsg;
 
-  string datasource = config->getString (defDBSOURCE, err);
-  string username = config->getString (defDBUSER, err);
-  string password = config->getString (defDBPASSWORD, err);
+  string datasource = SamsConfig::getString (defDBSOURCE, err);
+  string username = SamsConfig::getString (defDBUSER, err);
+  string password = SamsConfig::getString (defDBPASSWORD, err);
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << datasource << " as " << username);
 

@@ -24,8 +24,6 @@
 #include "samsconfig.h"
 #include "processmanager.h"
 
-#include "global.h"
-
 /**
  *  Выводит список опций командной строки с кратким описанием
  */
@@ -87,15 +85,15 @@ int main (int argc, char *argv[])
   uint dbglevel;
   string optname = "";
 
-  config = new SamsConfig ();
+//  config = new SamsConfig ();
   logger = new Logger ();
 
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
-  config->readFile ();
-  config->readDB ();
+//  config->readFile ();
+//  config->readDB ();
 
-  dbglevel = config->getInt (defDEBUG, err);
+  dbglevel = SamsConfig::getInt (defDEBUG, err);
 
   if (err == ERR_OK)
     logger->setDebugLevel (dbglevel);
@@ -159,30 +157,30 @@ int main (int argc, char *argv[])
       exit (parse_errors);
     }
 
-  int proxyid = config->getInt (defPROXYID, err);
+  int proxyid = SamsConfig::getInt (defPROXYID, err);
   if (err != ERR_OK)
     {
       ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");
       exit (1);
     }
 
-  string dbsrc = config->getString (defDBSOURCE, err);
-  string dbuser = config->getString (defDBUSER, err);
-  string dbpass = config->getString (defDBPASSWORD, err);
+  string dbsrc = SamsConfig::getString (defDBSOURCE, err);
+  string dbuser = SamsConfig::getString (defDBUSER, err);
+  string dbpass = SamsConfig::getString (defDBPASSWORD, err);
   if (dbsrc.empty ())
     {
       ERROR ("No datasource defined. Check " << defDBSOURCE << " in config file.");
       exit (1);
     }
 
-  int sleeptime = config->getInt (defSLEEPTIME, err);
+  int sleeptime = SamsConfig::getInt (defSLEEPTIME, err);
   if (err != ERR_OK)
     {
       ERROR ("Cannot get sleep time for daemon. See debugging messages for more details.");
       exit (1);
     }
 
-  int steptime = config->getInt (defDAEMONSTEP, err);
+  int steptime = SamsConfig::getInt (defDAEMONSTEP, err);
   if (err != ERR_OK)
     {
       ERROR ("Cannot get step time for daemon. See debugging messages for more details.");
@@ -226,6 +224,4 @@ int main (int argc, char *argv[])
       seconds_left -= sleeptime;
     }
 
-
-  delete config;
 }

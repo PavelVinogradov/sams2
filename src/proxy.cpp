@@ -34,6 +34,8 @@
 #include "tools.h"
 #include "samsusers.h"
 #include "samsuser.h"
+#include "templates.h"
+#include "template.h"
 
 string Proxy::toString (TrafficType t)
 {
@@ -123,7 +125,7 @@ long Proxy::getEndValue()
 
 SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 {
-  SAMSUser *usr;
+  SAMSUser *usr = NULL;
   string usrDomain;
   string usrNick;
   vector < string > identTbl;
@@ -142,12 +144,12 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
       usrNick = identTbl[0];
     }
 
-  if (_auth == AUTH_IP)
+  if (_auth == AUTH_IP || usrNick == "-")
     usr = _users->findUserByIP (ip);
   else
     usr = _users->findUserByNick (usrDomain, usrNick);
 
-  if (usr == NULL)
+  if (usr == NULL && usrNick != "-")
     {
       if (_auth == AUTH_IP)
         usr = _users->findUserByNick (usrDomain, usrNick);
@@ -158,6 +160,34 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   if (usr == NULL)
     {
       DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << ip << ":" << ident << " not found");
+
+      if (_autouser)
+        {
+          Template *tpl = Templates::getTemplate( _defaulttpl );
+          if (!tpl)
+            {
+              return false;
+            }
+
+          SAMSUser *usr = new SAMSUser ();
+          if (tpl->getAuth() == Proxy::AUTH_IP)
+            {
+              usr->setNick (ip.asString());
+              usr->setIP(ip.asString());
+            }
+          else
+            usr->setNick(usrNick);
+          usr->setDomain (usrDomain);
+          usr->setGroupId (2);
+          usr->setShablonId (tpl->getId());
+          usr->setQuote (tpl->getQuote());
+          usr->setEnabled (SAMSUser::STAT_ACTIVE);
+          if (!_users->addNewUser(usr))
+            {
+              usr = NULL;
+            }
+        }
+
     }
 
   return usr;
@@ -183,12 +213,16 @@ void Proxy::load ()
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery((ODBCConn*)_conn);
+      #else
+      return;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return;
       #endif
     }
   else
@@ -375,12 +409,16 @@ void Proxy::commitChanges ()
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery((ODBCConn*)_conn);
+      #else
+      return;
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return;
       #endif
     }
   else
@@ -474,12 +512,16 @@ long Proxy::getShablonId(const string &name) const
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery((ODBCConn*)_conn);
+      #else
+      return -1;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return -1;
       #endif
     }
   else
@@ -519,12 +561,16 @@ long Proxy::getGroupId(const string &name) const
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery((ODBCConn*)_conn);
+      #else
+      return -1;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return -1;
       #endif
     }
   else

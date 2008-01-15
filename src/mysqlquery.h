@@ -64,6 +64,7 @@ private:
   {
     enum_field_types t;
     void *dst;
+    //void *use_dst;
     int len;
   };
   vector<struct Column> _columns;
