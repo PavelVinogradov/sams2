@@ -929,7 +929,7 @@ int main (int argc, char *argv[])
 					    }
 				          //if(DEBUG==1) 
 					  //   printf("        %d  %s  %d URL: %s=%s \n",k,urls[k].type,j,&str1[0],urls[k].url);
-					  if(strncmp(&str1[0],urls[k].url,strlen(urls[k].url))==0)
+					  if(strstr(&str1[0],urls[k].url)!=0)
 					    {
                                               if(strcmp(urls[k].type,"allow")==0)
 					        {
