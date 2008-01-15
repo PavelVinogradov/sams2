@@ -27,7 +27,6 @@
 #include "datefilter.h"
 #include "userfilter.h"
 #include "processmanager.h"
-#include "global.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -131,14 +130,12 @@ int main (int argc, char *argv[])
   DateFilter *dateFilter = NULL;
   UserFilter *userFilter = NULL;
 
-  logger = new Logger ();
-
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
-  config = new SamsConfig ();
-  config->readFile ();
+  // Первое обращение к get функциям вызывает загрузку конфигурации
+  dbglevel = SamsConfig::getInt (defDEBUG, err);
 
-  dbglevel = config->getInt (defDEBUG, err);
+  logger = new Logger ();
 
   if (err == ERR_OK)
     logger->setDebugLevel (dbglevel);
@@ -245,8 +242,8 @@ int main (int argc, char *argv[])
       exit (parse_errors);
     }
 
-  string squidlogdir = config->getString (defSQUIDLOGDIR, err);
-  string squidcachefile = config->getString (defSQUIDCACHEFILE, err);
+  string squidlogdir = SamsConfig::getString (defSQUIDLOGDIR, err);
+  string squidcachefile = SamsConfig::getString (defSQUIDCACHEFILE, err);
 
   if (squidlogdir.empty () || squidcachefile.empty ())
     {
@@ -254,7 +251,7 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-  int proxyid = config->getInt (defPROXYID, err);
+  int proxyid = SamsConfig::getInt (defPROXYID, err);
   if (err != ERR_OK)
     {
       ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");

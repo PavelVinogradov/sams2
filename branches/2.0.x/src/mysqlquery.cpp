@@ -180,10 +180,13 @@ bool MYSQLQuery::prepareQuery (const string & query)
   return true;
 }
 
+/**
+ * @todo При работе со строковыми параметрами необходимо заключать значение в одинарные кавычки
+ */
 bool MYSQLQuery::sendQuery ()
 {
   uint i;
-  //Маркеры определены, но еще не привязаны
+  //Маркеры определены, массив для привязки не определен
   bool ok = true;
   if (!_bind && !_params.empty())
     {
@@ -225,6 +228,7 @@ bool MYSQLQuery::sendQuery ()
   if (!ok)
     return false;
 
+  // массив для привяки определен, но не привязан
   if (_bind && !_binded)
     {
       if (mysql_stmt_bind_param(_statement, _bind))
@@ -236,6 +240,7 @@ bool MYSQLQuery::sendQuery ()
       _binded = true;
     }
 
+  // обновляем привязанный массив в соответствии с текущими значениями буферов маркеров
   if (!_params.empty())
     {
       for (i=0; i<_params.size(); i++)
@@ -244,6 +249,10 @@ bool MYSQLQuery::sendQuery ()
             {
               case MYSQL_TYPE_STRING:
                 _param_real_len[i] = strlen((char *)_params[i].dst);
+//                if (_param_real_len[i] == 0)
+//                  sprintf((char *)_params[i].dst, "''");
+//                else
+//                  sprintf((char *)_params[i].dst, "'%s'", (char *)_params[i].dst);
                 break;
               default:
                 break;

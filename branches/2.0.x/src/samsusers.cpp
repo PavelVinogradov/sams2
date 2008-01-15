@@ -65,12 +65,16 @@ bool SAMSUsers::load ()
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery( (ODBCConn*)_conn );
+      #else
+      return false;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #else
+      return false;
       #endif
     }
   else
@@ -208,12 +212,16 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
     {
       #ifdef USE_UNIXODBC
       query = new ODBCQuery( (ODBCConn*)_conn );
+      #else
+      return false;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #else
+      return false;
       #endif
     }
   else
@@ -224,13 +232,13 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   sql_cmd << " VALUES (";
   sql_cmd << user->getGroupId();
   sql_cmd << "," << user->getShablonId();
-  sql_cmd << "," << user->getNick();
-  sql_cmd << "," << user->getDomain();
+  sql_cmd << ",'" << user->getNick() << "'";
+  sql_cmd << ",'" << user->getDomain()<< "'";
   sql_cmd << "," << user->getQuote();
   sql_cmd << "," << user->getSize();
   sql_cmd << "," << user->getHit();
   sql_cmd << "," << (int)user->getEnabled();
-  sql_cmd << "," << user->getIP();
+  sql_cmd << ",'" << user->getIP() << "'";
   sql_cmd << ")";
 
   if (!query->sendQueryDirect( sql_cmd.str()))
@@ -248,9 +256,9 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
 
   sql_cmd.str("");
   sql_cmd << "select s_user_id from squiduser where";
-  sql_cmd << " s_nick=" << user->getNick();
-  sql_cmd << " and s_domain=" << user->getDomain();
-  sql_cmd << " and s_ip=" << user->getIP();
+  sql_cmd << " s_nick='" << user->getNick() << "'";
+  sql_cmd << " and s_domain='" << user->getDomain() << "'";
+  sql_cmd << " and s_ip='" << user->getIP() << "'";
   if (!query->sendQueryDirect( sql_cmd.str()))
     {
       delete query;
@@ -267,5 +275,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
 
   _users.push_back (user);
 
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << user->getNick() << " successfully added");
+  INFO ( "User " << user->getNick() << " created.");
+
+  return true;
 }

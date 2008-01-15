@@ -22,8 +22,6 @@
 
 #include "samsconfig.h"
 
-#include "global.h"
-
 MYSQLConn::MYSQLConn ():DBConn (DBConn::DB_MYSQL)
 {
   _mysql = NULL;
@@ -38,10 +36,10 @@ MYSQLConn::~MYSQLConn ()
 bool MYSQLConn::connect ()
 {
   int err;
-  _host = config->getString (defDBSERVER, err);
-  _dbname = config->getString (defSAMSDB, err);
-  _user = config->getString (defDBUSER, err);
-  _pass = config->getString (defDBPASSWORD, err);
+  _host = SamsConfig::getString (defDBSERVER, err);
+  _dbname = SamsConfig::getString (defSAMSDB, err);
+  _user = SamsConfig::getString (defDBUSER, err);
+  _pass = SamsConfig::getString (defDBPASSWORD, err);
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
 

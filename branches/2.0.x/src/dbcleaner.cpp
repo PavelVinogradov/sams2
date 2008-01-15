@@ -34,8 +34,6 @@
 #include "userfilter.h"
 #include "debug.h"
 
-#include "global.h"
-
 DBCleaner::DBCleaner (int proxyid)
 {
   _proxyid = proxyid;
@@ -63,7 +61,7 @@ void DBCleaner::clearCounters ()
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
-  if (config->getEngine() == DBConn::DB_UODBC)
+  if (SamsConfig::getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
       ODBCConn connODBC;
@@ -78,9 +76,11 @@ void DBCleaner::clearCounters ()
         {
           return;
         }
+      #else
+      return;
       #endif
     }
-  else if (config->getEngine() == DBConn::DB_MYSQL)
+  else if (SamsConfig::getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       MYSQLConn connMYSQL;
@@ -95,6 +95,8 @@ void DBCleaner::clearCounters ()
         {
           return;
         }
+      #else
+      return;
       #endif
     }
   else
@@ -109,7 +111,7 @@ void DBCleaner::clearCache ()
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = config->getEngine();
+  DBConn::DBEngine engine = SamsConfig::getEngine();
 
   if (engine == DBConn::DB_UODBC)
     {
@@ -121,6 +123,8 @@ void DBCleaner::clearCache ()
           return;
         }
       query = new ODBCQuery((ODBCConn*)conn);
+      #else
+      return;
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
@@ -133,6 +137,8 @@ void DBCleaner::clearCache ()
           return;
         }
       query = new MYSQLQuery((MYSQLConn*)conn);
+      #else
+      return;
       #endif
     }
   else

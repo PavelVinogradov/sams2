@@ -43,6 +43,9 @@ string SAMSUser::toString (usrStatus s)
 
 SAMSUser::SAMSUser ()
 {
+  _id = -1;
+  _size = 0;
+  _hit = 0;
 }
 
 SAMSUser::~SAMSUser ()

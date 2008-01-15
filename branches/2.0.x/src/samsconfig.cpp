@@ -33,18 +33,35 @@
 #include "samsconfig.h"
 #include "debug.h"
 #include "tools.h"
-#include "global.h"
 
-SamsConfig::SamsConfig ()
+bool SamsConfig::_loaded = false;
+bool SamsConfig::_internal = false;
+DBConn::DBEngine SamsConfig::_engine;
+map < string, string > SamsConfig::_attributes;
+
+bool SamsConfig::load()
 {
-  readFile();
+  if (_loaded)
+    return true;
+
+  if (_internal)
+    return true;
+
+  return reload();
 }
 
-
-SamsConfig::~SamsConfig ()
+bool SamsConfig::reload()
 {
-}
+  if (!readFile())
+    return false;
 
+  if (!readDB())
+    return false;
+
+  _loaded = true;
+
+  return true;
+}
 
 bool SamsConfig::readFile ()
 {
@@ -81,14 +98,20 @@ bool SamsConfig::readFile ()
 
       name = TrimSpaces (name);
       value = TrimSpaces (value);
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << name << "=" << value);
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << value);
       setString (name, value);
     }
 
   in.close ();
 
-  int err;
-  string dbengine = getString (defDBENGINE, err);
+  map < string, string >::iterator it = _attributes.find (defDBENGINE);
+  if (it == _attributes.end ())
+    {
+      ERROR ("Unspecified DB engine. Check " << defDBENGINE << " in config file.");
+      return false;
+    }
+
+  string dbengine = (*it).second;
 
   if (dbengine == "MySQL")
     {
@@ -96,7 +119,7 @@ bool SamsConfig::readFile ()
       ERROR ("MySQL engine is not enabled. Reconfigure package to enable it or change engine.");
       return false;
       #else
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "using MySQL engine.");
+      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using MySQL engine.");
       _engine = DBConn::DB_MYSQL;
       #endif
     }
@@ -106,7 +129,7 @@ bool SamsConfig::readFile ()
       ERROR ("unixODBC engine is not enabled. Reconfigure package to enable it or change engine.");
       return false;
       #else
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "using unixODBC engine.");
+      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using unixODBC engine.");
       _engine = DBConn::DB_UODBC;
       #endif
     }
@@ -123,15 +146,18 @@ bool SamsConfig::readDB ()
 {
   int err;
 
+  _internal = true;
+
   int proxyid = getInt (defPROXYID, err);
 
   if (err != ERR_OK)
     {
       ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");
+      _internal = false;
       return false;
     }
 
-  DBConn::DBEngine engine = config->getEngine();
+  DBConn::DBEngine engine = SamsConfig::getEngine();
 
   DBConn *conn;
   DBQuery *query = NULL;
@@ -151,12 +177,16 @@ bool SamsConfig::readDB ()
       #endif
     }
   else
-    return false;
+    {
+      _internal = false;
+      return false;
+    }
 
   if (!conn->connect ())
     {
       delete query;
       delete conn;
+      _internal = false;
       return false;
     }
 
@@ -171,12 +201,14 @@ bool SamsConfig::readDB ()
     {
       delete query;
       delete conn;
+      _internal = false;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_LONG, &s_parser_time, 0))
     {
       delete query;
       delete conn;
+      _internal = false;
       return false;
     }
 
@@ -184,6 +216,7 @@ bool SamsConfig::readDB ()
     {
       delete query;
       delete conn;
+      _internal = false;
       return false;
     }
 
@@ -192,6 +225,7 @@ bool SamsConfig::readDB ()
       WARNING ("No settings for proxy " << proxyid << ". Somethig wrong?");
       delete query;
       delete conn;
+      _internal = false;
       return false;
     }
 
@@ -200,20 +234,24 @@ bool SamsConfig::readDB ()
 
   delete query;
   delete conn;
+  _internal = false;
 
   return true;
 }
 
 string SamsConfig::getString (const string & attrname, int &err)
 {
-  map < string, string >::iterator it = attributes.find (attrname);
-  if (it == attributes.end ())
+  if (!_loaded)
+    load();
+
+  map < string, string >::iterator it = _attributes.find (attrname);
+  if (it == _attributes.end ())
     {
       err = ATTR_NOT_FOUND;
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << " not found");
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << " not found");
       return "";
     }
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << "=" << (*it).second);
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << (*it).second);
   err = ERR_OK;
   return (*it).second;
 }
@@ -229,7 +267,7 @@ int SamsConfig::getInt (const string & attrname, int &err)
   if (sscanf (val.c_str (), "%d", &res) != 1)
     {
       err = ATTR_NOT_PARSED;
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << " not parsed");
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << " not parsed");
       return 0;
     }
   return res;
@@ -246,7 +284,7 @@ double SamsConfig::getDouble (const string & attrname, int &err)
   if (sscanf (val.c_str (), "%lf", &res) != 1)
     {
       err = ATTR_NOT_PARSED;
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << " not parsed");
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << " not parsed");
       return 0;
     }
   return res;
@@ -263,7 +301,7 @@ bool SamsConfig::getBool (const string & attrname, int &err)
   if (sscanf (val.c_str (), "%d", &res) != 1)
     {
       err = ATTR_NOT_PARSED;
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << " not parsed");
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << " not parsed");
       return false;
     }
   if (res == 0)
@@ -273,35 +311,38 @@ bool SamsConfig::getBool (const string & attrname, int &err)
 
 void SamsConfig::setString (const string & attrname, const string & value)
 {
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << "=" << value);
-  attributes[attrname] = value;
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << value);
+  _attributes[attrname] = value;
 }
 
 void SamsConfig::setInt (const string & attrname, const int &value)
 {
   char buf[64];
   sprintf (&buf[0], "%d", value);
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << "=" << buf);
-  attributes[attrname] = buf;
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << buf);
+  _attributes[attrname] = buf;
 }
 
 void SamsConfig::setDouble (const string & attrname, const double &value)
 {
   char buf[64];
   sprintf (&buf[0], "%lf", value);
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << "=" << buf);
-  attributes[attrname] = buf;
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << buf);
+  _attributes[attrname] = buf;
 }
 
 void SamsConfig::setBool (const string attrname, const bool value)
 {
   char buf[64];
   sprintf (&buf[0], "%d", (value == true) ? 1 : 0);
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << attrname << "=" << buf);
-  attributes[attrname] = buf;
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << buf);
+  _attributes[attrname] = buf;
 }
 
 DBConn::DBEngine SamsConfig::getEngine()
 {
+  if (!_loaded)
+    load();
+
   return _engine;
 }

@@ -39,7 +39,6 @@
 #include "datefilter.h"
 #include "userfilter.h"
 #include "debug.h"
-#include "global.h"
 #include "tools.h"
 
 SquidLogParser::SquidLogParser (int proxyid)
@@ -73,13 +72,15 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = config->getEngine();
+  DBConn::DBEngine engine = SamsConfig::getEngine();
 
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
       conn = new ODBCConn();
       query = new ODBCQuery((ODBCConn*)conn);
+      #else
+      return;
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
@@ -87,6 +88,8 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
       #ifdef USE_MYSQL
       conn = new MYSQLConn();
       query = new MYSQLQuery((MYSQLConn*)conn);
+      #else
+      return;
       #endif
     }
   else
