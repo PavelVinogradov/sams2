@@ -14,6 +14,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <sstream>
 
 #include "config.h"
 
@@ -29,21 +30,30 @@
 
 #include "samsusers.h"
 #include "samsuser.h"
+#include "samsconfig.h"
 #include "debug.h"
 
-SAMSUsers::SAMSUsers (DBConn * conn)
+bool SAMSUsers::_loaded = false;
+vector < SAMSUser * > SAMSUsers::_users;
+DBConn * SAMSUsers::_conn;
+bool SAMSUsers::_connection_owner = false;
+
+void SAMSUsers::useConnection (DBConn * conn)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "Using connection "<< conn);
-  _conn = conn;
-  load();
+  if (_conn)
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Already using " << _conn);
+      return;
+    }
+  if (conn)
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      _conn = conn;
+      _connection_owner = false;
+    }
 }
 
-
-SAMSUsers::~SAMSUsers ()
-{
-}
-
-bool SAMSUsers::load ()
+bool SAMSUsers::reload()
 {
   SAMSUser *usr;
 
@@ -59,7 +69,41 @@ bool SAMSUsers::load ()
   char s_ip[15];
   DBQuery *query = NULL;
 
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] ");
+  if (!_conn)
+    {
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          #else
+          return false;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          #else
+          return false;
+          #endif
+        }
+      else
+        return false;
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+    }
 
   if (_conn->getEngine() == DBConn::DB_UODBC)
     {
@@ -79,7 +123,6 @@ bool SAMSUsers::load ()
     }
   else
     return false;
-
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_user_id, 0))
     {
@@ -138,7 +181,7 @@ bool SAMSUsers::load ()
       delete query;
       return false;
     }
-
+  _users.clear();
   while (query->fetch ())
     {
       usr = new SAMSUser ();
@@ -158,13 +201,40 @@ bool SAMSUsers::load ()
 
   delete query;
 
+  _loaded = true;
+
   return true;
+}
+
+void SAMSUsers::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
+}
+
+bool SAMSUsers::load ()
+{
+  if (_loaded)
+    return true;
+
+  return reload();
 }
 
 
 SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
 {
   if (nick == "-")
+    return NULL;
+
+  if (!load())
     return NULL;
 
   SAMSUser *usr = NULL;
@@ -182,6 +252,9 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
 
 SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
 {
+  if (!load())
+    return NULL;
+
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
@@ -200,9 +273,12 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   if (!user)
     return false;
 
+  if (!load())
+    return false;
+
   if (user->getId() > 0)
     {
-      DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "User must have id < 0");
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "User must have id < 0");
       return false;
     }
 
@@ -275,7 +351,12 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
 
   _users.push_back (user);
 
-  INFO ( "User " << user->getNick() << " created.");
+  basic_stringstream < char >mess;
+
+  mess << "User " << user->getNick() << " created.";
+
+  INFO (mess.str ());
+  logger->addLog(Logger::LK_USER, mess.str());
 
   return true;
 }

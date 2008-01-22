@@ -24,6 +24,7 @@ using namespace std;
 class SamsConfig;
 class UserFilter;
 class DateFilter;
+class DBConn;
 
 /**
  * @brief Анализатор файла протокола доступа squid
@@ -65,6 +66,16 @@ public:
    *                   Если false, то смещение в файле берется из базы данных
    */
   void parseFile (const string & fname, bool from_begin);
+
+  /**
+   * @brief Импортирует данные из файла в БД, используя установленное соединение
+   *
+   * @param conn Установленное соединение
+   * @param fname Имя файла для импорта
+   * @param from_begin Если true, то файл анализируется с самого начала.
+   *                   Если false, то смещение в файле берется из базы данных
+   */
+  void parseFile (DBConn *conn, const string & fname, bool from_begin);
 
 protected:
   int _proxyid;                 ///< Идентификатор прокси

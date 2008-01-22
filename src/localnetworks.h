@@ -31,23 +31,11 @@ class Net;
 class LocalNetworks
 {
 public:
-  /**
-   * @brief Конструктор
-   */
-  LocalNetworks ();
+  static void useConnection (DBConn * conn);
 
-  /**
-   * @brief Деструктор
-   */
-  ~LocalNetworks ();
+  static bool reload();
 
-  /**
-   * @brief Загружает список локальных сетей из БД
-   *
-   * @param conn Соединение с БД
-   * @return true если ошибок нет и false в противном случае
-   */
-  bool load (DBConn * conn);
+  static void destroy();
 
   /**
    * @brief Проверяет является ли @a host локальным
@@ -55,7 +43,7 @@ public:
    * @param host Имя или ip адрес хоста
    * @return true если хост является локальным и false в противном случае
    */
-  bool isLocalHost (const string & host);
+  static bool isLocalHost (const string & host);
 
   /**
    * @brief Проверяет является ли @a url локальным
@@ -65,11 +53,21 @@ public:
    * @param url URL адрес
    * @return true если url является локальным и false в противном случае
    */
-  bool isLocalUrl (const string & url);
+  static bool isLocalUrl (const string & url);
 
 protected:
-    vector < Net * >_nets;      ///< Список локальных сетей
+  /**
+   * @brief Загружает список локальных сетей из БД
+   *
+   * @param conn Соединение с БД
+   * @return true если ошибок нет и false в противном случае
+   */
+  static bool load ();
 
+  static bool _loaded;
+  static vector < Net * >_nets;      ///< Список локальных сетей
+  static DBConn *_conn;
+  static bool _connection_owner;
 };
 
 #endif

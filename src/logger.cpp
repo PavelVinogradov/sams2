@@ -16,9 +16,23 @@
  ***************************************************************************/
 #include <syslog.h>
 #include <iostream>
+#include <sstream>
+
+#include "config.h"
+
+#ifdef USE_UNIXODBC
+#include "odbcconn.h"
+#include "odbcquery.h"
+#endif
+
+#ifdef USE_MYSQL
+#include "mysqlconn.h"
+#include "mysqlquery.h"
+#endif
 
 #include "logger.h"
 #include "tools.h"
+#include "samsconfig.h"
 
 Logger::Logger ()
 {
@@ -26,6 +40,8 @@ Logger::Logger ()
   _started = false;
   _dbgLevel = 0;
   _verbose = false;
+  _connection_owner = false;
+  _sender = "logger";
 }
 
 
@@ -116,6 +132,10 @@ void Logger::sendError (const string & mess)
     }
 }
 
+void Logger::setSender(const string & sender)
+{
+  _sender = sender;
+}
 
 bool Logger::setEngine (const string & engine)
 {
@@ -125,7 +145,7 @@ bool Logger::setEngine (const string & engine)
 
   if (engine == "syslog")
     {
-      openlog ("samsparser", LOG_PID | LOG_CONS, LOG_DAEMON);
+      openlog (_sender.c_str(), LOG_PID | LOG_CONS, LOG_DAEMON);
       _engine = OUT_SYSLOG;
       _started = true;
     }
@@ -142,7 +162,7 @@ bool Logger::setEngine (const string & engine)
       if (tblOptions.size () == 2)
         fname = tblOptions[1];
       else
-        fname = "samsparser.log";
+        fname = _sender + ".log";
 
       _fout.open (fname.c_str (), ios::out);
 
@@ -195,3 +215,61 @@ void Logger::stop ()
     }
   _started = false;
 }
+
+
+void Logger::useConnection (DBConn * conn)
+{
+  if (_conn)
+    {
+      return;
+    }
+  if (conn)
+    {
+      _conn = conn;
+      _connection_owner = false;
+    }
+}
+
+
+void Logger::addLog(LogKind code, const string &mess)
+{
+  if (!_conn)
+    {
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          _query = new ODBCQuery((ODBCConn*)_conn);
+          #else
+          return;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          _query = new MYSQLQuery((MYSQLConn*)_conn);
+          #else
+          return;
+          #endif
+        }
+      else
+        return;
+
+      if (!_conn->connect ())
+        {
+          delete _query;
+          delete _conn;
+          return;
+        }
+      _connection_owner = true;
+    }
+
+  basic_stringstream < char >sqlcmd;
+  sqlcmd << "insert into samslog (s_log_id, s_issuer, s_date, s_time, s_value, s_code)";
+  sqlcmd << "VALUES (NULL, '" << _sender << "', CURDATE(), CURTIME(), '" << mess << "', '" << code << "')";
+  _query->sendQueryDirect (sqlcmd.str ());
+}
+

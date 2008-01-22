@@ -10,6 +10,8 @@
 				ADD s_autotpl_val VARCHAR( 30 ) NULL ,
 				ADD s_autogrp     INT           NULL DEFAULT 0,
 				ADD s_autogrp_val VARCHAR( 30 ) NULL ;
+	1.7) В таблице samslog индекс idx_samslog определен неверно (объявлен как уникальный с набором неуникальных полей)
+	1.8) Когда очищать таблицу samslog?
 
 2) WEB интерфейс
   2.1) Редактирование списка локальных адресов (доменов): не работает изменение
@@ -29,12 +31,22 @@
        из выбираемого шаблона.
   2.7) При просмотре одного пользователя, поле 'Активен' может иметь значения 'Да' и 'Отключен', нужно определится
        либо поле 'Активен' и значения Да/Нет, либо поле 'Статус' и значения Активен/Отключен/Заблокирован
+  2.8) Для выборки интересующей части из даты (времени) в PostgreSQL:
+       select extract(hour from s_timestart), extract(minute from s_timeend) from timerange;
+       а для выборки в MySQL
+       select HOUR(s_timestart), MINUTE(s_timeend) from timerange;
 
-3) Разное
-  3.1) В sams2.conf изменить MYSQLHOSTNAME на DB_SERVER, а DBNAME на DB_ENGINE
+3) Демоны
+  3.1) Оптимизировать заполнение таблицы cachesum
+  3.2) В цикле samsdaemon учитывать время обработки команды
+  3.3) Добавить класс работы с группами
+  3.4) Продумать порядок работы с файлами конфигураций squid, rejik, squidGuard
+
+4) Разное
+  4.1) В sams2.conf изменить MYSQLHOSTNAME на DB_SERVER, а DBNAME на DB_ENGINE
        Возможные значения параметра DB_ENGINE: MySQL, PostgreSQL, unixODBC, при этом регистр не должен иметь значения
 
-  3.2) Зачем в sams2.conf параметр ODBC? Как работать с БД прекрасно описывает параметр DB_ENGINE
+  4.2) Зачем в sams2.conf параметр ODBC? Как работать с БД прекрасно описывает параметр DB_ENGINE
 
 Увеличить размер url адреса до 1024 символов
 для начала в таблице squidcache

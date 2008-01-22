@@ -33,23 +33,11 @@ class SAMSUsers
 {
   friend class Proxy;
 public:
-  /**
-   * @brief Конструктор
-   */
-    SAMSUsers (DBConn * conn);
+  static void useConnection (DBConn * conn);
 
-  /**
-   * @brief Деструктор
-   */
-   ~SAMSUsers ();
+  static bool reload();
 
-  /**
-   * @brief Загружает пользователей из БД
-   *
-   * @param conn Соединение с БД
-   * @return true при успешном завершении и false при любой ошибке
-   */
-  bool load ();
+  static void destroy();
 
   /**
    * @brief Поиск пользователя по нику и домену
@@ -60,7 +48,7 @@ public:
    * @param nick Ник
    * @return Найденного пользователя или NULL при его отсутствии
    */
-  SAMSUser *findUserByNick (const string & domain, const string & nick);
+  static SAMSUser *findUserByNick (const string & domain, const string & nick);
 
   /**
    * @brief Поиск пользователя по ip адресу
@@ -68,7 +56,7 @@ public:
    * @param ip ip адрес
    * @return Найденного пользователя или NULL при его отсутствии
    */
-  SAMSUser *findUserByIP (const IP & ip);
+  static SAMSUser *findUserByIP (const IP & ip);
 
   /**
    * @brief Добавление пользователя, не существующего в БД
@@ -76,11 +64,21 @@ public:
    * @param user Пользователь
    * @return true если пользователь успешно добавлен и false в противном случае
    */
-  bool addNewUser(SAMSUser *user);
+  static bool addNewUser(SAMSUser *user);
 
 private:
-  vector < SAMSUser * >_users;        ///< список пользователей
-  DBConn * _conn;                     ///< Используемое соединение с БД
+  /**
+   * @brief Загружает пользователей из БД
+   *
+   * @param conn Соединение с БД
+   * @return true при успешном завершении и false при любой ошибке
+   */
+  static bool load ();
+
+  static bool _loaded;
+  static vector < SAMSUser * >_users;        ///< список пользователей
+  static DBConn * _conn;                     ///< Используемое соединение с БД
+  static bool _connection_owner;
 };
 
 #endif

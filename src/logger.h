@@ -22,6 +22,9 @@ using namespace std;
 #include <string>
 #include <fstream>
 
+class DBConn;
+class DBQuery;
+
 /**
  * @brief Выводит сообщения во время работы программы
  *
@@ -30,6 +33,17 @@ using namespace std;
 class Logger
 {
 public:
+  /**
+   * @brief Код события.
+   */
+  enum LogKind
+  {
+    LK_USER    = 1,            ///< Событие, связанное с пользователями (добавление, удаление, отключение)
+    LK_URL     = 2,            ///< Событие, связанное с url (добавление, удаление)
+    LK_ADMIN   = 4,            ///< Событие, связанное с администраторами SAMS
+    LK_DAEMON  = 10            ///< Событие, связанное с демонами (запуск, остановка, реконфигурирование, ...)
+  };
+
   /**
    * @brief Конструктор
    */
@@ -71,6 +85,8 @@ public:
    */
   void sendError (const string & mess);
 
+  void setSender(const string & sender);
+
   /**
    * @brief Устанавливает способ вывода сообщений
    *
@@ -107,6 +123,10 @@ public:
    */
   void setVerbose (bool verbose);
 
+  void useConnection(DBConn *conn);
+
+  void addLog(LogKind code, const string &mess);
+
 protected:
   /**
    * @brief Закрывает текущий поток вывода сообщений
@@ -126,8 +146,12 @@ protected:
   bool _started;                ///< true, Если поток вывода сообщений успешно открыт
   bool _verbose;                ///< Текущий уровень многословности
   uint _dbgLevel;               ///< Текущий уровень отладочных сообщений
+  string _sender;
   LoggerEngine _engine;         ///< Используемый способ вывода сообщений
   ofstream _fout;               ///< Поток вывода в файл
+  DBConn *_conn;                ///< Соединение с БД
+  DBQuery *_query;
+  bool _connection_owner;
 };
 
 #endif

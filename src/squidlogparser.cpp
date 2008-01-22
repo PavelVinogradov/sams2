@@ -67,10 +67,7 @@ void SquidLogParser::setDateFilter (DateFilter * filt)
 
 void SquidLogParser::parseFile (const string & fname, bool from_begin)
 {
-  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname);
-
   DBConn *conn = NULL;
-  DBQuery *query = NULL;
 
   DBConn::DBEngine engine = SamsConfig::getEngine();
 
@@ -78,7 +75,6 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
     {
       #ifdef USE_UNIXODBC
       conn = new ODBCConn();
-      query = new ODBCQuery((ODBCConn*)conn);
       #else
       return;
       #endif
@@ -87,7 +83,6 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
     {
       #ifdef USE_MYSQL
       conn = new MYSQLConn();
-      query = new MYSQLQuery((MYSQLConn*)conn);
       #else
       return;
       #endif
@@ -97,10 +92,41 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
 
   if (!conn->connect ())
     {
-      delete query;
       delete conn;
       return;
     }
+
+  parseFile (conn, fname, from_begin);
+
+  delete conn;
+}
+
+void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_begin)
+{
+  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname << ", " << from_begin);
+
+  DBQuery *query = NULL;
+
+  DBConn::DBEngine engine = SamsConfig::getEngine();
+
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery((ODBCConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery((MYSQLConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else
+    return;
 
   char s_version[5];
   basic_stringstream < char >sql_cmd;
@@ -109,19 +135,16 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
   if (!query->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->sendQueryDirect (sql_cmd.str()) )
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->fetch ())
     {
       delete query;
-      delete conn;
       return;
     }
 
@@ -129,7 +152,6 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
     {
       ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << s_version);
       delete query;
-      delete conn;
       return;
     }
   else
@@ -137,12 +159,42 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
       DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Database version ok.");
     }
 
-  Proxy proxy (_proxyid, conn);
+  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Reading file " << fname);
 
-  LocalNetworks lnets;
-  lnets.load (conn);
 
-  INFO ("Reading file " << fname);
+  fstream in;
+  in.open (fname.c_str (), ios_base::in);
+  if (!in.is_open ())
+    {
+      ERROR ("Failed to open file " << fname);
+      delete query;
+      return;
+    }
+
+  in.seekg (0, ios::end);
+  long fsize = in.tellg();
+  in.seekg (0, ios::beg);
+
+  long fpos = 0;
+
+  if (!from_begin)
+    fpos = Proxy::getEndValue();
+
+  if (fpos > fsize)
+    fpos = 0;
+
+  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "file size " << fsize << ", use offset " << fpos);
+
+  if (fpos == fsize)
+    {
+      INFO("No new values");
+      delete query;
+      in.close();
+      return;
+    }
+
+
+  in.seekg (fpos, ios::beg);
 
   char s_date[15];
   char s_time[15];
@@ -164,101 +216,58 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
   if (!query->prepareQuery (sql_cmd.str ()))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (5, DBQuery::T_LONG, &s_size, 0))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (6, DBQuery::T_LONG, &s_hit, 0))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (8, DBQuery::T_LONG, &s_period, 0))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
     {
       delete query;
-      delete conn;
       return;
     }
   if (!query->bindParam (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
     {
       delete query;
-      delete conn;
       return;
     }
-
-  fstream in;
-  in.open (fname.c_str (), ios_base::in);
-  if (!in.is_open ())
-    {
-      ERROR ("Failed to open file " << fname);
-      delete query;
-      delete conn;
-      return;
-    }
-
-  in.seekg (0, ios::end);
-  long fsize = in.tellg();
-  in.seekg (0, ios::beg);
-
-  long fpos = 0;
-
-  if (!from_begin)
-    fpos = proxy.getEndValue();
-
-  if (fpos > fsize)
-    fpos = 0;
-
-  if (fpos == fsize)
-    {
-      INFO("No new values");
-      delete query;
-      delete conn;
-      return;
-    }
-
-
 
   string line;
   SquidLogLine sll;
@@ -271,7 +280,7 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
       if (sll.setLine (line) != true)
         continue;
 
-      usr = proxy.findUser (sll.getIP (), sll.getIdent ());
+      usr = Proxy::findUser (sll.getIP (), sll.getIdent ());
 
       if (usr == NULL)
         continue;
@@ -292,7 +301,7 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
           continue;
         }
 
-      if (lnets.isLocalUrl (sll.getUrl ()))
+      if (LocalNetworks::isLocalUrl (sll.getUrl ()))
         {
           DEBUG (DEBUG_URL, "Consider url is local");
           continue;
@@ -357,11 +366,11 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
         continue;
 
       if (!from_begin)
-        proxy.setEndValue (in.tellg());
+        Proxy::setEndValue (in.tellg());
     }
   in.close ();
 
-  proxy.commitChanges ();
+  Proxy::commitChanges ();
 
   sql_cmd.str("");
   sql_cmd << "delete from cachesum where s_proxy_id=" << _proxyid;
@@ -369,7 +378,6 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
   if (!query->sendQueryDirect (sql_cmd.str ()))
     {
       delete query;
-      delete conn;
       return;
     }
 
@@ -381,6 +389,6 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
 
   query->sendQueryDirect (sql_cmd.str ());
   delete query;
-  delete conn;
+
   return;
 }
