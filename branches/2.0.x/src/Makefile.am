@@ -55,8 +55,8 @@ BUILT_SOURCES += configmake.h
 CLEANFILES += configmake.h configmake.h-t
 
 samsdaemon_SOURCES = datefilter.cpp debug.cpp filter.cpp ip.cpp \
-	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
-	proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
-	userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
-	template.cpp templates.cpp
+		localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
+		proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
+		userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
+		template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp
 samsdaemon_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB)

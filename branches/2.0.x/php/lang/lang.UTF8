@@ -659,7 +659,7 @@
   $vsego="Всего";
   $usersbuttom_1_useradd_usersbuttom_1_useradd_1="Добавить пользователя";
 
-  $week=array("", "Пон", "Вт","Ср", "Чт", "Пт", "Сб","Вск");
+  $week=array("", "Пн", "Вт","Ср", "Чт", "Пт", "Сб","Вс");
 
   $shablonbuttom_1_prop_UpdateShablonForm_8="Перенаправление запроса";
   $shablonbuttom_1_prop_UpdateShablonForm_9="Запрет доступа";

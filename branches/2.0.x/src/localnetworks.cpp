@@ -31,36 +31,92 @@
 #include "debug.h"
 #include "url.h"
 #include "net.h"
+#include "samsconfig.h"
 
-LocalNetworks::LocalNetworks ()
+bool LocalNetworks::_loaded = false;
+vector < Net * > LocalNetworks::_nets;
+DBConn *LocalNetworks::_conn = NULL;
+bool LocalNetworks::_connection_owner = false;
+
+void LocalNetworks::useConnection (DBConn * conn)
 {
+  if (_conn)
+    {
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Already using " << _conn);
+      return;
+    }
+  if (conn)
+    {
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      _conn = conn;
+      _connection_owner = false;
+    }
 }
 
-
-LocalNetworks::~LocalNetworks ()
+bool LocalNetworks::load ()
 {
+  if (_loaded)
+    return true;
+
+  return reload();
 }
 
-bool LocalNetworks::load (DBConn * conn)
+bool LocalNetworks::reload ()
 {
+  if (!_conn)
+    {
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          #else
+          return false;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          #else
+          return false;
+          #endif
+        }
+      else
+        return false;
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+    }
+
   char s_url[1024];
   Net *net;
   DBQuery *query = NULL;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] ");
 
   string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
 
-  if (conn->getEngine() == DBConn::DB_UODBC)
+  if (_conn->getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      query = new ODBCQuery ((ODBCConn*)conn);
+      query = new ODBCQuery ((ODBCConn*)_conn);
       #endif
     }
-  else if (conn->getEngine() == DBConn::DB_MYSQL)
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      query = new MYSQLQuery ((MYSQLConn*)conn);
+      query = new MYSQLQuery ((MYSQLConn*)_conn);
       #endif
     }
   else
@@ -76,6 +132,7 @@ bool LocalNetworks::load (DBConn * conn)
       delete query;
       return false;
     }
+  _nets.clear();
   while (query->fetch ())
     {
       net = Net::fromString (s_url);
@@ -84,7 +141,23 @@ bool LocalNetworks::load (DBConn * conn)
 
   delete query;
 
+  _loaded = true;
+
   return true;
+}
+
+void LocalNetworks::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
 }
 
 bool LocalNetworks::isLocalHost (const string & host)
@@ -92,7 +165,9 @@ bool LocalNetworks::isLocalHost (const string & host)
   vector < Net * >::iterator it;
   string addr;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << host);
+  load ();
+
+  DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] " << host);
 
   for (it = _nets.begin (); it != _nets.end (); it++)
     {
@@ -109,7 +184,9 @@ bool LocalNetworks::isLocalUrl (const string & url)
   string addr;
   Url u;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << url);
+  load ();
+
+  DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] " << url);
 
   u.setUrl (url);
   addr = u.getAddress ();

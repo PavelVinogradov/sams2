@@ -34,8 +34,26 @@
 #include "tools.h"
 #include "samsusers.h"
 #include "samsuser.h"
+#include "samsconfig.h"
 #include "templates.h"
 #include "template.h"
+
+bool Proxy::_loaded = false;
+Proxy::usrAuthType Proxy::_auth;
+Proxy::TrafficType Proxy::_trafType;
+long Proxy::_id = -1;
+long Proxy::_kbsize = 0;
+long Proxy::_endvalue = 0;
+bool Proxy::_needResolve = false;
+bool Proxy::_usedomain = false;
+string Proxy::_defaultdomain;
+bool Proxy::_autouser = false;
+Proxy::usrUseAutoTemplate Proxy::_autotpl;
+string Proxy::_defaulttpl;
+Proxy::usrUseAutoGroup Proxy::_autogrp;
+string Proxy::_defaultgrp;
+DBConn *Proxy::_conn = NULL;
+bool Proxy::_connection_owner = false;
 
 string Proxy::toString (TrafficType t)
 {
@@ -85,32 +103,33 @@ string Proxy::toString (usrAuthType t)
   return res;
 }
 
-Proxy::Proxy (long id, DBConn * connection)
+void Proxy::useConnection (DBConn * conn)
 {
-  _id = id;
-  _conn = connection;
-
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << "using connection " << _conn);
-
-  _users = new SAMSUsers (_conn);
-  load ();
+  if (_conn)
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Already using " << _conn);
+      return;
+    }
+  if (conn)
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      _conn = conn;
+      _connection_owner = false;
+    }
 }
-
-
-Proxy::~Proxy ()
-{
-  delete _users;
-}
-
 
 long Proxy::getId ()
 {
+  load();
+
   return _id;
 }
 
 void Proxy::setEndValue(long endvalue)
 {
-  DEBUG (DEBUG_PROXY, "[" << this << "->" << __FUNCTION__ << "] " << endvalue);
+  load();
+
+  DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] " << endvalue);
 
   _endvalue = endvalue;
 
@@ -120,17 +139,21 @@ void Proxy::setEndValue(long endvalue)
 
 long Proxy::getEndValue()
 {
+  load();
+
   return _endvalue;
 }
 
 SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 {
+  load();
+
   SAMSUser *usr = NULL;
   string usrDomain;
   string usrNick;
   vector < string > identTbl;
 
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << ip << ":" << ident);
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << ip << ":" << ident);
 
   Split (ident, DOMAIN_SEPARATORS, identTbl);
   if (identTbl.size () == 2)
@@ -145,21 +168,21 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
     }
 
   if (_auth == AUTH_IP || usrNick == "-")
-    usr = _users->findUserByIP (ip);
+    usr = SAMSUsers::findUserByIP (ip);
   else
-    usr = _users->findUserByNick (usrDomain, usrNick);
+    usr = SAMSUsers::findUserByNick (usrDomain, usrNick);
 
   if (usr == NULL && usrNick != "-")
     {
       if (_auth == AUTH_IP)
-        usr = _users->findUserByNick (usrDomain, usrNick);
+        usr = SAMSUsers::findUserByNick (usrDomain, usrNick);
       else
-        usr = _users->findUserByIP (ip);
+        usr = SAMSUsers::findUserByIP (ip);
     }
 
   if (usr == NULL)
     {
-      DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << ip << ":" << ident << " not found");
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << ip << ":" << ident << " not found");
 
       if (_autouser)
         {
@@ -182,7 +205,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr->setShablonId (tpl->getId());
           usr->setQuote (tpl->getQuote());
           usr->setEnabled (SAMSUser::STAT_ACTIVE);
-          if (!_users->addNewUser(usr))
+          if (!SAMSUsers::addNewUser(usr))
             {
               usr = NULL;
             }
@@ -193,8 +216,60 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   return usr;
 }
 
-void Proxy::load ()
+bool Proxy::load ()
 {
+  if (_loaded)
+    return true;
+
+  return reload();
+}
+
+bool Proxy::reload ()
+{
+  if (!_conn)
+    {
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          #else
+          return false;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          #else
+          return false;
+          #endif
+        }
+      else
+        return false;
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+    }
+
+  int err;
+  _id = SamsConfig::getInt (defPROXYID, err);
+  if (err != ERR_OK)
+    {
+      ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");
+      return false;
+    }
+
   char s_auth[5];
   long s_checkdns;
   char s_realsize[5];
@@ -214,7 +289,7 @@ void Proxy::load ()
       #ifdef USE_UNIXODBC
       query = new ODBCQuery((ODBCConn*)_conn);
       #else
-      return;
+      return false;
       #endif
     }
   else if (_conn->getEngine() == DBConn::DB_MYSQL)
@@ -222,71 +297,71 @@ void Proxy::load ()
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
       #else
-      return;
+      return false;
       #endif
     }
   else
-    return;
+    return false;
 
   if (!query->bindCol (1, DBQuery::T_CHAR, s_auth, sizeof (s_auth)))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (2, DBQuery::T_LONG, &s_checkdns, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (3, DBQuery::T_CHAR, s_realsize, sizeof (s_realsize)))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (4, DBQuery::T_LONG, &_kbsize, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (5, DBQuery::T_LONG, &_endvalue, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (6, DBQuery::T_LONG, &s_usedomain, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (7, DBQuery::T_CHAR, s_defaultdomain, sizeof(s_defaultdomain)))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (8, DBQuery::T_LONG, &s_autouser, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (9, DBQuery::T_LONG, &s_autotpl, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (10, DBQuery::T_CHAR, s_autotpl_val, sizeof(s_autotpl_val)))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (11, DBQuery::T_LONG, &s_autogrp, 0))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->bindCol (12, DBQuery::T_CHAR, s_autogrp_val, sizeof(s_autogrp_val)))
     {
       delete query;
-      return;
+      return false;
     }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
@@ -296,12 +371,12 @@ void Proxy::load ()
   if (!query->sendQueryDirect (sqlcmd.str ()))
     {
       delete query;
-      return;
+      return false;
     }
   if (!query->fetch ())
     {
       delete query;
-      return;
+      return false;
     }
 
   if (strcmp (s_auth, "ip") == 0)
@@ -388,6 +463,24 @@ void Proxy::load ()
         }
     }
   delete query;
+
+  _loaded = true;
+
+  return true;
+}
+
+void Proxy::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
 }
 
 void Proxy::commitChanges ()
@@ -401,6 +494,7 @@ void Proxy::commitChanges ()
   long s_user_id;
   basic_stringstream < char > update_cmd;
 
+  load();
 
   DBQuery *query = NULL;
 
@@ -463,9 +557,8 @@ void Proxy::commitChanges ()
       return;
     }
 
-
   long long used_size;
-  for (it=_users->_users.begin(); it != _users->_users.end(); it++)
+  for (it=SAMSUsers::_users.begin(); it != SAMSUsers::_users.end(); it++)
     {
       usr = *it;
       allowed_limit = usr->getQuote();
@@ -492,7 +585,12 @@ void Proxy::commitChanges ()
       if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == SAMSUser::STAT_ACTIVE) )
         {
           usr->setEnabled( SAMSUser::STAT_INACTIVE );
-          INFO("User " << *usr << " deactivated.");
+          basic_stringstream < char >mess;
+
+          mess << "User " << *usr << " deactivated.";
+
+          INFO (mess.str ());
+          logger->addLog(Logger::LK_USER, mess.str());
         }
 
       s_enabled = (long)usr->getEnabled();
@@ -504,100 +602,3 @@ void Proxy::commitChanges ()
   delete query;
 }
 
-long Proxy::getShablonId(const string &name) const
-{
-  DBQuery *query = NULL;
-
-  if (_conn->getEngine() == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
-      return -1;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return -1;
-      #endif
-    }
-  else
-    return -1;
-
-  long s_shablon_id;
-  if (!query->bindCol(1, DBQuery::T_LONG, &s_shablon_id, 0))
-    {
-      delete query;
-      return -1;
-    }
-  basic_stringstream < char >sqlcmd;
-
-  sqlcmd << "select s_shablon_id from shablon where s_name=" << name;
-
-  if (!query->sendQueryDirect (sqlcmd.str ()))
-    {
-      delete query;
-      return -1;
-    }
-  if (!query->fetch ())
-    {
-      delete query;
-      return -1;
-    }
-
-  delete query;
-
-  return s_shablon_id;
-}
-
-long Proxy::getGroupId(const string &name) const
-{
-  DBQuery *query = NULL;
-
-  if (_conn->getEngine() == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
-      return -1;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return -1;
-      #endif
-    }
-  else
-    return -1;
-
-  long s_group_id;
-  if (!query->bindCol(1, DBQuery::T_LONG, &s_group_id, 0))
-    {
-      delete query;
-      return -1;
-    }
-  basic_stringstream < char >sqlcmd;
-
-  sqlcmd << "select s_group_id from sgroup where s_name=" << name;
-
-  if (!query->sendQueryDirect (sqlcmd.str ()))
-    {
-      delete query;
-      return -1;
-    }
-  if (!query->fetch ())
-    {
-      delete query;
-      return -1;
-    }
-
-  delete query;
-
-  return s_group_id;
-}

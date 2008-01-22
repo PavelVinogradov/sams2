@@ -18,11 +18,13 @@
 #include <unistd.h>
 #include <signal.h>
 
+#include <sstream>
 #include <fstream>
 
 #include "processmanager.h"
 #include "tools.h"
 #include "debug.h"
+#include "logger.h"
 
 ProcessManager::ProcessManager ()
 {
@@ -85,6 +87,12 @@ bool ProcessManager::start (const string & procname, bool wait_myself)
   f << pid;
   f.close ();
 
+  basic_stringstream < char >mess;
+
+  mess << "Started with pid " << pid << ".";
+
+  logger->addLog(Logger::LK_DAEMON, mess.str());
+
   DEBUG (DEBUG_FILE, _fname << " created.");
   return true;
 }
@@ -92,5 +100,6 @@ bool ProcessManager::start (const string & procname, bool wait_myself)
 
 void ProcessManager::stop ()
 {
+  logger->addLog(Logger::LK_DAEMON, "Stopped.");
   fileDelete (_fname);
 }

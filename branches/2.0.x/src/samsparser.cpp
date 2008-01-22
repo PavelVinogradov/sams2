@@ -137,6 +137,8 @@ int main (int argc, char *argv[])
 
   logger = new Logger ();
 
+  logger->setSender("samsparser");
+
   if (err == ERR_OK)
     logger->setDebugLevel (dbglevel);
 

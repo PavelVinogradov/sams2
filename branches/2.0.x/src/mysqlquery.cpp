@@ -52,6 +52,12 @@ bool MYSQLQuery::sendQueryDirect (const string & query)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << query);
 
+  if (!_conn)
+  {
+    ERROR("[" << this << "->" << __FUNCTION__ << "] " << "NULL connection.");
+    return false;
+  }
+
   if (mysql_query(_conn->_mysql, query.c_str()))
     {
       ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_error(_conn->_mysql));
@@ -185,6 +191,12 @@ bool MYSQLQuery::prepareQuery (const string & query)
  */
 bool MYSQLQuery::sendQuery ()
 {
+  if (!_statement)
+  {
+    ERROR("[" << this << "->" << __FUNCTION__ << "] " << "NULL statement.");
+    return false;
+  }
+
   uint i;
   //Маркеры определены, массив для привязки не определен
   bool ok = true;
@@ -276,14 +288,14 @@ bool MYSQLQuery::fetch ()
 
   if (!_res)
     {
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed");
+      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No results");
       return false;
     }
 
   row = mysql_fetch_row (_res);
   if (!row)
     {
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed");
+      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No rows");
       return false;
     }
 
@@ -324,10 +336,9 @@ bool MYSQLQuery::fetch ()
 
 bool MYSQLQuery::createStatement ()
 {
-
   if (!_conn)
     {
-      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "No connection associated. Invalid query.");
+      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "NULL connection.");
       return false;
     }
   if (!(_conn->_connected))

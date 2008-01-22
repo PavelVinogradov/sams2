@@ -45,7 +45,7 @@ public:
    * @param t Тип учитываемого трафика
    * @return Тип учитываемого трафика в виде строки
    */
-  string toString (TrafficType t);
+  static string toString (TrafficType t);
 
   /**
    * @brief Способ авторизации пользователя
@@ -65,16 +65,16 @@ public:
    * @param t Способ авторизации
    * @return Способ авторизации в виде строки
    */
-  string toString (usrAuthType t);
+  static string toString (usrAuthType t);
 
   /**
    * @brief Используемый шаблон при автоматическом создании пользователя
    */
   enum usrUseAutoTemplate
   {
-    TPL_DEFAULT,                  //!< Использовать шаблон по умолчанию
-    TPL_SPECIFIED,                //!< Использовать указанный шаблон
-    TPL_TAKE_FROM_GROUP           //!< Имя шаблона сопадает с именем первичной группы пользователя
+    TPL_DEFAULT,                  ///< Использовать шаблон по умолчанию
+    TPL_SPECIFIED,                ///< Использовать указанный шаблон
+    TPL_TAKE_FROM_GROUP           ///< Имя шаблона сопадает с именем первичной группы пользователя
   };
 
   /**
@@ -82,45 +82,37 @@ public:
    */
   enum usrUseAutoGroup
   {
-    GRP_DEFAULT,                  //!< Использовать группу по умолчанию
-    GRP_SPECIFIED,                //!< Использовать указанную группу
-    GRP_TAKE_FROM_GROUP           //!< Имя группы сопадает с именем первичной группы пользователя
+    GRP_DEFAULT,                  ///< Использовать группу по умолчанию
+    GRP_SPECIFIED,                ///< Использовать указанную группу
+    GRP_TAKE_FROM_GROUP           ///< Имя группы сопадает с именем первичной группы пользователя
   };
 
+  static void useConnection (DBConn * conn);
 
-  /**
-   * @brief Конструктор
-   *
-   * @param id Идентификатор прокси
-   * @param conn Соединение с БД
-   */
-    Proxy (long id, DBConn * connection);
+  static bool reload ();
 
-  /**
-   * @brief Деструктор
-   */
-   ~Proxy ();
+  static void destroy();
 
   /**
    * @brief Возвращает идентификатор прокси
    *
    * @return Идентификатор прокси
    */
-  long getId ();
+  static long getId ();
 
   /**
    * @brief Устанавливает смещение в файле, откуда нужно читать значения
    *
    * @param endvalue Смещение в файле
    */
-  void setEndValue(long endvalue);
+  static void setEndValue (long endvalue);
 
   /**
    * @brief Возвращает смещение в файле, откуда нужно читать значения
    *
    * @return Смещение в файле
    */
-  long getEndValue();
+  static long getEndValue ();
 
   /**
    * @brief Поиск пользователя SAMS
@@ -133,40 +125,35 @@ public:
    * @param ident Ник пользователя, включая домен
    * @return Указатель на найденного пользователя или NULL при его отсутствии
    */
-  SAMSUser *findUser (const IP & ip, const string & ident);
+  static SAMSUser *findUser (const IP & ip, const string & ident);
 
   /**
    * @brief Записывает в БД измененные счетчики и статусы пользователей
    */
-  void commitChanges ();
-
-  long getShablonId(const string &name) const;
-
-  long getGroupId(const string &name) const;
+  static void commitChanges ();
 
 protected:
   /**
    * @brief Загружает настройки
    */
-  void load ();
+  static bool load ();
 
-  void createUser();
-
-  usrAuthType _auth;            ///< Способ авторизации пользователей
-  TrafficType _trafType;        ///< Тип учитываемого трафика
-  long _id;                     ///< Идентификатор прокси
-  long _kbsize;                 ///< Размер килобайта
-  long _endvalue;               ///< Смещение в файле, начиная с которого нужно считывать данные
-  bool _needResolve;            ///< Необходимость обращения к DNS
-  bool _usedomain;              ///< Использовать или нет домен по умолчанию
-  string _defaultdomain;        ///< Домен по умолчанию
-  bool _autouser;               ///< Создавать или нет пользователя, если он не существует
-  usrUseAutoTemplate _autotpl;
-  string _defaulttpl;
-  usrUseAutoGroup _autogrp;
-  string _defaultgrp;
-  DBConn *_conn;                ///< Соединение с БД
-  SAMSUsers *_users;            ///< Список пользователей
+  static bool _loaded;
+  static usrAuthType _auth;            ///< Способ авторизации пользователей
+  static TrafficType _trafType;        ///< Тип учитываемого трафика
+  static long _id;                     ///< Идентификатор прокси
+  static long _kbsize;                 ///< Размер килобайта
+  static long _endvalue;               ///< Смещение в файле, начиная с которого нужно считывать данные
+  static bool _needResolve;            ///< Необходимость обращения к DNS
+  static bool _usedomain;              ///< Использовать или нет домен по умолчанию
+  static string _defaultdomain;        ///< Домен по умолчанию
+  static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
+  static usrUseAutoTemplate _autotpl;
+  static string _defaulttpl;
+  static usrUseAutoGroup _autogrp;
+  static string _defaultgrp;
+  static DBConn *_conn;                ///< Соединение с БД
+  static bool _connection_owner;
 };
 
 #endif
