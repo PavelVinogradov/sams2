@@ -44,14 +44,15 @@ using namespace std;
 #define DEBUG9     9            ///< Показывает работу вспомогательных функций
 
 #define DEBUG_CMDARG  DEBUG2
+#define DEBUG_PROXY   DEBUG2
+#define DEBUG_DAEMON  DEBUG2
 #define DEBUG_DB      DEBUG3
 #define DEBUG_USER    DEBUG4
 #define DEBUG_URL     DEBUG5
 #define DEBUG_HOST    DEBUG5
-#define DEBUG_PROXY   DEBUG2
-#define DEBUG_FILE    DEBUG8
-#define DEBUG_DAEMON  DEBUG2
 #define DEBUG_PARSER  DEBUG6
+#define DEBUG_GROUP   DEBUG6
+#define DEBUG_FILE    DEBUG8
 
 extern Logger *logger;
 
