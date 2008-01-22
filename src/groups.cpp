@@ -26,56 +26,86 @@
 #include "mysqlquery.h"
 #endif
 
-#include "templates.h"
-#include "template.h"
-#include "debug.h"
+#include "groups.h"
 #include "samsconfig.h"
+#include "debug.h"
 
-bool Templates::_loaded = false;
-map<string, Template*> Templates::_list;
+bool Groups::_loaded = false;
+DBConn * Groups::_conn;
+bool Groups::_connection_owner = false;
+map<string, int> Groups::_list;
 
-bool Templates::load()
+
+void Groups::useConnection (DBConn * conn)
 {
-  if (_loaded)
-    return true;
-
-  return reload();
+  if (_conn)
+    {
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Already using " << _conn);
+      return;
+    }
+  if (conn)
+    {
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      _conn = conn;
+      _connection_owner = false;
+    }
 }
 
-bool Templates::reload()
+bool Groups::reload()
 {
-  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] ");
 
   basic_stringstream < char >sqlcmd;
-  DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
-
-  if (engine == DBConn::DB_UODBC)
+  if (!_conn)
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
         {
-          delete conn;
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          #else
+          return false;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          #else
+          return false;
+          #endif
+        }
+      else
+        return false;
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
           return false;
         }
-      query = new ODBCQuery((ODBCConn*)conn);
+      _connection_owner = true;
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+    }
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery( (ODBCConn*)_conn );
       #else
       return false;
       #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
+      query = new MYSQLQuery( (MYSQLConn*)_conn );
       #else
       return false;
       #endif
@@ -83,69 +113,70 @@ bool Templates::reload()
   else
     return false;
 
-  long s_tpl_id;
-  char s_name[25];
-  char s_auth[5];
-  long s_quote;
+  long s_grp_id;
+  char s_name[50];
 
-  if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
+  if (!query->bindCol (1, DBQuery::T_LONG,  &s_grp_id, 0))
     {
       delete query;
-      delete conn;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_CHAR,  s_name, sizeof(s_name)))
     {
       delete query;
-      delete conn;
-      return false;
-    }
-  if (!query->bindCol (3, DBQuery::T_CHAR,  s_auth, sizeof(s_auth)))
-    {
-      delete query;
-      delete conn;
-      return false;
-    }
-  if (!query->bindCol (4, DBQuery::T_LONG,  &s_quote, 0))
-    {
-      delete query;
-      delete conn;
       return false;
     }
 
-  if (!query->sendQueryDirect ("select s_shablon_id, s_name, s_auth, s_quote from shablon"))
+  if (!query->sendQueryDirect ("select s_group_id, s_name from sgroup"))
     {
       delete query;
-      delete conn;
       return false;
     }
 
-  Template *tpl = NULL;
   _list.clear();
   while (query->fetch())
     {
-      tpl = new Template(s_tpl_id, s_name);
-      tpl->setAuth (s_auth);
-      tpl->setQuote (s_quote);
-      _list[s_name] = tpl;
+      _list[s_name] = s_grp_id;
     }
   delete query;
-  delete conn;
   _loaded = true;
 
   return true;
 }
 
-Template * Templates::getTemplate(const string & name)
+void Groups::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
+}
+
+int Groups::getGroupId(const string & name)
 {
   load();
 
-  map < string, Template* >::iterator it = _list.find (name);
+  map < string, int >::iterator it = _list.find (name);
   if (it == _list.end ())
     {
       DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << " not found");
-      return NULL;
+      return -1;
     }
   DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << (*it).second);
   return (*it).second;
 }
+
+bool Groups::load ()
+{
+  if (_loaded)
+    return true;
+
+  return reload();
+}
+

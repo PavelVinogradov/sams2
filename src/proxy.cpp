@@ -37,6 +37,7 @@
 #include "samsconfig.h"
 #include "templates.h"
 #include "template.h"
+#include "groups.h"
 
 bool Proxy::_loaded = false;
 Proxy::usrAuthType Proxy::_auth;
@@ -187,7 +188,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
       if (_autouser)
         {
           Template *tpl = Templates::getTemplate( _defaulttpl );
-          if (!tpl)
+          int grp_id = Groups::getGroupId( _defaultgrp );
+          if (!tpl || (grp_id == -1))
             {
               return false;
             }
@@ -196,16 +198,16 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           if (tpl->getAuth() == Proxy::AUTH_IP)
             {
               usr->setNick (ip.asString());
-              usr->setIP(ip.asString());
+              usr->setIP (ip.asString());
             }
           else
-            usr->setNick(usrNick);
+            usr->setNick (usrNick);
           usr->setDomain (usrDomain);
-          usr->setGroupId (2);
+          usr->setGroupId (grp_id);
           usr->setShablonId (tpl->getId());
           usr->setQuote (tpl->getQuote());
           usr->setEnabled (SAMSUser::STAT_ACTIVE);
-          if (!SAMSUsers::addNewUser(usr))
+          if (!SAMSUsers::addNewUser (usr))
             {
               usr = NULL;
             }

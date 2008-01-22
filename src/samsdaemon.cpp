@@ -38,6 +38,7 @@
 #include "samsusers.h"
 #include "proxy.h"
 #include "localnetworks.h"
+#include "groups.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -96,6 +97,7 @@ void reload (int signal_number)
   DEBUG (DEBUG_DAEMON, "Reloading");
   Proxy::reload ();
   LocalNetworks::reload();
+  Groups::reload();
   SAMSUsers::reload ();
 }
 
@@ -306,6 +308,7 @@ int main (int argc, char *argv[])
 
   SAMSUsers::useConnection (conn);
   LocalNetworks::useConnection (conn);
+  Groups::useConnection (conn);
   Proxy::useConnection (conn);
 
   char s_service[15];
