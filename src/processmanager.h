@@ -58,7 +58,8 @@ public:
   void stop ();
 
 protected:
-    string _fname;              ///< Имя файла где хранится номер процесса
+  string _fname;              ///< Имя файла где хранится номер процесса
+  bool _started;
 };
 
 #endif

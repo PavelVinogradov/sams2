@@ -33,6 +33,8 @@
 
 bool Templates::_loaded = false;
 map<string, Template*> Templates::_list;
+DBConn *Templates::_conn;                ///< Соединение с БД
+bool Templates::_connection_owner;
 
 bool Templates::load()
 {
@@ -44,10 +46,41 @@ bool Templates::load()
 
 bool Templates::reload()
 {
-  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
+
+  if (!_conn)
+    {
+      DBConn::DBEngine engine = SamsConfig::getEngine();
+
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          _conn = new ODBCConn();
+          #else
+          return false;
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          _conn = new MYSQLConn();
+          #else
+          return false;
+          #endif
+        }
+      else
+        return false;
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+    }
+
 
   basic_stringstream < char >sqlcmd;
-  DBConn *conn = NULL;
   DBQuery *query = NULL;
 
   DBConn::DBEngine engine = SamsConfig::getEngine();
@@ -55,13 +88,7 @@ bool Templates::reload()
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new ODBCQuery((ODBCConn*)conn);
+      query = new ODBCQuery((ODBCConn*)_conn);
       #else
       return false;
       #endif
@@ -69,13 +96,7 @@ bool Templates::reload()
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
+      query = new MYSQLQuery((MYSQLConn*)_conn);
       #else
       return false;
       #endif
@@ -91,32 +112,27 @@ bool Templates::reload()
   if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
     {
       delete query;
-      delete conn;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_CHAR,  s_name, sizeof(s_name)))
     {
       delete query;
-      delete conn;
       return false;
     }
   if (!query->bindCol (3, DBQuery::T_CHAR,  s_auth, sizeof(s_auth)))
     {
       delete query;
-      delete conn;
       return false;
     }
   if (!query->bindCol (4, DBQuery::T_LONG,  &s_quote, 0))
     {
       delete query;
-      delete conn;
       return false;
     }
 
   if (!query->sendQueryDirect ("select s_shablon_id, s_name, s_auth, s_quote from shablon"))
     {
       delete query;
-      delete conn;
       return false;
     }
 
@@ -130,10 +146,38 @@ bool Templates::reload()
       _list[s_name] = tpl;
     }
   delete query;
-  delete conn;
   _loaded = true;
 
   return true;
+}
+
+void Templates::useConnection (DBConn * conn)
+{
+  if (_conn)
+    {
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Already using " << _conn);
+      return;
+    }
+  if (conn)
+    {
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Using external connection " << conn);
+      _conn = conn;
+      _connection_owner = false;
+    }
+}
+
+void Templates::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
 }
 
 Template * Templates::getTemplate(const string & name)
@@ -143,7 +187,7 @@ Template * Templates::getTemplate(const string & name)
   map < string, Template* >::iterator it = _list.find (name);
   if (it == _list.end ())
     {
-      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << " not found");
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << name << " not found");
       return NULL;
     }
   DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << (*it).second);

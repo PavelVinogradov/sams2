@@ -47,7 +47,7 @@ void LocalNetworks::useConnection (DBConn * conn)
     }
   if (conn)
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }

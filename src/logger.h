@@ -45,21 +45,11 @@ public:
   };
 
   /**
-   * @brief Конструктор
-   */
-  Logger ();
-
-  /**
-   * @brief Деструктор
-   */
-  ~Logger ();
-
-  /**
    * @brief Добавляет информационное сообщение
    *
    * @param mess Информационное сообщение
    */
-  void sendInfo (const string & mess);
+  static void sendInfo (const string & mess);
 
   /**
    * @brief Добавляет отладочное сообщение
@@ -69,23 +59,23 @@ public:
    * @param level Уровень сообщения
    * @param mess Отладочное сообщение
    */
-  void sendDebug (uint level, const string & mess);
+  static void sendDebug (uint level, const string & mess);
 
   /**
    * @brief Добавляет предупреждающее сообщение
    *
    * @param mess Предупреждающее сообщение
    */
-  void sendWarning (const string & mess);
+  static void sendWarning (const string & mess);
 
   /**
    * @brief Добавляет сообщение об ошибке
    *
    * @param mess Сообщение об ошибке
    */
-  void sendError (const string & mess);
+  static void sendError (const string & mess);
 
-  void setSender(const string & sender);
+  static void setSender(const string & sender);
 
   /**
    * @brief Устанавливает способ вывода сообщений
@@ -107,31 +97,33 @@ public:
    * @param engine Способ вывода сообщений
    * @return Успешность инициализации
    */
-  bool setEngine (const string & engine);
+  static bool setEngine (const string & engine);
 
   /**
    * @brief Устанавливает уровень отладочных сообщений
    *
    * @param level Уровень отладочных сообщений
    */
-  void setDebugLevel (uint level);
+  static void setDebugLevel (uint level);
 
   /**
    * @brief Устанавливает режим многословности
    *
    * @param verbose Режим многословности
    */
-  void setVerbose (bool verbose);
+  static void setVerbose (bool verbose);
 
-  void useConnection(DBConn *conn);
+  static void useConnection(DBConn *conn);
 
-  void addLog(LogKind code, const string &mess);
+  static void destroy();
+
+  static void addLog(LogKind code, const string &mess);
 
 protected:
   /**
    * @brief Закрывает текущий поток вывода сообщений
    */
-  void stop ();
+  static void stop ();
 
   /**
   * @brief Способ вывода сообщений
@@ -143,15 +135,14 @@ protected:
     OUT_SYSLOG                  ///< Отправлять в службу syslog
   };
 
-  bool _started;                ///< true, Если поток вывода сообщений успешно открыт
-  bool _verbose;                ///< Текущий уровень многословности
-  uint _dbgLevel;               ///< Текущий уровень отладочных сообщений
-  string _sender;
-  LoggerEngine _engine;         ///< Используемый способ вывода сообщений
-  ofstream _fout;               ///< Поток вывода в файл
-  DBConn *_conn;                ///< Соединение с БД
-  DBQuery *_query;
-  bool _connection_owner;
+  static bool _started;                ///< true, Если поток вывода сообщений успешно открыт
+  static bool _verbose;                ///< Текущий уровень многословности
+  static uint _dbgLevel;               ///< Текущий уровень отладочных сообщений
+  static string _sender;
+  static LoggerEngine _engine;         ///< Используемый способ вывода сообщений
+  static ofstream _fout;               ///< Поток вывода в файл
+  static DBConn *_conn;                ///< Соединение с БД
+  static bool _connection_owner;
 };
 
 #endif

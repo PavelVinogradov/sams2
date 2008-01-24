@@ -33,23 +33,16 @@
 #include "logger.h"
 #include "tools.h"
 #include "samsconfig.h"
+#include "debug.h"
 
-Logger::Logger ()
-{
-  _engine = OUT_CONSOLE;
-  _started = false;
-  _dbgLevel = 0;
-  _verbose = false;
-  _connection_owner = false;
-  _sender = "logger";
-}
-
-
-Logger::~Logger ()
-{
-  stop ();
-}
-
+bool Logger::_started = true;
+bool Logger::_verbose = false;
+uint Logger::_dbgLevel = 0;
+string Logger::_sender = "logger";
+Logger::LoggerEngine Logger::_engine = OUT_CONSOLE;
+ofstream Logger::_fout;
+DBConn *Logger::_conn = NULL;
+bool Logger::_connection_owner = false;
 
 void Logger::sendInfo (const string & mess)
 {
@@ -221,12 +214,28 @@ void Logger::useConnection (DBConn * conn)
 {
   if (_conn)
     {
+      DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Already using " << _conn);
       return;
     }
   if (conn)
     {
+      DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
+    }
+}
+
+void Logger::destroy()
+{
+  if (_connection_owner && _conn)
+    {
+      DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      delete _conn;
+      _conn = NULL;
+    }
+  else
+    {
+      DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
 }
 
@@ -241,7 +250,6 @@ void Logger::addLog(LogKind code, const string &mess)
         {
           #ifdef USE_UNIXODBC
           _conn = new ODBCConn();
-          _query = new ODBCQuery((ODBCConn*)_conn);
           #else
           return;
           #endif
@@ -250,7 +258,6 @@ void Logger::addLog(LogKind code, const string &mess)
         {
           #ifdef USE_MYSQL
           _conn = new MYSQLConn();
-          _query = new MYSQLQuery((MYSQLConn*)_conn);
           #else
           return;
           #endif
@@ -260,16 +267,38 @@ void Logger::addLog(LogKind code, const string &mess)
 
       if (!_conn->connect ())
         {
-          delete _query;
           delete _conn;
           return;
         }
       _connection_owner = true;
     }
 
+  DBQuery *query;
+
+  if (_conn->getEngine() == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      query = new ODBCQuery((ODBCConn*)_conn);
+      #else
+      return;
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return;
+      #endif
+    }
+  else
+    return;
+
   basic_stringstream < char >sqlcmd;
   sqlcmd << "insert into samslog (s_log_id, s_issuer, s_date, s_time, s_value, s_code)";
   sqlcmd << "VALUES (NULL, '" << _sender << "', CURDATE(), CURTIME(), '" << mess << "', '" << code << "')";
-  _query->sendQueryDirect (sqlcmd.str ());
+  query->sendQueryDirect (sqlcmd.str ());
+
+  delete query;
 }
 

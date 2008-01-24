@@ -135,12 +135,10 @@ int main (int argc, char *argv[])
   // Первое обращение к get функциям вызывает загрузку конфигурации
   dbglevel = SamsConfig::getInt (defDEBUG, err);
 
-  logger = new Logger ();
-
-  logger->setSender("samsparser");
+  Logger::setSender("samsparser");
 
   if (err == ERR_OK)
-    logger->setDebugLevel (dbglevel);
+    Logger::setDebugLevel (dbglevel);
 
 
   static struct option long_options[] = {
@@ -215,17 +213,17 @@ int main (int argc, char *argv[])
           break;
         case 'v':
           DEBUG (DEBUG_CMDARG, "option: --verbose");
-          logger->setVerbose (true);
+          Logger::setVerbose (true);
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          logger->setDebugLevel (dbglevel);
+          Logger::setDebugLevel (dbglevel);
           DEBUG (DEBUG_CMDARG, "option: --debug=" << dbglevel);
           break;
         case 'l':
           DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
-          logger->setEngine (optarg);
+          Logger::setEngine (optarg);
           break;
         case 'w':
           DEBUG (DEBUG_CMDARG, "option: --wait-myself");

@@ -113,7 +113,7 @@ void Proxy::useConnection (DBConn * conn)
     }
   if (conn)
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }
@@ -592,7 +592,7 @@ void Proxy::commitChanges ()
           mess << "User " << *usr << " deactivated.";
 
           INFO (mess.str ());
-          logger->addLog(Logger::LK_USER, mess.str());
+          Logger::addLog(Logger::LK_USER, mess.str());
         }
 
       s_enabled = (long)usr->getEnabled();
