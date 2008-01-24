@@ -28,6 +28,7 @@
 
 ProcessManager::ProcessManager ()
 {
+  _started = false;
 }
 
 
@@ -41,6 +42,12 @@ ProcessManager::~ProcessManager ()
  */
 bool ProcessManager::start (const string & procname, bool wait_myself)
 {
+  if (_started)
+    {
+      WARNING ("Started already.");
+      return false;
+    }
+
   fstream f;
   pid_t pid;
 
@@ -91,15 +98,21 @@ bool ProcessManager::start (const string & procname, bool wait_myself)
 
   mess << "Started with pid " << pid << ".";
 
-  logger->addLog(Logger::LK_DAEMON, mess.str());
+  Logger::addLog(Logger::LK_DAEMON, mess.str());
 
   DEBUG (DEBUG_FILE, _fname << " created.");
+  _started = true;
+
   return true;
 }
 
 
 void ProcessManager::stop ()
 {
-  logger->addLog(Logger::LK_DAEMON, "Stopped.");
+  if (!_started)
+      return;
+
+  Logger::addLog(Logger::LK_DAEMON, "Stopped.");
   fileDelete (_fname);
+  _started = false;
 }

@@ -47,7 +47,7 @@ void SAMSUsers::useConnection (DBConn * conn)
     }
   if (conn)
     {
-      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }
@@ -356,7 +356,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   mess << "User " << user->getNick() << " created.";
 
   INFO (mess.str ());
-  logger->addLog(Logger::LK_USER, mess.str());
+  Logger::addLog(Logger::LK_USER, mess.str());
 
   return true;
 }

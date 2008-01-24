@@ -27,6 +27,11 @@ class Template;
 class Templates{
 public:
   static bool reload();
+
+  static void useConnection(DBConn *conn);
+
+  static void destroy();
+
   static Template * getTemplate(const string & name);
 
 private:
@@ -34,6 +39,8 @@ private:
 
   static bool _loaded;
   static map<string, Template*> _list;
+  static DBConn *_conn;                ///< Соединение с БД
+  static bool _connection_owner;
 };
 
 #endif

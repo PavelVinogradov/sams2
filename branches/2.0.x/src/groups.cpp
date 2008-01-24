@@ -45,7 +45,7 @@ void Groups::useConnection (DBConn * conn)
     }
   if (conn)
     {
-      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Using external connection " << _conn);
+      DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }

@@ -39,6 +39,7 @@
 #include "proxy.h"
 #include "localnetworks.h"
 #include "groups.h"
+#include "templates.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -66,6 +67,8 @@ void usage ()
   cout << "                Force to start in background mode." << endl;
   cout << "        --no-fork" << endl;
   cout << "                Force to start in foreground mode." << endl;
+  cout << "    -t, --timeout=SECONDS" << endl;
+  cout << "                Always reconnect every SECONDS. Default is 3600 (one hour)." << endl;
   cout << "    -v, --verbose" << endl;
   cout << "                Produce more output." << endl;
   cout << "    -d, --debug=LEVEL" << endl;
@@ -95,6 +98,7 @@ void version ()
 void reload (int signal_number)
 {
   DEBUG (DEBUG_DAEMON, "Reloading");
+  Templates::reload ();
   Proxy::reload ();
   LocalNetworks::reload();
   Groups::reload();
@@ -110,13 +114,12 @@ int main (int argc, char *argv[])
   int c;
   int err;
   uint dbglevel;
+  int reconnect_timeout = 3600;
   string optname = "";
   bool must_fork = true;
   bool use_must_fork = false;
 
-  logger = new Logger ();
-
-  logger->setSender("samsdaemon");
+  Logger::setSender("samsdaemon");
 
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
@@ -124,7 +127,7 @@ int main (int argc, char *argv[])
   dbglevel = SamsConfig::getInt (defDEBUG, err);
 
   if (err == ERR_OK)
-    logger->setDebugLevel (dbglevel);
+    Logger::setDebugLevel (dbglevel);
 
   static struct option long_options[] = {
     {"help",     0, 0, 'h'},     // Показывает справку по опциям командной строки и завершает работу
@@ -133,6 +136,7 @@ int main (int argc, char *argv[])
     {"debug",    1, 0, 'd'},     // Устанавливает уровень отладки
     {"fork",     0, 0, 'f'},     // Запускать в фоновом режиме
     {"no-fork",  0, 0, 'F'},     // Не запускать в фоновом режиме
+    {"timeout",  1, 0, 't'},     // Устанавливает время переподключения к БД
     {"logger",   1, 0, 'l'},     // Устанавливает движок вывода сообщений
     {0, 0, 0, 0}
   };
@@ -141,7 +145,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVvd:fFl:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVvd:fFt:l:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -162,12 +166,12 @@ int main (int argc, char *argv[])
           break;
         case 'v':
           DEBUG (DEBUG_CMDARG, "option: --verbose");
-          logger->setVerbose (true);
+          Logger::setVerbose (true);
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          logger->setDebugLevel (dbglevel);
+          Logger::setDebugLevel (dbglevel);
           DEBUG (DEBUG_CMDARG, "option: --debug=" << dbglevel);
           break;
         case 'f':
@@ -180,9 +184,14 @@ int main (int argc, char *argv[])
           must_fork = false;
           use_must_fork = true;
           break;
+        case 't':
+          if (sscanf (optarg, "%d", &reconnect_timeout) != 1)
+            reconnect_timeout = 3600;
+          DEBUG (DEBUG_CMDARG, "option: --timeout=" << reconnect_timeout);
+          break;
         case 'l':
           DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
-          logger->setEngine (optarg);
+          Logger::setEngine (optarg);
           break;
         case '?':
           break;
@@ -213,13 +222,15 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-  int sleeptime = SamsConfig::getInt (defSLEEPTIME, err);
+  // Интервал в секунах, через который нужно проверять наличие команд для демона
+  int check_interval = SamsConfig::getInt (defSLEEPTIME, err);
   if (err != ERR_OK)
     {
       ERROR ("Cannot get sleep time for daemon. See debugging messages for more details.");
       exit (1);
     }
 
+  // Интервал в минутах, через который нужно считывать данные из access.log
   int steptime = SamsConfig::getInt (defDAEMONSTEP, err);
   if (err != ERR_OK)
     {
@@ -259,12 +270,10 @@ int main (int argc, char *argv[])
     }
 
 
-  ProcessManager process;
-
-  if (!process.start ("samsdaemon"))
-    {
-      exit (2);
-    }
+  struct sigaction sighup_action;
+  memset (&sighup_action, 0, sizeof (sighup_action));
+  sighup_action.sa_handler = &reload;
+  sigaction (SIGHUP, &sighup_action, NULL);
 
   DBConn *conn = NULL;
   DBQuery *query = NULL;
@@ -275,7 +284,6 @@ int main (int argc, char *argv[])
     {
       #ifdef USE_UNIXODBC
       conn = new ODBCConn();
-      query = new ODBCQuery((ODBCConn*)conn);
       #else
       return 1;
       #endif
@@ -284,7 +292,6 @@ int main (int argc, char *argv[])
     {
       #ifdef USE_MYSQL
       conn = new MYSQLConn();
-      query = new MYSQLQuery((MYSQLConn*)conn);
       #else
       return 1;
       #endif
@@ -294,64 +301,109 @@ int main (int argc, char *argv[])
 
   if (!conn->connect ())
     {
-      delete query;
       delete conn;
       return 1;
     }
-
-
-
-  struct sigaction sighup_action;
-  memset (&sighup_action, 0, sizeof (sighup_action));
-  sighup_action.sa_handler = &reload;
-  sigaction (SIGHUP, &sighup_action, NULL);
 
   SAMSUsers::useConnection (conn);
   LocalNetworks::useConnection (conn);
   Groups::useConnection (conn);
   Proxy::useConnection (conn);
+  Templates::useConnection (conn);
+  Logger::useConnection (conn);
+
+  ProcessManager process;
+
+  if (!process.start ("samsdaemon"))
+    {
+      delete conn;
+      exit (0);
+    }
 
   char s_service[15];
   char s_action[10];
-
-  if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
-    {
-      delete query;
-      delete conn;
-      return 1;
-    }
-  if (!query->bindCol (2, DBQuery::T_CHAR, s_action, sizeof (s_action)))
-    {
-      delete query;
-      delete conn;
-      return 1;
-    }
 
   basic_stringstream < char >cmd_check;
   basic_stringstream < char >cmd_del;
 
   cmd_check << "select s_service, s_action from reconfig where s_proxy_id=" << proxyid;
-  cmd_del << "delete from reconfig where s_proxy_id=" << proxyid << " and service=? and action=?";
 
   SquidLogParser *parser = NULL;
-  int seconds_left = 0;
+  int seconds_to_parse = 0;
+  int seconds_to_reconnect = reconnect_timeout;
   static string service_proxy = "proxy";
   static string action_shutdown = "shutdown";
   static string action_reload = "reload";
 
+  time_t loop_start = time (NULL);
+  time_t loop_end = time (NULL);
+  int looptime;
+  int sleeptime;
   while (true)
     {
-      if (seconds_left < 0)
-        seconds_left = 0;
+      looptime = (int) difftime(loop_start, loop_end);
+      sleeptime = check_interval - looptime;
+      if (sleeptime < 0)
+        sleeptime = 0;
 
-      DEBUG (DEBUG_DAEMON, "Countdown: " << seconds_left);
+      if (sleeptime > 0)
+        sleep (sleeptime);
+
+      seconds_to_parse     -= (looptime + sleeptime);
+      if (seconds_to_parse < 0)
+        seconds_to_parse = 0;
+      seconds_to_reconnect -= (looptime + sleeptime);
+
+      if (seconds_to_reconnect <= 0)
+        {
+          delete query;
+          query = NULL;
+          conn->disconnect();
+          if (!conn->connect ())
+            {
+              continue;
+            }
+          seconds_to_reconnect = reconnect_timeout;
+        }
+
+      if (!query)
+        {
+          if (engine == DBConn::DB_UODBC)
+            {
+              #ifdef USE_UNIXODBC
+              query = new ODBCQuery((ODBCConn*)conn);
+              #endif
+            }
+          else if (engine == DBConn::DB_MYSQL)
+            {
+              #ifdef USE_MYSQL
+              query = new MYSQLQuery((MYSQLConn*)conn);
+              #endif
+            }
+          if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
+            {
+              delete query;
+              query = NULL;
+              continue;
+            }
+          if (!query->bindCol (2, DBQuery::T_CHAR, s_action, sizeof (s_action)))
+            {
+              delete query;
+              query = NULL;
+              continue;
+            }
+        }
+
+      DEBUG (DEBUG_DAEMON, "Process " << squidcachefile << " in " << seconds_to_parse << " second[s]");
 
       if (!query->sendQueryDirect (cmd_check.str()) )
         {
-          delete query;
-          delete conn;
-          return 1;
+          DEBUG (DEBUG_DAEMON, "Reconnect in " << seconds_to_reconnect << " second[s]");
+          continue;
         }
+
+      loop_start = time (NULL);
+
       while (query->fetch ())
         {
           //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='shutdown'
@@ -362,13 +414,16 @@ int main (int argc, char *argv[])
               cmd_del << " and s_service='" << service_proxy << "'";
               cmd_del << " and s_action='" << action_shutdown << "'";
               query->sendQueryDirect (cmd_del.str());
+              DEBUG (DEBUG_DAEMON, "Shutdown");
+              process.stop();
               Proxy::destroy();
               LocalNetworks::destroy();
               SAMSUsers::destroy();
+              Templates::destroy();
+              Logger::destroy();
               delete query;
               delete conn;
-              DEBUG (DEBUG_DAEMON, "Shutdown");
-              return 0;
+              exit(0);
             }
           if (s_service == service_proxy && s_action == action_reload)
             {
@@ -381,17 +436,17 @@ int main (int argc, char *argv[])
             }
         }
 
-      if (seconds_left == 0)
+      if (seconds_to_parse == 0)
         {
-          DEBUG (DEBUG_DAEMON, "Processing access.log ...");
+          DEBUG (DEBUG_DAEMON, "Processing " << squidcachefile << " ...");
           parser = new SquidLogParser (proxyid);
           parser->parseFile (conn, squidlogdir + "/" + squidcachefile, false);
           delete parser;
-          seconds_left = (60 * steptime);
+          seconds_to_parse = (60 * steptime);
         }
 
-      sleep (sleeptime);
-      seconds_left -= sleeptime;
+      loop_end = time (NULL);
+
     }
 
 }

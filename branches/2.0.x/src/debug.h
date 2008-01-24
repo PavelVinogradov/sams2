@@ -52,9 +52,10 @@ using namespace std;
 #define DEBUG_HOST    DEBUG5
 #define DEBUG_PARSER  DEBUG6
 #define DEBUG_GROUP   DEBUG6
+#define DEBUG_TPL     DEBUG6
+#define DEBUG_LOGGER  DEBUG7
 #define DEBUG_FILE    DEBUG8
-
-extern Logger *logger;
+//extern Logger *logger;
 
 
 /** Если определена, то в макросах ERROR и WARNING будет выодится
@@ -85,7 +86,7 @@ extern Logger *logger;
   { \
     basic_stringstream < char >s; \
     s << ERROR_PREFIX << arg; \
-    if (logger) logger->sendError(s.str()); \
+    Logger::sendError(s.str()); \
   }
 
 
@@ -98,7 +99,7 @@ extern Logger *logger;
   { \
     basic_stringstream < char >s; \
     s << WARNING_PREFIX << arg; \
-    if (logger) logger->sendWarning(s.str()); \
+    Logger::sendWarning(s.str()); \
   }
 
 
@@ -111,7 +112,7 @@ extern Logger *logger;
   { \
     basic_stringstream < char >s; \
     s << INFO_PREFIX << arg; \
-    if (logger) logger->sendInfo(s.str()); \
+    Logger::sendInfo(s.str()); \
   }
 
 
@@ -125,7 +126,7 @@ extern Logger *logger;
   { \
     basic_stringstream < char >s; \
     s << DEBUG_PREFIX << __FILE__<<":"<<__LINE__<< " " << arg; \
-    if (logger) logger->sendDebug(level, s.str()); \
+    Logger::sendDebug(level, s.str()); \
   }
 
 

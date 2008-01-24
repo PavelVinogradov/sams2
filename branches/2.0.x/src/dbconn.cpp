@@ -44,7 +44,7 @@ bool DBConn::connect ()
 
 bool DBConn::isConnected ()
 {
-  return false;
+  return _connected;
 }
 
 
