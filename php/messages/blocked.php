@@ -102,7 +102,7 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
 
   print("  <TR><TD><IMG SRC=\"$path$ICONSET/denied.gif\">");
 
-  $result=mysql_query("SELECT squidusers.*,shablons.shour,shablons.smin,shablons.ehour,shablons.emin FROM squidusers LEFT JOIN shablons ON (squidusers.shablon=shablons.name) WHERE id=\"$id\" ");
+  $result=mysql_query("SELECT sams.realsize,squidusers.*,shablons.shour,shablons.smin,shablons.ehour,shablons.emin FROM sams,squidusers LEFT JOIN shablons ON (squidusers.shablon=shablons.name) WHERE id=\"$id\" ");
   $row=mysql_fetch_array($result);
 
   if($action=="userdisabled")
@@ -119,8 +119,12 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
          {
            print("  <P>$blocked_php_6 ");
            print("  <BR><B>$blocked_php_11</B> $row[quotes] $blocked_php_12");
-           $msize=floor($row['size']/$MBSIZE);
-           $ostatok=$row['size']%$MBSIZE;
+           if ($row['realsize'] == 'real')
+    	     $total = $row['size']-$row['hit'];
+           else
+             $total = $row['size'];
+           $msize=floor($total/$MBSIZE);
+           $ostatok=$total%$MBSIZE;
            $ksize=floor($ostatok/$KBSIZE);
 	   print("  <BR><B>$blocked_php_7</B> <FONT COLOR=\"RED\"><B>$msize $blocked_php_12 $ksize $blocked_php_13</B></FONT>" );
 	 }
