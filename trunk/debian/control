@@ -34,6 +34,7 @@ Description: Squid Account Management System (SAMS) - Web interface
  manage user access to proxy server
 
 Package: sams-doc
+Section: doc
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Squid Account Management System (SAMS) - Web interface

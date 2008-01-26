@@ -114,7 +114,7 @@ binary-common:
 #	dh_installmime
 	dh_installinit
 #	dh_installcron
-	dh_installman
+	dh_installman debian/sams.1 debian/samsf.1 debian/samsredir.1 debian/samsdaemon.1
 	dh_link
 	dh_strip
 	dh_compress 
