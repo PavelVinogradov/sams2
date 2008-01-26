@@ -2,7 +2,7 @@ Source: sams
 Section: net
 Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
-Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev, libpcre3-dev
+Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient15-dev, libpcre3-dev, quilt
 Standards-Version: 3.7.3
 Homepage: http://sams.nixdev.net
 Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
@@ -10,7 +10,7 @@ Vcs-Browser: http://sams.nixdev.net/browser/trunk
 
 Package: sams
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient15off
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: mysql-server
 Suggests: squidguard
 Description: Squid Account Management System (SAMS) - Deamons

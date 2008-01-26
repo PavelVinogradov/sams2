@@ -95,7 +95,7 @@ install-arch:
 	#$(MAKE) prefix=$(CURDIR)/debian/sams install
 
 	dh_install -s
-	dh_movefiles
+	dh_movefiles --sourcedir=debian/sams
 	#ln -s ../doc/sams/html $(CURDIR)/debian/sams/usr/share/sams/doc 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep
