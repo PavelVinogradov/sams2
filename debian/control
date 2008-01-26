@@ -3,14 +3,14 @@ Section: net
 Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev, libpcre3-dev
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 Homepage: http://sams.nixdev.net
 Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
 Vcs-Browser: http://sams.nixdev.net/browser/trunk
 
 Package: sams
 Architecture: any
-Depends: ${shlibs:Depends}, libmysqlclient15off
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient15off
 Recommends: mysql-server
 Suggests: squidguard
 Description: Squid Account Management System (SAMS) - Deamons
@@ -23,7 +23,7 @@ Description: Squid Account Management System (SAMS) - Deamons
 
 Package: sams-web
 Architecture: all
-Depends: ${shlibs:Depends}, apache2 | httpd, php5, php5-mysql
+Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql
 Suggests: php5-gd, php5-ldap
 Description: Squid Account Management System (SAMS) - Web interface
  This program basically used for administrative purposes of squid proxy.
@@ -32,3 +32,13 @@ Description: Squid Account Management System (SAMS) - Web interface
  .
  This package contain web-interface to access collected statistic and
  manage user access to proxy server
+
+Package: sams-doc
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Squid Account Management System (SAMS) - Web interface
+ This program basically used for administrative purposes of squid proxy.
+ There are access control for users by ntlm, ncsa, basic or ip
+ authorization mode.
+ .
+ This package contain documentation.
