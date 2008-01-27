@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<H2>Файл конфигурации sams.conf</H2>
+
+<P>Конфигурирование SAMS просходит путем выставления значений в файле
+/etc/sams.conf и в форме конфигурирования SAMS.
+<BR> В файле /etc/sams.conf хранятся значения, необходимые для
+подключения к MySQL и работы консольных программ.
+
+<BO><B>Ключи файла sams.conf</B>
+
+<P>Настройка доступа к базе данных SAMS:
+<BR><B>SAMS_DB=squidctrl</B>
+ - имя базы данных SAMS
+<BR><B>SQUID_DB=squidlog</B>
+ - имя базы данных, где SAMS хранит информацию, полученную из логов SQUID
+<BR><B>MYSQLHOSTNAME=localhost</B>
+ -  имя хоста, где стоит MySQL
+<BR><B>MYSQLUSER=sams</B>
+ -  Имя пользователя MySQL, от имени которого будет работать SAMS
+<BR><B>MYSQLPASSWORD=yourpasswd</B>
+ -  Пароль пользователя в MySQL
+
+<P>Настройка работы со SQUID:
+<BR><B>SQUIDROOTDIR=/etc/squid</B>
+ -  Путь к директории, где лежит конфиг SQUID
+<BR><B>SQUIDLOGDIR=/var/squid/logs</B>
+ -  Путь к директории, где лежит файл логов SQUID
+<BR><B>SQUIDCACHEFILE=access.log</B>
+ -  Имя файла логов SQUID
+<BR><B>SQUIDPATH=/usr/sbin/squid</B>
+ -  Путь, где лежит SQUID
+<BR><B>SQUIDCACHEDIR=/var/spool/squid</B>
+ - Путь к кэшу SQUID. Необходимо для работы функции восстановления файлов из кэша SQUID
+
+<P>Путь расположения SAMS:
+<BR><B>SAMSPATH=/usr/local/sams</B>
+ -  Путь, куда установлен SAMS
+
+<P>Если вы хотите использовать редиректор SQUIDGUARD, необходимо отредактировать эти пункты
+<BR><B>SQUIDGUARDLOGPATH=/var/log</B>
+<BR><B>SQUIDGUARDDBPATH=/var/db/squidguard</B>
+
+<P>Если вы хотите использовать редиректор REJIK, необходимо отредактировать этот пункт
+<BR><B>REJIKPATH=/path/to/rejik</B>
+
+<P>Если вы хотите использовать NTLM или AD авторизацию и у вас есть имена пользователей 
+на руссокм языке, необходимо изменить этот пункт:  
+<BR><B>RECODECOMMAND=iconv -f KOI8-R -t 866 %finp > %fout</B> - команда перекодирования 
+имен пользователей из используемой у вас кодировки в dos-866
+
+<P>Если вы хотите использовать авторизацию в Active Directory, отредактируйте эти пункты
+<BR><B>LDAPSERVER=192.168.0.1</B>
+- ip адрес или имя сервера Active Directory
+<BR><B>LDAPBASEDN=domain.name</B>
+- ваш домен
+<BR><B>LDAPUSER=username</B> 
+- имя пользователя, входщего в группу администраторы домена
+<BR><B>LDAPUSERPASSWD=passwd</B>
+<BR><B>LDAPUSERSGROUP=Users</B> 
+- группа, в которую входят пользователи доменаю Для AD это обычно Users
+
+<P><B>CACHENUM=номер</B> 
+- Номер прокси-сервера SQUID, зарегистрированного в SAMS. SAMS поддерживает 
+возможность управлениями несколькими прокси серверами SQUID (на данный момент 
+только команда на реконфигурирование).
+
+<P><B>SHUTDOWNCOMMAND=shutdown -h now</B> 
+- Команда, выполняемая при нажатии на кнопку <IMG SRC="../img/shutdown_32.jpg"> 
+(SAMS->"Shutdown proxy server"). Данная команда добавлена для удобства удаленного 
+выключения прокси сервера. 
+
+</BODY>
+</HTML>
+

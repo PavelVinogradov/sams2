@@ -1,0 +1,33 @@
+<HTML>
+<BODY>
+
+<H2 align="center">Управление нескольктими прокси-серверами SQUID  </H2>
+
+SAMS способен управлять несколькими прокси-серверами SQUID. 
+В данный момент SAMS может дать только команду на реконфигурирование конкретного прокси-сервера SQUID. 
+Команда на реконфигурирование дается демону samsdaemon, с указанием номера прокси-сервера, под которым 
+он зарегистрирован в WEB интерфейсе SAMS.
+<BR>Для того, чтобы samsdaemon мог идентифицировать себя, в sams.conf введен ключ CACHENUM
+<BR><B>CACHENUM=номер</B>
+  
+<BR>Если SAMS управляет только одним прокси-сервером, то ключ CACHENUM необходимо задать равным 0, или 
+можно не задавать вообще. samsdaemon читает файл squid.conf, и если ключ CACHENUM ненайден, он 
+по-умолчанию берется равным 0.
+
+<P>Если вы хотите управлять несколькими прокси-серверами, то вам необходимо:
+<BR><LI>Зарегистрировать прокси-сервер в web-интерфейсе SAMS;
+<BR><LI>Установить SAMS на прокси-сервере;
+<BR><LI>Номер, под которым прокси-сервер зарегистрирован в SAMS, занести в sams.conf в пареметр CACHENUM;
+<BR><LI>Зарегистрировать в MySQL пользователя sams от прокси-сервера SQUID:
+<BR>GRANT ALL ON squidctrl.* TO sams@ipaddr IDENTIFIED BY "yourpassword";
+<BR>GRANT ALL ON squidlog.* TO sams@ipaddr IDENTIFIED BY "yourpassword"; 
+<BR><LI>В sams.conf необходимо занести:
+<BR>MYSQLHOSTNAME=ipaddr  - ip адрес хоста, где установлен MySQL
+<BR>MYSQLUSER=sams - Имя пользователя MySQL, от имени которого будет работать SAMS
+<BR>MYSQLPASSWORD=yourpasswd - Пароль пользователя в MySQL
+<BR><LI>Настроить sams.conf
+<BR><LI>Запустить samsdaemon
+
+
+</BODY>
+</HTML>

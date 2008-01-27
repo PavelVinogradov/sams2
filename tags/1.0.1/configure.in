@@ -1,0 +1,287 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_REVISION([$Id: configure.in,v 1.4 2002/08/06 14:49:43 bars Exp $])dnl
+
+AC_INIT([demon.c])
+dnl AC_CANONICAL_SYSTEM
+dnl AM_SANITY_CHECK
+
+dnl Checks for programs.
+AC_PROG_CC
+dnl AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+dnl Проверка имеющихся библиотек.
+AC_CHECK_LIB(m, main)dnl
+
+dnl Проверка наличия заголовочных файлов.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS([fcntl.h netdb.h stdlib.h string.h sys/time.h pcre/pcre.h syslog.h unistd.h])
+
+dnl Проверка библиотечных функций.
+AC_FUNC_CHOWN
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_FORK
+AC_FUNC_LSTAT
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STAT
+#AC_CHECK_FUNCS([gethostbyname memmove memset pow strcasecmp strchr strdup strstr])
+AC_CHECK_FUNCS([memmove memset pow strcasecmp strchr strdup strstr])
+
+#dnl Checking for FreeBSD setproctitle in libutil
+#AC_CHECK_FUNC(setproctitle,AC_DEFINE(HAVE_SETPROCTITLE),AC_CHECK_LIB(util,setproctitle,AC_DEFINE(HAVE_SETPROCTITLE)))
+
+dnl Checks for typedefs.
+AC_C_CONST
+AC_TYPE_PID_T
+AC_STRUCT_TM
+
+dnl define various options
+AC_ARG_WITH(configfile, [  --with-configfile=PATH  default runtime config file (/etc/sams.conf)])
+if test "X$with_configfile" != "Xno" && test "X$with_configfile" != "Xyes" && test "X$with_configfile" != "X"; then
+ 	CONFIG_FILE=$with_configfile
+fi
+: ${CONFIG_FILE="/etc/sams.conf"}
+sysconfdir=$CONFIG_FILE;
+echo "#define CONFIG_FILE \"$CONFIG_FILE\"" >config.h
+VERSION=`cat VERSION`
+echo "#define VERSION \"$VERSION\"" >>config.h
+
+echo "<?php \$configfile=\"$CONFIG_FILE\"; ?>" >php/config.php
+AC_SUBST(CONFIG_FILE)dnl
+AC_DEFINE_UNQUOTED(CONFIG_FILE,"$CONFIG_FILE")dnl
+####
+
+AC_MSG_CHECKING(for the SAMS startup scripts locations)
+AC_ARG_WITH(rcd-locations,
+[  --with-rcd-locations=PATH   specify path for the startup rc.d script locations],
+    use_rcd_locations="$withval", use_rcd_locations="unspec")
+case "$use_rcd_locations" in
+    unspec)
+	DST_RCD_LOC='/etc/init.d'
+	for ac_dir in /etc/init.d /usr/local/etc/rc.d; do
+	    if test -f "$ac_dir"; then
+	        DST_RCD_LOC=$ac_dir
+	        break;
+	    fi
+	done
+	AC_MSG_RESULT(using the SAMS startup scripts locations from $DST_RCD_LOC)
+	;;
+    yes)
+	AC_MSG_ERROR([--with-rcd-locations must specify a path])
+	;;
+    *)
+	DST_RCD_LOC="$use_rcd_locations"
+	AC_MSG_RESULT(using rc.d locations from $DST_RCD_LOC)
+	;;
+esac
+RCDPATH="$DST_RCD_LOC"
+
+AC_MSG_CHECKING(for WEB server locations)
+AC_ARG_WITH(httpd-locations,
+[  --with-httpd-locations=PATH   specify path for HTTP server root directory locations],
+    use_httpd_locations="$withval", use_httpd_locations="unspec")
+case "$use_httpd_locations" in
+    unspec)
+	DST_HTTPD_LOC='/var/www/html'
+	for ac_dir in /var/www/html /var/www/htdocs /usr/local/www/data /usr/local/apache/htdocs; do
+	    if test -d "$ac_dir"; then
+	        DST_HTTPD_LOC=$ac_dir
+	        break;
+	    fi
+	done
+	AC_MSG_RESULT(using WEB server locations from $DST_HTTPD_LOC)
+	;;
+    yes)
+	AC_MSG_ERROR([--with-httpd-locations must specify a path])
+	;;
+    *)
+	DST_HTTPD_LOC="$use_httpd_locations"
+	AC_MSG_RESULT(using WEB server locations from $DST_HTTPD_LOC)
+	;;
+esac
+HTTPDPATH="$DST_HTTPD_LOC"
+
+####
+AC_MSG_CHECKING(for MYSQL headers)
+AC_ARG_WITH(mysql-includes,
+[  --with-mysql-includes=PATH   specify path for MYSQL includes],
+    use_mysql_includes="$withval", use_mysql_includes="unspec")
+
+case "$use_mysql_includes" in
+    unspec)
+	DST_MYSQL_INC='/usr/include/mysql'
+	for ac_dir in /usr/local/mysql/include/mysql /usr/local/include/mysql /usr/include/mysql /usr/local/include /usr/include; do
+	    if test -f "$ac_dir/mysql.h"; then
+	        DST_MYSQL_INC=$ac_dir
+	        break;
+	    fi
+	done
+	AC_MSG_RESULT(using mysql includes from $DST_MYSQL_INC)
+	;;
+    yes)
+	AC_MSG_ERROR([--with-mysql-includes must specify a path])
+	;;
+    *)
+	DST_MYSQL_INC="$use_mysql_includes"
+	AC_MSG_RESULT(using mysql includes from $DST_MYSQL_INC)
+	;;
+esac
+
+AC_MSG_CHECKING(for <mysql.h> in $DST_MYSQL_INC)
+if test -r "$DST_MYSQL_INC/mysql.h"; then
+    AC_MSG_RESULT(using <mysql.h> from $DST_MYSQL_INC)
+else
+    AC_MSG_ERROR(Cannot find MySQL's <mysql.h> in $DST_MYSQL_INC)
+fi
+MYSQLHEADERS="-I$DST_MYSQL_INC"
+
+#
+# was --with-mysql-libpath specified?
+#
+AC_MSG_CHECKING(for MYSQL library)
+AC_ARG_WITH(mysql-libpath,
+[  --with-mysql-libpath=PATH    specify path for MYSQL library],
+    use_mysql_lib="$withval", use_mysql_lib="unspec")
+
+case "$use_mysql_lib" in
+    unspec)
+        DST_MYSQL_LIBS='/usr/lib'
+	for ac_dir in /usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib; do
+	    if test -f "$ac_dir/libmysqlclient.so"; then
+	        DST_MYSQL_LIBS=$ac_dir
+	        break;
+	    fi
+	done
+        AC_MSG_RESULT(using mysql libraryes from $DST_MYSQL_LIBS)
+        ;;
+    yes)
+        AC_MSG_ERROR([--with-mysql-libpath must specify a path])
+        ;;
+    *)
+        DST_MYSQL_LIBS="$use_mysql_lib"
+        AC_MSG_RESULT(using mysql libraries from $DST_MYSQL_LIBS)
+        ;;
+    esac
+AC_MSG_CHECKING(for libmysqlclient in $DST_MYSQL_LIBS)
+if test -r "$DST_MYSQL_LIBS/libmysqlclient.so"; then
+  AC_MSG_RESULT(using libmysqlclient from $DST_MYSQL_LIBS)
+else
+  AC_MSG_ERROR(Cannot find MySQL's libmysqlclient in $DST_MYSQL_LIBS)
+fi
+MYSQLLIBS="-L$DST_MYSQL_LIBS -lmysqlclient"
+CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
+
+####
+AC_MSG_CHECKING(for PCRE headers)
+AC_ARG_WITH(pcre-includes,
+[  --with-pcre-includes=PATH   specify path for PCRE includes],
+    use_pcre_includes="$withval", use_pcre_includes="unspec")
+
+case "$use_pcre_includes" in
+    unspec)
+	DST_PCRE_INC='/usr/include/pcre'
+	for ac_dir in /usr/local/include/pcre /usr/include/pcre /usr/local/include /usr/include; do
+	    if test -f "$ac_dir/pcre.h"; then
+	        DST_PCRE_INC=$ac_dir
+	        break;
+	    fi
+	done
+	AC_MSG_RESULT(using pcre includes from $DST_PCRE_INC)
+	;;
+    yes)
+	AC_MSG_ERROR([--with-pcre-includes must specify a path])
+	;;
+    *)
+	DST_PCRE_INC="$use_pcre_includes"
+	AC_MSG_RESULT(using pcre includes from $DST_PCRE_INC)
+	;;
+esac
+
+AC_MSG_CHECKING(for <pcre.h> in $DST_PCRE_INC)
+if test -r "$DST_PCRE_INC/pcre.h"; then
+    AC_MSG_RESULT(using <pcre.h> from $DST_PCRE_INC)
+else
+    AC_MSG_ERROR(Cannot find PCRE's <pcre.h> in $DST_PCRE_INC)
+fi
+PCREHEADERS="-I$DST_PCRE_INC"
+
+#
+# was --with-pcre-libpath specified?
+#
+AC_MSG_CHECKING(for PCRE library)
+AC_ARG_WITH(pcre-libpath,
+[  --with-pcre-libpath=PATH    specify path for PCRE library],
+    use_pcre_lib="$withval", use_pcre_lib="unspec")
+
+case "$use_pcre_lib" in
+    unspec)
+        DST_PCRE_LIBS='/usr/lib'
+	for ac_dir in  /usr/local/lib/pcre /usr/lib/pcre /usr/local/lib /usr/lib; do
+	    if test -f "$ac_dir/libpcre.so"; then
+	        DST_PCRE_LIBS=$ac_dir
+	        break;
+	    fi
+	done
+        AC_MSG_RESULT(using pcre libraryes from $DST_PCRE_LIBS)
+        ;;
+    yes)
+        AC_MSG_ERROR([--with-pcre-libpath must specify a path])
+        ;;
+    *)
+        DST_PCRE_LIBS="$use_pcre_lib"
+        AC_MSG_RESULT(using pcre libraries from $DST_PCRE_LIBS)
+        ;;
+    esac
+AC_MSG_CHECKING(for libpcre in $DST_PCRE_LIBS)
+if test -r "$DST_PCRE_LIBS/libpcre.so"; then
+  AC_MSG_RESULT(using libpcre from $DST_PCRE_LIBS)
+else
+  AC_MSG_ERROR(Cannot find PCRE's libpcre in $DST_PCRE_LIBS)
+fi
+PCRELIBS="-L$DST_PCRE_LIBS -lpcre"
+CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
+
+echo "#include \"$DST_PCRE_INC/pcre.h\"" >pcre.h
+OS=`uname -s`
+echo "#define $OS 1" >>config.h
+
+SUNLIB=" "
+case $OS in
+SunOS)
+SUNLIB="-lm -lnsl"
+;;
+esac
+
+
+AC_SUBST(RCDPATH)
+AC_SUBST(HTTPDPATH)
+AC_SUBST(MYSQLLIBS)
+AC_SUBST(MYSQLHEADERS)
+AC_SUBST(PCRELIBS)
+AC_SUBST(PCREHEADERS)
+AC_SUBST(CFLAGS)
+AC_SUBST(SUNLIB)
+
+AC_OUTPUT([Makefile])
+
+echo "#define WEBINTERFACEPATH \"$prefix/share/sams\" " >> config.h
+
+AC_MSG_RESULT([])
+AC_MSG_RESULT([***** Options and locations *****])
+AC_MSG_RESULT([system:                                 $OS])
+AC_MSG_RESULT([default path:                           $prefix])
+AC_MSG_RESULT([default runtime config file:            $CONFIG_FILE])
+AC_MSG_RESULT([location the SAMS startup script:       $DST_RCD_LOC])
+AC_MSG_RESULT([location HTTP server root directory:    $DST_HTTPD_LOC])
+AC_MSG_RESULT([location mysql includes:                $DST_MYSQL_INC])
+AC_MSG_RESULT([location mysql libraries:               $DST_MYSQL_LIBS])
+AC_MSG_RESULT([location pcre includes:                 $DST_PCRE_INC]/pcre.h)
+AC_MSG_RESULT([location pcre libraries:                $DST_PCRE_LIBS])
+AC_MSG_RESULT([])
+AC_MSG_RESULT([Type 'make'])
+AC_MSG_RESULT([])

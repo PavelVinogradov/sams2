@@ -1,0 +1,2 @@
+DATE=`date`
+echo "$DATE: user $SAMSUSERNAME disabled" | mail -s "user $SAMSUSERNAME disabled" $SAMSADMINADDR

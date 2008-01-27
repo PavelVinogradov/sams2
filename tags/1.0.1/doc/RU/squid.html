@@ -1,0 +1,152 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<FONT SIZE=-1>Эта документация основана на статье Д.Новикова "Авторизация Windows-
+пользователей в SQUID на основе их доменных аккаунтов"
+<BR>Оригинал: http://www.artmagic.ru/labs/sqlandwin.shtml
+</FONT>
+
+ <H2>Инсталляция и настройка SQUID</H2>
+
+
+<H3>Установка и конфигурация SQUID.</H3>
+<P>Скачайте и разархивируйте исходные коды SQUID:
+<P>tar xvfz squid-2.x.tar.gz
+<P>Серевер SQUID нужно скомпилировать с поддержкой схем авторизации и модулем
+winbind, для этого запустите файл конфигурации с параметрами:
+<P> --enable-auth="ntlm,basic"
+<BR> --enable-basic-auth-helpers="winbind"
+<BR> --enable-ntlm-auth-helpers="winbind"
+<BR>Если вы планируете использовать ncsa аутентификацию, добовать ее в параметр --enable-auth
+<P>Кроме того, SQUID поставляется с файлами заголовков определенной версии SAMBA.
+<BR>Если у ваша версия SAMBA не совпадает, необходимо при конфигурировании
+добавить следующую строку:
+<P>--with-samba-sources=путь,
+<P>где путь - путь к заголовкам вашей версии SAMBA.
+<P>Возможно, наиболее правильным решением является в любом случае собирать SQUID
+с файлами заголовков той версии SAMBA, что установлена в  вашей системе.
+<P>далее компилируем и инсталлируем SQUID:
+<P>make
+<BR>make install
+
+SQUID может беспечивать доступ пользователей:
+<LI>по IP адресам пользователей
+<LI>с NCSA авторизацие пользователй
+<LI>с авторизацией в домене Windows (NTLM авторизация)
+<BR> Рассмотрим их подробнее.
+
+<H3 id="NT4">Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows NT 4</H3>
+
+<P> Для того, чтобы SQUID мог авторизоватьпользователей в домене Windows, необходимо 
+<A HREF="samba.html">установить и настроить SAMBA </A>:
+
+<P>Далее проверяем авторизатор SQUIDа на работу с winbind. Для этого нужно запустить:
+<BR>/usr/lib/squid/wb_auth -d
+<BR>И ввести вручную домен+имя пароль (через пробел).
+<P>Если все работает корректно, то буден выдан ответ:
+<P><em>/wb_auth[91945](wb_basic_auth.c:129): Got 'dmn XXXXX' from squid (length: 10)
+<BR>/wb_auth[91945](wb_basic_auth.c:55): winbindd result: 1
+<BR>/wb_auth[91945](wb_basic_auth.c:58): sending 'OK' to squid</em>
+
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<BR> auth_param ntlm program /usr/lib/squid/wb_ntlmauth
+<BR> auth_param ntlm children 5
+<BR> auth_param ntlm max_challenge_reuses 0
+<BR> auth_param ntlm max_challenge_lifetime 2 minutes
+<BR> auth_param basic program /usr/local/squid/libexec/wb_auth
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+<P>Причем важно чтобы NTLM авторизация шла первой, иначе будет применяться
+авторизация basic, и IE будет спрашивать пароль.
+
+<H3 id="WIN2K">Конфигурируем SQUID на работу с NTLM авторизацией в домене Windows 2000 и выше</H3>
+
+<P> Для того, чтобы SQUID мог авторизоватьпользователей в домене Windows 2000, необходимо 
+<A HREF="samba3.html">установить и настроить SAMBA</A>:
+
+<P>Разработчики SQUID рекомендуют использовать с Samba3 (Active Directory) хелпер, 
+идущий в составе samba3: 
+<BR>ntlm_auth.
+
+<P>Далее проверяем авторизатор SQUIDа на работу с winbind. Для этого нужно запустить:
+<BR>/path/to/ntlm_auth --helper-protocol=squid-2.5-basic
+<P>И ввести вручную домен+имя пароль (через пробел).
+<P>Если все работает корректно, то буден выдан ответ:
+<P><em>[2007/08/28 16:11:41, 3] utils/ntlm_auth.c:check_plaintext_auth(292)
+<BR>  NT_STATUS_OK: Success (0x0)
+<BR>OK</em>
+
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<P> auth_param ntlm program /path/to/ntlm_auth --helper-protocol=squid-2.5-ntlmssp
+<BR> auth_param ntlm children 5
+<BR> auth_param ntlm max_challenge_reuses 0
+<BR> auth_param ntlm max_challenge_lifetime 2 minutes
+<BR> auth_param basic program /path/to/ntlm_auth --helper-protocol=squid-2.5-basic
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+<P>Причем важно чтобы NTLM авторизация шла первой, иначе будет применяться
+авторизация basic, и IE будет спрашивать пароль.
+
+
+
+<H3 id="ADLD">Конфигурируем SQUID на авторизацию пользователей через  LDAP в Active Directory</H3>
+
+<P>Проверяем авторизатор SQUIDа на работу с Active Directory. Для этого нужно запустить:
+<P>/usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
+<BR>И ввести вручную имя пароль (через пробел).
+<P>Если все работает корректно, то буден выдан ответ:
+<BR>OK
+
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<P> auth_param ntlm program /usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
+<BR> auth_param ntlm children 5
+<BR> auth_param ntlm max_challenge_reuses 0
+<BR> auth_param ntlm max_challenge_lifetime 2 minutes
+<BR> auth_param basic program /usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" ldapserver
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+
+<P><em><strong>Внимание!!! настройка работы с AD довольно сложная штука, по-этому если что-то 
+не получается не пишите сразу мне письма, а попытайтесь почитать документацию в интернете</strong></em>
+
+<H3>Конфигурируем SQUID на работу с ncsa авторизацией</H3>
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<BR> auth_param basic program /usr/libexec/ncsa_auth /etc/squid/ncsa.sams
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+
+<BR>
+<BR>Внимание!!! NTLM и NCSA авторизация одновременно работать не могут. используйте их раздельно.
+
+<H3>Установка редиректора</H3>
+<P>Если Вы хотите, чтобы при работе прокси сервера вырезались графические объекты (баннеры и исчетчики), необходимо настроить работу SQUID с редиректором.
+<BR>SAMS автоматически не прописывает редиректор в squid.conf. Почему? Возможно вы хотите использовать другой редиректор, навязывать что-то нехочу. 
+<BR>Добавьте в squid.conf строку
+<BR>redirect_program /path/to/redirector
+<BR>Подробно о настройке редиректора читайте <A HREF="redirector.html">здесь</A>
+
+<H3>Файл squid.conf</H3>
+<H3>Дополнительная информация:</H3>
+
+Реконфигурированием прокси-сервера squid занимается демон samsdaemon.
+<BR>Реконфигурирование прокси-сервера squid происходит путем изменения файла squid.conf и подачей сигнала squid на реконфигурацию. 
+
+<P>При внесении изменений в squid.conf samsdaemon привязывается к тэгам начала разделов, например
+<BR>#  TAG:  acl
+<BR>Наличие этих тэгов необходимо!!!
+<BR>Кроме того, sams добавляет только те настройки, которые необходимы для работы пользователей, 
+зарегистрированных в SAMS. 
+<BR>acl типа acl all src 0.0.0.0/0.0.0.0 и прочие не вносятся и не удаляются.
+<BR>Если вы создали какие-то свои настройки для sams в squid.conf, чтобы они не уничтожались при реконфигурировании, 
+поставьте после ваших правил знак комментария # (решетка). samsdaemon не удаляет строки где есть знак #.
+
+
+</BODY>
+</HTML>

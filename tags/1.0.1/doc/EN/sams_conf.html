@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS Documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<H2>SAMS settings</H2>
+
+<P>We can set up the SAMS settings to edit file /etc/sams.conf and change SAMS settings form.
+<BR> File /etc/sams.conf is inclusive settings of the MySQL connection and shell scripts.
+
+<P><B>Options of sams.conf file</B>
+
+<BR><B>SAMS_DB=squidctrl</B> -               name of SAMS settings database
+<BR><B>SQUID_DB=squidlog</B> -               name of SAMS database with SQUID cache 
+<BR><B>MYSQLHOSTNAME=localhost</B> - name of host with MySQL base
+<BR><B>MYSQLUSER=sams</B>  -              name of MySQL user
+<BR><B>MYSQLPASSWORD=yourpasswd</B> -  password of MySQL user
+<BR><B>SQUIDROOTDIR=/etc/squid</B> -  SQUID root directory path 
+<BR><B>SQUIDLOGDIR=/var/squid/logs</B>  -  SQUID log  directory path
+<BR><B>SQUIDCACHEFILE=access.log</B> -  name of SQUID log file
+<BR><B>SQUIDPATH=/usr/sbin/squid</B>  -  path to SQUID
+<BR><B>SAMSPATH=/usr/local/sams</B>  -  path to location of SAMS files
+
+
+
+
+<H3>Settings of the SAMS web interface</H3> 
+Select  "WEB interface settings" in left frame and press key <IMG SRC="../img/reconfig.jpg">
+<P><CENTER><IMG SRC="../img/websettings.jpg">
+<P>
+<TABLE WIDTH="95%">
+<TR><TD VALIGN=TOP><B>Language: 
+<TD VALIGN=TOP>select language of web interface
+
+<TR><TD VALIGN=TOP><B>Allow the users access to your own statisatics
+<BR>on daily traffic
+<BR>on URL visiting
+<TD VALIGN=TOP> This key allows user's access to his statistics
+</TABLE>
+
+<H3>SAMS settings form</H3>
+<TABLE WIDTH="90%"><TR>
+<TD> Select  "SAMS administration" in left frame and press key
+<TD><IMG SRC="../img/reconfig.jpg">
+</TABLE>
+<P><CENTER><IMG SRC="../img/samssettings.jpg">
+<BR> SAMS settings form</CENTER>
+
+
+
+<P><B>Settings of the user authorization:</B> this key set up settings to users authorization on squid-cache proxy.
+<TABLE WIDTH="95%">
+<TR><TD VALIGN=TOP><B>NTLM
+<TD VALIGN=TOP> set up NTLM authorozation on squid-cache proxy
+<BR><B>Switch on Use the user domain</B> If you have several domains switch on "Use of user domain" 
+
+<BR><B>User domain is entered with the CAPITAL letters</B> If your PC gives out the users domain with the capital 
+letters, switch on "User domain is entered with the CAPITAL letters"
+<BR> wbinfo -u
+<BR><B>User name is entered with the CAPITAL letters</B> If your PC gives out the user domain with the capital letters, 
+switch on "User domain is entered with the CAPITAL letters"
+<BR><B>Recode the domain users names </B> Switch on recoding users name in the SQUID files. This  command should be listed in the sams.conf file
+
+<BR>For example to the Russian language: 
+<BR>In the Windows network users names are being sent in the DOS-866 codepage.
+In the SAMS database users names are saved in the KOI8-R codepage.
+For the users authentication you need to needed a recode files from KOI8-R to DOS-866.
+<BR>recoding command:
+<BR>iconv -f KOI8-R -t 866 %finp > %fout
+<BR> %finp - input file
+<BR> %fout - output file (if this needed)
+
+<TR><TD VALIGN=TOP><B>NCSA
+<TD VALIGN=TOP> set up NCSA authorozation on squid-cache proxy
+<TR><TD VALIGN=TOP><B>IP
+<TD VALIGN=TOP> set up user authorization to IP adress 
+</TABLE>
+
+
+<P><B>Setting up samsdaemon</B> Samsdaemon is the script to manage SQUID cache.
+<TABLE WIDTH="95%">
+<TR><TD VALIGN=TOP><B>Check for the reconfiguration squid command every ...
+<TD VALIGN=TOP>Set time of request samsdaemon to SQUID reconfiguration. Minimum time period is 1 second.
+
+<TR><TD VALIGN=TOP><B>Load SQUID logs
+<TD VALIGN=TOP> Permit on samsdaemon starting scripts for load SQUID logs to SAMS database
+
+<BR><B>Read SQUID log files constantly</B> samsdaemon is starting the samsf script,
+<BR><B>Read SQUID log files every ... minute </B> samsdaemon is starting the sams script, reading SQUID log files every ... minute 
+
+<BR><B>Cleaning users traffic counters </B> Clean the SAMS users traffic counters of the first day of month 
+</TABLE>
+
+
+<P><TABLE WIDTH="95%">
+<TR><TD VALIGN=TOP><B>Path to wbinfo:
+<TD VALIGN=TOP>Path to wbinfo 
+<TR><TD VALIGN=TOP><B>demand redirection file
+<TD VALIGN=TOP> graphical file for redirection
+<TR><TD VALIGN=TOP><B>Path to the catalogue of the stored file of forbidden access
+<TD VALIGN=TOP> Path to files, used sams redirector for replace requested files
+<TR><TD VALIGN=TOP><B>Redirector
+<TD VALIGN=TOP> Select the redirector
+<TR><TD VALIGN=TOP><B>witch on the speed limit of the user access (delaypool) 
+<TD VALIGN=TOP>witch on the speed limit for the SAMS users group   
+</TABLE>
+
+
