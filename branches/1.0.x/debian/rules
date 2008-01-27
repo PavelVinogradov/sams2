@@ -69,8 +69,6 @@ endif
 ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
-
-
 	dh_clean 
 
 install: install-indep install-arch
@@ -97,6 +95,7 @@ install-arch:
 	#$(MAKE) prefix=$(CURDIR)/debian/sams install
 
 	dh_install -s
+	dh_movefiles --sourcedir=debian/sams
 	#ln -s ../doc/sams/html $(CURDIR)/debian/sams/usr/share/sams/doc 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep
