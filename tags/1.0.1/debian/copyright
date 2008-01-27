@@ -1,0 +1,22 @@
+This package was debianized by Pavel Vinogradov <Pavel.Vinogradov@nixdev.net> on
+Fri,  3 Aug 2007 10:57:04 +0500.
+
+It was downloaded from http://sams.perm.ru/ http://nixdev.net/release/sams/
+
+Upstream Author: Dmitry Chemerik
+
+Copyright: <put the year(s) of the copyright, and the names of the
+            copyright holder(s) here>
+
+License:
+
+You are free to distribute this software under the terms of
+the GNU General Public License  either version 2 of the License,
+or (at your option) any later version.
+On Debian systems, the complete text of the GNU General Public
+License can be found in the file `/usr/share/common-licenses/GPL-2'.
+
+
+The Debian packaging is (C) 2007-2008, Pavel Vinogradov
+<Pavel.Vinogradov@nixdev.net> and is licensed under the GPL,
+see `/usr/share/common-licenses/GPL'.
