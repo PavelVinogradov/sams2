@@ -17,10 +17,11 @@
  */
 
 #include "logtool.c"
+#include <inttypes.h>
 
 int EMPTY;
-long ENDVALUE;
-long NEWENDVALUE;
+off_t ENDVALUE;
+off_t NEWENDVALUE;
 
 int RIPC;
 int ucount,rcount;
@@ -102,8 +103,8 @@ long GetNewEndValue()
          printf("Don't open file %s/%s\n",conf.logdir,conf.logfile);
          return(0);
     }
-  fseek(finp,0,SEEK_END);
-  value=ftell(finp);
+  fseeko(finp,0,SEEK_END);
+  value=ftello(finp);
   fclose(finp);
   return(value);
 }
@@ -145,7 +146,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
   int samsuser;
   
   int userflag=0;
-  double ENDVALUE2;
+  off_t ENDVALUE2;
 
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
   trim(&path[0]);
@@ -157,7 +158,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
         {
           printf("open SQUID cache file: %s\n",&path[0]);
         }
-      fseek(finp,ENDVALUE,SEEK_SET);
+      fseeko(finp,ENDVALUE,SEEK_SET);
       count=0;
       ENDVALUE2=ENDVALUE;
       while(ENDVALUE2<NEWENDVALUE)
@@ -168,7 +169,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 	     {
                if(DEBUG>0||PRINT>0)
 	         printf("input string: \n%s\n",&buf[0]);
-               ENDVALUE2=ftell(finp);
+               ENDVALUE2=ftello(finp);
 	       strcpy(&buf[0],"\0");	       
 	     }
 	   else
@@ -386,7 +387,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                              sprintf(&str[0],"UPDATE %s.cachesum SET size=size+'%s',hit=hit+'%lu' where date='%d-%d-%d'&&user='%s' && domain='%s'",conf.logdb,STR[4],hitsize,t->tm_year+1900,t->tm_mon+1,t->tm_mday,user,domain);
                              flag=send_mysql_query(conn,&str[0]);		      
 		           } 
-                         ENDVALUE2=ftell(finp);
+                         ENDVALUE2=ftello(finp);
                          SaveNewEndFileValue(conn2, ENDVALUE2);
 
                         if(DEBUG>0)
@@ -397,7 +398,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                       }
                  }
 
-               ENDVALUE2=ftell(finp);
+               ENDVALUE2=ftello(finp);
             }
 	}
       fclose(finp);
@@ -855,7 +856,7 @@ int main (int argc, char *argv[])
         NEWENDVALUE=GetNewEndValue();
       if(DEBUG>0)
         {
-          printf("Reading file: start=%ld length=%ld\n",ENDVALUE,NEWENDVALUE);
+          printf("Reading file: start=%" PRId64 " length=% " PRId64 "\n",ENDVALUE,NEWENDVALUE);
         }
 
       sprintf(&real[0],"%4s",row[3]);
@@ -1109,7 +1110,7 @@ int main (int argc, char *argv[])
   
   if(DEBUG==1)
     {
-       printf("end=%lu newend=%lu clear=%u loadfile=%u\n",ENDVALUE,NEWENDVALUE,CLEAR,LOADFILE);
+       printf("end=%" PRId64 " newend=%" PRId64 " clear=%u loadfile=%u\n",ENDVALUE,NEWENDVALUE,CLEAR,LOADFILE);
     }   
   if(NEWENDVALUE>ENDVALUE&&CLEAR==0&&LOADFILE==0)
     {

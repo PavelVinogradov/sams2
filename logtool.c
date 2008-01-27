@@ -16,10 +16,14 @@
  *      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#define _GNU_SOURCE 1
+#define _FILE_OFFSET_BITS 64
+
 #include <signal.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <features.h>
 #include <netdb.h>
 #include <time.h>
 #include <ctype.h>
