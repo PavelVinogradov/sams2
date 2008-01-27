@@ -1,3 +1,0 @@
-etc/sams.conf etc
-php/* usr/share/sams
-debian/etc/apache.sams.conf etc/apache2/conf.d
