@@ -384,7 +384,8 @@ if($user=="exe"&&$function!="setcookie")
 	$req="src/$filename";
         if(strlen($req)>4)
            require($req);
-        $function();
+	if (is_callable($function))
+           call_user_func($function);
   }
 // reload LEFT & DOWN frames
 if($function=="setcookie")
