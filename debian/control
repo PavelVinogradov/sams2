@@ -11,7 +11,7 @@ Vcs-Browser: http://sams.nixdev.net/browser/trunk
 Package: sams
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: sams-web, mysql-server
+Recommends: sams-web, mysql-server, squid
 Suggests: squidguard
 Description: Squid Account Management System (SAMS) - Deamons
  This program basically used for administrative purposes of squid proxy.
@@ -22,6 +22,7 @@ Description: Squid Account Management System (SAMS) - Deamons
  generate squid conf-files.
 
 Package: sams-web
+Section: web
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql
 Recommends: sams-doc
