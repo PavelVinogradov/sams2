@@ -36,9 +36,10 @@
 #include "config.h"
 #include "define.h"
 #include "tools.h"
+#include "pcre.h"
 
 struct url_replace {
-  char user[26];
+  char user[25];
   char domain[25];
   char url[50];
   char newurl[50];
@@ -47,7 +48,7 @@ struct url_replace {
 
 struct samsusers 
 {
-  char user[26];
+  char user[25];
   char domain[25];
   int  ip[6];
   int  mask[6];
@@ -262,6 +263,18 @@ int TestLocalURL(char *url)
   struct dns_cache DNS;
   int i=0,count=0,slashe=0,ipflag=0;
   int found=0,localfound=0;
+  
+  pcre *re;
+  const char *re_error;
+  int re_erroffset;
+  int re_ovector[30];
+
+  re = pcre_compile(
+	"(.*):(\\d+)",
+	0,
+	&re_error,
+	&re_erroffset,
+	NULL);
 
   /* Get domain name for URL like http://<domain name>/ */
   if(strstr(url,"://") !=NULL)
@@ -287,7 +300,7 @@ int TestLocalURL(char *url)
 	}
   } else {
 	/* If user ask https page, we get url like: domain.name:443 */
-	if ( strstr(url,":443") != NULL) {
+	if ( pcre_exec(re, NULL, url, strlen(url), 0, 0, re_ovector, 30) >= 0 ) {
   		
 		for(i=0,count=0;i<strlen(url);i++)
 		{
@@ -295,7 +308,7 @@ int TestLocalURL(char *url)
           			i=strlen(url);
 
 			if (url[i] == ':')
-			{ /* We found :443. Stop parse */
+			{ /* We found :<port>. Stop parse */
 				break;
 			} else {
 				DNS.url[count]=url[i];

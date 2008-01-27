@@ -14,7 +14,6 @@ function ChUserPasswd()
 
   if(isset($_GET["id"])) $userid=$_GET["id"];
   if(isset($_GET["passw1"])) $newpasswd=$_GET["passw1"];
-  $newpasswd=crypt($newpasswd, substr($newpasswd,0,2));
 
   $result=mysql_query("SELECT nick FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);

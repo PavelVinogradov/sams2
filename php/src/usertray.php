@@ -30,8 +30,9 @@ function NotUsersTreeUserAuth()
   if($SAMSConf->AUTH=="ntlm")
     {
 	$aflag=0;
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+//	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
+//	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+	$aaa=ExecuteShellScript("testwbinfopasswd", "$SAMSConf->WBINFOPATH $userdomain $password");
 	$aflag=0;
 	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	  { 
@@ -68,11 +69,11 @@ function NotUsersTreeUserAuth()
        }
     }
   if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
+//  if($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa")
     {
        db_connect($SAMSConf->SAMSDB) or exit();
        mysql_select_db($SAMSConf->SAMSDB);
-       $passwd=crypt($password, substr($password, 0, 2));
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$passwd\" ");
+       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$password\" ");
        $row=mysql_fetch_array($result);
        //$gauditor=$row['gauditor'];
        if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
@@ -80,28 +81,10 @@ function NotUsersTreeUserAuth()
            $SAMSConf->domainusername="$row[nick]";
          }
      }
-/*
-  if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
-    {
-      db_connect($SAMSConf->SAMSDB) or exit();
-       mysql_select_db($SAMSConf->SAMSDB);
-//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
-       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
-       $row2=mysql_fetch_array($result2);
-       $passwd=crypt($password, substr($password, 0, 2));
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
-       $row=mysql_fetch_array($result);
-       $gauditor=$row['gauditor'];
-       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-         {
-           $SAMSConf->domainusername="$row[nick]";
-         }
-     }
-*/
 
   if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
     {
-         $grauditor=$row['group'];
+      $grauditor=$row['group'];
     }
      
  return($grauditor);
@@ -183,19 +166,22 @@ function UserAuth()
   if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
     {
       db_connect($SAMSConf->SAMSDB) or exit();
-      mysql_select_db($SAMSConf->SAMSDB);
-//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
-//       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
-//       $row2=mysql_fetch_array($result2);
-      $passwd=crypt($password, substr($password, 0, 2));
-      $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
-      $row=mysql_fetch_array($result);
-      $gauditor=$row['gauditor'];
-      if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-        {
-          $SAMSConf->domainusername="$row[nick]";
-        }
-    }
+       mysql_select_db($SAMSConf->SAMSDB);
+       
+       $result2=mysql_query("SELECT nick,id FROM squidusers WHERE id=\"$id\" ");
+       $row2=mysql_fetch_array($result2);
+       $passwd=$password;
+       $password=crypt($passwd,$row2['nick']);
+       //echo "password=$password<BR>";
+       
+       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
+       $row=mysql_fetch_array($result);
+       $gauditor=$row['gauditor'];
+       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
+         {
+           $SAMSConf->domainusername="$row[nick]";
+         }
+     }
   if($auth=="adld")
     {
 

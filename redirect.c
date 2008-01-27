@@ -33,7 +33,7 @@
 #include "tools.h"
 
 struct samsusers {
-  char user[26];
+  char user[25];
   char domain[25];
   int ip[6];
   int ipmask[6];
@@ -929,7 +929,7 @@ int main (int argc, char *argv[])
 					    }
 				          //if(DEBUG==1) 
 					  //   printf("        %d  %s  %d URL: %s=%s \n",k,urls[k].type,j,&str1[0],urls[k].url);
-					  if(strncmp(&str1[0],urls[k].url,strlen(urls[k].url))==0)
+					  if(strstr(&str1[0],urls[k].url)!=0)
 					    {
                                               if(strcmp(urls[k].type,"allow")==0)
 					        {
