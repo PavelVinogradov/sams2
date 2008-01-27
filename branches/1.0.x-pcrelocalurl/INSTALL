@@ -1,0 +1,14 @@
+English documentation:
+doc/EN/index.html
+English FAQ:
+doc/EN/faq.html
+
+
+Admin user password:
+login:  admin
+passwd: qwerty
+
+Auditor user password
+login: Auditor
+passwd: audit
+               

@@ -1,0 +1,84 @@
+
+<HTML>
+<HEAD>
+<TITLE>SAMS (SQUID Account Management System)</TITLE>
+<META content="text/html; charset=koi8-r" http-equiv='Content-Type"'>
+<LINK href="img/style.css" rel=stylesheet type=text/css>
+</HEAD>
+<BODY>
+
+
+<H2>FAQ</H2>
+<TABLE WIDTH=95%>
+<TR>
+<TD><A HREF="../img/nophp_big.jpg" TARGET=BLANK>
+    <IMG SRC="../img/nophp.jpg" ALIGN="LEFT"></A>
+<TD VALIGN="TOP"><B>If  SAMS WEB-interface don't worked and you can see this picture: 
+</B>
+<P>Switch on php-support in the Apache web serwer.
+<BR>Uncomment or add next string in the httpd.conf file:
+<P> LoadModule php4_module libexec/libphp4.so
+<BR>AddModule mod_php4.crr
+<BR>AddType application/x-httpd-php .php .phtml
+
+<TR>
+
+
+<TD><A HREF="../img/nomysql_big.jpg" TARGET=BLANK>
+    <IMG SRC="../img/nomysql.jpg" ALIGN="LEFT"></A>
+<TD VALIGN="TOP"><B>If you can see this picture or blank page only:</B>
+<P>1.Check a MySQL connection
+<P>2.Uncomment a MySQL module of the php.ini file
+<P>3.Check data of the sams.conf file
+<P>SQUID_DB=squidlog
+<BR>SAMS_DB=squidctrl
+<BR>MYSQLHOSTNAME=localhost
+<BR>MYSQLUSER=username
+<BR>MYSQLPASSWORD=userpass
+
+<TR>
+<TD><A HREF="../img/nophpvars_big.jpg" TARGET=BLANK>
+    <IMG SRC="../img/nophpvars.jpg" ALIGN="LEFT"></A>
+<TD VALIGN="TOP"><B>If you can see this picture:</B>
+<P>Switch on global variables in PHP.
+<P>Uncomment or add in the php.ini next string:
+<BR>register_globals = On
+</TABLE>
+
+
+<P><B>If you see this message when is execute the configure script:</B>
+<BR>"checking for mysql.h in... configure: error: Cannot find MySQL's mysql.h in..."  
+<BR>MySQL is working.
+<P>Don't found a include files of the MySQL. Set up MySQL include files or execute the configure with options --with-mysql-includes=PATH
+
+
+<P><B>If you see this error when execute sams, samsf or samsdaemon:</B>
+<BR># sams
+<BR>/libexec/ld-elf.so.1: Shared object "libmysqlclient.so.14" not found, required by "sams"
+<P>Don't fing libmysqlclient.so.14 library. Create symlink to this file:
+<BR>ln -s libmysqlclient.so.14.x.x libmysqlclient.so.14
+
+
+
+
+ P><B>Compiling the SAMS of the FreeBSD, OpenBSD </B>
+<BR>Install gmake
+<BR> # ./configure
+<BR> next step:
+<BR> # gmake
+
+<P><B>The Sams do not reconfigure the squid.conf file. But in the squid.conf file is insert string: 
+<BR>created by SAMS _sams_2004.10.12 12:56:11
+<BR>SAMS don't found :TAG" in the squid.conf file.
+<BR>Example:
+<BR>#  TAG:  acl
+
+<P><B>If you looking next error:
+<BR> Fatal error: Call to undefined function: gzopen() in ....../sams/src/backup.php on line XXX
+</B>
+<BR>Stt up new php version or make php with zip compression  support.
+
+
+
+</BODY>
+</HTML>

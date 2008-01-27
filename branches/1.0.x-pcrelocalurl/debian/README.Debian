@@ -1,0 +1,7 @@
+sams for Debian
+---------------
+
+All sql files placed in /usr/share/sams/data/mysql
+See TODO.Debian for unimplemented parts
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
