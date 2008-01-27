@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH samsredir 1 "January 25, 2008"
+.TH SAMS SECTION "Август  3, 2007"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -16,22 +16,24 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .SH NAME
-samsredir \- SAMS simple redirector for squid
+sams \- program to do something
 .SH SYNOPSIS
-.B samsredir
+.B sams
 .RI [ options ] " files" ...
 .br
 .B bar
 .RI [ options ] " files" ...
 .SH DESCRIPTION
 This manual page documents briefly the
-.B samsredir
-command.
+.B sams
+and
+.B bar
+commands.
 .PP
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
 .\" respectively.
-\fBsamsredir\fP is a program that...
+\fBsams\fP is a program that...
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
@@ -44,12 +46,14 @@ Show summary of options.
 .B \-v, \-\-version
 Show version of program.
 .SH SEE ALSO
-.BR sams (1),
-.BR samsf (1),
-.BR samsdaemon (1).
+.BR bar (1),
+.BR baz (1).
 .br
+The programs are documented fully by
+.IR "The Rise and Fall of a Fooish Bar" ,
+available via the Info system.
 .SH AUTHOR
-samsredir was written by Dmiry Chemerik.
+sams was written by <upstream author>.
 .PP
 This manual page was written by Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>,
 for the Debian project (but may be used by others).

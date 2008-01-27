@@ -9,57 +9,58 @@
 
 function loadjsfiles()
 {
-  $finp=fopen("menu/ua.js","r");
-  while(feof($finp)==0)
-    {
-      $string=fgets($finp, 10000);
-      print("$string");
-    }
-  fclose($finp);
+//global $ICONSET;
 
-  $finp=fopen("menu/ftiens4.js","r");
-  while(feof($finp)==0)
-    {
-      $string=fgets($finp, 10000);
-      print("$string");
-    }
-  fclose($finp);
+$finp=fopen("menu/ua.js","r");
+while(feof($finp)==0)
+   {
+       $string=fgets($finp, 10000);
+       print("$string");
+   }
+fclose($finp);
+$finp=fopen("menu/ftiens4.js","r");
+while(feof($finp)==0)
+   {
+       $string=fgets($finp, 10000);
+       print("$string");
+   }
+fclose($finp);
 }
 
-require('./src/auth.php');
-require('./mysqltools.php');
 
-global $SAMSConf;
+  require('./src/auth.php');
+  require('./mysqltools.php');
 
-$SAMSConf=new SAMSCONFIG();
-$lang="./lang/lang.$SAMSConf->LANG";
-require($lang);
+  global $SAMSConf;
 
-$cookie_user="";
-$cookie_passwd="";
-$cookie_domainuser="";
-$cookie_gauditor="";
+  $SAMSConf=new SAMSCONFIG();
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
-if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
-if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
-if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
-if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+	$cookie_user="";
+	$cookie_passwd="";
+	$cookie_domainuser="";
+	$cookie_gauditor="";
+	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
+	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
+	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 
-if($SAMSConf->PHPVER<5)
-  {
+ if($SAMSConf->PHPVER<5)
+   {
 //     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
 //     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
 //     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
-    $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
-    $SAMSConf->domainusername=$cookie_domainuser;
-    $SAMSConf->groupauditor=$cookie_gauditor;
-  }  
-else
-  {
-    $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
-    $SAMSConf->domainusername=$_COOKIE['domainuser'];
-    $SAMSConf->groupauditor=$_COOKIE['gauditor'];
-  }  
+     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+     $SAMSConf->domainusername=$cookie_domainuser;
+     $SAMSConf->groupauditor=$cookie_gauditor;
+   }  
+ else
+   {
+     $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
+     $SAMSConf->domainusername=$_COOKIE['domainuser'];
+     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
+   }  
 
 print("<html><head>\n");
 print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
@@ -71,6 +72,7 @@ print("<body topmargin=16 marginheight=16 >\n");
 print("<IMG SRC=\"$SAMSConf->ICONSET/sams.gif\">");
 print("<script language=\"javascript\">\n");
 loadjsfiles();
+
 
 print("PERSERVESTATE = 1\n");
 print("USETEXTLINKS = 1\n");
@@ -89,6 +91,9 @@ print("<script>initializeDocument()</script>\n");
 print("<noscript>\n");
 print("Ваш обозреватель не поддерживает Javascript. Установите <a href=\"software/mozilla/\">Mozilla</a>\n");
 print("</noscript>\n");
+
+
 print("</html>\n");
+
 
 ?>

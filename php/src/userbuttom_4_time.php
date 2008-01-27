@@ -121,8 +121,10 @@ function URLTimePeriod()
   $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
   $row=mysql_fetch_array($result);
   
-//  $SAMSConf->access=UserAccess();
-//  if($SAMSConf->access==0&&$SAMSConf->groupauditor!=$row[group])     {       exit;    }
+  $SAMSConf->access=UserAccess();
+  if($SAMSConf->access==0&&$SAMSConf->groupauditor!=$row[group])     {       exit;    }
+   
+  
   db_connect($SAMSConf->LOGDB) or exit();
   mysql_select_db($SAMSConf->LOGDB);
   
@@ -131,17 +133,16 @@ function URLTimePeriod()
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"username\" id=UserName value=\"$username\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"userdomain\" id=UserDomain value=\"$userdomain\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"usergroup\" id=UserGroup value=\"$usergroup\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"urltimeperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_time.php\">\n");
   DateTimeSelect(0,"");
   print("</FORM>\n");
 
-  printf("<BR><CENTER><B>$traffic_2 $bdate $shou to $ehou</B></CENTER> ");
+  printf("<BR><B>$traffic_2 $bdate $shou to $ehou</B> ");
 
-  //if($SAMSConf->SHOWGRAPH=="Y")
-  //  printf("<P><IMG SRC=\"main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou \"><P>");
+  if($SAMSConf->SHOWGRAPH=="Y")
+    printf("<P><IMG SRC=\"main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou \"><P>");
 
   //printf("<P>main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou<P>");  
       
