@@ -12,7 +12,7 @@
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+ if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     print("   licenses = insDoc(sams,gLnk(\"D\",\"$lframe_sams_lframe_sams_2\",\"tray.php?show=exe&function=configtray&filename=configtray.php\",\"config_20.jpg\"))\n");
 
  }

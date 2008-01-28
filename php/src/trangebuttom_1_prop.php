@@ -8,7 +8,7 @@
 function UpdateTRange()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -28,7 +28,8 @@ function UpdateTRange()
   if(isset($_GET["day6"])) $day6=$_GET["day6"];
   if(isset($_GET["day7"])) $day7=$_GET["day7"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
    if($day1=="on")   $day1="M"; else $day1=""; 
    if($day2=="on")   $day2="T"; else $day2="";  
@@ -64,7 +65,8 @@ function UpdateTRangeForm()
   require($lang);
   if(isset($_GET["type"])) $type=$_GET["type"];
 
-  if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   PageTop("clock_48.jpg","Time Range ");
   print("<BR>\n");
@@ -163,7 +165,7 @@ function trangebuttom_1_prop()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=updatetrangeform&filename=trangebuttom_1_prop.php&id=$TRANGEConf->s_trange_id",

@@ -8,10 +8,13 @@
 function AddShablon()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   $period="M";
   $clrdate="1980-01-01";
@@ -29,8 +32,6 @@ function AddShablon()
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
   
-   if($SAMSConf->access!=2)     {       exit;     }
-   
    if($period=="A")
      {
        $period=$newperiod;
@@ -56,13 +57,13 @@ function AddShablon()
 function NewShablonForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablonnew_NewShablonForm_1");
 
@@ -266,11 +267,6 @@ function NewShablonForm()
   print("</SELECT>\n");
  print("</TABLE>\n");
  
-
-
-  
-  
-  
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$shablonnew_NewShablonForm_6\">\n");
   print("</FORM>\n");
 

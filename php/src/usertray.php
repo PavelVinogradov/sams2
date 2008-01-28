@@ -5,111 +5,6 @@
  * (see the file 'main.php' for license details)
  */
 
-function NotUsersTreeUserAuth()
-{
-  global $SAMSConf;
-
-  if(isset($_POST["userid"])) $password=$_POST["userid"];
-  if(isset($_POST["user"])) $userdomain=$_POST["user"];
-  $grauditor=0;
-  $SAMSConf->domainusername="";
-  if($SAMSConf->AUTH=="adld")
-    {
-	require_once("adldap.php");
-	//create the LDAP connection
-	$pdc=array("$SAMSConf->LDAPSERVER");
-	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
-	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
-	$ldap=new adLDAP($options);
-      if ($ldap->authenticate($userdomain,$password))
-         {
-            $aflag=1;
-           $SAMSConf->domainusername=$userdomain;
-	 }   
-    }
-  if($SAMSConf->AUTH=="ntlm")
-    {
-	$aflag=0;
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
-	$aflag=0;
-	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-	  { 
-		$aflag=1;
-	  }  
-      if($aflag>0)
-        {
-           if($SAMSConf->NTLMDOMAIN=="Y")
-             {
-	       if(strrpos($userdomain,"+" )!=false)
-	         {
-                   $user=strtok($userdomain,"+");
-                   $SAMSConf->domainusername=strtok("+");
-		 }
-	       if(stristr($userdomain,"\\" )!=false)
-	         {
-                   $user=strtok($userdomain,"\\");
-                   $SAMSConf->domainusername=strtok("\\");
-		 }
-	       if(stristr($userdomain,"@" )!=false)
-	         {
-                   $user=strtok($userdomain,"@");
-                   $SAMSConf->domainusername=strtok("@");
-		 }
-	     }
-	   else
-             $SAMSConf->domainusername=$userdomain;
-       
-           db_connect($SAMSConf->SAMSDB) or exit();
-           mysql_select_db($SAMSConf->SAMSDB);
-           $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE nick=\"$SAMSConf->domainusername\" ");
-           $row=mysql_fetch_array($result);
-           $SAMSConf->domainusername="$row[nick]";
-       }
-    }
-  if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
-    {
-       db_connect($SAMSConf->SAMSDB) or exit();
-       mysql_select_db($SAMSConf->SAMSDB);
-       $passwd=crypt($password, substr($password, 0, 2));
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$passwd\" ");
-       $row=mysql_fetch_array($result);
-       //$gauditor=$row['gauditor'];
-       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-         {
-           $SAMSConf->domainusername="$row[nick]";
-         }
-     }
-/*
-  if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
-    {
-      db_connect($SAMSConf->SAMSDB) or exit();
-       mysql_select_db($SAMSConf->SAMSDB);
-//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
-       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
-       $row2=mysql_fetch_array($result2);
-       $passwd=crypt($password, substr($password, 0, 2));
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
-       $row=mysql_fetch_array($result);
-       $gauditor=$row['gauditor'];
-       if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-         {
-           $SAMSConf->domainusername="$row[nick]";
-         }
-     }
-*/
-
-  $grauditor=0;
-  if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
-    {
-         $grauditor=$row['group'];
-         print("<SCRIPT>\n");
-         print(" parent.lframe.location.href=\"lframe.php\"; \n");
-         print("</SCRIPT> \n");
-    }
-     
- return($grauditor);
-}
  
 function UserAuth()
 {
@@ -277,8 +172,8 @@ function UserAuthForm()
 function UserForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
-  $DB2=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
@@ -417,15 +312,31 @@ function JSUserInfo()
   $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$USERConf->s_name
   <TR><TD><B>$usertray_UserForm_5:<TD>$USERConf->s_soname
   <TR><TD><B>$usertray_UserForm_6:<TD>$USERConf->s_family
-  <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_name";
-  if($SAMSConf->access==2)
-	{
+  <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_name
+  <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote
-	<TR><TD><B>$usertray_UserForm_9:<TD>$USERConf->s_size
-	<TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
-	}
-  $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$USERConf->s_shablon_name
-  </TABLE>";
+	<TR><TD><B>$usertray_UserForm_9:<TD>$USERConf->s_size";
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+	{
+	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$USERConf->s_shablon_name";
+	if( $USERConf->W_access == 1 ) 
+		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть свою статистику";
+	if( $USERConf->G_access == 1 ) 
+		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть статистику пользователей своей группы";
+	if($USERConf->S_access==1) 
+		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть статистику Всех пользователей";
+	if($USERConf->A_access==1) 
+		$htmlcode=$htmlcode."<TR><TD>Имеет право активировать/отключать пользователей";
+	if($USERConf->U_access==1) 
+		$htmlcode=$htmlcode."<TR><TD>Имеет право добавлять пользователей в SAMS";
+	if($USERConf->L_access==1)
+		$htmlcode=$htmlcode."<TR><TD>Имеет право изменять списки URL";
+	if($USERConf->C_access==1)
+		$htmlcode=$htmlcode."<TR><TD>Имеет право настраивать SAMS";
+    }
+/* *************************************************** */
+
+ $htmlcode=$htmlcode."  </TABLE>";
 
   $htmlcode=$htmlcode."</CENTER></BODY></HTML>";
   $htmlcode=str_replace("\"","\\\"",$htmlcode);
@@ -443,6 +354,15 @@ function UserTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
+
+   if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
+	{
+	print("<SCRIPT>\n");
+	print(" parent.basefrm.location.href=\"main.php\";\n");
+	print("</SCRIPT> \n");
+	exit(0);
+	}
+
 
   print("<SCRIPT>\n");
   JSUserInfo();
@@ -474,7 +394,6 @@ function UserTray()
   print("<TR>\n");
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
   print("<B>$usertray_UserTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$USERConf->s_nick</FONT></B>\n");
-
       ExecuteFunctions("./src", "userbuttom", $USERConf->s_user_id);
 
   print("<TD>\n");

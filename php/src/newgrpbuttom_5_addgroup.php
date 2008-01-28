@@ -8,7 +8,7 @@
 function AddGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
@@ -70,8 +70,7 @@ function newgrpbuttom_5_addgroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
- $SAMSConf->access=UserAccess();
- if($SAMSConf->access==2)
+ if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=newgroupform&filename=newgrpbuttom_5_addgroup.php",

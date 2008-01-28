@@ -26,11 +26,20 @@ class SAMSUSER
   var $s_autherrort;
   var $s_shablon_name;
   var $s_group_name;
+  var $s_webaccess;
+
+  var $W_access;
+  var $G_access;
+  var $S_access;
+  var $A_access;
+  var $U_access;
+  var $L_access;
+  var $C_access;
 
 function SAMSUSER($userid)
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_name as s_shablon_name,sgroup.s_name as s_group_name FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id LEFT JOIN sgroup ON squiduser.s_group_id=sgroup.s_group_id WHERE s_user_id='$userid' ");
   $row=$DB->samsdb_fetch_array();
@@ -53,6 +62,22 @@ function SAMSUSER($userid)
   $this->s_autherrort=$row['s_autherrort'];
   $this->s_shablon_name=$row['s_shablon_name'];
   $this->s_group_name=$row['s_group_name'];
+  $this->s_webaccess=$row['s_webaccess'];
+
+  if(strstr($this->s_webaccess,"W"))
+	$this->W_access = 1;
+  if(strstr($this->s_webaccess,"G"))
+	$this->G_access = 1;
+  if(strstr($this->s_webaccess,"S"))
+	$this->S_access = 1;
+  if(strstr($this->s_webaccess,"A"))
+	$this->A_access = 1;
+  if(strstr($this->s_webaccess,"U"))
+	$this->U_access = 1;
+  if(strstr($this->s_webaccess,"L"))
+	$this->L_access = 1;
+  if(strstr($this->s_webaccess,"C"))
+	$this->C_access = 1;
 
   $DB->free_samsdb_query();
 

@@ -9,7 +9,7 @@
 function WebInterfaceReConfig()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
     $s_urlaccess=0;
@@ -28,7 +28,8 @@ function WebInterfaceReConfig()
   if(isset($_GET["showgraph"])) $showgraph=$_GET["showgraph"];
   if(isset($_GET["createpdf"])) $createpdf=$_GET["createpdf"];
 
- if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   if($urlaccess=="on")
     $s_urlaccess=1;
@@ -56,11 +57,12 @@ function WebInterfaceReConfig()
 function WebInterfaceReConfigForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   $aaa = strtolower($SAMSConf->adminname);  
   
@@ -210,7 +212,7 @@ function webconfigbuttom_1_prop()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=webinterfacereconfigform&filename=webconfigbuttom_1_prop.php",

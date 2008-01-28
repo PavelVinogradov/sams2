@@ -8,7 +8,7 @@
 function LoadRedirList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -16,7 +16,8 @@ function LoadRedirList()
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
  $listfilename=$_FILES["userfile"]["name"];
  PageTop("import_48.jpg","$redir_loadfurllist1 <BR>$listfilename");
@@ -55,7 +56,8 @@ function LoadRedirListForm()
   if(isset($_GET["id"])) $id=$_GET["id"];
 
    $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
   PageTop("import_48.jpg","$redir_loadfurllist1");
   print("<FORM NAME=\"LOADBACKUP\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadredirlist&filename=redirbuttom_1_loadlist.php&id=$id&type=redir&execute=redirlisttray \" METHOD=POST>\n");
@@ -78,7 +80,7 @@ function redirbuttom_1_loadlist()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
 
