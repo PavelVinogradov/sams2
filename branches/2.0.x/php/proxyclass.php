@@ -38,7 +38,7 @@ class SAMSPROXY
 function SAMSPROXY($proxy_id)
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $num_rows=$DB->samsdb_query_value("SELECT * FROM proxy WHERE s_proxy_id='$proxy_id' ");
   $row=$DB->samsdb_fetch_array();
   $this->s_proxy_id=$row['s_proxy_id'];

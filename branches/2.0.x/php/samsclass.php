@@ -60,6 +60,36 @@ class SAMSCONFIG
   var $DBNAME;
   var $ODBC;
   var $DBCONN;
+  var $ODBCSOURCE;
+/*Авторизация пользователя в веб интерфейсе*/
+  var $USERID;
+  var $USERWEBACCESS;
+  var $AUTHERRORRC;
+  var $AUTHERRORRT;
+  var $USERPASSWD;
+
+  function ToUserDataAccess($userid, $str)
+    {
+	//if($this->USERID==$userid&&strstr($this->USERWEBACCESS,"W"))
+	//	return(1);
+	$maslen=strlen($str);
+//echo "$str<BR>";
+	for($i=0;$i<$maslen;$i++)
+	{
+//	echo " -$this->USERID==$userid- -$str[$i]==\"W\" && $this->USERID==$userid && strstr($this->USERWEBACCESS,\"W\")-<BR>";
+		if($str[$i]=="W" && $this->USERID==$userid && strstr($this->USERWEBACCESS,"W") )
+		{
+//			echo "W $this->USERID==$userid ";
+			return(1);
+		}
+		if(strstr($this->USERWEBACCESS,$str[$i]) && $str[$i]!="W")
+		{
+//			echo "-$str[$i]- ";
+			return(1);
+		}
+	}	
+	return(0);
+ }
 
   function SAMSCONFIG()
     {
@@ -78,11 +108,11 @@ class SAMSCONFIG
     {
       $dbadmin="root";
 	
-      if($this->DBNAME == "MySQL" && $this->ODBC == "0" )
-		$DB=new SAMSDB($this->DBNAME, $this->ODBC, $this->MYSQLHOSTNAME, $this->MYSQLUSER, $this->MYSQLPASSWORD, $this->SAMSDB);
-      if($this->DBNAME == "PostgreSQL" && $this->ODBC == "0" )
+      if($this->DB_ENGINE == "MySQL" && $this->ODBC == "0" )
+		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
+      if($this->DB_ENGINE == "PostgreSQL" && $this->ODBC == "0" )
 	{
-		$DB=new SAMSDB($this->DBNAME, $this->ODBC, $this->MYSQLHOSTNAME, $this->MYSQLUSER, $this->MYSQLPASSWORD, $this->SAMSDB);
+		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
 		if($DB->dberror != '1')
 			{
 				$num_rows=$DB->samsdb_query_value("select count(tablename) from pg_tables where tablename LIKE 'squiduser' ");         
@@ -92,14 +122,14 @@ class SAMSCONFIG
 					$dbadmin="postgres";
 					echo "table is NOT created<BR>";
 					$DB->dberror=1;
-					//CreateSAMSdbPgSQL($this->MYSQLHOSTNAME, $this->MYSQLUSER, $this->MYSQLPASSWORD, $this->SAMSDB);
+					//CreateSAMSdbPgSQL($this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
 				  }
 			}
 			
 	}
       if($DB->dberror=="1")
 	{
-		echo "<FONT COLOR=\"RED\">Access denied for user $this->MYSQLUSER@$this->MYSQLHOSTNAME to database $this->DBNAME</FONT><BR>";
+		echo "<FONT COLOR=\"RED\">Access denied for user $this->DB_USER@$this->DB_SERVER to database $this->DB_ENGINE</FONT><BR>";
 		if(isset($_GET["function"])) $function=$_GET["function"];
 		if($function=="userdoc")
 		  {
@@ -109,9 +139,9 @@ class SAMSCONFIG
 			print("</TABLE> \n");
 			print("<hr>\n");
 			if($squidlogdb==1)
-				echo "The base $this->LOGDB not created or the user $this->MYSQLUSER has no rights to connection to it<BR>";
+				echo "The base $this->LOGDB not created or the user $this->DB_USER has no rights to connection to it<BR>";
 			if($squidctrldb==1)
-				echo "The base $this->SAMSDB not created or the user $this->MYSQLUSER has no rights to connection to it<BR>";
+				echo "The base $this->SAMSDB not created or the user $this->DB_USER has no rights to connection to it<BR>";
 
 			print("<SCRIPT LANGUAGE=JAVASCRIPT>");
 			print("function SetChange()");
@@ -132,7 +162,7 @@ class SAMSCONFIG
 			print("<H2 ALIGN=\"CENTER\">Create database</H2>");
 			print("<FORM NAME=\"createdatabase\" ACTION=\"createdb.php\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"action\" value=\"createdatabase\">\n");
-			print("<INPUT TYPE=\"HIDDEN\" NAME=\"dbname\" value=\"$this->DBNAME\">\n");
+			print("<INPUT TYPE=\"HIDDEN\" NAME=\"dbname\" value=\"$this->DB_ENGINE\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"samsdb\" value=\"$this->SAMSDB\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"odbc\" value=\"$this->ODBC\">\n");
 			print("<TABLE WIDTH=\"90%\">\n");
@@ -216,11 +246,23 @@ class SAMSCONFIG
          $string=fgets($finp, 10000);
          $str2=trim(strtok($string,"="));
 //         if(!strcasecmp($str2,"SAMSPATH" ))               $this->SAMSDB=trim(strtok("="));
+         if(!strcasecmp($str2,"DBNAME" ))       $this->DB_ENGINE=trim(strtok("="));
+         if(!strcasecmp($str2,"DB_ENGINE" ))       $this->DB_ENGINE=trim(strtok("="));
+
+         if(!strcasecmp($str2,"MYSQLHOSTNAME" ))         $this->DB_SERVER=trim(strtok("="));
+         if(!strcasecmp($str2,"DB_SERVER" ))         $this->DB_SERVER=trim(strtok("="));
+
+         if(!strcasecmp($str2,"ODBC" ))       $this->ODBC=trim(strtok("="));
+         if(!strcasecmp($str2,"ODBCSOURCE" ))       $this->ODBCSOURCE=trim(strtok("="));
+
          if(!strcasecmp($str2,"SAMS_DB" ))               $this->SAMSDB=trim(strtok("="));
-         if(!strcasecmp($str2,"SQUID_DB" ))              $this->LOGDB=trim(strtok("="));
-         if(!strcasecmp($str2,"MYSQLHOSTNAME" ))         $this->MYSQLHOSTNAME=trim(strtok("="));
-         if(!strcasecmp($str2,"MYSQLUSER" ))   	         $this->MYSQLUSER=trim(strtok("="));
-         if(!strcasecmp($str2,"MYSQLPASSWORD" ))         $this->MYSQLPASSWORD=trim(strtok("="));
+
+         if(!strcasecmp($str2,"MYSQLUSER" ))   	         $this->DB_USER=trim(strtok("="));
+         if(!strcasecmp($str2,"DB_USER" ))   	         $this->DB_USER=trim(strtok("="));
+
+         if(!strcasecmp($str2,"MYSQLPASSWORD" ))         $this->DB_PASSWORD=trim(strtok("="));
+         if(!strcasecmp($str2,"DB_PASSWORD" ))         $this->DB_PASSWORD=trim(strtok("="));
+
          if(!strcasecmp($str2,"SQUIDCACHEFILE" ))        $this->SQUIDCACHEFILE=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDROOTDIR" ))          $this->SQUIDROOTDIR=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDLOGDIR" ))           $this->SQUIDLOGDIR=trim(strtok("="));
@@ -236,8 +278,6 @@ class SAMSCONFIG
          if(!strcasecmp($str2,"MYSQLVERSION" ))          $this->MYSQLVERSION=trim(strtok("="));
          if(!strcasecmp($str2,"SHUTDOWNCOMMAND" ))       $this->SHUTDOWN=trim(strtok("="));
          if(!strcasecmp($str2,"SAMSPATH" ))       $this->SAMSPATH=trim(strtok("="));
-         if(!strcasecmp($str2,"DBNAME" ))       $this->DBNAME=trim(strtok("="));
-         if(!strcasecmp($str2,"ODBC" ))       $this->ODBC=trim(strtok("="));
 
          if(!strcasecmp($str2,"LDAPBASEDN" ))
            {
@@ -260,19 +300,19 @@ class SAMSCONFIG
 
   function PrintSAMSSettings()
     {
-      echo "database = $this->DBNAME<BR>";
+      echo "database = $this->DB_ENGINE<BR>";
       echo "adminname = $this->adminname<BR>";
       echo "groupauditor = $this->groupauditor<BR>";
       echo "access = $this->access<BR>";
       echo "domainusername = $this->domainusername<BR>";
       echo "SAMSDB = $this->SAMSDB<BR>";    
       echo "LOGDB = $this->LOGDB<BR>";    
-      echo "MYSQLHOSTNAME = $this->MYSQLHOSTNAME<BR>";    
-      echo "MYSQLUSER = $this->MYSQLUSER<BR>";        
+      echo "MYSQLHOSTNAME = $this->DB_SERVER<BR>";    
+      echo "MYSQLUSER = $this->DB_USER<BR>";        
       echo "DELAYPOOL = $this->DELAYPOOL<BR>";
       echo "USERACCESS = $this->USERACCESS<BR>";
       echo "URLACCESS = $this->URLACCESS<BR>";
-      echo "MYSQLPASSWORD = $this->MYSQLPASSWORD<BR>";    
+      echo "MYSQLPASSWORD = $this->DB_PASSWORD<BR>";    
       echo "SQUIDCACHEFILE = $this->SQUIDCACHEFILE<BR>";   
       echo "SQUIDROOTDIR = $this->SQUIDROOTDIR<BR>";   
       echo "SQUIDLOGDIR = $this->SQUIDLOGDIR<BR>";   

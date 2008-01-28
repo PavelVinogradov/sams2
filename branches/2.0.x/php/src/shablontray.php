@@ -9,8 +9,10 @@ function MoveUsersToShablon()
 {
   global $SAMSConf;
   global $SHABLONConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
  if(isset($_GET["id"])) $id=$_GET["id"];
  if(isset($_GET["username"])) $users=$_GET["username"];
   for($i=0;$i<count($users);$i++)
@@ -26,7 +28,7 @@ function ShablonUsers()
 {
   global $SAMSConf;
   global $SHABLONConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -34,7 +36,8 @@ function ShablonUsers()
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["sid"])) $sid=$_GET["sid"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
 
@@ -101,7 +104,7 @@ function ShablonUsers()
   $DB->free_samsdb_query();
   print("</TABLE>\n");
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
 
 	print("<SCRIPT language=JAVASCRIPT>\n");
@@ -162,7 +165,7 @@ function ShablonTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
       print("<SCRIPT>\n");
       print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$SHABLONConf->s_shablon_id&sid=ALL\";\n");

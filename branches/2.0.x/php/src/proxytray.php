@@ -73,20 +73,22 @@ function ProxyTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  print("<SCRIPT>\n");
-  JSProxyInfo();
-  print("</SCRIPT> \n");
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AULC")==1)
+  {
+	print("<SCRIPT>\n");
+	JSProxyInfo();
+	print("</SCRIPT> \n");
 
-  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
-  print("<B>Proxy<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></B>\n");
+	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
+	print("<TR>\n");
+	print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+	print("<B>Proxy<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></B>\n");
 
-  ExecuteFunctions("./src", "proxybuttom","1");
+	ExecuteFunctions("./src", "proxybuttom","1");
   
-  print("<TD>\n");
-  print("</TABLE>\n");
-
+	print("<TD>\n");
+	print("</TABLE>\n");
+  }
 
 }
 

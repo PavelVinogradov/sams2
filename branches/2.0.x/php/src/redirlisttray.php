@@ -7,11 +7,12 @@
 function DeleteList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
   if(isset($_GET["id"])) $id=$_GET["id"];
 
@@ -27,7 +28,7 @@ function DeleteList()
 function AddNewList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -35,7 +36,8 @@ function AddNewList()
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["name"])) $name=$_GET["name"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   $num_rows=$DB->samsdb_query("INSERT INTO redirect (s_name,s_type) VALUES ( '$name', '$type' ) ");
   //UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
@@ -61,7 +63,8 @@ function AddURLListForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-  if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
  switch($type)
 	{
@@ -129,8 +132,8 @@ function AddRedirListForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
- //  $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
   PageTop("redirect_48.jpg","$redirlisttray_AddRedirListForm_1 ");
   print("<BR>\n");
@@ -202,7 +205,7 @@ function UnecranChars($string)
 function AddURLFromList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -214,7 +217,8 @@ function AddURLFromList()
 
   if(strlen($url)>0)
     {   
-      if($SAMSConf->access!=2)     {       exit;     }
+       if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
 
       $DB->samsdb_query("INSERT INTO url (s_url,s_redirect_id) VALUES ('$url', '$id') ");
 //      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE filename=\"$type\" ");
@@ -230,11 +234,13 @@ function AddURLFromList()
 function DeleteURLFromList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   $exefilename="";
+   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
+  $exefilename="";
  if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["delete"])) $url=$_GET["delete"];
   if(isset($_GET["deletedurl"])) $deletedurl=$_GET["deletedurl"];
@@ -255,7 +261,7 @@ function DeleteURLFromList()
 function EditURLFromList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -264,7 +270,8 @@ function EditURLFromList()
   if(isset($_GET["editurl"])) $url=$_GET["editurl"];
   if(isset($_GET["oldvalue"])) $oldvalue=$_GET["oldvalue"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
 
    $oldvalue = UnecranChars ($oldvalue);
    $url = UnecranChars ($url);
@@ -283,14 +290,15 @@ function EditURLFromList()
 function DeleteAllURLFromList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
    $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
 
   $num_rows=$DB->samsdb_query("DELETE FROM url WHERE s_redirect_id='$type' ");
   //UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $type","02");
@@ -304,14 +312,15 @@ function DeleteAllURLFromList()
 function RedirListForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   $count=0;
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
+	{       exit;     }
   
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
   $row=$DB->samsdb_fetch_array();
@@ -438,7 +447,7 @@ function RedirListForm()
 function RedirListTray()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -451,7 +460,8 @@ function RedirListTray()
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
   $row=$DB->samsdb_fetch_array();
-  if($SAMSConf->access==2)
+
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
       print("<TABLE border=0 WIDTH=\"100%\">\n");
       print("<TR>\n");

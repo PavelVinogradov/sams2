@@ -8,10 +8,10 @@
  function lffolder_2_squid()
  {
   global $SAMSConf;
- $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+ $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access==2)
+ if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
   {
         print("   proxy = insFld(sams, gFld2(\"SQUID\", \"tray.php?show=exe&filename=squidtray.php&function=squidtray\", \"pobject.gif\"))\n");
 	$DB->samsdb_query("SELECT * FROM proxy");

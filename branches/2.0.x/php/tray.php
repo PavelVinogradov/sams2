@@ -43,17 +43,21 @@ if(isset($_GET["function"])) $function=$_GET["function"];
  if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
  if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
+	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
  if($SAMSConf->PHPVER<5)
    {
-     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
-     $SAMSConf->domainusername=$cookie_domainuser;
-     $SAMSConf->groupauditor=$cookie_gauditor;
+	$SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+	$SAMSConf->domainusername=$cookie_domainuser;
+	$SAMSConf->groupauditor=$cookie_gauditor;
    }  
  else
    {
-     $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
-     $SAMSConf->domainusername=$_COOKIE['domainuser'];
-     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
+	$SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
+	$SAMSConf->domainusername=$_COOKIE['domainuser'];
+	$SAMSConf->groupauditor=$_COOKIE['gauditor'];
+	$SAMSConf->USERID=$_COOKIE['userid'];
+	$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
    }  
  $SAMSConf->access=UserAccess();
 

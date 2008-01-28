@@ -9,12 +9,15 @@ function DeleteUser()
 {
 
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
    $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+   if($SAMSConf->access!=2  && $SAMSConf->ToUserDataAccess($id, "UC")!=1)     
+	{       
+		exit;     
+	}
   
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   print("<SCRIPT>\n");
@@ -39,7 +42,8 @@ function userbuttom_9_delete()
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access==2)
+//   if($SAMSConf->access!=2  && $SAMSConf->ToUserDataAccess($id, "UC")!=1)     
+  if($SAMSConf->access==2 ||  $SAMSConf->ToUserDataAccess($id, "UC")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

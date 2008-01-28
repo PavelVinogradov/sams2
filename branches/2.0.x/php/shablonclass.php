@@ -20,7 +20,7 @@ class SAMSSHABLON
 function SAMSSHABLON($shablonid)
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$shablonid' ");
   $row=$DB->samsdb_fetch_array();

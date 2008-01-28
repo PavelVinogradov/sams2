@@ -8,7 +8,7 @@
  function lffolder_5_z0_trange()
  {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DBNAME", "0", $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -16,7 +16,7 @@
 //    {
 //     print("licenses = insDoc(sams, gLnk(\"D\", \"$lframe_sams_lframe_sams_1\",\"tray.php?show=exe&function=localtraftray\",\"pfile.gif\"))\n");
 //    }	 
-  if($SAMSConf->access==2)
+ if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
       print("   timerange = insFld(sams, gFld(\"Time Range\", \"main.php?show=exe&filename=trangetray.php&function=addtrangeform\", \"clock.gif\"))\n");
       $num_rows=$DB->samsdb_query_value("SELECT * FROM timerange ");

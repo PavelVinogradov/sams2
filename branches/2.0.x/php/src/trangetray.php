@@ -8,7 +8,7 @@
 function AddTRange()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -27,7 +27,8 @@ function AddTRange()
   if(isset($_GET["day6"])) $day6=$_GET["day6"];
   if(isset($_GET["day7"])) $day7=$_GET["day7"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
    if($day1=="on")   $day1="M"; else $day1=""; 
    if($day2=="on")   $day2="T"; else $day2="";  
@@ -64,7 +65,8 @@ function AddTRangeForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-  if($SAMSConf->access!=2)     {       exit;     }
+   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   PageTop("clock_48.jpg","Time Range ");
   print("<BR>\n");
@@ -152,6 +154,8 @@ function JSTRangeInfo()
   global $TRANGEConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   $code="<HTML><BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
@@ -186,6 +190,8 @@ function TRangeTray()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   print("<SCRIPT>\n");
   //print(" parent.basefrm.location.href=\"main.php?show=exe&function=about\";\n");    

@@ -33,11 +33,11 @@ function importurllists()
 	while($row=$this->oldDB->samsdb_fetch_array())
 		{
 		echo "INSERT INTO redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')<BR>";
-		$this->DB->samsdb_query("INSERT INTO samsdb.redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')");
+		$this->DB->samsdb_query("INSERT INTO redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')");
 		}
 	$this->oldDB->free_samsdb_query();
 	$i=0;
-	$this->urllistcount=$this->DB->samsdb_query_value("SELECT * FROM samsdb.redirect ");
+	$this->urllistcount=$this->DB->samsdb_query_value("SELECT * FROM redirect ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
 			print("$i:  ".$row['s_name']."<BR>");
@@ -55,7 +55,7 @@ function importurllists()
 			$index=array_search($row['rname'], $this->urllistname);
 //			echo "INSERT INTO url (  s_url_id , s_redirect_id , s_url  ";
 			echo "$i from $this->urllistcount: INSERT INTO url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' ) <BR>";
-			$this->DB->samsdb_query("INSERT INTO samsdb.url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' )");
+			$this->DB->samsdb_query("INSERT INTO url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' )");
 			}
 		$this->oldDB->free_samsdb_query();
 
@@ -78,7 +78,7 @@ function importgroups()
 		print($this->groupcount.":  ".$this->groupname[$this->groupcount]." ".$this->groupid[$this->groupcount]."<BR>");
 		if($row['nick']!="Administrators"&&$row['nick']!="Users")
 		{
-			$this->DB->samsdb_query("INSERT INTO samsdb.sgroup ( s_name ) VALUES ('".$this->groupname[$this->groupcount]."') ");
+			$this->DB->samsdb_query("INSERT INTO sgroup ( s_name ) VALUES ('".$this->groupname[$this->groupcount]."') ");
 		}
 		$this->groupcount++;
 	}
@@ -104,7 +104,7 @@ function importshablons()
 		//print("$row[nick]: $clrdate <BR>");
 		if($row['name']!="default")
 			{
-			$this->DB->samsdb_query("INSERT INTO samsdb.shablon ( s_name, s_shablonpool, s_userpool, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[shablonpool]', '$row[userpool]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+			$this->DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[shablonpool]', '$row[userpool]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
 			}
 		$this->shabloncount++;
 		}
@@ -120,7 +120,7 @@ function importsamsusers()
 	$groupcount2=0;
 	for($i=0;$i<$this->groupcount;$i++)
 	{
-	$this->DB->samsdb_query_value("SELECT s_group_id FROM samsdb.sgroup WHERE s_name='".$this->groupname[$i]."' ");
+	$this->DB->samsdb_query_value("SELECT s_group_id FROM sgroup WHERE s_name='".$this->groupname[$i]."' ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
 			print("$i:  ".$row['s_group_id']." ".$this->groupname[$i]."<BR>");
@@ -135,7 +135,7 @@ echo "===== count=".$this->shabloncount."<BR>";
 	$this->shabloncount2=0;
 	for($i=0;$i<$this->shabloncount;$i++)
 	{
-	$this->DB->samsdb_query_value("SELECT s_shablon_id FROM samsdb.shablon WHERE s_name='".$this->shablonname[$i]."' ");
+	$this->DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='".$this->shablonname[$i]."' ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
 			print("$i:  ".$row['s_shablon_id']." ".$this->shablonname[$i]."<BR>");
@@ -175,7 +175,7 @@ echo "$row[group] ,$gindex<BR>";
 			$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
 			$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row[nick]', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
 echo "INSERT INTO squiduser $str VALUES $values<BR>";
-			$this->DB->samsdb_query("INSERT INTO samsdb.squiduser $str VALUES $values ");
+			$this->DB->samsdb_query("INSERT INTO squiduser $str VALUES $values ");
 			$count++;
 		}
   $this->oldDB->free_samsdb_query();
@@ -187,7 +187,7 @@ function IMPORTUSERS($hostname, $username, $pass)
 {
   global $SAMSConf;
  if($SAMSConf->access!=2)     {       exit;     }
- $this->DB=new SAMSDB($SAMSConf->DBNAME, $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->MYSQLUSER, $SAMSConf->MYSQLPASSWORD, $SAMSConf->SAMSDB);
+ $this->DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
  $this->oldDB=new SAMSDB("MySQL", $SAMSConf->ODBC, $hostname, $username, $pass, "squidctrl");
 // $this->importgroups();
 //echo "<BR>";
@@ -205,6 +205,10 @@ function importdata()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
+
  if(isset($_GET["importusers"])) $importusers=$_GET["importusers"];
  if(isset($_GET["importgroups"])) $importgroups=$_GET["importgroups"];
  if(isset($_GET["importurllists"])) $importurllists=$_GET["importurllists"];
@@ -243,6 +247,8 @@ function importdataform()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+ if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	exit(0);
   PageTop("shablon.jpg","Import database from SAMS 1 ");
 
 			print("<H2 ALIGN=\"CENTER\">Import  data</H2>");
@@ -273,11 +279,12 @@ function configbuttom_3_import()
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access==2)
+
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
-	               "basefrm","config_32.jpg","config_48.jpg","  import data from sams ver.1 database  ");
+	               "basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
     }
 }
 
