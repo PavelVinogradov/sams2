@@ -91,9 +91,9 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
 }
 
 
-long GetNewEndValue()
+off_t GetNewEndValue()
 {
-  long value;
+  off_t value;
   FILE *finp;
 
   trim(&path[0]);
@@ -112,13 +112,13 @@ long GetNewEndValue()
 
 
 
-void SaveNewEndFileValue(MYSQL *conn,long count)
+void SaveNewEndFileValue(MYSQL *conn,off_t count)
 {
   int flag;
   if(conf.cachenum==0)
-    sprintf(&str[0],"UPDATE %s.sams SET endvalue=\'%ld\'",conf.samsdb,count);
+    sprintf(&str[0],"UPDATE %s.sams SET endvalue=\'%" PRId64 "\'",conf.samsdb,count);
   else
-    sprintf(&str[0],"UPDATE %s.proxyes SET endvalue=\'%ld\' WHERE id=\'%d\'",conf.samsdb,count, conf.cachenum);
+    sprintf(&str[0],"UPDATE %s.proxyes SET endvalue=\'%" PRId64 "\' WHERE id=\'%d\'",conf.samsdb,count, conf.cachenum);
   flag=send_mysql_query(conn,&str[0]);
   if(flag!=0)
     {

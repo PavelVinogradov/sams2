@@ -529,8 +529,12 @@ char *str2lower(char *string)
 }
 
 
-long txt2digit(char *str)
+long long txt2digit(char *str)
 {
+  long long value;
+  
+  value = atoll(str);
+/*
   int len,i,j,base=0;
   double value,pow;
   value=0;
@@ -561,6 +565,7 @@ long txt2digit(char *str)
 //	    value+=base*pow(10,len-i-1);
          }
      }
+*/
   return(value);
 }
 
