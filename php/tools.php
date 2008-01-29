@@ -1,19 +1,17 @@
 <?php
 
-
-function NotUsersTreeUserAuth()
+function UserAuth()
 {
   global $SAMSConf;
   $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
-  if(isset($_POST["user"])) $userdomain=$_POST["user"];
+  if(isset($_POST["id"])) $id=$_POST["id"];
   $grauditor=0;
   $SAMSConf->domainusername="";
 
 	$SAMSConf->USERPASSWD=0;
-//	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$userdomain'; ");
-	$num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_nick='$userdomain'; ");
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_user_id='$id'; ");
 	$row=$DB->samsdb_fetch_array();
 
 	if($num_rows>0)
@@ -22,27 +20,19 @@ function NotUsersTreeUserAuth()
 		$SAMSConf->USERWEBACCESS=$row['s_webaccess'];
 		$SAMSConf->AUTHERRORRC=$row['s_autherrorc'];
 		$SAMSConf->AUTHERRORRT=$row['s_autherrort'];
-
-//		if($row['s_passwd']==$passwd)
-//			$SAMSConf->USERPASSWD=1;
 	}
-//	if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
-//	{
-echo "authorisation = $row[s_auth]<BR>";
+
 	if($row['s_auth']=="ip")
 	{
 		$passwd=crypt($password, substr($password, 0, 2));
-echo "ip: $password==$passwd==$row[s_passwd]<BR>";
 		if($row['s_passwd']==$passwd)
 		{
 			$SAMSConf->domainusername=$row['s_nick'];
 			$SAMSConf->USERPASSWD=1;
 		}
-echo "user = $SAMSConf->domainusername<BR>";
 	}
 	if($row['s_auth']=="adld")
 	{
-echo "adld: $row[s_nick],$password<BR>";
 		require_once("adldap.php");
 		//create the LDAP connection
 		$pdc=array("$SAMSConf->LDAPSERVER");
@@ -58,90 +48,91 @@ echo "adld: $row[s_nick],$password<BR>";
 		}
 	}
 
+	if($row['s_auth']=="ntlm")
+	{
+		$e = escapeshellcmd("$row[s_nick] $password");
+		$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+		$aflag=0;
+		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+		{ 
+			$aflag=1;
+			$SAMSConf->domainusername=$row['s_nick'];
+			$SAMSConf->USERPASSWD=1;
+		}  
+	}
 
-
-//	}
-echo "domainusername: $SAMSConf->domainusername<BR>";
-//exit(0);
-/*
-//  if(($SAMSConf->AUTH=="ip"||$SAMSConf->AUTH=="ncsa"|| strlen($SAMSConf->domainusername)==0)&&$password!="none")
-//    {
-   	$SAMSConf->USERPASSWD=0;
-       $passwd=crypt($password, substr($password, 0, 2));
-       $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$userdomain'; ");
-//       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE nick=\"$userdomain\"&&passwd=\"$passwd\" ");
-       $row=$DB->samsdb_fetch_array();
-
-       if($num_rows>0)
-         {
-           $SAMSConf->USERID=$row['s_user_id'];
-           $SAMSConf->USERWEBACCESS=$row['s_webaccess'];
-	   $SAMSConf->AUTHERRORRC=$row['s_autherrorc'];
-	   $SAMSConf->AUTHERRORRT=$row['s_autherrort'];
-           $SAMSConf->domainusername=$row['s_nick'];
-	   if($row['s_passwd']==$passwd)
-	   	$SAMSConf->USERPASSWD=1;
-         }
-//     }
-*/
-
-
-/*
-  if($SAMSConf->AUTH=="adld")
+  $grauditor=0;
+  if($row['s_gauditor']>0&&strlen($SAMSConf->domainusername)>0)
     {
-	require_once("adldap.php");
-	//create the LDAP connection
-	$pdc=array("$SAMSConf->LDAPSERVER");
-	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
-	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
-	$ldap=new adLDAP($options);
-      if ($ldap->authenticate($userdomain,$password))
-         {
-            $aflag=1;
-           $SAMSConf->domainusername=$userdomain;
-	 }   
+         $grauditor=$row['s_group'];
+         print("<SCRIPT>\n");
+         print(" parent.lframe.location.href=\"lframe.php\"; \n");
+         print("</SCRIPT> \n");
     }
-  if($SAMSConf->AUTH=="ntlm")
-    {
-	$aflag=0;
-	$e = escapeshellcmd("$SAMSConf->WBINFOPATH $userdomain $password");
-	$aaa=ExecuteShellScript("testwbinfopasswd", $e);
-	$aflag=0;
-	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-	  { 
-		$aflag=1;
-	  }  
-      if($aflag>0)
-        {
-           if($SAMSConf->NTLMDOMAIN=="Y")
-             {
-	       if(strrpos($userdomain,"+" )!=false)
-	         {
-                   $user=strtok($userdomain,"+");
-                   $SAMSConf->domainusername=strtok("+");
-		 }
-	       if(stristr($userdomain,"\\" )!=false)
-	         {
-                   $user=strtok($userdomain,"\\");
-                   $SAMSConf->domainusername=strtok("\\");
-		 }
-	       if(stristr($userdomain,"@" )!=false)
-	         {
-                   $user=strtok($userdomain,"@");
-                   $SAMSConf->domainusername=strtok("@");
-		 }
-	     }
-	   else
-             $SAMSConf->domainusername=$userdomain;
-       
-           db_connect($SAMSConf->SAMSDB) or exit();
-           mysql_select_db($SAMSConf->SAMSDB);
-           $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE nick=\"$SAMSConf->domainusername\" ");
-           $row=mysql_fetch_array($result);
-           $SAMSConf->domainusername="$row[nick]";
-       }
-    }
-*/
+ return($grauditor);
+}
+
+function NotUsersTreeUserAuth()
+{
+  global $SAMSConf;
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+
+  if(isset($_POST["userid"])) $password=$_POST["userid"];
+  if(isset($_POST["user"])) $userdomain=$_POST["user"];
+  $grauditor=0;
+  $SAMSConf->domainusername="";
+
+	$SAMSConf->USERPASSWD=0;
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_nick='$userdomain'; ");
+	$row=$DB->samsdb_fetch_array();
+
+	if($num_rows>0)
+	{
+		$SAMSConf->USERID=$row['s_user_id'];
+		$SAMSConf->USERWEBACCESS=$row['s_webaccess'];
+		$SAMSConf->AUTHERRORRC=$row['s_autherrorc'];
+		$SAMSConf->AUTHERRORRT=$row['s_autherrort'];
+	}
+
+	if($row['s_auth']=="ip")
+	{
+		$passwd=crypt($password, substr($password, 0, 2));
+		if($row['s_passwd']==$passwd)
+		{
+			$SAMSConf->domainusername=$row['s_nick'];
+			$SAMSConf->USERPASSWD=1;
+		}
+	}
+	if($row['s_auth']=="adld")
+	{
+		require_once("adldap.php");
+		//create the LDAP connection
+		$pdc=array("$SAMSConf->LDAPSERVER");
+		$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
+		ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
+		$ldap=new adLDAP($options);
+//		if ($ldap->authenticate($userdomain,$password))
+		if ($ldap->authenticate($row['s_nick'],$password))
+		{
+			$aflag=1;
+			$SAMSConf->domainusername=$row['s_nick'];
+			$SAMSConf->USERPASSWD=1;
+		}
+	}
+
+	if($row['s_auth']=="ntlm")
+	{
+		$e = escapeshellcmd("$row[s_nick] $password");
+		$aaa=ExecuteShellScript("testwbinfopasswd", $e);
+		$aflag=0;
+		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+		{ 
+			$aflag=1;
+			$SAMSConf->domainusername=$row['s_nick'];
+			$SAMSConf->USERPASSWD=1;
+		}  
+	}
+
   $grauditor=0;
   if($row['s_gauditor']>0&&strlen($SAMSConf->domainusername)>0)
     {

@@ -140,6 +140,47 @@ if($function=="setcookie")
 /*
 Авторизация пользователя
 */
+if($function=="userauth")
+  {   
+     $user="";
+     if(isset($_POST["id"])) $id=$_POST["id"];
+     $SAMSConf->groupauditor=UserAuth();
+     $nick=$SAMSConf->domainusername;
+     $time=time();
+     if($SAMSConf->AUTHERRORRC==0||$time>$SAMSConf->AUTHERRORRT+60)
+       {  
+         if($time>$SAMSConf->AUTHERRORRT+60)
+           {  
+             setcookie("domainuser","$SAMSConf->domainusername");
+             setcookie("gauditor","$SAMSConf->groupauditor");
+             setcookie("userid","$SAMSConf->USERID");
+             setcookie("webaccess","$SAMSConf->USERWEBACCESS");
+             if(strlen($SAMSConf->domainusername)!=0)
+			$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
+	       else  
+	          {
+	           $user="";
+	           $function="autherror";
+	           if($SAMSConf->AUTHERRORRC>=2)
+			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='$time' WHERE s_user_id='$SAMSConf->USERID' ");
+	           else
+			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc=s_autherrorc+1,s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
+	          } 
+               }   
+         else
+           {  
+               $user="";
+               $function="autherror";
+           }
+       }
+
+     if($SAMSConf->groupauditor != "")
+       {
+         print("<SCRIPT>\n");
+         print(" parent.lframe.location.href=\"lframe.php\"; \n");
+	 print("</SCRIPT> \n");
+       }
+  }  
 
 if($function=="nuserauth")
   {   
@@ -163,10 +204,10 @@ if($function=="nuserauth")
 	          {
 	           $user="";
 	           $function="autherror";
-	           if($autherrorc>=2)
+	           if($SAMSConf->AUTHERRORRC>=2)
 			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='$time' WHERE s_user_id='$SAMSConf->USERID' ");
 	           else
-			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc=autherrorc+1,s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
+			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc=s_autherrorc+1,s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
 	          } 
                }   
          else
@@ -175,7 +216,6 @@ if($function=="nuserauth")
                $function="autherror";
            }
        }
-echo "SAMSConf->USERPASSWD=$SAMSConf->USERPASSWD $SAMSConf->USERWEBACCESS $SAMSConf->domainusername<BR>";     
 
      if($SAMSConf->groupauditor != "")
        {
@@ -183,12 +223,6 @@ echo "SAMSConf->USERPASSWD=$SAMSConf->USERPASSWD $SAMSConf->USERWEBACCESS $SAMSC
          print(" parent.lframe.location.href=\"lframe.php\"; \n");
 	 print("</SCRIPT> \n");
        }
-     //$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$nick' ");
-     //$row=mysql_fetch_array($result);
-     //$autherrorc=$row[autherrorc];
-     //$autherrort=$row[autherrort];
-     //$id=$row['id'];
-     //$usergroup=$row['group'];
   }  
 
 
@@ -245,7 +279,7 @@ if($gb!=1)
 	//$PROXYConf->PrintProxyClass();
 	}
 
-  if(strstr($filename,"userb")||strstr($filename,"usertray"))
+  if((strstr($filename,"userb")||strstr($filename,"usertray"))&&$function!="userauth")
 	{
 	 if(isset($_GET["id"])) $id=$_GET["id"];
 	require('./userclass.php');
@@ -284,7 +318,7 @@ if($user=="exe"&&$function!="setcookie")
 
  }
 
-if($function=="nuserauth")
+if($function=="nuserauth"|| $function=="userauth")
   {
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");

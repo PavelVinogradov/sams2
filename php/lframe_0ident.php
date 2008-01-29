@@ -13,7 +13,7 @@ global $SAMSConf;
   require($lang);
 //exit(0);
 //echo "============================= 1 ====== $SAMSConf->domainusername == $SAMSConf->adminname ===================";
-  if(strlen($SAMSConf->domainusername)>0||strlen($SAMSConf->adminname)>0)
+  if(strlen($SAMSConf->domainusername)>0||strlen($SAMSConf->adminname)>0 || $SAMSConf->USERPASSWD==1)
     {
       print("   logoff = insFld(foldersTree, gFld2(\" logoff\", \"main.php?function=logoff\", \"logoff_20.gif\"))\n");
     }  
