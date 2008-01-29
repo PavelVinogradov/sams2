@@ -12,8 +12,7 @@ function lframe_users()
   $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  
-  if($SAMSConf->SHOWUTREE=="Y"||$SAMSConf->access>0||strlen($SAMSConf->groupauditor)>0)
+  if($SAMSConf->SHOWUTREE=="1"||$SAMSConf->access>0||strlen($SAMSConf->groupauditor)>0)
     {
       switch ($SAMSConf->SHOWNAME)
         { 
@@ -36,7 +35,7 @@ function lframe_users()
 
       
       $count=0;
-      print("   users = insFld(foldersTree, gFld2(\"$lframe_sams_UserFolder_1\", \"tray.php?show=exe&filename=userstray.php&function=userstray\", \"paddressbook.gif\"))\n");
+      print("   users = insFld(foldersTree, gFld2(\"$lframe_sams_UserFolder_1 \", \"tray.php?show=exe&filename=userstray.php&function=userstray\", \"paddressbook.gif\"))\n");
       if(strlen($SAMSConf->groupauditor)>1)
         {
           $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_name='$SAMSConf->groupauditor' ");

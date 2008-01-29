@@ -6,159 +6,31 @@
  */
 
  
-function UserAuth()
-{
-  global $SAMSConf;
-  
-  if(isset($_POST["usernick"])) $user=$_POST["usernick"];
-  if(isset($_POST["userdomain"])) $domain=$_POST["userdomain"];
-  if(isset($_POST["userid"])) $password=$_POST["userid"];
-  if(isset($_POST["id"])) $id=$_POST["id"];
-  if(isset($_POST["authtype"])) $auth=$_POST["authtype"];
-
-  $SAMSConf->grauditor=0;
-  $SAMSConf->domainusername="";
-  $aflag=0;
-  if($auth=="ntlm")
-    {
-      if($SAMSConf->NTLMDOMAIN=="Y")
-        {
-          $mas=array();
-           $mas=$SAMSConf->SEPARATOR;
-           $slashe="\\";
-
-           for($j=strlen($SAMSConf->SEPARATOR)-1;$j>0;$j--)
-            {
-	      if($mas[$j]==$slashe)
-	        {
-		  $separator="\\";
-		} 
-	      else
-	        {	
-		  $separator=$mas[$j];
-		}  
-                $userdomain="$domain$separator$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
-		$aflag=0;
-		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-		  { 
-			$aflag=1;
-			$SAMSConf->domainusername=$user;
-		  }  
-	    } 
-           if($aflag==0)
-	     {
-	        $userdomain="$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
-		$aflag=0;
-		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-		  { 
-			$aflag=1;
-			$SAMSConf->domainusername=$user;
-		  }  
-	     }
-         }
-       else
-         {
-                $userdomain="$user";
-                $aaa=ExecuteShellScript("testwbinfopasswd","$SAMSConf->WBINFOPATH $userdomain $password");
-		$aflag=0;
-		if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-		  { 
-			$aflag=1;
-			$SAMSConf->domainusername=$user;
-		  }  
-          }
-	 
-       db_connect($SAMSConf->SAMSDB) or exit();
-       mysql_select_db($SAMSConf->SAMSDB);
-       $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort FROM squidusers WHERE id=\"$id\" ");
-       $row=mysql_fetch_array($result);
-       $gauditor=$row['gauditor'];
- 
-// echo"USER = $SAMSConf->domainusername<BR>";
-// exit(0);   
-    }
-  if(($auth=="ip"||$auth=="ncsa")&&$password!="none")
-    {
-      db_connect($SAMSConf->SAMSDB) or exit();
-      mysql_select_db($SAMSConf->SAMSDB);
-//update squidusers set passwd=ENCRYPT(passwd, SUBSTRING(passwd,1,2));       
-//       $result2=mysql_query("SELECT nick,id,passwd FROM squidusers WHERE id=\"$id\" ");
-//       $row2=mysql_fetch_array($result2);
-      $passwd=crypt($password, substr($password, 0, 2));
-      $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,autherrorc,autherrort,id FROM squidusers WHERE id=\"$id\"&&passwd=\"$passwd\" ");
-      $row=mysql_fetch_array($result);
-      $gauditor=$row['gauditor'];
-      if(strlen($row['nick'])>0||strlen($row['passwd'])>0)
-        {
-          $SAMSConf->domainusername="$row[nick]";
-        }
-    }
-  if($auth=="adld")
-    {
-
-	require_once("adldap.php");
-	//create the LDAP connection
-	$pdc=array("$SAMSConf->LDAPSERVER");
-	$options=array(account_suffix=>"@$SAMSConf->LDAPDOMAIN", base_dn=>"$SAMSConf->LDAPBASEDN",domain_controllers=>$pdc, 
-	ad_username=>"$SAMSConf->LDAPUSER",ad_password=>"$SAMSConf->LDAPUSERPASSWD","","","");
-	$ldap=new adLDAP($options);
-
-        if($ldap==NULL)
-          {
-             //print("Connection not created!");
-             exit(0);
-          }
-        else
-          {
-            $result=mysql_query("SELECT nick,passwd,domain,gauditor,squidusers.group,id FROM squidusers WHERE id=\"$id\" ");
-            $row=mysql_fetch_array($result);
-
-	    if($ldap -> authenticate( $row['nick'], $password ))
-            {
-              $SAMSConf->domainusername=$row['nick'];
-            }
-          }
-     }
-  $grauditor=0;
-  if($row['gauditor']>0&&strlen($SAMSConf->domainusername)>0)
-     $grauditor=$row['group'];
-     
-    
- return($grauditor);
-}
 
 
 
 function UserAuthForm()
 {
   global $SAMSConf;
-  
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["userid"])) $userid=$_GET["userid"];
+  if(isset($_GET["id"])) $userid=$_GET["id"];
 
-  $result=mysql_query("SELECT squidusers.*,shablons.auth FROM squidusers LEFT JOIN shablons ON squidusers.shablon=shablons.name WHERE id=\"$userid\" ");
-  $row=mysql_fetch_array($result);
-
-  PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$row[nick]</FONT>");
+  PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT>");
   print("<P>\n");
   print("<FORM NAME=\"USERPASSWORD\" ACTION=\"main.php\" method=\"POST\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+//  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"usertray.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"userauth\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$row[id]\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"usergroup\" value=\"$row[group]\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"userdomain\" value=\"$row[domain]\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"usernick\" value=\"$row[nick]\">\n");
-//  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$row[id]\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"authtype\" value=\"$row[auth]\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$USERConf->s_user_id\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
   print("<TR>\n");
   print("<TD><B>login:</B>\n");
 
-  print("<TD><B>$row[nick]\n");
+  print("<TD><B>$USERConf->s_nick\n");
   print("<TR>\n");
   print("<TD><B>password:</B>\n");
   print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"userid\" SIZE=30> \n");
@@ -354,40 +226,24 @@ function UserTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
-
-   if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
+	if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
 	{
-	print("<SCRIPT>\n");
-	print(" parent.basefrm.location.href=\"main.php\";\n");
-	print("</SCRIPT> \n");
-	exit(0);
+		print("<SCRIPT>\n");
+		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id\";\n");
+//		print(" parent.basefrm.location.href=\"main.php\";\n");
+		print("</SCRIPT> \n");
+		exit(0);
 	}
+	if(strlen($SAMSConf->domainusername)==0&&$SAMSConf->access==0)
+        {
+		print("<SCRIPT>\n");
+		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&userid=$id\";\n");
+		print("</SCRIPT> \n");
+        }
 
 
   print("<SCRIPT>\n");
   JSUserInfo();
-/*
-  if($SAMSConf->access>0)
-    {
-      print(" parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userform&userid=$id\";\n");
-    }
-  else
-    {
-      if($SAMSConf->NTLMDOMAIN!="Y")
-        $un="$USERConf->s_nick";
-      else	
-        $un="$USERConf->s_domain+$USERConf->s_nick";
-
-      if((strlen($SAMSConf->domainusername)>0&&$SAMSConf->domainusername==$USERConf->s_nick)||$SAMSConf->groupauditor==$USERConf->s_group)
-        {
-          print(" parent.basefrm.location.href=\"main.php?show=exe&function=userform&userid=$USERConf->s_user_id\";\n");
-        }
-      else
-        {
-          print("parent.basefrm.location.href=\"main.php?show=exe&function=userauthform&userid=$USERConf->s_user_id\";\n");
-        }
-    }
-*/
   print("</SCRIPT> \n");
 
   print("<TABLE border=0 WIDTH=\"100%\">\n");
