@@ -18,7 +18,9 @@
 
 #include "samsuser.h"
 #include "debug.h"
-
+#include "templates.h"
+#include "template.h"
+#include "proxy.h"
 
 string SAMSUser::toString (usrStatus s)
 {
@@ -57,7 +59,7 @@ void SAMSUser::setId (long id)
   _id = id;
 }
 
-long SAMSUser::getId ()
+long SAMSUser::getId () const
 {
   return _id;
 }
@@ -67,7 +69,7 @@ void SAMSUser::setNick (const string & nick)
   _nick = nick;
 }
 
-string SAMSUser::getNick ()
+string SAMSUser::getNick () const
 {
   return _nick;
 }
@@ -77,7 +79,7 @@ void SAMSUser::setDomain (const string & domain)
   _domain = domain;
 }
 
-string SAMSUser::getDomain ()
+string SAMSUser::getDomain () const
 {
   return _domain;
 }
@@ -88,7 +90,7 @@ void SAMSUser::setIP (const string & ip)
   _ip.parseString (ip);
 }
 
-IP SAMSUser::getIP ()
+IP SAMSUser::getIP () const
 {
   return _ip;
 }
@@ -105,7 +107,7 @@ void SAMSUser::setEnabled (usrStatus enabled)
   _enabled = enabled;
 }
 
-SAMSUser::usrStatus SAMSUser::getEnabled ()
+SAMSUser::usrStatus SAMSUser::getEnabled () const
 {
   return _enabled;
 }
@@ -125,7 +127,7 @@ void SAMSUser::addSize (long size)
     }
 }
 
-long long SAMSUser::getSize ()
+long long SAMSUser::getSize () const
 {
   return _size;
 }
@@ -141,7 +143,7 @@ void SAMSUser::addHit (long hit)
   _hit += hit;
 }
 
-long long SAMSUser::getHit ()
+long long SAMSUser::getHit () const
 {
   return _hit;
 }
@@ -152,7 +154,7 @@ void SAMSUser::setQuote (long quote)
   _quote = quote;
 }
 
-long SAMSUser::getQuote ()
+long SAMSUser::getQuote () const
 {
   return _quote;
 }
@@ -163,7 +165,7 @@ void SAMSUser::setShablonId (long id)
   _tpl_id = id;
 }
 
-long SAMSUser::getShablonId()
+long SAMSUser::getShablonId() const
 {
   return _tpl_id;
 }
@@ -174,12 +176,12 @@ void SAMSUser::setGroupId (long id)
   _grp_id = id;
 }
 
-long SAMSUser::getGroupId()
+long SAMSUser::getGroupId() const
 {
   return _grp_id;
 }
 
-string SAMSUser::asString ()
+string SAMSUser::asString () const
 {
   basic_stringstream < char >s;
 
@@ -199,12 +201,25 @@ string SAMSUser::asString ()
 
 ostream & operator<< (ostream & out, const SAMSUser & user)
 {
-  out << user._ip.asString () << ":";
-  if (!user._domain.empty ())
+  Template *tpl = Templates::getTemplate (user.getShablonId());
+  if (!tpl)
     {
-      out << user._domain << "\\";
+      out << "user lost template";
+      return out;
     }
-  out << user._nick;
+
+  if (tpl->getAuth() == Proxy::AUTH_IP)
+    {
+      out << user._ip.asString ();
+    }
+  else
+    {
+      if (!user._domain.empty ())
+        {
+          out << user._domain << "\\";
+        }
+      out << user._nick;
+    }
 
   return out;
 }

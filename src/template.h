@@ -25,22 +25,35 @@ using namespace std;
 
 class Template{
 public:
-  Template(long id, const string & name);
 
-  ~Template();
+  Template (long id, const string & name);
 
-  long getId();
-  void setAuth(const string & auth);
-  void setAuth(Proxy::usrAuthType auth);
-  Proxy::usrAuthType getAuth();
-  void setQuote(long quote);
-  long getQuote();
+  ~Template ();
+
+  long getId () const;
+
+  void setAuth (const string & auth);
+
+  void setAuth (Proxy::usrAuthType auth);
+
+  Proxy::usrAuthType getAuth () const;
+
+  void setQuote (long quote);
+
+  long getQuote () const;
+
+  void setAllDeny(bool alldeny);
+
+  void addRestriction (const string & t, const string & u);
+
+  bool isUrlAllowed (const string & url) const;
 
 private:
   long _id;
   string _name;
   Proxy::usrAuthType _auth;
   long _quote;
+  bool _alldeny;
 };
 
 #endif

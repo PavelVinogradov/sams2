@@ -103,8 +103,6 @@ bool LocalNetworks::reload ()
   Net *net;
   DBQuery *query = NULL;
 
-  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] ");
-
   string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
 
   if (_conn->getEngine() == DBConn::DB_UODBC)

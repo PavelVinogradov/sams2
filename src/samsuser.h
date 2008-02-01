@@ -72,7 +72,7 @@ public:
    *
    * @return Идентификатор пользователя
    */
-  long getId ();
+  long getId () const;
 
   /**
    * @brief Устанавливает ник (логин) пользователя
@@ -86,7 +86,7 @@ public:
    *
    * @return Ник пользователя
    */
-  string getNick ();
+  string getNick () const;
 
   /**
    * @brief Устанавливает домен
@@ -100,7 +100,7 @@ public:
    *
    * @return Домен
    */
-  string getDomain ();
+  string getDomain () const;
 
   /**
    * @brief Устанавливает IP адрес
@@ -114,7 +114,7 @@ public:
    *
    * @return IP адрес
    */
-  IP getIP ();
+  IP getIP () const;
 
   /**
    * @brief Устанавливает флаг активности
@@ -135,7 +135,7 @@ public:
    *
    * @return Флаг активности
    */
-  usrStatus getEnabled ();
+  usrStatus getEnabled () const;
 
   /**
    * @brief Устанавливает объем израсходованного трафика
@@ -156,7 +156,7 @@ public:
    *
    * @return Объем израсходованного трафика.
    */
-  long long getSize ();
+  long long getSize () const;
 
   /** @brief Устанавливает объем трафика из кэша
    *
@@ -176,7 +176,7 @@ public:
    *
    * @return Объем трафика из кэша
    */
-  long long getHit ();
+  long long getHit () const;
 
   /**
    * @brief Устанавливает квоту трафика в МБ
@@ -190,7 +190,7 @@ public:
    *
    * @return Квоту трафика
    */
-  long getQuote ();
+  long getQuote () const;
 
   /**
    * @brief Устанавливает идентификатор шаблона пользователя
@@ -204,7 +204,7 @@ public:
    *
    * @return Идентификатор шаблона пользователя
    */
-  long getShablonId();
+  long getShablonId() const;
 
   /**
    * @brief Устанавливает идентификатор группы пользователя
@@ -218,14 +218,14 @@ public:
    *
    * @return Идентификатор группы пользователя
    */
-  long getGroupId();
+  long getGroupId() const;
 
   /**
    * @brief Формирует значения экземпляра класса в виде строки
    *
    * @return Значения экземпляра класса в виде строки
    */
-  string asString ();
+  string asString () const;
 
   /**
    * @brief Оператор вывода содержимого экземпляра класса в поток

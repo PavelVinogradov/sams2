@@ -145,6 +145,11 @@ long Proxy::getEndValue()
   return _endvalue;
 }
 
+string Proxy::getRedirectAddr ()
+{
+  return "http://redirect.addr.here";
+}
+
 SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 {
   load();
@@ -187,11 +192,33 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 
       if (_autouser)
         {
-          Template *tpl = Templates::getTemplate( _defaulttpl );
-          int grp_id = Groups::getGroupId( _defaultgrp );
+          Template *tpl = NULL;
+          int grp_id = -1;
+          switch (_autotpl)
+            {
+              case TPL_DEFAULT:
+              case TPL_SPECIFIED:
+                tpl = Templates::getTemplate (_defaulttpl);
+                break;
+              case TPL_TAKE_FROM_GROUP:
+                //not supported yet;
+                break;
+            }
+          switch (_autogrp)
+            {
+              case GRP_DEFAULT:
+              case GRP_SPECIFIED:
+                grp_id = Groups::getGroupId( _defaultgrp );
+                break;
+              case GRP_TAKE_FROM_GROUP:
+                //not supported yet;
+                break;
+            }
+
           if (!tpl || (grp_id == -1))
             {
-              return false;
+              DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Group or template could not be found");
+              return NULL;
             }
 
           SAMSUser *usr = new SAMSUser ();
@@ -200,8 +227,15 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
               usr->setNick (ip.asString());
               usr->setIP (ip.asString());
             }
+          else if (usrNick == "-")
+            {
+              DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Unable to create user '-' with non IP auth");
+              delete usr;
+              return NULL;
+            }
           else
             usr->setNick (usrNick);
+
           usr->setDomain (usrDomain);
           usr->setGroupId (grp_id);
           usr->setShablonId (tpl->getId());
@@ -209,13 +243,21 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr->setEnabled (SAMSUser::STAT_ACTIVE);
           if (!SAMSUsers::addNewUser (usr))
             {
-              usr = NULL;
+              delete usr;
+              return NULL;
             }
         }
-
     }
 
   return usr;
+}
+
+SAMSUser *Proxy::findUser (const string & ip, const string & ident)
+{
+  IP _ip;
+  _ip.parseString (ip);
+
+  return findUser (_ip, ident);
 }
 
 bool Proxy::load ()
@@ -442,7 +484,8 @@ bool Proxy::reload ()
       switch (_autotpl)
         {
           case TPL_DEFAULT:
-            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << "Default");
+            _defaulttpl = "Default";
+            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
             break;
           case TPL_SPECIFIED:
             DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
@@ -454,7 +497,8 @@ bool Proxy::reload ()
       switch (_autogrp)
         {
           case GRP_DEFAULT:
-            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << "Default");
+            _defaultgrp = "Default";
+            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
             break;
           case GRP_SPECIFIED:
             DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);

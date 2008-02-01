@@ -40,6 +40,7 @@
 #include "localnetworks.h"
 #include "groups.h"
 #include "templates.h"
+#include "tools.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -48,10 +49,10 @@ void usage ()
 {
   cout << endl;
   cout << "NAME" << endl;
-  cout << "    samsparser - parse squid log file and update database." << endl;
+  cout << "    samsdaemon - periodicaly parse squid log file and process user commands." << endl;
   cout << endl;
   cout << "SYNOPSIS" << endl;
-  cout << "    samsparser [COMMAND] [OPTION]..." << endl;
+  cout << "    samsdaemon [COMMAND] [OPTION]..." << endl;
   cout << endl;
   cout << "COMMANDS" << endl;
   cout << "    -h, --help" << endl;
@@ -213,15 +214,6 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-  string dbsrc = SamsConfig::getString (defDBSOURCE, err);
-  string dbuser = SamsConfig::getString (defDBUSER, err);
-  string dbpass = SamsConfig::getString (defDBPASSWORD, err);
-  if (dbsrc.empty ())
-    {
-      ERROR ("No datasource defined. Check " << defDBSOURCE << " in config file.");
-      exit (1);
-    }
-
   // Интервал в секунах, через который нужно проверять наличие команд для демона
   int check_interval = SamsConfig::getInt (defSLEEPTIME, err);
   if (err != ERR_OK)
@@ -244,6 +236,13 @@ int main (int argc, char *argv[])
   if (squidlogdir.empty () || squidcachefile.empty ())
     {
       ERROR ("Either " << defSQUIDLOGDIR << " or " << defSQUIDCACHEFILE << " not defined. Check config file.");
+      exit (1);
+    }
+
+  string squidbindir = SamsConfig::getString (defSQUIDBINDIR, err);
+  if (!fileExist (squidbindir + "/squid"))
+    {
+      ERROR ("Invalid " << defSQUIDBINDIR << ". Check config file.");
       exit (1);
     }
 
@@ -325,6 +324,7 @@ int main (int argc, char *argv[])
 
   basic_stringstream < char >cmd_check;
   basic_stringstream < char >cmd_del;
+  basic_stringstream < char >msg;
 
   cmd_check << "select s_service, s_action from reconfig where s_proxy_id=" << proxyid;
 
@@ -332,8 +332,12 @@ int main (int argc, char *argv[])
   int seconds_to_parse = 0;
   int seconds_to_reconnect = reconnect_timeout;
   static string service_proxy = "proxy";
+  static string service_squid = "squid";
   static string action_shutdown = "shutdown";
   static string action_reload = "reload";
+  static string action_reconfig = "reconfig";
+
+  string reconfiguresquid = squidbindir + "/squid -k reconfigure";
 
   time_t loop_start = time (NULL);
   time_t loop_end = time (NULL);
@@ -433,6 +437,31 @@ int main (int argc, char *argv[])
               cmd_del << " and s_action='" << action_reload << "'";
               query->sendQueryDirect (cmd_del.str());
               reload(-1);
+            }
+          if (s_service == service_squid && s_action == action_reconfig)
+            {
+              cmd_del.str("");
+              cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
+              cmd_del << " and s_service='" << service_squid << "'";
+              cmd_del << " and s_action='" << action_reconfig << "'";
+              query->sendQueryDirect (cmd_del.str());
+
+              Logger::addLog(Logger::LK_DAEMON, "Got request to reconfigure SQUID");
+
+              // Create extenal files
+              // ...
+
+              // Change config files
+              // ...
+
+              // Reconfigure squid
+              msg.str("");
+              err = system (reconfiguresquid.c_str());
+              if (err)
+                msg << "Failed to restart SQUID: " << err;
+              else
+                msg << "Reconfigure & restart SQUID: ok";
+              Logger::addLog (Logger::LK_DAEMON, msg.str ());
             }
         }
 

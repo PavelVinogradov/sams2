@@ -128,6 +128,8 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
 
   DEBUG (DEBUG9, s << ", '" << delim << "', " << removeEmpty);
 
+  tbl.clear();
+
   next = s.find_first_of (delim);
 
   string token;
