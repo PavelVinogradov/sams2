@@ -1,2 +1,0 @@
-#uptime
-uptime | cut -d',' -f 1 

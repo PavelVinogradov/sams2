@@ -1,3 +1,0 @@
-#$aaa=`$SAMSConf->WBINFOPATH/wbinfo -u`;
-
-df -P -h | grep "/" | grep -v devfs &> ./data/fs

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-mkdir WIN1251
-for file in KOI8-R/*
- do
- newfile=`echo $file | sed "s/KOI8-R//"`
- echo "iconv -f KOI8-R -t win-1251 $file > WIN1251$newfile"
- iconv -f KOI8-R -t cp1251 $file > WIN1251$newfile
-done

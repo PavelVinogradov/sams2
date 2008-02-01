@@ -1,2 +1,0 @@
-DATE=`date`
-echo "$DATE: User $SAMSUSERNAME disabled" | smbclient -M $SAMSADMINADDR
