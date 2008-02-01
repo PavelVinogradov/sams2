@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mysql -u root -p  < create_sams_user.sql

@@ -1,0 +1,3 @@
+#STR=`$1/wbinfo -u`
+STR=`$1/wbinfo -u`
+echo $STR
