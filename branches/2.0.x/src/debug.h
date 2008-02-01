@@ -47,6 +47,7 @@ using namespace std;
 #define DEBUG_PROXY   DEBUG2
 #define DEBUG_DAEMON  DEBUG2
 #define DEBUG_DB      DEBUG3
+#define DEBUG_REDIR   DEBUG4
 #define DEBUG_USER    DEBUG4
 #define DEBUG_URL     DEBUG5
 #define DEBUG_HOST    DEBUG5

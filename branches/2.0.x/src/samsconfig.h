@@ -31,12 +31,12 @@ using namespace std;
 #define defDBSOURCE           "ODBCSOURCE"
 #define defDBUSER             "DB_USER"
 #define defDBPASSWORD         "DB_PASSWORD"
+#define defSQUIDBINDIR        "SQUIDPATH"
 #define defSQUIDLOGDIR        "SQUIDLOGDIR"
 #define defSQUIDCACHEFILE     "SQUIDCACHEFILE"
 #define defPROXYID            "CACHENUM"
 #define defSLEEPTIME          "s_sleep"
 #define defDAEMONSTEP         "s_parser_time"
-
 #include "dbconn.h"
 
 /**

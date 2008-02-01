@@ -34,6 +34,8 @@ public:
 
   static Template * getTemplate(const string & name);
 
+  static Template * getTemplate(long id);
+
 private:
   static bool load();
 

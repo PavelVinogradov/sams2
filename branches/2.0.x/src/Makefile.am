@@ -1,7 +1,7 @@
 BUILT_SOURCES =
 CLEANFILES =
 
-bin_PROGRAMS = samsparser samsdaemon
+bin_PROGRAMS = samsparser samsdaemon samsredir
 
 # set the include path found by configure
 INCLUDES = $(all_includes)
@@ -60,3 +60,8 @@ samsdaemon_SOURCES = datefilter.cpp debug.cpp filter.cpp ip.cpp \
 			userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
 			template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp
 samsdaemon_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB)
+samsredir_SOURCES = dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
+	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
+	processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp template.cpp \
+	templates.cpp tools.cpp url.cpp samsredir.cpp groups.cpp net.cpp
+samsredir_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB)

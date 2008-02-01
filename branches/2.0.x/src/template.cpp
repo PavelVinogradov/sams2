@@ -29,7 +29,7 @@ Template::~Template()
 {
 }
 
-long Template::getId()
+long Template::getId() const
 {
   return _id;
 }
@@ -57,7 +57,7 @@ void Template::setAuth(Proxy::usrAuthType auth)
   _auth = auth;
 }
 
-Proxy::usrAuthType Template::getAuth()
+Proxy::usrAuthType Template::getAuth() const
 {
   return _auth;
 }
@@ -67,7 +67,21 @@ void Template::setQuote(long quote)
   _quote = quote;
 }
 
-long Template::getQuote()
+long Template::getQuote() const
 {
   return _quote;
+}
+
+void Template::setAllDeny(bool alldeny)
+{
+  _alldeny = alldeny;
+}
+
+void Template::addRestriction (const string & t, const string & u)
+{
+}
+
+bool Template::isUrlAllowed(const string &url) const
+{
+  return true;
 }

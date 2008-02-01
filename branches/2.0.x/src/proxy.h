@@ -114,6 +114,8 @@ public:
    */
   static long getEndValue ();
 
+  static string getRedirectAddr ();
+
   /**
    * @brief Поиск пользователя SAMS
    *
@@ -126,6 +128,19 @@ public:
    * @return Указатель на найденного пользователя или NULL при его отсутствии
    */
   static SAMSUser *findUser (const IP & ip, const string & ident);
+
+  /**
+   * @brief Поиск пользователя SAMS
+   *
+   * Поиск происходит в зависимости от настроек прокси.
+   * Если настроено автоматическое создание пользователей, то будет
+   * произведена попытка создать его.
+   *
+   * @param ip IP адрес в виде строки
+   * @param ident Ник пользователя, включая домен
+   * @return Указатель на найденного пользователя или NULL при его отсутствии
+   */
+  static SAMSUser *findUser (const string & ip, const string & ident);
 
   /**
    * @brief Записывает в БД измененные счетчики и статусы пользователей
