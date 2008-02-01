@@ -1,5 +1,0 @@
-#!/bin/sh
-
-for f in src/*.h src/*.cpp ; do
-	grep '#include' $f | grep '<' | tr '<>' '  ' | awk '{print $2}'
-done
