@@ -20,9 +20,18 @@ function DeleteShablon()
   
   if($sname!="default")
     {
-        //$DB->samsdb_query_value("SELECT * FROM shablon WHERE name=\"$id\" ");
-        //$row=$DB->samsdb_fetch_array();
-        $DB->samsdb_query("DELETE FROM shablon WHERE s_shablon_id='$id' ");
+        $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_shablon_id='$id' ");
+	$DB->free_samsdb_query();
+	if($num_rows==0)
+		{
+        		$DB->samsdb_query("DELETE FROM shablon WHERE s_shablon_id='$id' ");
+		}
+	else
+		{
+			PageTop("denied.gif","<FONT SIZE=+3 COLOR=\"RED\"> $shablonbuttom_9_delete_DeleteShablon_3 </FONT>");
+			echo "<FONT  SIZE=+1>$shablonbuttom_9_delete_DeleteShablon_1 $num_rows $shablonbuttom_9_delete_DeleteShablon_2</FONT>";
+			exit(0);
+		}
         //$result=mysql_query("DELETE FROM sconfig WHERE sname=\"$id\" ");
         //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
     }

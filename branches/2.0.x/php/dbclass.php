@@ -244,11 +244,15 @@ s_ldapserver varchar(30) NOT NULL DEFAULT '0.0.0.0',
 s_ldapbasedn varchar(50) NOT NULL DEFAULT 'workgroup', 
 s_ldapuser varchar(50) NOT NULL DEFAULT 'Administrator',
 s_ldappasswd varchar(50) NOT NULL DEFAULT '0', 
-s_ldapusergroup varchar(50) NOT NULL DEFAULT 'Users' )";
+s_ldapusergroup varchar(50) NOT NULL DEFAULT 'Users',
+s_autouser  int NOT NULL DEFAULT '0',
+s_autotpl varchar( 30 ) NULL ,
+s_autogrp varchar( 30 ) NULL )";
+
 //'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
 //$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
 $pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
-, '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users' ) ";
+, '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '', '' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
 $pgdb[6] = "INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1','0','' )";
@@ -269,7 +273,7 @@ $pgdb[14] = "CREATE TABLE samslog ( s_log_id SERIAL PRIMARY KEY, s_issuer varcha
 $pgdb[15] = "CREATE TABLE sgroup ( s_group_id SERIAL PRIMARY KEY, s_name varchar(50) )";
 $pgdb[16] = "INSERT INTO sgroup ( s_name ) VALUES( 'Administrators' )";
 $pgdb[17] = "INSERT INTO sgroup ( s_name ) VALUES( 'Users' )";
-$pgdb[18] = "CREATE TABLE reconfig ( s_proxy_id int, s_number int, s_service varchar(15), s_action varchar(10) )";
+$pgdb[18] = "CREATE TABLE reconfig ( s_proxy_id int, s_service varchar(15), s_action varchar(10) )";
 $pgdb[19] = "CREATE TABLE squiduser ( s_user_id SERIAL PRIMARY KEY, s_group_id int, s_shablon_id int, s_nick varchar(50), s_family varchar(50), s_name varchar(50), s_soname varchar(50), s_domain varchar(50), s_quote int NOT NULL default '0', s_size bigint NOT NULL default '0', s_hit bigint NOT NULL default '0', s_enabled smallint, s_ip char (15), s_passwd varchar(20), s_gauditor smallint, s_autherrorc smallint default '0', s_autherrort varchar(16) default '0', s_webaccess varchar(16) default 'W')";
 $pgdb[20] = "CREATE TABLE url (  s_url_id SERIAL PRIMARY KEY, s_redirect_id int, s_url varchar(132) )";
 $pgdb[21] = "CREATE TABLE squidcache (  s_cache_id SERIAL PRIMARY KEY, s_proxy_id int, s_date  date NOT NULL default '1980-01-01', s_time time NOT NULL default '00:00:00', s_user varchar(50), s_domain varchar(50), s_size int NOT NULL default '0', s_hit int NOT NULL default '0', s_ipaddr varchar(15), s_period int NOT NULL default '0', s_method varchar(15), s_url varchar(150) )";

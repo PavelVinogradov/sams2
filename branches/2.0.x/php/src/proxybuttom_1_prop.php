@@ -92,6 +92,9 @@ $ldapbasedn='workgroup';
 $ldapuser='Administrator';
 $ldappasswd='0';
 $ldapusergroup='Users';
+$autouser="0";
+$shablon="NONE";
+$group="NONE";
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["description"])) $description=$_GET["description"];
@@ -131,11 +134,14 @@ $ldapusergroup='Users';
 
   if(isset($_GET["defauth"])) $defauth=$_GET["defauth"];
 
+  if(isset($_GET["autouser"])) $autouser=$_GET["autouser"];
+  if(isset($_GET["shablon"])) $shablon=$_GET["shablon"];
+  if(isset($_GET["group"])) $group=$_GET["group"];
+
   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
 	{       exit;     }
 
-//echo "$adminaddr="root@localhost";
-
+  if($autouser=="on") $autouser=1;
   if($at==1)     $at="@";
   if($slashe==1)     $slashe="\\";
   if($plus==1)     $plus="+";
@@ -149,14 +155,16 @@ $ldapusergroup='Users';
 					s_ldapbasedn='$ldapbasedn', 
 					s_ldapuser='$ldapuser',
 					s_ldappasswd='$ldappasswd', 
-					s_ldapusergroup='$ldapusergroup'  
+					s_ldapusergroup='$ldapusergroup',
+					s_autouser='$autouser',
+					s_autotpl='$shablon',
+					s_autogrp='$group' 
 					WHERE s_proxy_id='$id'";
  $DB->samsdb_query($query);
   if($defauth!=$auth)
     $DB->samsdb_query("UPDATE shablon SET s_auth='$auth' WHERE s_auth!='ip' ");
   $SAMSConf->LoadConfig();
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
-
 }
 
 
@@ -164,6 +172,7 @@ function ProxyReConfigForm()
 {
   global $SAMSConf;
   global $PROXYConf;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   $files=array();
   if(isset($_GET["id"])) $proxy_id=$_GET["id"];
@@ -663,7 +672,74 @@ function ProxyReConfigForm()
   print("</SELECT>\n");
   print("$configbuttom_1_prop_SamsReConfigForm_55\n");
 
-  
+       print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+       print("function EnableUserAdd(formname) \n");
+       print("{\n");
+       print("  var addenabled=formname.autouser.checked; \n");
+       print("  if(addenabled==true) \n");
+       print("    {\n");
+       print("  	formname.shablon.disabled=false; \n");
+       print("  	formname.group.disabled=false; \n");
+       print("    }\n");
+       print("  if(addenabled==false) \n");
+       print("    {\n");
+       print("  	formname.shablon.disabled=true; \n");
+       print("  	formname.group.disabled=true; \n");
+       print("    }\n");
+       print("}\n");
+       print("</SCRIPT>\n");
+  $USERADD="";
+  if($PROXYConf->s_autouser==0)
+	{
+		$USERADD="DISABLED";
+	}  
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Автоматически создавать новых пользователей</B>\n");
+  if($PROXYConf->s_autouser==1)
+            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"autouser\" onchange=EnableUserAdd(samsreconfigform) CHECKED> \n");
+  else
+            print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"autouser\" onchange=EnableUserAdd(samsreconfigform) > \n");
+/**/
+//onchange=EnableDomainName(samsreconfigform)
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Шаблон у создаваемого пользователя</B>\n");
+  print("<TD><SELECT NAME=\"shablon\" ID=\"shablon\" SIZE=1 TABINDEX=30 $USERADD >\n");
+  print("<OPTION VALUE=\"-1\" SELECTED> NONE");
+  $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
+  while($row=$DB->samsdb_fetch_array())
+      {
+       if($row['s_shablon_id']==$PROXYConf->s_autotpl)
+         {
+            print("<OPTION VALUE=$row[s_shablon_id] SELECTED> $row[s_name]");
+         }
+       else
+         {
+            print("<OPTION VALUE=$row[s_shablon_id]> $row[s_name]");
+         }
+      }
+  print("</SELECT>\n");
+  $DB->free_samsdb_query();
+
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Группа у создаваемого пользователя $USERADD</B>\n");
+  print("<TD><SELECT NAME=\"group\" ID=\"group\" SIZE=1 TABINDEX=30 $USERADD >\n");
+  print("<OPTION VALUE=\"-1\" SELECTED> NONE");
+  $num_rows=$DB->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup");
+  while($row=$DB->samsdb_fetch_array())
+      {
+       if($row['s_group_id']==$PROXYConf->s_autogrp)
+         {
+           print("<OPTION VALUE=$row[s_group_id] SELECTED> $row[s_name] ");
+         }
+       else
+         {
+           print("<OPTION VALUE=$row[s_group_id]> $row[s_name] ");
+         }
+      }
+  print("</SELECT>\n");
+  $DB->free_samsdb_query();
+/**/
   
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");

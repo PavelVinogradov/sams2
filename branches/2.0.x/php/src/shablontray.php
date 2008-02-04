@@ -132,10 +132,9 @@ function ShablonUsers()
       while($row=$DB->samsdb_fetch_array())
          {
 	    $SECTED="";
-	    if($row['s_name']==$sid)
+	    if($row['s_shablon_id']==$sid)
 		$SECTED="SELECTED";
-	    if($row['s_name']!=$id)
-               print("<OPTION VALUE=\"$row[s_shablon_id]\" $SECTED> $row[s_name]\n");
+            print("<OPTION VALUE=\"$row[s_shablon_id]\" $SECTED> $row[s_name] \n");
          }
       print("</SELECT>\n");
       $DB->free_samsdb_query();

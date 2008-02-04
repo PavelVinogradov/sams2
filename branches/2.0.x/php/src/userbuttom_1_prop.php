@@ -59,6 +59,7 @@ function UpdateUser()
 //  $row=$DB->samsdb_fetch_array();
 //  if($auth=="ncsa"||$auth=="ip")
 //   {
+/*
      if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
      $num_rows=$DB->samsdb_query_value("SELECT s_passwd FROM squiduser WHERE s_user_id='$userid' ");
      $row=$DB->samsdb_fetch_array();
@@ -68,7 +69,7 @@ function UpdateUser()
        $passwd=$password;
  //  }
   $DB->free_samsdb_query();
-
+*/
 
 /* *************************************************** */
   if($W_access=="on") $W_access="W";
@@ -83,7 +84,10 @@ function UpdateUser()
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
   if($domain=="") 
 	$domain="workgroup";
-  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip', s_passwd='$passwd' WHERE s_user_id='$userid' ");
+// print("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip', s_passwd='$passwd' WHERE s_user_id='$userid' ");
+//exit(0);
+//  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip', s_passwd='$passwd' WHERE s_user_id='$userid' ");
+  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip' WHERE s_user_id='$userid' ");
 
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
@@ -134,6 +138,7 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_domain\" NAME=\"domain\" SIZE=15> \n");
 
+/*
 //  if( $USERConf->auth=="ncsa"||$USERConf->auth=="ip")
 //    {
        print("<TR>\n");
@@ -143,7 +148,7 @@ function UpdateUserForm()
        //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\">");
        print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$USERConf->s_passwd\">");
 //    }
-
+*/
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_4: \n");
@@ -177,7 +182,7 @@ function UpdateUserForm()
 //  $row_u=mysql_fetch_array($result_u);
   while($row2=$DB2->samsdb_fetch_array())
       {
-       if($row2['s_group_id']==$row['s_group_id'])
+       if($row2['s_group_id']==$USERConf->s_group_id)
          {
            print("<OPTION VALUE=$row2[s_group_id] SELECTED> $row2[s_name]");
          }
@@ -256,49 +261,49 @@ function UpdateUserForm()
   else
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"gauditor\" > \n");
 /* *************************************************** */
-  print("<TR><TD><B>Имеет право смотреть свою статистику  \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_18  \n");
   print("<TD>\n");
   $WCHECKED="";
   if($USERConf->W_access==1)
 	$WCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"W_access\" $WCHECKED> \n");
 
-  print("<TR><TD><B>Имеет право смотреть статистику пользователей своей группы \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_19 \n");
   print("<TD>\n");
   $GCHECKED="";
   if($USERConf->G_access==1)
 	$GCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"G_access\" $GCHECKED> \n");
 
-  print("<TR><TD><B>Имеет право смотреть статистику Всех пользователей \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_20 \n");
   print("<TD>\n");
   $SCHECKED="";
   if($USERConf->S_access==1)
 	$SCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"S_access\" $SCHECKED> \n");
 
-  print("<TR><TD><B>Имеет право активировать/отключать пользователей \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_21 \n");
   print("<TD>\n");
   $ACHECKED="";
   if($USERConf->A_access==1)
 	$ACHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"A_access\" $ACHECKED> \n");
 
-  print("<TR><TD><B>Имеет право добавлять пользователей в SAMS\n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_22 \n");
   print("<TD>\n");
   $UCHECKED="";
   if($USERConf->U_access==1)
 	$UCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"U_access\" $UCHECKED> \n");
 
-  print("<TR><TD><B>Имеет право изменять списки URL \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_23 \n");
   print("<TD>\n");
   $LCHECKED="";
   if($USERConf->L_access==1)
 	$LCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"L_access\" $LCHECKED> \n");
 
-  print("<TR><TD><B>Имеет право настраивать SAMS \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_24 \n");
   print("<TD>\n");
   $CCHECKED="";
   if($USERConf->C_access==1)

@@ -865,6 +865,19 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
 
   $filedeniedlisttray_filedeniedlisttray_1="File extensions.  <BR>List";
+
+  $shablonbuttom_9_delete_DeleteShablon_1="Template contains";
+  $shablonbuttom_9_delete_DeleteShablon_2="users";
+  $shablonbuttom_9_delete_DeleteShablon_3="Error of removal a template";
+
+  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
+  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
+  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
+  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
+  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
+  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
