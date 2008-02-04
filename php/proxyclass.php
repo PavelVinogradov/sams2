@@ -34,6 +34,9 @@ class SAMSPROXY
   var $s_ldapuser;
   var $s_ldappasswd;
   var $s_ldapusergroup;
+  var $s_autouser;
+  var $s_autotpl;
+  var $s_autogrp;
 
 function SAMSPROXY($proxy_id)
 {
@@ -73,6 +76,9 @@ function SAMSPROXY($proxy_id)
   $this->s_ldapuser=$row['s_ldapuser'];
   $this->s_ldappasswd=$row['s_ldappasswd'];
   $this->s_ldapusergroup=$row['s_ldapusergroup'];
+  $this->s_autouser=$row['s_autouser'];
+  $this->s_autotpl=$row['s_autotpl'];
+  $this->s_autogrp=$row['s_autogrp'];
 	
   $DB->free_samsdb_query();
 

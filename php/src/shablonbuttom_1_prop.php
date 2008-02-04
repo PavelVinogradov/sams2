@@ -286,17 +286,14 @@ function UpdateShablonForm()
      
   if($SHABLONConf->s_auth=="ntlm")   
      $NTLMSELECTED="SELECTED";
-//  if($SAMSConf->AUTH=="ntlm")   
      print("<OPTION value=ntlm $NTLMSELECTED> NTLM\n");
      
   if($SHABLONConf->s_auth=="adld")
      $ADSELECTED="SELECTED";
-//  if($SAMSConf->AUTH=="adld")
      print("<OPTION value=adld $ADSELECTED> ADLD\n");
      
   if($SHABLONConf->s_auth=="ncsa")   
      $NCSASELECTED="SELECTED";
-//  if($SAMSConf->AUTH=="ncsa")   
      print("<OPTION value=ncsa $NCSASELECTED> NCSA\n");
   
   print("</SELECT>\n");

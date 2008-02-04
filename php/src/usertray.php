@@ -184,7 +184,7 @@ function JSUserInfo()
   $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$USERConf->s_name
   <TR><TD><B>$usertray_UserForm_5:<TD>$USERConf->s_soname
   <TR><TD><B>$usertray_UserForm_6:<TD>$USERConf->s_family
-  <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_name
+  <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_group_name
   <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote
 	<TR><TD><B>$usertray_UserForm_9:<TD>$USERConf->s_size";
@@ -192,21 +192,20 @@ function JSUserInfo()
 	{
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$USERConf->s_shablon_name";
 	if( $USERConf->W_access == 1 ) 
-		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть свою статистику";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_18";
 	if( $USERConf->G_access == 1 ) 
-		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть статистику пользователей своей группы";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_19";
 	if($USERConf->S_access==1) 
-		$htmlcode=$htmlcode."<TR><TD>Имеет право смотреть статистику Всех пользователей";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_20";
 	if($USERConf->A_access==1) 
-		$htmlcode=$htmlcode."<TR><TD>Имеет право активировать/отключать пользователей";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_21";
 	if($USERConf->U_access==1) 
-		$htmlcode=$htmlcode."<TR><TD>Имеет право добавлять пользователей в SAMS";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_22";
 	if($USERConf->L_access==1)
-		$htmlcode=$htmlcode."<TR><TD>Имеет право изменять списки URL";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_23";
 	if($USERConf->C_access==1)
-		$htmlcode=$htmlcode."<TR><TD>Имеет право настраивать SAMS";
+		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_24";
     }
-/* *************************************************** */
 
  $htmlcode=$htmlcode."  </TABLE>";
 

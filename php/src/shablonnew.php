@@ -120,13 +120,10 @@ function NewShablonForm()
   print("$shablonnew_NewShablonForm_17</A>!\n");
   print("<TD>\n");
   print("<SELECT NAME=\"auth\"> \n");
-     print("<OPTION value=ip>IP\n");
-  if($SAMSConf->AUTH=="ntlm")   
-     print("<OPTION value=ntlm SELECTED>NTLM\n");
-  if($SAMSConf->AUTH=="adld")   
-     print("<OPTION value=adld SELECTED>ADLD\n");
-  if($SAMSConf->AUTH=="ncsa")   
-     print("<OPTION value=ncsa SELECTED>NCSA\n");
+     print("<OPTION value=ip SELECTED>IP\n");
+     print("<OPTION value=ntlm>NTLM\n");
+     print("<OPTION value=adld>ADLD\n");
+     print("<OPTION value=ncsa>NCSA\n");
   print("</SELECT>\n");
 
            print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");

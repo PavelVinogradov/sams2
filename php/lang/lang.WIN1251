@@ -152,14 +152,14 @@
   $usertray_UserAuthForm_1="Введите пароль пользователя";
   $usertray_UserForm_1="Пользователь";
   $usertray_UserForm_2="Домен:";
-  $usertray_UserForm_3="IP адрес/маска";
+  $usertray_UserForm_3="IP адрес";
   $usertray_UserForm_4="Имя";
   $usertray_UserForm_5="Отчество";
   $usertray_UserForm_6="Фамилия";
   $usertray_UserForm_7="Группа";
   $usertray_UserForm_8="Квота на скачивание";
   $usertray_UserForm_9="Получено";
-  $usertray_UserForm_10="Активен";
+  $usertray_UserForm_10="Статус";
   $usertray_UserForm_11="Отключен";
   $usertray_UserForm_12="Шаблон";
   $usertray_UserTray_1="Пользователь";
@@ -173,7 +173,7 @@
   $userstray_NewUserForm_4="Домен";
   $userstray_NewUserForm_5="Пароль для допуска пользователя<BR> в интернет и просмотра статистики";
   $userstray_NewUserForm_6="Пароль для просмотра<BR> статистики пользователем";
-  $userstray_NewUserForm_7="IP адрес/маска";
+  $userstray_NewUserForm_7="IP адрес";
   $userstray_NewUserForm_8="Имя";
   $userstray_NewUserForm_9="Отчество";
   $userstray_NewUserForm_10="Фамилия";
@@ -267,14 +267,14 @@
   $userbuttom_1_prop_UpdateUserForm_1="Изменение данных о пользователе";
   $userbuttom_1_prop_UpdateUserForm_2="Домен";
   $userbuttom_1_prop_UpdateUserForm_3="Пароль";
-  $userbuttom_1_prop_UpdateUserForm_4="IP адрес/маска";
+  $userbuttom_1_prop_UpdateUserForm_4="IP адрес";
   $userbuttom_1_prop_UpdateUserForm_5="Имя";
   $userbuttom_1_prop_UpdateUserForm_6="Отчество";
   $userbuttom_1_prop_UpdateUserForm_7="Фамилия";
   $userbuttom_1_prop_UpdateUserForm_8="Группа";
   $userbuttom_1_prop_UpdateUserForm_9="Разрешенный";
   $userbuttom_1_prop_UpdateUserForm_10="трафик (Мб)";
-  $userbuttom_1_prop_UpdateUserForm_11="Пользователь активен";
+  $userbuttom_1_prop_UpdateUserForm_11="Статус";
   $userbuttom_1_prop_UpdateUserForm_12="Шаблон";
   $userbuttom_1_prop_UpdateUserForm_13="Изменить данные";
   $userbuttom_1_prop_UpdateUserForm_14="Имеет право смотреть статистику<BR> пользователей своей группы:";
@@ -348,7 +348,7 @@
   $redirlisttray_AddRedirListForm_2="Название списка";
   $redirlisttray_AddRedirListForm_3="Создать";
   $redirlisttray_AddRedirListForm_4="Список содержит URL, запросы пользователей к которым будет перенаправлены";
-  $redirlisttray_RedirListTray_1="Перенаправление запроса.<BR> Список";
+  $redirlisttray_RedirListTray_1=" Перенаправление запроса <BR> Список ";
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1="Удалить список";
 
@@ -878,6 +878,21 @@
   $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
   $usersbuttom_1_useradd_AddUser_1="Пользователь с IP адресом ";
   $usersbuttom_1_useradd_AddUser_2=" Уже зарегистрирован в системе";
+
+  $filedeniedlisttray_filedeniedlisttray_1="Расширения файлов.  <BR>Список";
+
+  $shablonbuttom_9_delete_DeleteShablon_1="Шаблон присвоен";
+  $shablonbuttom_9_delete_DeleteShablon_2="пользователям";
+  $shablonbuttom_9_delete_DeleteShablon_3="Ошибка удаления шаблона";
+
+  $userbuttom_1_prop_UpdateUserForm_18="Имеет право смотреть свою статистику";
+  $userbuttom_1_prop_UpdateUserForm_19="Имеет право смотреть статистику пользователей своей группы";
+  $userbuttom_1_prop_UpdateUserForm_20="Имеет право смотреть статистику Всех пользователей";
+  $userbuttom_1_prop_UpdateUserForm_21="Имеет право активировать/отключать пользователей";
+  $userbuttom_1_prop_UpdateUserForm_22="Имеет право добавлять пользователей в SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
+  $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
