@@ -261,10 +261,6 @@ bool MYSQLQuery::sendQuery ()
             {
               case MYSQL_TYPE_STRING:
                 _param_real_len[i] = strlen((char *)_params[i].dst);
-//                if (_param_real_len[i] == 0)
-//                  sprintf((char *)_params[i].dst, "''");
-//                else
-//                  sprintf((char *)_params[i].dst, "'%s'", (char *)_params[i].dst);
                 break;
               default:
                 break;

@@ -67,26 +67,6 @@ public:
    */
   static string toString (usrAuthType t);
 
-  /**
-   * @brief Используемый шаблон при автоматическом создании пользователя
-   */
-  enum usrUseAutoTemplate
-  {
-    TPL_DEFAULT,                  ///< Использовать шаблон по умолчанию
-    TPL_SPECIFIED,                ///< Использовать указанный шаблон
-    TPL_TAKE_FROM_GROUP           ///< Имя шаблона сопадает с именем первичной группы пользователя
-  };
-
-  /**
-   * @brief Используемая группа при автоматическом создании пользователя
-   */
-  enum usrUseAutoGroup
-  {
-    GRP_DEFAULT,                  ///< Использовать группу по умолчанию
-    GRP_SPECIFIED,                ///< Использовать указанную группу
-    GRP_TAKE_FROM_GROUP           ///< Имя группы сопадает с именем первичной группы пользователя
-  };
-
   static void useConnection (DBConn * conn);
 
   static bool reload ();
@@ -163,10 +143,8 @@ protected:
   static bool _usedomain;              ///< Использовать или нет домен по умолчанию
   static string _defaultdomain;        ///< Домен по умолчанию
   static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
-  static usrUseAutoTemplate _autotpl;
-  static string _defaulttpl;
-  static usrUseAutoGroup _autogrp;
-  static string _defaultgrp;
+  static long _defaulttpl;
+  static long _defaultgrp;
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;
 };

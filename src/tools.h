@@ -155,6 +155,8 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
  */
 bool fileDelete (const string & path, const string & filemask);
 
+bool fileCopy (const string & name, const string & newname);
+
 /**
  * @brief Удаляет файл @a path
  *

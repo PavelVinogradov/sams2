@@ -49,10 +49,8 @@ bool Proxy::_needResolve = false;
 bool Proxy::_usedomain = false;
 string Proxy::_defaultdomain;
 bool Proxy::_autouser = false;
-Proxy::usrUseAutoTemplate Proxy::_autotpl;
-string Proxy::_defaulttpl;
-Proxy::usrUseAutoGroup Proxy::_autogrp;
-string Proxy::_defaultgrp;
+long Proxy::_defaulttpl;
+long Proxy::_defaultgrp;
 DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
 
@@ -193,31 +191,11 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
       if (_autouser)
         {
           Template *tpl = NULL;
-          int grp_id = -1;
-          switch (_autotpl)
-            {
-              case TPL_DEFAULT:
-              case TPL_SPECIFIED:
-                tpl = Templates::getTemplate (_defaulttpl);
-                break;
-              case TPL_TAKE_FROM_GROUP:
-                //not supported yet;
-                break;
-            }
-          switch (_autogrp)
-            {
-              case GRP_DEFAULT:
-              case GRP_SPECIFIED:
-                grp_id = Groups::getGroupId( _defaultgrp );
-                break;
-              case GRP_TAKE_FROM_GROUP:
-                //not supported yet;
-                break;
-            }
+          tpl = Templates::getTemplate (_defaulttpl);
 
-          if (!tpl || (grp_id == -1))
+          if (!tpl)
             {
-              DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Group or template could not be found");
+              DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Template could not be found");
               return NULL;
             }
 
@@ -237,8 +215,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
             usr->setNick (usrNick);
 
           usr->setDomain (usrDomain);
-          usr->setGroupId (grp_id);
-          usr->setShablonId (tpl->getId());
+          usr->setGroupId (_defaultgrp);
+          usr->setShablonId (_defaulttpl);
           usr->setQuote (tpl->getQuote());
           usr->setEnabled (SAMSUser::STAT_ACTIVE);
           if (!SAMSUsers::addNewUser (usr))
@@ -321,9 +299,7 @@ bool Proxy::reload ()
   char s_defaultdomain[25];
   long s_autouser;
   long s_autotpl;
-  char s_autotpl_val[30];
   long s_autogrp;
-  char s_autogrp_val[30];
 
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
@@ -392,24 +368,14 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
-  if (!query->bindCol (10, DBQuery::T_CHAR, s_autotpl_val, sizeof(s_autotpl_val)))
-    {
-      delete query;
-      return false;
-    }
-  if (!query->bindCol (11, DBQuery::T_LONG, &s_autogrp, 0))
-    {
-      delete query;
-      return false;
-    }
-  if (!query->bindCol (12, DBQuery::T_CHAR, s_autogrp_val, sizeof(s_autogrp_val)))
+  if (!query->bindCol (10, DBQuery::T_LONG, &s_autogrp, 0))
     {
       delete query;
       return false;
     }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
-  sqlcmd << ", s_autouser, s_autotpl, s_autotpl_val, s_autogrp, s_autogrp_val";
+  sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -455,10 +421,8 @@ bool Proxy::reload ()
   else
     _autouser = false;
 
-  _autotpl = (usrUseAutoTemplate) s_autotpl;
-  _defaulttpl = s_autotpl_val;
-  _autogrp = (usrUseAutoGroup) s_autogrp;
-  _defaultgrp = s_autogrp_val;
+  _defaulttpl = s_autotpl;
+  _defaultgrp = s_autogrp;
 
   if (strcmp (s_realsize, "real") == 0)
     _trafType = TRAF_REAL;
@@ -481,32 +445,8 @@ bool Proxy::reload ()
 
   if (_autouser)
     {
-      switch (_autotpl)
-        {
-          case TPL_DEFAULT:
-            _defaulttpl = "Default";
-            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
-            break;
-          case TPL_SPECIFIED:
-            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
-            break;
-          case TPL_TAKE_FROM_GROUP:
-            DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << "take name from user primary group");
-            break;
-        }
-      switch (_autogrp)
-        {
-          case GRP_DEFAULT:
-            _defaultgrp = "Default";
-            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
-            break;
-          case GRP_SPECIFIED:
-            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
-            break;
-          case GRP_TAKE_FROM_GROUP:
-            DEBUG (DEBUG_PROXY, "AutoUserGroup: " << "take name from user primary group");
-            break;
-        }
+      DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
+      DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
     }
   delete query;
 

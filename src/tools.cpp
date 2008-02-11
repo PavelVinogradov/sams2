@@ -234,6 +234,53 @@ bool fileDelete (const string & path)
   return res;
 }
 
+bool fileCopy (const string & name, const string & newname)
+{
+  if (name.empty ())
+    {
+      WARNING ("Empty source name");
+      return false;
+    }
+
+  if (newname.empty ())
+    {
+      WARNING ("Empty destination name");
+      return false;
+    }
+
+  ifstream in;
+
+  in.open (name.c_str (), ios_base::in);
+  if (!in.is_open ())
+    {
+      ERROR ("Failed to open file " << name);
+      return false;
+    }
+
+  ofstream out;
+  out.open (newname.c_str (), ios_base::out);
+  if (!out.is_open ())
+    {
+      ERROR ("Failed to open file " << newname);
+      in.close ();
+      return false;
+    }
+
+  streamsize readed;
+  char buf[10240];
+  while (in.good ())
+    {
+      in.read (buf, sizeof (buf));
+      readed = in.gcount ();
+      out.write(buf, readed);
+    }
+
+  in.close ();
+  out.close ();
+
+  return true;
+}
+
 bool fileExist (const string & path)
 {
   return (access (path.c_str (), F_OK) == 0);

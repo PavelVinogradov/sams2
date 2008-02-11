@@ -14,41 +14,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TEMPLATES_H
-#define TEMPLATES_H
+#include "timerange.h"
 
-using namespace std;
+TimeRange::TimeRange(long id, const string &name)
+{
+}
 
-#include <map>
-#include <vector>
-#include <string>
 
-class Template;
-class DBConn;
+TimeRange::~TimeRange()
+{
+}
 
-class Templates{
-public:
-  static bool reload();
 
-  static void useConnection(DBConn *conn);
-
-  static void destroy();
-
-  static Template * getTemplate(const string & name);
-
-  static Template * getTemplate(long id);
-
-  static vector<string> getNames();
-
-  static vector<long> getIds();
-
-private:
-  static bool load();
-
-  static bool _loaded;
-  static map<string, Template*> _list;
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
-};
-
-#endif
