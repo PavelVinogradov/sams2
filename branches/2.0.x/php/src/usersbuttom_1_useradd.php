@@ -160,7 +160,7 @@ function AddUser()
 
   if(strlen($userip)>7)
     {
-      $num_rows=$DB->samsdb_query_value("SELECT s_ip FROM squidusers WHERE s_ip='$userip' ");
+      $num_rows=$DB->samsdb_query_value("SELECT s_ip FROM squiduser WHERE s_ip='$userip' ");
       if($num_rows>0)
         {
            PageTop("denied.gif","<FONT COLOR=\"RED\">$usersbuttom_1_useradd_AddUser_1 $userip $usersbuttom_1_useradd_AddUser_2</FONT>");
@@ -169,7 +169,7 @@ function AddUser()
      }
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
-      $DB->samsdb_query("INSERT INTO squidusers ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$newusernick', '$userdomain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname', '$userip', '$pass', '0', '0', '0') ");
+      $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$newusernick', '$userdomain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname', '$userip', '$pass', '0', '0', '0') ");
 //     if($result!=FALSE)
 //         UpdateLog("$SAMSConf->adminname","Added user $newusernick ","01");
     }

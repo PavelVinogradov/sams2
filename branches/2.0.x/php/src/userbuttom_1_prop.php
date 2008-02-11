@@ -44,32 +44,6 @@ function UpdateUser()
      $gauditor=1;
   else
      $gauditor=0;
-/* 
-  if($defstatus!=$enabled)
-    {
-      if($enabled==1)
-           UpdateLog("$SAMSConf->adminname","Activate user $usernick","01");
-      if($enabled==-1)
-           UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
-      if($enabled==0)
-           UpdateLog("$SAMSConf->adminname","Deactivate user $usernick","01");
-    }
-*/
-//  $num_rows=$DB->samsdb_query_value("SELECT s_passwd FROM squiduser WHERE s_user_id='$userid' ");
-//  $row=$DB->samsdb_fetch_array();
-//  if($auth=="ncsa"||$auth=="ip")
-//   {
-/*
-     if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
-     $num_rows=$DB->samsdb_query_value("SELECT s_passwd FROM squiduser WHERE s_user_id='$userid' ");
-     $row=$DB->samsdb_fetch_array();
-     $defpassw=$row['s_passwd'];
-     $password=crypt($passwd, substr($passwd, 0, 2));
-     if($password!=$defpassw)
-       $passwd=$password;
- //  }
-  $DB->free_samsdb_query();
-*/
 
 /* *************************************************** */
   if($W_access=="on") $W_access="W";
@@ -84,11 +58,13 @@ function UpdateUser()
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
   if($domain=="") 
 	$domain="workgroup";
-// print("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip', s_passwd='$passwd' WHERE s_user_id='$userid' ");
-//exit(0);
-//  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip', s_passwd='$passwd' WHERE s_user_id='$userid' ");
-  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip' WHERE s_user_id='$userid' ");
+  $a=explode("+",$usershablon);
 
+  $usershablon=$a[0];
+  if($userquote==$a[2])
+	$userquote=$a[1];  
+
+  $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip' WHERE s_user_id='$userid' ");
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("        parent.tray.location.href=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$userid\";\n");
@@ -238,16 +214,16 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 >\n");
 
-  $num_rows=$DB2->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
+  $num_rows=$DB2->samsdb_query_value("SELECT s_shablon_id,s_name,s_quote FROM shablon");
   while($row2=$DB2->samsdb_fetch_array())
       {
        if($row2['s_shablon_id']==$USERConf->s_shablon_id)
          {
-            print("<OPTION VALUE=$row2[s_shablon_id] SELECTED> $row2[s_name]");
+            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\" SELECTED> $row2[s_name]");
          }
        else
          {
-            print("<OPTION VALUE=$row2[s_shablon_id]> $row2[s_name]");
+            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\"> $row2[s_name]");
          }
       }
   print("</SELECT>\n");
@@ -311,12 +287,6 @@ function UpdateUserForm()
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"C_access\" $CCHECKED> \n");
 
 /* *************************************************** */
-
-
-
-
-
-
   
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$userbuttom_1_prop_UpdateUserForm_13\">\n");
