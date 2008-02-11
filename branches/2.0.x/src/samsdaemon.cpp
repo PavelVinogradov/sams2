@@ -14,9 +14,15 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+using namespace std;
+
 #include <unistd.h>
 #include <getopt.h>
 #include <signal.h>
+
+#include <fstream>
+#include <sstream>
 
 #include "config.h"
 #include "configmake.h"
@@ -40,7 +46,9 @@
 #include "localnetworks.h"
 #include "groups.h"
 #include "templates.h"
+#include "timeranges.h"
 #include "tools.h"
+#include "squidconf.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -55,6 +63,8 @@ void usage ()
   cout << "    samsdaemon [COMMAND] [OPTION]..." << endl;
   cout << endl;
   cout << "COMMANDS" << endl;
+  cout << "    -s, --stop" << endl;
+  cout << "                Stop samsdaemon." << endl;
   cout << "    -h, --help" << endl;
   cout << "                Show this help screen and exit." << endl;
   cout << "    -V, --version" << endl;
@@ -64,9 +74,9 @@ void usage ()
   cout << "The following options are available:" << endl;
   cout << endl;
   cout << "OPTIONS" << endl;
-  cout << "        --fork" << endl;
+  cout << "    -f, --fork" << endl;
   cout << "                Force to start in background mode." << endl;
-  cout << "        --no-fork" << endl;
+  cout << "    -F, --no-fork" << endl;
   cout << "                Force to start in foreground mode." << endl;
   cout << "    -t, --timeout=SECONDS" << endl;
   cout << "                Always reconnect every SECONDS. Default is 3600 (one hour)." << endl;
@@ -99,10 +109,12 @@ void version ()
 void reload (int signal_number)
 {
   DEBUG (DEBUG_DAEMON, "Reloading");
+  SamsConfig::reload ();
+  TimeRanges::reload ();
   Templates::reload ();
   Proxy::reload ();
   LocalNetworks::reload();
-  Groups::reload();
+  Groups::reload ();
   SAMSUsers::reload ();
 }
 
@@ -114,23 +126,20 @@ int main (int argc, char *argv[])
   int parse_errors = 0;
   int c;
   int err;
-  uint dbglevel;
+  uint dbglevel = 0;
   int reconnect_timeout = 3600;
   string optname = "";
   bool must_fork = true;
   bool use_must_fork = false;
-
+  bool stop_it = false;
   Logger::setSender("samsdaemon");
 
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
-
-  dbglevel = SamsConfig::getInt (defDEBUG, err);
-
-  if (err == ERR_OK)
-    Logger::setDebugLevel (dbglevel);
+  SamsConfig::reload ();
 
   static struct option long_options[] = {
+    {"stop",     0, 0, 's'},     // Показывает справку по опциям командной строки и завершает работу
     {"help",     0, 0, 'h'},     // Показывает справку по опциям командной строки и завершает работу
     {"version",  0, 0, 'V'},     // Показывает версию программы и завершает работу
     {"verbose",  0, 0, 'v'},     // Устанавливает режим многословности
@@ -146,7 +155,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVvd:fFt:l:", long_options, &option_index);
+      c = getopt_long (argc, argv, "shVvd:fFt:l:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -154,6 +163,10 @@ int main (int argc, char *argv[])
         case 0:
           optname = long_options[option_index].name;
           DEBUG (DEBUG_CMDARG, "option: " << optname << "=" << optarg);
+          break;
+        case 's':
+          DEBUG (DEBUG_CMDARG, "option: --stop");
+          stop_it = true;
           break;
         case 'h':
           DEBUG (DEBUG_CMDARG, "option: --help");
@@ -207,6 +220,12 @@ int main (int argc, char *argv[])
       exit (parse_errors);
     }
 
+//  if (dbglevel == 100);
+//    {
+//      dbglevel = SamsConfig::getInt (defDEBUG, err);
+//      if (err != ERR_OK)
+//          dbglevel = 0;
+//    }
   int proxyid = SamsConfig::getInt (defPROXYID, err);
   if (err != ERR_OK)
     {
@@ -253,7 +272,8 @@ int main (int argc, char *argv[])
 
   pid_t childpid=0;
 
-  if ( (use_must_fork && must_fork) || (dbglevel == 0 && !use_must_fork) )
+  DEBUG (DEBUG_DAEMON, "dbglevel="<<dbglevel<<", use_must_fork="<<use_must_fork<<", must_fork="<<must_fork);
+  if ( (use_must_fork && must_fork) || ( (dbglevel == 0) && !use_must_fork) )
     {
       childpid = fork ();
     }
@@ -304,11 +324,40 @@ int main (int argc, char *argv[])
       return 1;
     }
 
+  if (stop_it)
+    {
+      DBQuery *q = NULL;
+      if (engine == DBConn::DB_UODBC)
+        {
+          #ifdef USE_UNIXODBC
+          q = new ODBCQuery((ODBCConn*)conn);
+          #endif
+        }
+      else if (engine == DBConn::DB_MYSQL)
+        {
+          #ifdef USE_MYSQL
+          q = new MYSQLQuery((MYSQLConn*)conn);
+          #endif
+        }
+      basic_stringstream < char >cmd_stop;
+      cmd_stop << "insert into reconfig set s_proxy_id=" << proxyid << ", s_service='proxy', s_action='shutdown'";
+      bool res = q->sendQueryDirect (cmd_stop.str());
+
+      delete q;
+      delete conn;
+
+      if (res)
+        return 0;
+
+      return 2;
+    }
+
   SAMSUsers::useConnection (conn);
   LocalNetworks::useConnection (conn);
   Groups::useConnection (conn);
   Proxy::useConnection (conn);
   Templates::useConnection (conn);
+  TimeRanges::useConnection (conn);
   Logger::useConnection (conn);
 
   ProcessManager process;
@@ -429,6 +478,7 @@ int main (int argc, char *argv[])
               delete conn;
               exit(0);
             }
+          //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='reload'
           if (s_service == service_proxy && s_action == action_reload)
             {
               cmd_del.str("");
@@ -438,6 +488,7 @@ int main (int argc, char *argv[])
               query->sendQueryDirect (cmd_del.str());
               reload(-1);
             }
+          //insert into reconfig set s_proxy_id=1, s_service='squid', s_action='reconfig'
           if (s_service == service_squid && s_action == action_reconfig)
             {
               cmd_del.str("");
@@ -448,19 +499,19 @@ int main (int argc, char *argv[])
 
               Logger::addLog(Logger::LK_DAEMON, "Got request to reconfigure SQUID");
 
-              // Create extenal files
-              // ...
-
-              // Change config files
-              // ...
-
-              // Reconfigure squid
+              // Изменить squid.conf и если ошибок нет, то перезапустить squid
               msg.str("");
-              err = system (reconfiguresquid.c_str());
-              if (err)
-                msg << "Failed to restart SQUID: " << err;
+              if (SquidConf::defineAccessRules())
+                {
+                  err = system (reconfiguresquid.c_str());
+                  if (err)
+                    msg << "Failed to restart SQUID: " << err;
+                  else
+                    msg << "Reconfigure & restart SQUID: ok";
+                }
               else
-                msg << "Reconfigure & restart SQUID: ok";
+                msg << "Failed to change squid.conf";
+
               Logger::addLog (Logger::LK_DAEMON, msg.str ());
             }
         }

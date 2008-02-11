@@ -252,7 +252,7 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
 
 SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
 {
-  if (!load())
+  if (!load ())
     return NULL;
 
   SAMSUser *usr = NULL;
@@ -266,6 +266,24 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
         }
     }
   return usr;
+}
+
+void SAMSUsers::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
+{
+  load ();
+
+  lst.clear();
+  vector < SAMSUser * >::iterator it;
+  for (it = _users.begin (); it != _users.end (); it++)
+    {
+      if ((*it)->getShablonId () == id)
+        {
+          DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << *(*it));
+          lst.push_back ( (*it) );
+        }
+    }
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "("<<id<<")] Qty users in template: " << lst.size ());
+//  sort(lst.begin(), lst.end());
 }
 
 bool SAMSUsers::addNewUser(SAMSUser *user)

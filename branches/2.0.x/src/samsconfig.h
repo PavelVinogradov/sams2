@@ -33,6 +33,7 @@ using namespace std;
 #define defDBPASSWORD         "DB_PASSWORD"
 #define defSQUIDBINDIR        "SQUIDPATH"
 #define defSQUIDLOGDIR        "SQUIDLOGDIR"
+#define defSQUIDCONFDIR       "SQUIDROOTDIR"
 #define defSQUIDCACHEFILE     "SQUIDCACHEFILE"
 #define defPROXYID            "CACHENUM"
 #define defSLEEPTIME          "s_sleep"

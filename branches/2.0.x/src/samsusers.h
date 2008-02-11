@@ -58,6 +58,8 @@ public:
    */
   static SAMSUser *findUserByIP (const IP & ip);
 
+  static void getUsersByTemplate (long id, vector<SAMSUser *> &lst);
+
   /**
    * @brief Добавление пользователя, не существующего в БД
    *

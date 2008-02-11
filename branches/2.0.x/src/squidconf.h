@@ -14,41 +14,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TEMPLATES_H
-#define TEMPLATES_H
+#ifndef SQUIDCONF_H
+#define SQUIDCONF_H
+
+#include "config.h"
 
 using namespace std;
 
-#include <map>
-#include <vector>
+#include <fstream>
 #include <string>
 
-class Template;
-class DBConn;
-
-class Templates{
+class SquidConf
+{
 public:
-  static bool reload();
+  SquidConf ();
 
-  static void useConnection(DBConn *conn);
+  ~SquidConf ();
 
-  static void destroy();
-
-  static Template * getTemplate(const string & name);
-
-  static Template * getTemplate(long id);
-
-  static vector<string> getNames();
-
-  static vector<long> getIds();
+  static bool defineAccessRules();
 
 private:
-  static bool load();
+  static bool defineACL ();
+  static string skipComments (ifstream & in, ofstream & out);
 
-  static bool _loaded;
-  static map<string, Template*> _list;
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
+  static string sams2_marker;
+
 };
 
 #endif
