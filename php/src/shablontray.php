@@ -13,11 +13,15 @@ function MoveUsersToShablon()
 
   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
 	{       exit;     }
- if(isset($_GET["id"])) $id=$_GET["id"];
- if(isset($_GET["username"])) $users=$_GET["username"];
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["username"])) $users=$_GET["username"];
   for($i=0;$i<count($users);$i++)
     {
-           $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_shablon_id='$id' WHERE s_user_id='$users[$i]'");
+	$a=explode("+",$users[$i]);
+	if($a[1]!=$a[2])
+		$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_shablon_id='$id' WHERE s_user_id='$a[0]'");
+	else
+		$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_shablon_id='$id',s_quote='$a[3]' WHERE s_user_id='$a[0]'");
     }
   print("<SCRIPT>\n");
   print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$id&sid=ALL\";\n");
@@ -141,12 +145,12 @@ function ShablonUsers()
 //echo "<BR>SELECT * FROM squiduser WHERE s_shablon_id='$sid'&&s_shablon_id!='$id' ORDER BY s_nick<BR>";
       print("<SELECT NAME=\"username[]\" SIZE=10 MULTIPLE >\n");
       if($sid=="ALL")
-	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_shablon_id!='$id' ORDER BY s_nick");
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.s_user_id,squiduser.s_nick,squiduser.s_quote,shablon.s_quote as def_quote FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE shablon.s_shablon_id!='$id' ORDER BY s_nick");
       else
-	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_shablon_id='$sid' ORDER BY s_nick");
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.s_user_id,squiduser.s_nick,squiduser.s_quote,shablon.s_quote as def_quote FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE shablon.s_shablon_id='$sid' ORDER BY s_nick");
       while($row=$DB->samsdb_fetch_array())
          {
-            print("<OPTION ID=\"$row[s_user_id]\" VALUE=$row[s_user_id]> $row[s_nick]\n");
+            print("<OPTION ID=\"$row[s_user_id]\" VALUE=$row[s_user_id]+$row[s_quote]+$row[def_quote]+$SHABLONConf->s_quote> $row[s_nick]\n");
          }
       print("</SELECT>\n");
       print("<P> <INPUT TYPE=\"SUBMIT\" VALUE=\"$shablontray_ShablonUsers_3 '$SHABLONConf->s_name'\" \n> ");
