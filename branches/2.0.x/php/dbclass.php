@@ -246,8 +246,8 @@ s_ldapuser varchar(50) NOT NULL DEFAULT 'Administrator',
 s_ldappasswd varchar(50) NOT NULL DEFAULT '0', 
 s_ldapusergroup varchar(50) NOT NULL DEFAULT 'Users',
 s_autouser  int NOT NULL DEFAULT '0',
-s_autotpl varchar( 30 ) NULL ,
-s_autogrp varchar( 30 ) NULL )";
+s_autotpl int NULL ,
+s_autogrp int NULL )";
 
 //'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
 //$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
@@ -281,12 +281,12 @@ $pgdb[22] = "CREATE TABLE cachesum (  s_proxy_id int, s_date  date NOT NULL defa
 s_size bigint NOT NULL default '0', 
 s_hit bigint NOT NULL default '0') ";
 //$pgdb[31] = "CREATE UNIQUE INDEX index_user on squidcache using btree ( 's_user' 'varchar_ops', 's_proxy_id' 'integer_ops')";
-$pgdb[23] = "CREATE UNIQUE INDEX idx_squidcache on squidcache ( s_user, s_proxy_id )";
+$pgdb[23] = "CREATE INDEX idx_squidcache on squidcache ( s_user, s_proxy_id )";
 //$pgdb[32] = "CREATE UNIQUE INDEX index_user on cachesum using btree ( 's_user' 'varchar_ops', 's_proxy_id' 'integer_ops')";
-$pgdb[24] = "CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_user, s_proxy_id )";
-$pgdb[25] = "CREATE UNIQUE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
-$pgdb[26] = "CREATE UNIQUE INDEX idx_samslog on samslog ( s_code, s_issuer )";
-$pgdb[27] = "CREATE UNIQUE INDEX idx_url on url ( s_redirect_id, s_url )";
+$pgdb[24] = "CREATE INDEX idx_cachesum on cachesum ( s_user, s_proxy_id )";
+$pgdb[25] = "CREATE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
+$pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
+$pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 
     $crpasswd=crypt("qwerty","00");
     if($db=="MySQL" && ($odbc==0 || $odbc == "No"))
