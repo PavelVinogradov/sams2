@@ -18,23 +18,23 @@
 
 #include "debug.h"
 
-Template::Template(long id, const string & name)
+Template::Template (long id, const string & name)
 {
   _id = id;
   _name = name;
 }
 
 
-Template::~Template()
+Template::~Template ()
 {
 }
 
-long Template::getId() const
+long Template::getId () const
 {
   return _id;
 }
 
-void Template::setAuth(const string & auth)
+void Template::setAuth (const string & auth)
 {
   if (auth == "ip")
     _auth = Proxy::AUTH_IP;
@@ -52,36 +52,43 @@ void Template::setAuth(const string & auth)
     }
 }
 
-void Template::setAuth(Proxy::usrAuthType auth)
+void Template::setAuth (Proxy::usrAuthType auth)
 {
   _auth = auth;
 }
 
-Proxy::usrAuthType Template::getAuth() const
+Proxy::usrAuthType Template::getAuth () const
 {
   return _auth;
 }
 
-void Template::setQuote(long quote)
+void Template::setQuote (long quote)
 {
   _quote = quote;
 }
 
-long Template::getQuote() const
+long Template::getQuote () const
 {
   return _quote;
 }
 
-void Template::setAllDeny(bool alldeny)
+void Template::setAllDeny (bool alldeny)
 {
   _alldeny = alldeny;
 }
 
-void Template::addRestriction (const string & t, const string & u)
+void Template::addTimeRange (long id)
 {
+  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id);
+  _times.push_back (id);
 }
 
-bool Template::isUrlAllowed(const string &url) const
+vector <long> Template::getTimeRangeIds ()
+{
+  return _times;
+}
+
+bool Template::isUrlAllowed (const string &url) const
 {
   return true;
 }

@@ -34,6 +34,7 @@
 bool TimeRanges::_loaded = false;
 DBConn *TimeRanges::_conn;                ///< Соединение с БД
 bool TimeRanges::_connection_owner;
+map<string, TimeRange*> TimeRanges::_list;
 
 bool TimeRanges::load()
 {
@@ -149,14 +150,14 @@ bool TimeRanges::reload()
   basic_stringstream < char >sql_cmd;
 
   TimeRange *trange = NULL;
-//  _list.clear();
+  _list.clear();
   while (query->fetch())
     {
       DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << s_trange_id << ", " << s_name << ", " << s_days << ", " << s_timestart << ", " << s_timeend);
 
       trange = new TimeRange (s_trange_id, s_name);
-//      trange->setTimeRange (s_days, s_timestart, s_timeend);
-//      _list[s_name] = trange;
+      trange->setTimeRange (s_days, s_timestart, s_timeend);
+      _list[s_name] = trange;
     }
 
   delete query;
@@ -194,3 +195,29 @@ void TimeRanges::destroy()
     }
 }
 
+vector<long> TimeRanges::getIds()
+{
+  load();
+
+  vector<long> lst;
+  map <string, TimeRange*>::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      lst.push_back((*it).second->getId ());
+    }
+  return lst;
+}
+
+TimeRange * TimeRanges::getTimeRange (long id)
+{
+  load();
+
+  map < string, TimeRange* >::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      if (id == (*it).second->getId ())
+        return (*it).second;
+    }
+  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id << " not found");
+  return NULL;
+}

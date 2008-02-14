@@ -21,6 +21,8 @@ using namespace std;
 
 #include <string>
 
+#include <time.h>
+
 class TimeRange
 {
 public:
@@ -28,6 +30,26 @@ public:
 
   ~TimeRange();
 
+  long getId () const;
+
+  void setTimeRange(const string &days, const string &tstart, const string &tend);
+
+  bool hasMidnight () const;
+
+  string getDays () const;
+
+  string getStartTimeStr () const;
+
+  string getEndTimeStr () const;
+
+private:
+  long  _id;
+  string _days;
+  string _tstart;
+  string _tend;
+  time_t _time_start;           ///< Начало интервала
+  time_t _time_end;             ///< Окончание интервала
+  bool _hasMidnight;
 };
 
 #endif

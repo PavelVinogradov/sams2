@@ -85,7 +85,6 @@ bool Templates::reload()
     }
 
 
-  basic_stringstream < char >sqlcmd;
   DBQuery *query = NULL;
   DBQuery *query2 = NULL;
 
@@ -112,12 +111,11 @@ bool Templates::reload()
   else
     return false;
 
+  long s_trange_id;
   long s_tpl_id;
   char s_name[25];
   char s_auth[5];
   long s_quote;
-  char s_type[25];
-  char s_url[1024];
   long s_alldenied;
 
   if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
@@ -151,13 +149,7 @@ bool Templates::reload()
       return false;
     }
 
-  if (!query2->bindCol (1, DBQuery::T_CHAR,  s_type, sizeof(s_type)))
-    {
-      delete query;
-      delete query2;
-      return false;
-    }
-  if (!query2->bindCol (2, DBQuery::T_CHAR,  s_url, sizeof(s_url)))
+  if (!query2->bindCol (1, DBQuery::T_LONG,  &s_trange_id, 0))
     {
       delete query;
       delete query2;
@@ -171,7 +163,7 @@ bool Templates::reload()
       return false;
     }
 
-  basic_stringstream < char >sql_cmd;
+  basic_stringstream < char >sqlcmd;
 
   Template *tpl = NULL;
   _list.clear();
@@ -182,19 +174,17 @@ bool Templates::reload()
       tpl->setQuote (s_quote);
       tpl->setAllDeny( ((s_alldenied==0)?false:true) );
       _list[s_name] = tpl;
-/*
-      sql_cmd << "select r.s_type, u.s_url from shablon t, sconfig t_r, redirect r, url u";
-      sql_cmd << " where t.s_shablon_id=" << s_tpl_id << " and t_r.s_shablon_id=t.s_shablon_id";
-      sql_cmd << " and t_r.s_redirect_id=r.s_redirect_id and u.s_redirect_id=r.s_redirect_id";
-      if (!query2->sendQueryDirect (sql_cmd.str ()))
+
+      sqlcmd.str("");
+      sqlcmd << "select s_trange_id from sconfig_time where s_shablon_id=" << s_tpl_id;
+      if (!query2->sendQueryDirect (sqlcmd.str ()))
         {
           continue;
         }
       while (query2->fetch())
         {
-          tpl->addRestriction(s_type, s_url);
+          tpl->addTimeRange (s_trange_id);
         }
-*/
     }
   delete query;
   delete query2;

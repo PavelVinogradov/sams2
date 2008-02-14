@@ -5,12 +5,10 @@
        всего пакета, иначе никакие операции с БД производится не будут
 - 1.4) В таблице reconfig удалить поле s_number
 - 1.5) В таблице squiduser в поля s_size и s_hit добавить атрибут UNSIGNED
-- 1.6) ALTER TABLE proxy  ADD s_autouser    INT           NOT NULL DEFAULT 0
-                          ADD s_autotpl     INT           NULL DEFAULT 0,
-                          ADD s_autotpl_val VARCHAR( 30 ) NULL ,
-                          ADD s_autogrp     INT           NULL DEFAULT 0,
-                          ADD s_autogrp_val VARCHAR( 30 ) NULL ;
-  1.7) Индексы в таблицах определены либо избыточно, либо неверно
++ 1.6) ALTER TABLE proxy  ADD s_autouser    INT           NOT NULL DEFAULT 0,
+                          ADD s_autotpl     INT           NULL DEFAULT NULL,
+                          ADD s_autogrp     INT           NULL DEFAULT NULL,
++ 1.7) Индексы в таблицах определены либо избыточно, либо неверно
        [таблица proxy]
        s_proxy_id: UNIQUE(s_proxy_id) - удалить, так как поле s_proxy_id уже является первичным ключем
 
@@ -54,7 +52,7 @@
 
 2) WEB интерфейс
   2.1) Редактирование списка локальных адресов (доменов): не работает изменение
-- 2.2) Нет возможности переименовывать/удалять группы пользователей
+- 2.2) Нет возможности переименовывать группы пользователей
 - 2.3) При изменении данных одного пользователя неверно устанавливаются
        первоначальные (существующие) Группа, Активность, Шаблон.
        Там-же предлагаю строку 'Пользователь активен' переименовать в 'Статус'
