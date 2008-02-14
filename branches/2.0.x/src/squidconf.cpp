@@ -14,6 +14,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <sstream>
+
 #include "squidconf.h"
 
 #include "debug.h"
@@ -23,6 +25,8 @@
 #include "proxy.h"
 #include "templates.h"
 #include "template.h"
+#include "timeranges.h"
+#include "timerange.h"
 #include "tools.h"
 
 string SquidConf::sams2_marker = " # sams2 marker";
@@ -81,6 +85,12 @@ bool SquidConf::defineACL ()
   string nextline;
   string current_tag = "unknown";
   vector <string> v;
+
+  vector<long> tpls = Templates::getIds();
+  vector<long> time_ids;
+  Template * tpl;
+  uint i, j;
+
   while (fin.good ())
     {
       getline (fin, line);
@@ -115,33 +125,73 @@ bool SquidConf::defineACL ()
           if (current_tag == "acl")
             {
               // Создаем списки пользователей
-              vector<long> tpls = Templates::getIds();
               vector<SAMSUser *> users;
-              for (uint i = 0; i < tpls.size (); i++)
+              for (i = 0; i < tpls.size (); i++)
                 {
                   SAMSUsers::getUsersByTemplate (tpls[i], users);
                   if (users.empty ())
                     continue;
 
-                  string method;
-                  Template * tpl = Templates::getTemplate(tpls[i]);
                   DEBUG(DEBUG_DAEMON, "Processing "<<users.size()<<" user[s] in template " << tpls[i]);
 
+                  string method;
+                  tpl = Templates::getTemplate(tpls[i]);
                   if (tpl->getAuth () == Proxy::AUTH_IP)
                     method = "src";
                   else
                     method = "proxy_auth";
                   vector<SAMSUser *>::iterator it;
+
                   for (it = users.begin(); it != users.end(); it++)
                     {
                       fout << "acl tpl" <<tpls[i] << " " << method << " " << *(*it) << sams2_marker << endl;
                     }
                 }
+
+              // Создаем списки временных границ
+              time_ids = TimeRanges::getIds();
+              for (i = 0; i < time_ids.size (); i++)
+                {
+                  TimeRange * tr = TimeRanges::getTimeRange(time_ids[i]);
+                  if (tr->hasMidnight ())
+                    {
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-23:59" << sams2_marker << endl;
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << "00:00-" << tr->getEndTimeStr () << sams2_marker << endl;
+                    }
+                  else
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << sams2_marker << endl;
+                }
             }
 
           if (current_tag == "http_access")
-            fout << "# Setup HTTP Access here" << sams2_marker << endl;
+            {
+              fout << "# Setup HTTP Access here" << sams2_marker << endl;
+              vector <long> times;
+              basic_stringstream < char >restrict;
+              for (i = 0; i < tpls.size (); i++)
+                {
+                  tpl = Templates::getTemplate(tpls[i]);
+                  if ((tpl->getAuth() != Proxy::AUTH_NCSA) && (tpl->getAuth() != Proxy::AUTH_IP))
+                    {
+                      DEBUG(DEBUG_DAEMON, "Template " << tpls[i] << " has external auth scheme, skipping.");
+                      continue;
+                    }
 
+                  //Определяем временные границы для текущего шаблона
+                  restrict.str("");
+                  time_ids = tpl->getTimeRangeIds ();
+                  for (j = 0; j < time_ids.size(); j++)
+                    restrict << " time" << time_ids[j];
+
+                  //Определяем запретные адреса для текущего шаблона
+                  //Определяем запретные типы файлов для текущего шаблона
+                  //Определяем запретные регулярные выражения для текущего шаблона
+
+                  restrict.str("");
+
+                  fout << "http_access allow tpl" << tpls[i] << restrict.str() << sams2_marker << endl;
+                }
+            }
           fout << nextline << endl;
         }
       else

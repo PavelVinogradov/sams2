@@ -20,10 +20,12 @@
 using namespace std;
 
 #include <string>
+#include <vector>
 
 #include "proxy.h"
 
-class Template{
+class Template
+{
 public:
 
   Template (long id, const string & name);
@@ -44,7 +46,9 @@ public:
 
   void setAllDeny(bool alldeny);
 
-  void addRestriction (const string & t, const string & u);
+  void addTimeRange (long id);
+
+  vector <long> getTimeRangeIds ();
 
   bool isUrlAllowed (const string & url) const;
 
@@ -54,6 +58,7 @@ private:
   Proxy::usrAuthType _auth;
   long _quote;
   bool _alldeny;
+  vector <long> _times;
 };
 
 #endif

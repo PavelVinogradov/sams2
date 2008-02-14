@@ -24,21 +24,27 @@ using namespace std;
 #include <string>
 
 class DBConn;
+class TimeRange;
 
 class TimeRanges
 {
 public:
-  static bool reload();
+  static bool reload ();
 
-  static void useConnection(DBConn *conn);
+  static void useConnection (DBConn *conn);
 
-  static void destroy();
+  static void destroy ();
+
+  static vector<long> getIds ();
+
+  static TimeRange * getTimeRange (long id);
 private:
   static bool load();
 
   static bool _loaded;
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;
+  static map<string, TimeRange*> _list;
 };
 
 #endif
