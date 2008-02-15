@@ -182,6 +182,8 @@ bool SamsConfig::readDB ()
       return false;
     }
 
+  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] Using connection " << conn);
+
   if (!conn->connect ())
     {
       delete query;

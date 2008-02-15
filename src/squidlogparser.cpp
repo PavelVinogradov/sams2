@@ -105,10 +105,9 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 {
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname << ", " << from_begin);
 
-  DBQuery *query = NULL;
-
   DBConn::DBEngine engine = SamsConfig::getEngine();
 
+  DBQuery *query = NULL;
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
@@ -144,14 +143,14 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     }
   if (!query->fetch ())
     {
-      delete query;
       return;
     }
+  delete query;
+  query = NULL;
 
   if (strcmp (s_version, VERSION) != 0)
     {
       ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << s_version);
-      delete query;
       return;
     }
   else
@@ -161,13 +160,11 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Reading file " << fname);
 
-
   fstream in;
   in.open (fname.c_str (), ios_base::in);
   if (!in.is_open ())
     {
       ERROR ("Failed to open file " << fname);
-      delete query;
       return;
     }
 
@@ -188,11 +185,9 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   if (fpos == fsize)
     {
       INFO("No new values");
-      delete query;
       in.close();
       return;
     }
-
 
   in.seekg (fpos, ios::beg);
 
@@ -200,107 +195,217 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   char s_time[15];
   char s_user[50];
   char s_domain[50];
-  long s_size;
-  long s_hit;
+  long long s_size;
+  long long s_hit;
   char s_ipaddr[15];
   long s_period;
   char s_method[15];
   char s_url[1024];
   struct tm date_time;
+  long s_enabled;
+  long s_user_id;
 
-  sql_cmd.str("");
 
-  sql_cmd << "insert into squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_ipaddr, s_period, s_method, s_url)";
-  sql_cmd << " VALUES ("<<_proxyid<<", ?,?,?,?,?,?,?,?,?,?)";
-
-  if (!query->prepareQuery (sql_cmd.str ()))
+  DBQuery *updUserQuery = NULL;
+  basic_stringstream < char > user_update_cmd;
+  user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
+  if (engine == DBConn::DB_UODBC)
     {
-      delete query;
+      #ifdef USE_UNIXODBC
+      updUserQuery = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      updUserQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  if (!updUserQuery->prepareQuery (user_update_cmd.str ()))
+    {
+      delete updUserQuery;
       return;
     }
-  if (!query->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+  if (!updUserQuery->bindParam (1, DBQuery::T_LONGLONG, &s_size, 0))
     {
-      delete query;
+      delete updUserQuery;
       return;
     }
-  if (!query->bindParam (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
+  if (!updUserQuery->bindParam (2, DBQuery::T_LONGLONG, &s_hit, 0))
     {
-      delete query;
+      delete updUserQuery;
       return;
     }
-  if (!query->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+  if (!updUserQuery->bindParam (3, DBQuery::T_LONG, &s_enabled, 0))
     {
-      delete query;
+      delete updUserQuery;
       return;
     }
-  if (!query->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+  if (!updUserQuery->bindParam (4, DBQuery::T_LONG, &s_user_id, 0))
     {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (5, DBQuery::T_LONG, &s_size, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (6, DBQuery::T_LONG, &s_hit, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (8, DBQuery::T_LONG, &s_period, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
-    {
-      delete query;
+      delete updUserQuery;
       return;
     }
 
+
+  DBQuery *updCacheQuery = NULL;
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      updCacheQuery = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      updCacheQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  basic_stringstream < char > cache_update_cmd;
+  cache_update_cmd << "insert into squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_ipaddr, s_period, s_method, s_url)";
+  cache_update_cmd << " VALUES ("<<_proxyid<<", ?,?,?,?,?,?,?,?,?,?)";
+  if (!updCacheQuery->prepareQuery (cache_update_cmd.str ()))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (5, DBQuery::T_LONGLONG, &s_size, 0))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (6, DBQuery::T_LONGLONG, &s_hit, 0))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (8, DBQuery::T_LONG, &s_period, 0))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCacheQuery->bindParam (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
+    {
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+
+
+  DBQuery *updProxyQuery = NULL;
+  if (!from_begin)
+  {
+    if (engine == DBConn::DB_UODBC)
+      {
+        #ifdef USE_UNIXODBC
+        updProxyQuery = new ODBCQuery((ODBCConn*)conn);
+        #endif
+      }
+    else if (engine == DBConn::DB_MYSQL)
+      {
+        #ifdef USE_MYSQL
+        updProxyQuery = new MYSQLQuery((MYSQLConn*)conn);
+        #endif
+      }
+    basic_stringstream < char > proxy_update_cmd;
+    proxy_update_cmd << "update proxy set s_endvalue=? where s_proxy_id=" << _proxyid;
+    if (!updProxyQuery->prepareQuery (proxy_update_cmd.str ()))
+      {
+        delete updProxyQuery;
+        delete updCacheQuery;
+        delete updUserQuery;
+        return;
+      }
+    if (!updProxyQuery->bindParam (1, DBQuery::T_LONG, &fpos, 0))
+      {
+        delete query;
+        delete updCacheQuery;
+        delete updUserQuery;
+        return;
+      }
+  }
+
+
+  Proxy::TrafficType trafType = Proxy::getTrafficType ();
+  long kbsize = Proxy::getKbSize ();
   string line;
   SquidLogLine sll;
   SAMSUser *usr;
+  long long used_size;
+  long long allowed_limit;
   while (in.good ())
     {
       getline (in, line);
+
+      // Игнорируем пустые строки
       if (line.empty ())
         continue;
+
+      // Игнорируем строки с неверным форматом
       if (sll.setLine (line) != true)
         continue;
 
+      // Ищем пользователя, а если его нет и настроен autouser, то создаем
       usr = Proxy::findUser (sll.getIP (), sll.getIdent ());
 
+      // Если пользователь по каким-то причинам не найден, то переходим к следующей строке
       if (usr == NULL)
         continue;
 
+      // Применяем различные фильтры
       date_time = sll.getTime ();
       strftime (s_date, sizeof (s_date), "%Y-%m-%d", &date_time);
       strftime (s_time, sizeof (s_time), "%H:%M:%S", &date_time);
-
       if ((_date_filter != NULL) && (!_date_filter->match (date_time)))
         {
           DEBUG (DEBUG_USER, "Filtered out: " << s_date << " " << s_time << " outside date interval");
           continue;
         }
-
       if ((_user_filter != NULL) && (!_user_filter->match (usr)))
         {
           DEBUG (DEBUG_USER, "Filtered out: " << *usr << " not in the filter");
           continue;
         }
-
       if (LocalNetworks::isLocalUrl (sll.getUrl ()))
         {
           DEBUG (DEBUG_URL, "Consider url is local");
@@ -313,7 +418,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       memset (s_method, 0, sizeof(s_method));
       memset (s_url, 0, sizeof(s_url));
 
-
+      // Анализируем входную строку
       s_hit = 0;
       switch (sll.getCacheResult ())
         {
@@ -350,28 +455,57 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
           s_size = sll.getSize ();
           break;
         }
-
       sprintf (s_user, "%s", usr->getNick ().c_str ());
       sprintf (s_domain, "%s", usr->getDomain ().c_str ());
-
       sprintf (s_ipaddr, "%s", sll.getIP ().asString ().c_str ());
-
       s_period = sll.getBusytime ();
-
       sprintf (s_url, "%s", sll.getUrl ().c_str ());
-
       sprintf (s_method, "method");
 
-      if (!query->sendQuery ())
+      // Обновляем squidcache
+      if (!updCacheQuery->sendQuery ())
         continue;
 
+      // Обновляем счетчики пользователя
+      allowed_limit = usr->getQuote();
+      allowed_limit *= kbsize * kbsize;
+      s_size = usr->getSize();
+      s_hit = usr->getHit();
+      s_user_id = usr->getId();
+      switch (trafType)
+        {
+          case Proxy::TRAF_REAL:
+            used_size = s_size - s_hit;
+            break;
+          case Proxy::TRAF_FULL:
+            used_size = s_size;
+            break;
+          default:
+            used_size = 0;
+            break;
+        }
+      if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == SAMSUser::STAT_ACTIVE) )
+        {
+          usr->setEnabled( SAMSUser::STAT_INACTIVE );
+          basic_stringstream < char >mess;
+          mess << "User " << *usr << " deactivated.";
+          INFO (mess.str ());
+          Logger::addLog(Logger::LK_USER, mess.str());
+        }
+      s_enabled = (long)usr->getEnabled();
+      updUserQuery->sendQuery ();
+
+      // Обновляем смещение в файле access.log
       if (!from_begin)
-        Proxy::setEndValue (in.tellg());
+        {
+          fpos = in.tellg ();
+          updProxyQuery->sendQuery ();
+        }
     }
   in.close ();
 
-  Proxy::commitChanges ();
 
+/*
   sql_cmd.str("");
   sql_cmd << "delete from cachesum where s_proxy_id=" << _proxyid;
 
@@ -389,6 +523,11 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
   query->sendQueryDirect (sql_cmd.str ());
   delete query;
+*/
+
+  delete updProxyQuery;
+  delete updCacheQuery;
+  delete updUserQuery;
 
   return;
 }

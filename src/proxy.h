@@ -94,6 +94,10 @@ public:
    */
   static long getEndValue ();
 
+  static long getKbSize ();
+
+  static TrafficType getTrafficType ();
+
   static string getRedirectAddr ();
 
   /**
@@ -121,11 +125,6 @@ public:
    * @return Указатель на найденного пользователя или NULL при его отсутствии
    */
   static SAMSUser *findUser (const string & ip, const string & ident);
-
-  /**
-   * @brief Записывает в БД измененные счетчики и статусы пользователей
-   */
-  static void commitChanges ();
 
 protected:
   /**

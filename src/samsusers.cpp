@@ -182,19 +182,26 @@ bool SAMSUsers::reload()
       return false;
     }
   _users.clear();
+
+  // Используется только для предотвращения утечки памяти
+  string s_tmp;
+
   while (query->fetch ())
     {
       usr = new SAMSUser ();
       usr->setId (s_user_id);
       usr->setGroupId (s_group_id);
       usr->setShablonId (s_shablon_id);
-      usr->setNick (s_nick);
-      usr->setDomain (s_domain);
+      s_tmp = s_nick;
+      usr->setNick (s_tmp);
+      s_tmp = s_domain;
+      usr->setDomain (s_tmp);
       usr->setQuote (s_quote);
       usr->setSize (s_size);
       usr->setHit (s_hit);
       usr->setEnabled (s_enabled);
-      usr->setIP (s_ip);
+      s_tmp = s_ip;
+      usr->setIP (s_tmp);
 
       _users.push_back (usr);
     }
@@ -214,10 +221,21 @@ void SAMSUsers::destroy()
       delete _conn;
       _conn = NULL;
     }
-  else
+  else if (_conn)
     {
       DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
+  else
+    {
+      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Not connected");
+    }
+
+  vector < SAMSUser * >::iterator it;
+  for (it = _users.begin (); it != _users.end (); it++)
+    {
+      delete *it;
+    }
+  _users.clear();
 }
 
 bool SAMSUsers::load ()
