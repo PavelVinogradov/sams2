@@ -28,6 +28,7 @@ MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
   _param_real_len = NULL;
   _statement = NULL;
   _binded = false;
+  _res = NULL;
 /*
   if (conn)
     {
@@ -361,10 +362,14 @@ void MYSQLQuery::destroy ()
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
+  if (_res)
+    mysql_free_result (_res);
   if (_statement)
     mysql_stmt_close (_statement);
   if (_bind)
     free (_bind);
+  if (_param_real_len)
+    free (_param_real_len);
 
   _statement = NULL;
   _bind = NULL;

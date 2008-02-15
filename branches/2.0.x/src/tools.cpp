@@ -69,10 +69,10 @@ string StripCharacters (const string & str, const string & needless)
 string TrimCharactersLeft (const string & str, const string & needless)
 {
   int pos;
-  string res;
+  string res = "";
 
   if (str.empty ())
-    return "";
+    return res;
 
   pos = str.find_first_not_of (needless);
   if (pos >= 0)
@@ -87,10 +87,10 @@ string TrimCharactersLeft (const string & str, const string & needless)
 string TrimCharactersRight (const string & str, const string & needless)
 {
   int pos;
-  string res;
+  string res = "";
 
   if (str.empty ())
-    return "";
+    return res;
 
   pos = str.find_last_not_of (needless);
   if (pos >= 0)
@@ -103,7 +103,9 @@ string TrimCharactersRight (const string & str, const string & needless)
 
 string TrimCharacters (const string & str, const string & needless)
 {
-  return TrimCharactersLeft (TrimCharactersRight (str, needless), needless);
+  string s_tmp = TrimCharactersRight (str, needless);
+  s_tmp = TrimCharactersLeft (s_tmp, needless);
+  return s_tmp;
 }
 
 string TrimSpacesLeft (const string & str)

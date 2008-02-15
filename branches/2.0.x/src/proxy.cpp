@@ -143,6 +143,20 @@ long Proxy::getEndValue()
   return _endvalue;
 }
 
+long Proxy::getKbSize ()
+{
+  load();
+
+  return _kbsize;
+}
+
+Proxy::TrafficType Proxy::getTrafficType ()
+{
+  load();
+
+  return _trafType;
+}
+
 string Proxy::getRedirectAddr ()
 {
   return "http://redirect.addr.here";
@@ -467,124 +481,5 @@ void Proxy::destroy()
     {
       DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
-}
-
-void Proxy::commitChanges ()
-{
-  vector < SAMSUser * >::iterator it;
-  SAMSUser *usr;
-  long long allowed_limit;
-  long long s_size;
-  long long s_hit;
-  long s_enabled;
-  long s_user_id;
-  basic_stringstream < char > update_cmd;
-
-  load();
-
-  DBQuery *query = NULL;
-
-  DBConn::DBEngine engine = _conn->getEngine();
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
-      return;
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
-
-  update_cmd << "update proxy set s_endvalue=" << _endvalue << " where s_proxy_id=" << _id;
-  if (!query->sendQueryDirect( update_cmd.str ()))
-    {
-      delete query;
-      return;
-    }
-
-  update_cmd.str("");
-  update_cmd << "update squiduser set";
-  update_cmd << " s_size=?";
-  update_cmd << ",s_hit=?";
-  update_cmd << ",s_enabled=?";
-  update_cmd << " where s_user_id=?";
-  if (!query->prepareQuery (update_cmd.str ()))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (1, DBQuery::T_LONGLONG, &s_size, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (2, DBQuery::T_LONGLONG, &s_hit, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (3, DBQuery::T_LONG, &s_enabled, 0))
-    {
-      delete query;
-      return;
-    }
-  if (!query->bindParam (4, DBQuery::T_LONG, &s_user_id, 0))
-    {
-      delete query;
-      return;
-    }
-
-  long long used_size;
-  for (it=SAMSUsers::_users.begin(); it != SAMSUsers::_users.end(); it++)
-    {
-      usr = *it;
-      allowed_limit = usr->getQuote();
-      allowed_limit *= _kbsize * _kbsize;
-      s_size = usr->getSize();
-      s_hit = usr->getHit();
-      s_user_id = usr->getId();
-
-      switch (_trafType)
-        {
-          case TRAF_REAL:
-            used_size = s_size - s_hit;
-            break;
-          case TRAF_FULL:
-            used_size = s_size;
-            break;
-          default:
-            used_size = 0;
-            break;
-        }
-
-      DEBUG(DEBUG_USER, *usr << " size="<<used_size<<" limit="<<allowed_limit);
-
-      if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == SAMSUser::STAT_ACTIVE) )
-        {
-          usr->setEnabled( SAMSUser::STAT_INACTIVE );
-          basic_stringstream < char >mess;
-
-          mess << "User " << *usr << " deactivated.";
-
-          INFO (mess.str ());
-          Logger::addLog(Logger::LK_USER, mess.str());
-        }
-
-      s_enabled = (long)usr->getEnabled();
-
-      if (!query->sendQuery ())
-        continue;
-    }
-
-  delete query;
 }
 

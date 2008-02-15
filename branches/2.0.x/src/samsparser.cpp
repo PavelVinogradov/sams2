@@ -27,6 +27,9 @@
 #include "datefilter.h"
 #include "userfilter.h"
 #include "processmanager.h"
+#include "localnetworks.h"
+#include "samsusers.h"
+#include "proxy.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -330,4 +333,7 @@ int main (int argc, char *argv[])
   if (cleaner != NULL)
     delete cleaner;
 
+  LocalNetworks::destroy ();
+  SAMSUsers::destroy ();
+  Proxy::destroy ();
 }
