@@ -216,10 +216,20 @@ void Templates::destroy()
       delete _conn;
       _conn = NULL;
     }
-  else
+  else if (_conn)
     {
       DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
+  else
+    {
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not connected");
+    }
+  map < string, Template* >::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      delete (*it).second;
+    }
+  _list.clear ();
 }
 
 Template * Templates::getTemplate(const string & name)

@@ -197,6 +197,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   char s_domain[50];
   long long s_size;
   long long s_hit;
+  long long cachesum_size;
+  long long cachesum_hit;
   char s_ipaddr[15];
   long s_period;
   char s_method[15];
@@ -207,8 +209,6 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
 
   DBQuery *updUserQuery = NULL;
-  basic_stringstream < char > user_update_cmd;
-  user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
@@ -221,6 +221,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       updUserQuery = new MYSQLQuery((MYSQLConn*)conn);
       #endif
     }
+  basic_stringstream < char > user_update_cmd;
+  user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
   if (!updUserQuery->prepareQuery (user_update_cmd.str ()))
     {
       delete updUserQuery;
@@ -358,12 +360,228 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       }
     if (!updProxyQuery->bindParam (1, DBQuery::T_LONG, &fpos, 0))
       {
-        delete query;
+        delete updProxyQuery;
         delete updCacheQuery;
         delete updUserQuery;
         return;
       }
   }
+
+  DBQuery *selCachesumQuery = NULL;
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      selCachesumQuery = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      selCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  basic_stringstream < char > cachesum_select_cmd;
+/*
+  if (!selCachesumQuery->prepareQuery (cachesum_select_cmd.str ()))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+*/
+  if (!selCachesumQuery->bindCol (1, DBQuery::T_LONGLONG, &cachesum_size, 0))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!selCachesumQuery->bindCol (2, DBQuery::T_LONGLONG, &cachesum_hit, 0))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+/*
+  if (!selCachesumQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!selCachesumQuery->bindParam (2, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!selCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+    {
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+*/
+
+
+  DBQuery *insCachesumQuery = NULL;
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      insCachesumQuery = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      insCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  basic_stringstream < char > cachesum_insert_cmd;
+  cachesum_insert_cmd << "insert into cachesum (s_proxy_id, s_date, s_domain, s_user, s_size, s_hit)";
+  cachesum_insert_cmd << " values (" << _proxyid << ", ?, ?, ?, ?, ?)";
+  if (!insCachesumQuery->prepareQuery (cachesum_insert_cmd.str ()))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!insCachesumQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!insCachesumQuery->bindParam (2, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!insCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!insCachesumQuery->bindParam (4, DBQuery::T_LONGLONG, &cachesum_size, 0))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!insCachesumQuery->bindParam (5, DBQuery::T_LONGLONG, &cachesum_hit, 0))
+    {
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+
+
+  DBQuery *updCachesumQuery = NULL;
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      updCachesumQuery = new ODBCQuery((ODBCConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      updCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  basic_stringstream < char > cachesum_update_cmd;
+  cachesum_update_cmd << "update cachesum set s_size=?, s_hit=? where s_date=? and s_domain=? and s_user=? and s_proxy_id=" << _proxyid;
+  if (!updCachesumQuery->prepareQuery (cachesum_update_cmd.str ()))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCachesumQuery->bindParam (1, DBQuery::T_LONGLONG, &cachesum_size, 0))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCachesumQuery->bindParam (2, DBQuery::T_LONGLONG, &cachesum_hit, 0))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_date, sizeof (s_date)))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCachesumQuery->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
+  if (!updCachesumQuery->bindParam (5, DBQuery::T_CHAR, s_user, sizeof (s_user)))
+    {
+      delete updCachesumQuery;
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
+    }
 
 
   Proxy::TrafficType trafType = Proxy::getTrafficType ();
@@ -466,6 +684,32 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       if (!updCacheQuery->sendQuery ())
         continue;
 
+
+      // Обновляем cachesum
+      ///< @todo Для поиска значений в cachesum вместо прямого запроса выполнять подготовленный
+      cachesum_select_cmd.str("");
+      cachesum_select_cmd << "select s_size, s_hit from cachesum where s_proxy_id=" << _proxyid;
+      cachesum_select_cmd << " and s_date='" << s_date <<"' and s_domain='" << s_domain << "' and s_user='" << s_user << "'";
+      if (!selCachesumQuery->sendQueryDirect (cachesum_select_cmd.str ()))
+        continue;
+
+      if (!selCachesumQuery->fetch ()) // такой записи еще нет, нужно добавлять
+        {
+          cachesum_size = s_size;
+          cachesum_hit = s_hit;
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Set cachesum for "<<s_user<<": cachesum_size=" << cachesum_size << ", cachesum_hit=" << cachesum_hit);
+          insCachesumQuery->sendQuery ();
+        }
+      else //такая запись существует, нужно обновлять
+        {
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Got cachesum for "<<s_user<<": cachesum_size=" << cachesum_size << ", cachesum_hit=" << cachesum_hit);
+          cachesum_size += s_size;
+          cachesum_hit += s_hit;
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Update cachesum for "<<s_user<<": cachesum_size=" << cachesum_size << ", cachesum_hit=" << cachesum_hit);
+          updCachesumQuery->sendQuery ();
+        }
+
+
       // Обновляем счетчики пользователя
       allowed_limit = usr->getQuote();
       allowed_limit *= kbsize * kbsize;
@@ -495,6 +739,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       s_enabled = (long)usr->getEnabled();
       updUserQuery->sendQuery ();
 
+
       // Обновляем смещение в файле access.log
       if (!from_begin)
         {
@@ -505,26 +750,9 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   in.close ();
 
 
-/*
-  sql_cmd.str("");
-  sql_cmd << "delete from cachesum where s_proxy_id=" << _proxyid;
-
-  if (!query->sendQueryDirect (sql_cmd.str ()))
-    {
-      delete query;
-      return;
-    }
-
-  sql_cmd.str("");
-  sql_cmd << "insert into cachesum select " << _proxyid;
-  sql_cmd << ", s_date, s_user, s_domain, sum(s_size), sum(s_hit)";
-  sql_cmd << " from squidcache where s_proxy_id=" << _proxyid;
-  sql_cmd << " group by s_date, s_domain, s_user";
-
-  query->sendQueryDirect (sql_cmd.str ());
-  delete query;
-*/
-
+  delete selCachesumQuery;
+  delete insCachesumQuery;
+  delete updCachesumQuery;
   delete updProxyQuery;
   delete updCacheQuery;
   delete updUserQuery;

@@ -48,7 +48,9 @@ using namespace std;
 class SamsConfig
 {
 public:
-  static bool reload();
+  static bool reload ();
+
+  static void destroy ();
 
     /**
      *  @brief Возвращает строковое значение параметра @a attrname.
