@@ -394,5 +394,6 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   INFO (mess.str ());
   Logger::addLog(Logger::LK_USER, mess.str());
 
+  delete query;
   return true;
 }

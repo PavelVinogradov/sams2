@@ -233,10 +233,15 @@ void Logger::destroy()
       delete _conn;
       _conn = NULL;
     }
-  else
+  else if (_conn)
     {
       DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
+  else
+    {
+      DEBUG (DEBUG_LOGGER, "[" << __FUNCTION__ << "] Not connected");
+    }
+  stop ();
 }
 
 
@@ -273,7 +278,7 @@ void Logger::addLog(LogKind code, const string &mess)
       _connection_owner = true;
     }
 
-  DBQuery *query;
+  DBQuery *query = NULL;
 
   if (_conn->getEngine() == DBConn::DB_UODBC)
     {

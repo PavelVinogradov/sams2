@@ -63,6 +63,11 @@ bool SamsConfig::reload()
   return true;
 }
 
+void SamsConfig::destroy ()
+{
+  _attributes.clear ();
+}
+
 bool SamsConfig::readFile ()
 {
   fstream in;

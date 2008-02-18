@@ -27,6 +27,7 @@ Template::Template (long id, const string & name)
 
 Template::~Template ()
 {
+  _times.clear();
 }
 
 long Template::getId () const

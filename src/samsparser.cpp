@@ -29,6 +29,7 @@
 #include "processmanager.h"
 #include "localnetworks.h"
 #include "samsusers.h"
+#include "templates.h"
 #include "proxy.h"
 
 /**
@@ -333,7 +334,12 @@ int main (int argc, char *argv[])
   if (cleaner != NULL)
     delete cleaner;
 
+  process.stop ();
+
   LocalNetworks::destroy ();
+  Templates::destroy ();
   SAMSUsers::destroy ();
   Proxy::destroy ();
+  Logger::destroy ();
+  SamsConfig::destroy ();
 }

@@ -40,15 +40,13 @@ public:
   ~MYSQLQuery();
 
   bool sendQueryDirect (const string & query);
-
   bool bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen);
 
+  bool prepareQuery (const string & query);
+//  bool bindResult (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindParam (uint num, enum_field_types dstType, void *buf, int bufLen);
-
-  bool prepareQuery (const string & query);
-
   bool sendQuery ();
 
   bool fetch ();
@@ -67,12 +65,16 @@ private:
     //void *use_dst;
     int len;
   };
+  bool _prepeared_statement;
+  MYSQL_STMT *_statement;
   vector<struct Column> _columns;
   vector<struct Param> _params;
-  MYSQL_STMT *_statement;
-  MYSQL_BIND *_bind;
+  MYSQL_BIND *_bind_param;
+  MYSQL_BIND *_bind_column;
   ulong *_param_real_len;
-  bool _binded;
+  ulong *_columns_real_len;
+  bool _param_binded;
+  bool _col_binded;
   MYSQL_RES *_res;
   MYSQLConn *_conn;
 

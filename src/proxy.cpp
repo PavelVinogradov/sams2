@@ -213,7 +213,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
               return NULL;
             }
 
-          SAMSUser *usr = new SAMSUser ();
+          usr = new SAMSUser ();
           if (tpl->getAuth() == Proxy::AUTH_IP)
             {
               usr->setNick (ip.asString());
