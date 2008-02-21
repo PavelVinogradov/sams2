@@ -1,5 +1,11 @@
 <?php
 
+function ReturnDate($string)
+{
+  $newstring=sprintf("%s.%s.%s",substr($string,8,2),substr($string,5,2),substr($string,0,4));
+  return($newstring);
+}
+
 function UserAuth()
 {
   global $SAMSConf;
