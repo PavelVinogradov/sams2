@@ -95,12 +95,12 @@ function EndDate()
 
 function DATESELECT($sdate, $edate)
 {
-	if($s_date!=0)
+	if($sdate!="")
 	{
 		$a=explode("-",$sdate);
-		$this->s_day=$a[0];
+		$this->s_day=$a[2];
 		$this->s_month=$a[1];
-		$this->s_year=$a[2];
+		$this->s_year=$a[0];
 	}
 	else
 	{
@@ -108,12 +108,12 @@ function DATESELECT($sdate, $edate)
 		$this->s_month=date("n");
 		$this->s_year=date("Y");
 	}
-	if($s_date!=0)
+	if($edate!="")
 	{
 		$e=explode("-",$edate);
-		$this->e_day=$e[0];
+		$this->e_day=$e[2];
 		$this->e_month=$e[1];
-		$this->e_year=$e[2];
+		$this->e_year=$e[0];
 	}
 	else
 	{
@@ -121,7 +121,7 @@ function DATESELECT($sdate, $edate)
 		$this->e_month=date("n");
 		$this->e_year=date("Y");
 	}
-echo "$this->s_year-$this->s_month-$this->s_day $this->e_year-$this->e_month-$this->e_day<BR>";
+//echo "$this->s_year-$this->s_month-$this->s_day $this->e_year-$this->e_month-$this->e_day<BR>";
 }
 
 }

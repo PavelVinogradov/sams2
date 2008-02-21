@@ -67,6 +67,15 @@ if(isset($_POST["username"])) $username=$_POST["username"];
 if(isset($_GET["id"])) $userid=$_GET["id"];
 if(isset($_GET["gb"])) $gb=$_GET["gb"];
 
+if(isset($_GET["SDay"])) $sday=$_GET["SDay"];
+if(isset($_GET["EDay"])) $eday=$_GET["EDay"];
+if(isset($_GET["SMon"])) $smon=$_GET["SMon"];
+if(isset($_GET["EMon"])) $emon=$_GET["EMon"];
+if(isset($_GET["SYea"])) $syea=$_GET["SYea"];
+if(isset($_GET["EYea"])) $eyea=$_GET["EYea"];
+if(isset($_GET["SHou"])) $shou=$_GET["SHou"];
+if(isset($_GET["EHou"])) $ehou=$_GET["EHou"];
+
 $reloadleftframe=0;
 $settime=0;
 
