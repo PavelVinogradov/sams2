@@ -11,6 +11,8 @@ function UserTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
+  global $USERConf;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -23,20 +25,16 @@ function UserTrafficPeriodGB()
   if(isset($_GET["username"])) $username=$_GET["username"];
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
-
   $stime=gmmktime (0, 0, 1, $DATE->smon, $DATE->sday, $DATE->syea);
   $etime=gmmktime (23, 59, 59, $DATE->emon, $DATE->eday, $DATE->eyea);
   $days=ceil(($etime-$stime)/(60*60*24));
-  
   for($i=0;$i<$days+1;$i++)
     {
       $data1[$i]=0;
       $data2[$i]=0;
     }
-  $result=mysql_query("SELECT SUM(size), SUM(hit), MONTH(date), DAYOFMONTH(date), YEAR(date) FROM cachesum WHERE user=\"$username\" &&date>=\"$sdate\" &&date<=\"$edate\" &&domain=\"$userdomain\" GROUP BY date");
-  while($row=mysql_fetch_array($result))
+  $num_rows=$DB->samsdb_query_value("SELECT SUM(s_size), SUM(s_hit), MONTH(s_date), DAYOFMONTH(s_date), YEAR(s_date) FROM cachesum WHERE s_user='$USERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate' &&s_domain='$USERConf->s_domain' GROUP BY s_date");
+  while($row=$DB->samsdb_fetch_array())
      {
         $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
         $day=ceil(($time-$stime)/(60*60*24));
@@ -45,13 +43,13 @@ function UserTrafficPeriodGB()
         else
 	  $data1[$day]=$row['0'];
      }
-  
+
   $chart = new chart(400, 200, "");
   //$chart->plot($data1);
   $chart->plot($data1, false, "MidnightBlue", "lines");
   
   $chart->set_background_color("white", "white");
-  $chart->set_title("Traffic of user $username");
+  $chart->set_title("Traffic of user $USERConf->s_nick");
   $chart->set_labels("", "Mb");
   $chart->stroke(); 
 }
@@ -78,7 +76,6 @@ function UserTrafficPeriod()
 
   if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
     exit(0);
-  
 
   PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
@@ -94,7 +91,7 @@ function UserTrafficPeriod()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-  if($SAMSConf->SHOWGRAPH=="Y")
+//  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
   
   $count=1;
