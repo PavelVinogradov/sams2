@@ -28,6 +28,11 @@
 #include "odbcquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "dbcleaner.h"
 #include "samsconfig.h"
 #include "datefilter.h"
@@ -99,6 +104,25 @@ void DBCleaner::clearCounters ()
       return;
       #endif
     }
+  else if (SamsConfig::getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      PgConn connPg;
+      if (!connPg.connect ())
+        return;
+      PgQuery queryPg(&connPg);
+      if (!queryPg.sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
+        {
+          return;
+        }
+      if (!queryPg.sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
+        {
+          return;
+        }
+      #else
+      return;
+      #endif
+    }
   else
     return;
 }
@@ -137,6 +161,20 @@ void DBCleaner::clearCache ()
           return;
         }
       query = new MYSQLQuery((MYSQLConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      if (!conn->connect ())
+        {
+          delete conn;
+          return;
+        }
+      query = new PgQuery((PgConn*)conn);
       #else
       return;
       #endif

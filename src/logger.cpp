@@ -17,6 +17,7 @@
 #include <syslog.h>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 
 #include "config.h"
 
@@ -28,6 +29,11 @@
 #ifdef USE_MYSQL
 #include "mysqlconn.h"
 #include "mysqlquery.h"
+#endif
+
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
 #endif
 
 #include "logger.h"
@@ -267,6 +273,14 @@ void Logger::addLog(LogKind code, const string &mess)
           return;
           #endif
         }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          _conn = new PgConn();
+          #else
+          return;
+          #endif
+        }
       else
         return;
 
@@ -296,12 +310,28 @@ void Logger::addLog(LogKind code, const string &mess)
       return;
       #endif
     }
+  else if (_conn->getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery((PgConn*)_conn);
+      #else
+      return;
+      #endif
+    }
   else
     return;
 
+  time_t now;
+  char str_today[15];
+  char str_now[15];
   basic_stringstream < char >sqlcmd;
-  sqlcmd << "insert into samslog (s_log_id, s_issuer, s_date, s_time, s_value, s_code)";
-  sqlcmd << "VALUES (NULL, '" << _sender << "', CURDATE(), CURTIME(), '" << mess << "', '" << code << "')";
+
+  now = time (NULL);
+  strftime (str_today, sizeof (str_today), "%Y-%m-%d", localtime (&now));
+  strftime (str_now, sizeof (str_now), "%H:%M:%S", localtime (&now));
+
+  sqlcmd << "insert into samslog (s_issuer, s_date, s_time, s_value, s_code)";
+  sqlcmd << " VALUES ('" << _sender << "', '" << str_today << "', '" << str_now << "', '" << mess << "', '" << code << "')";
   query->sendQueryDirect (sqlcmd.str ());
 
   delete query;

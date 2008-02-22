@@ -12,6 +12,9 @@
 /* Define to 1 if you have the `odbc' library (-lodbc). */
 #undef HAVE_LIBODBC
 
+/* Define to 1 if you have the `pq' library (-lpq). */
+#undef HAVE_LIBPQ
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
@@ -68,6 +71,9 @@
 
 /* use MySQL */
 #undef USE_MYSQL
+
+/* use LibPQ */
+#undef USE_PQ
 
 /* use unixODBC */
 #undef USE_UNIXODBC

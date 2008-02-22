@@ -26,6 +26,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "templates.h"
 #include "template.h"
 #include "debug.h"
@@ -68,6 +73,14 @@ bool Templates::reload()
           return false;
           #endif
         }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          _conn = new PgConn();
+          #else
+          return false;
+          #endif
+        }
       else
         return false;
 
@@ -104,6 +117,15 @@ bool Templates::reload()
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
       query2 = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return false;
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery((PgConn*)_conn);
+      query2 = new PgQuery((PgConn*)_conn);
       #else
       return false;
       #endif

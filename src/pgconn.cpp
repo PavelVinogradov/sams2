@@ -14,25 +14,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "mysqlconn.h"
+#include "pgconn.h"
 
-#ifdef USE_MYSQL
+#ifdef USE_PQ
 
 #include "debug.h"
 #include "samsconfig.h"
 
-MYSQLConn::MYSQLConn ():DBConn (DBConn::DB_MYSQL)
+PgConn::PgConn():DBConn (DBConn::DB_PGSQL)
 {
-  _mysql = NULL;
+  _pgconn = NULL;
 }
 
 
-MYSQLConn::~MYSQLConn ()
+PgConn::~PgConn()
 {
   disconnect ();
 }
 
-bool MYSQLConn::connect ()
+bool PgConn::connect ()
 {
   int err;
   _host = SamsConfig::getString (defDBSERVER, err);
@@ -42,16 +42,17 @@ bool MYSQLConn::connect ()
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
 
-  _mysql = mysql_init (NULL);
-  if (!_mysql)
+  _pgconn = PQsetdbLogin(_host.c_str (), NULL, NULL, NULL, _dbname.c_str (), _user.c_str (), _pass.c_str ());
+
+  if (!_pgconn)
     {
-      ERROR ("Unable to initialize MYSQL handle.");
+      ERROR ("Unable to initialize PostgreSQL handle.");
       return false;
     }
 
-  if (!mysql_real_connect (_mysql, _host.c_str (), _user.c_str (), _pass.c_str (), _dbname.c_str (), 0, NULL, 0))
+  if (PQstatus (_pgconn) != CONNECTION_OK)
     {
-      ERROR ("mysql_real_connect: " << mysql_error (_mysql));
+      ERROR ("PQsetdbLogin: " << PQerrorMessage (_pgconn));
       return false;
     }
 
@@ -62,18 +63,18 @@ bool MYSQLConn::connect ()
   return true;
 }
 
-void MYSQLConn::disconnect ()
+void PgConn::disconnect ()
 {
   if (!_connected)
     return;
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
 
-  mysql_close (_mysql);
-  _mysql = NULL;
+  PQfinish (_pgconn);
+  _pgconn = NULL;
   _connected = false;
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnected.");
 }
 
-#endif // #ifdef USE_MYSQL
+#endif // #ifdef USE_PQ

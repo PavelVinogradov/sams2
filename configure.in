@@ -7,8 +7,17 @@ AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_LIBTOOL
 
-AC_CHECK_MYSQL
-AC_CHECK_UNIXODBC
+AC_CHECK_MYSQL([use_mysql_dev])
+AC_CHECK_PQ([use_pq_dev])
+AC_CHECK_UNIXODBC([use_unixodbc_dev])
 
 AC_CONFIG_FILES(Makefile src/Makefile)
 AC_OUTPUT
+
+echo ""
+echo "Use MySQL API:      $use_mysql_dev"
+echo "Use PostgreSQL API: $use_pq_dev"
+echo "Use unixODBC API:   $use_unixodbc_dev"
+echo ""
+echo "Configure completed. Run make (or gmake) to build the programs."
+echo ""

@@ -30,18 +30,24 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "samsconfig.h"
 #include "debug.h"
 #include "tools.h"
 
-bool SamsConfig::_loaded = false;
+bool SamsConfig::_file_loaded = false;
+bool SamsConfig::_db_loaded = false;
 bool SamsConfig::_internal = false;
 DBConn::DBEngine SamsConfig::_engine;
 map < string, string > SamsConfig::_attributes;
 
 bool SamsConfig::load()
 {
-  if (_loaded)
+  if (_file_loaded && _db_loaded)
     return true;
 
   if (_internal)
@@ -52,13 +58,17 @@ bool SamsConfig::load()
 
 bool SamsConfig::reload()
 {
-  if (!readFile())
-    return false;
+  if (!_file_loaded)
+    {
+      if (!readFile())
+        return false;
+    }
 
-  if (!readDB())
-    return false;
-
-  _loaded = true;
+  if (!_db_loaded)
+    {
+      if (!readDB())
+        return false;
+    }
 
   return true;
 }
@@ -109,6 +119,8 @@ bool SamsConfig::readFile ()
 
   in.close ();
 
+  _file_loaded = true;
+
   map < string, string >::iterator it = _attributes.find (defDBENGINE);
   if (it == _attributes.end ())
     {
@@ -117,6 +129,8 @@ bool SamsConfig::readFile ()
     }
 
   string dbengine = (*it).second;
+
+  _engine = DBConn::DB_UNKNOWN;
 
   if (dbengine == "MySQL")
     {
@@ -136,6 +150,16 @@ bool SamsConfig::readFile ()
       #else
       DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using unixODBC engine.");
       _engine = DBConn::DB_UODBC;
+      #endif
+    }
+  else if (dbengine == "PostgreSQL")
+    {
+      #ifndef USE_PQ
+      ERROR ("PostgreSQL engine is not enabled. Reconfigure package to enable it or change engine.");
+      return false;
+      #else
+      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using PostgreSQL engine.");
+      _engine = DBConn::DB_PGSQL;
       #endif
     }
   else
@@ -179,6 +203,13 @@ bool SamsConfig::readDB ()
       #ifdef USE_MYSQL
       conn = new MYSQLConn();
       query = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      query = new PgQuery((PgConn*)conn);
       #endif
     }
   else
@@ -242,14 +273,14 @@ bool SamsConfig::readDB ()
   delete query;
   delete conn;
   _internal = false;
+  _db_loaded = true;
 
   return true;
 }
 
 string SamsConfig::getString (const string & attrname, int &err)
 {
-  if (!_loaded)
-    load();
+  load();
 
   map < string, string >::iterator it = _attributes.find (attrname);
   if (it == _attributes.end ())
@@ -348,8 +379,7 @@ void SamsConfig::setBool (const string attrname, const bool value)
 
 DBConn::DBEngine SamsConfig::getEngine()
 {
-  if (!_loaded)
-    load();
+  load();
 
   return _engine;
 }

@@ -26,6 +26,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "dbconn.h"
 #include "localnetworks.h"
 #include "debug.h"
@@ -83,6 +88,14 @@ bool LocalNetworks::reload ()
           return false;
           #endif
         }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          _conn = new PgConn();
+          #else
+          return false;
+          #endif
+        }
       else
         return false;
 
@@ -117,6 +130,12 @@ bool LocalNetworks::reload ()
       query = new MYSQLQuery ((MYSQLConn*)_conn);
       #endif
     }
+  else if (_conn->getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery ((PgConn*)_conn);
+      #endif
+    }
   else
     return false;
 
@@ -131,9 +150,11 @@ bool LocalNetworks::reload ()
       return false;
     }
   _nets.clear();
+  string str_tmp;
   while (query->fetch ())
     {
-      net = Net::fromString (s_url);
+      str_tmp = s_url;
+      net = Net::fromString (str_tmp);
       _nets.push_back (net);
     }
 
@@ -160,6 +181,13 @@ void LocalNetworks::destroy()
     {
       DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Not connected");
     }
+
+  vector < Net * >::iterator it;
+  for (it = _nets.begin (); it != _nets.end (); it++)
+    {
+      delete (*it);
+    }
+  _nets.clear ();
 }
 
 bool LocalNetworks::isLocalHost (const string & host)

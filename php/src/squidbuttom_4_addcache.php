@@ -280,7 +280,7 @@ function CacheForm()
   print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
   print("  </B>\n<B>)</B>\n");
   print("<BR><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"adld\" onclick=EnableCheckBox(ADDCACHE) onchange=EnableDomainName(ADDCACHE)>\n");
-  print("  <B>Active Directory</B><BR>(Experim≈ntal)\n");
+  print("  <B>Active Directory</B><BR>(Experimental)\n");
   
   print("<TD name=c1  ID=\"c1\">");
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"ntlmdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>$adminbuttom_1_prop_SamsReConfigForm_19\n");

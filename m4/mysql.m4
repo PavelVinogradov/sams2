@@ -82,12 +82,14 @@ fi
 
 AC_DEFUN([AC_CHECK_MYSQL],
 [
+$1="no"
 AC_FIND_MYSQL_INC([mysql_inc_found])
 
 if test "$mysql_inc_found" = "yes"; then
   AC_FIND_MYSQL_LIB([mysql_lib_found])
 
   if test "$mysql_lib_found" = "yes"; then
+    $1="yes"
     AC_DEFINE([USE_MYSQL], [1], [use MySQL])
   fi
 fi

@@ -65,6 +65,11 @@ string SquidLogLine::getUrl ()
   return _url;
 }
 
+string SquidLogLine::getMethod ()
+{
+  return _method;
+}
+
 long SquidLogLine::getSize ()
 {
   return _size;
@@ -225,6 +230,8 @@ void SquidLogLine::parseLine ()
   _cacheResult = parseCacheResult (cacheResVal[0]);
 
   _size = atol (fields[4].c_str ());
+
+  _method = fields[5];
 
   _url = fields[6];
 

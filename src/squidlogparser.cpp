@@ -29,6 +29,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "squidlogparser.h"
 #include "squidlogline.h"
 #include "localnetworks.h"
@@ -87,6 +92,14 @@ void SquidLogParser::parseFile (const string & fname, bool from_begin)
       return;
       #endif
     }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      #else
+      return;
+      #endif
+    }
   else
     return;
 
@@ -124,6 +137,14 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       return;
       #endif
     }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery((PgConn*)conn);
+      #else
+      return;
+      #endif
+    }
   else
     return;
 
@@ -148,9 +169,10 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   delete query;
   query = NULL;
 
-  if (strcmp (s_version, VERSION) != 0)
+  string str_ver = TrimSpaces(s_version);
+  if (str_ver != VERSION)
     {
-      ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << s_version);
+      ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << str_ver);
       return;
     }
   else
@@ -221,6 +243,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       updUserQuery = new MYSQLQuery((MYSQLConn*)conn);
       #endif
     }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      updUserQuery = new PgQuery((PgConn*)conn);
+      #endif
+    }
   basic_stringstream < char > user_update_cmd;
   user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
   if (!updUserQuery->prepareQuery (user_update_cmd.str ()))
@@ -261,6 +289,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     {
       #ifdef USE_MYSQL
       updCacheQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      updCacheQuery = new PgQuery((PgConn*)conn);
       #endif
     }
   basic_stringstream < char > cache_update_cmd;
@@ -349,6 +383,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         updProxyQuery = new MYSQLQuery((MYSQLConn*)conn);
         #endif
       }
+    else if (engine == DBConn::DB_PGSQL)
+      {
+        #ifdef USE_PQ
+        updProxyQuery = new PgQuery((PgConn*)conn);
+        #endif
+      }
     basic_stringstream < char > proxy_update_cmd;
     proxy_update_cmd << "update proxy set s_endvalue=? where s_proxy_id=" << _proxyid;
     if (!updProxyQuery->prepareQuery (proxy_update_cmd.str ()))
@@ -378,6 +418,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     {
       #ifdef USE_MYSQL
       selCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      selCachesumQuery = new PgQuery((PgConn*)conn);
       #endif
     }
   basic_stringstream < char > cachesum_select_cmd;
@@ -446,6 +492,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     {
       #ifdef USE_MYSQL
       insCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      insCachesumQuery = new PgQuery((PgConn*)conn);
       #endif
     }
   basic_stringstream < char > cachesum_insert_cmd;
@@ -518,6 +570,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     {
       #ifdef USE_MYSQL
       updCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      updCachesumQuery = new PgQuery((PgConn*)conn);
       #endif
     }
   basic_stringstream < char > cachesum_update_cmd;
@@ -678,7 +736,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       sprintf (s_ipaddr, "%s", sll.getIP ().asString ().c_str ());
       s_period = sll.getBusytime ();
       sprintf (s_url, "%s", sll.getUrl ().c_str ());
-      sprintf (s_method, "method");
+      sprintf (s_method, "%s", sll.getMethod ().c_str ());
 
       // Обновляем squidcache
       if (!updCacheQuery->sendQuery ())

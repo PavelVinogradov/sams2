@@ -748,7 +748,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $configbuttom_1_prop_SamsReConfigForm_56="Select script for send message about deactivate user:";
 
   $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
-  $configbuttom_1_prop_SamsReConfigForm_57="Enter Admiistrator address";
+  $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
   
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Groups added";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
