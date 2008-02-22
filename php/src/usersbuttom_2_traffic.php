@@ -7,10 +7,11 @@
 
 function UsersTrafficPeriodPDF()
 {
-  //require('chart.php');
+  require('chart.php');
   
   global $SAMSConf;
   global $DATE;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   if($SAMSConf->LANG=="KOI8-R")
     $lang="./lang/lang.WIN1251";
@@ -23,8 +24,6 @@ function UsersTrafficPeriodPDF()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
 
   $pdfFile=pdf_new();
   PDF_open_file($pdfFile, "");
@@ -106,6 +105,7 @@ function UsersTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -115,23 +115,15 @@ function UsersTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
-
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
-//  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain");
-
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as all_sum,sum(s_hit),s_user,s_domain FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by all_sum desc");
   $count=0;
-  while($row=mysql_fetch_array($result))
+  while($row=$DB->samsdb_fetch_array())
        {
-         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
-         $row_2=mysql_fetch_array($result_2);
-         
 	 $SIZE[$count]=floor($row[0]/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
 	 $HIT[$count]=floor($row[1]/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
-	 $USERS[$count]=$row_2["nick"];
+	 $USERS[$count]=$row["s_user"];
 	 $count++;
-       }
+	}
 $showbar=new BAR(500, 200, 30, 20, $SIZE, $HIT, $count, $USERS);
 $showbar->CreateBars();
        
@@ -156,6 +148,7 @@ function UsersTrafficPeriod()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+echo "main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate <BR>";
   PageTop("usergroup_48.jpg","$usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
   print("<BR>\n");
 
@@ -171,7 +164,7 @@ function UsersTrafficPeriod()
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
 //  if($SAMSConf->SHOWGRAPH=="Y")
-//    printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
+    printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
   
   $count=1;
   $size2=0;
