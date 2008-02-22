@@ -31,6 +31,9 @@ Net::Net ()
 
 Net::~Net ()
 {
+  if (_ip)
+    delete _ip;
+  _ip = NULL;
 }
 
 /**
@@ -39,8 +42,9 @@ Net::~Net ()
 bool Net::hasHost (const string & host)
 {
   bool isname;
+  bool res;
   int pos;
-  IP *hostIP;
+  IP *hostIP = NULL;
   DEBUG (DEBUG5, "Check if " << _net << " contains " << host);
 
   isname = Net::isDomain (host);
@@ -66,9 +70,14 @@ bool Net::hasHost (const string & host)
       DEBUG (DEBUG5, "[" << this << "] " << "address specifications");
       hostIP = IP::fromString (host);
       if (hostIP != NULL)
-        return hasIP (*hostIP);
+        {
+          res = hasIP (*hostIP);
+          delete hostIP;
+        }
       else
-        return false;
+        res = false;
+
+      return res;
     }
   // Различный способ указания
   else

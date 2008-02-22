@@ -392,34 +392,34 @@ bool MYSQLQuery::fetch ()
           DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No rows");
           return false;
         }
-  int res_len;
-  int use_len;
-  for (uint i=0; i<_columns.size(); i++)
-    {
-      switch (_columns[i].t)
+      int res_len;
+      int use_len;
+      for (uint i=0; i<_columns.size(); i++)
         {
-          case MYSQL_TYPE_STRING:
-            res_len = strlen(row[i])+1;
-            use_len = (res_len<_columns[i].len)?(res_len):(_columns[i].len);
-            strncpy((char*)_columns[i].dst, row[i], use_len);
-            ((char*)_columns[i].dst)[use_len] = 0;
-            //sprintf((char*)_columns[i].dst, "%s", row[i]);
-            break;
-          case MYSQL_TYPE_LONG:
-            if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
-              ok = false;
-            break;
-          case MYSQL_TYPE_LONGLONG:
-            if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
-              ok = false;
-            break;
-          default:
-            ok = false;
+          switch (_columns[i].t)
+            {
+              case MYSQL_TYPE_STRING:
+                res_len = strlen(row[i])+1;
+                use_len = (res_len<_columns[i].len)?(res_len):(_columns[i].len);
+                strncpy((char*)_columns[i].dst, row[i], use_len);
+                ((char*)_columns[i].dst)[use_len] = 0;
+                //sprintf((char*)_columns[i].dst, "%s", row[i]);
+                break;
+              case MYSQL_TYPE_LONG:
+                if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
+                  ok = false;
+                break;
+              case MYSQL_TYPE_LONGLONG:
+                if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
+                  ok = false;
+                break;
+              default:
+                ok = false;
+                break;
+            }
+          if (!ok)
             break;
         }
-      if (!ok)
-        break;
-    }
     }
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << ((ok) ? ("ok") : ("failed")));

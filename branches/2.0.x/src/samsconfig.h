@@ -152,7 +152,8 @@ private:
      */
   static bool readDB ();
 
-  static bool _loaded;
+  static bool _file_loaded;
+  static bool _db_loaded;
   static bool _internal;
   static DBConn::DBEngine _engine;
   static map < string, string > _attributes;  ///< Список параметров и их значений

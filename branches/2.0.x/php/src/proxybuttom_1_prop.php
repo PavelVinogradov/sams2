@@ -371,7 +371,7 @@ function ProxyReConfigForm()
   print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
   print("  </B>\n<B>)</B>\n");
   print("<BR><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"adld\" $ADLDCHECKED  onclick=EnableCheckBox(samsreconfigform),EnableLDAP(samsreconfigform)  onchange=EnableDomainName(samsreconfigform)>\n");
-  print("  <B>Active Directory</B><BR>(Experim≈ntal)\n");
+  print("  <B>Active Directory</B><BR>(Experimental)\n");
   
   print("<TD name=c1  ID=\"c1\">");
   if($PROXYConf->s_usedomain==1)

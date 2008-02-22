@@ -63,41 +63,41 @@ DBQuery::~DBQuery ()
 
 bool DBQuery::sendQueryDirect (const string & query)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 bool DBQuery::bindCol (uint colNum, VarType dstType, void *buf, int bufLen)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 bool DBQuery::bindParam (uint num, VarType dstType, void *buf, int bufLen)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 bool DBQuery::prepareQuery (const string & query)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 bool DBQuery::sendQuery ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 bool DBQuery::fetch ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
   return false;
 }
 
 void DBQuery::destroy ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << " must be overriden.");
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
 }

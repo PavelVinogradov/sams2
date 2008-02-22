@@ -28,6 +28,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "samsusers.h"
 #include "samsuser.h"
 #include "samsconfig.h"
@@ -89,6 +94,14 @@ bool SAMSUsers::reload()
           return false;
           #endif
         }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          _conn = new PgConn();
+          #else
+          return false;
+          #endif
+        }
       else
         return false;
 
@@ -117,6 +130,14 @@ bool SAMSUsers::reload()
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #else
+      return false;
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery( (PgConn*)_conn );
       #else
       return false;
       #endif
@@ -332,6 +353,14 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery( (MYSQLConn*)_conn );
+      #else
+      return false;
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery( (PgConn*)_conn );
       #else
       return false;
       #endif

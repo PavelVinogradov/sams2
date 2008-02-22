@@ -79,12 +79,14 @@ fi
 
 AC_DEFUN([AC_CHECK_UNIXODBC],
 [
+$1="no"
 AC_FIND_UNIXODBC_INC([unixODBC_inc_found])
 
 if test "$unixODBC_inc_found" = "yes"; then
   AC_FIND_UNIXODBC_LIB([unixODBC_lib_found])
 
   if test "$unixODBC_lib_found" = "yes"; then
+    $1="yes"
     AC_DEFINE([USE_UNIXODBC], [1], [use unixODBC])
   fi
 fi

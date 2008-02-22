@@ -29,6 +29,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "proxy.h"
 #include "debug.h"
 #include "tools.h"
@@ -282,6 +287,14 @@ bool Proxy::reload ()
           return false;
           #endif
         }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          _conn = new PgConn();
+          #else
+          return false;
+          #endif
+        }
       else
         return false;
 
@@ -330,6 +343,14 @@ bool Proxy::reload ()
     {
       #ifdef USE_MYSQL
       query = new MYSQLQuery((MYSQLConn*)_conn);
+      #else
+      return false;
+      #endif
+    }
+  else if (_conn->getEngine() == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      query = new PgQuery((PgConn*)_conn);
       #else
       return false;
       #endif
@@ -477,9 +498,13 @@ void Proxy::destroy()
       delete _conn;
       _conn = NULL;
     }
-  else
+  else if (_conn)
     {
       DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+    }
+  else
+    {
+      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not connected");
     }
 }
 
