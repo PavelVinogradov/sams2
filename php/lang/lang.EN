@@ -754,6 +754,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Active Directory groups found";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Add users group";
+  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Group already exists";
   $newgrouptray_NewGrpTray_1="Users group creating";
   $URLTimeForm_userbuttom_4_time_1="URL list";
   $userbuttom_9_logoff_userbuttom_9_logoff_1="logoff";  
