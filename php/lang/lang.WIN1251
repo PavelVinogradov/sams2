@@ -739,6 +739,7 @@
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Загрузка групп пользователей из домена  Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Найдены группы Active Directory";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Добавить группу пользователей";
+  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Такая группа уже существует.";
   $newgrouptray_NewGrpTray_1="Создание группы пользователей";
   $URLTimeForm_userbuttom_4_time_1="Список ресурсов, к которым обращался пользователь в течении дня";
   $userbuttom_9_logoff_userbuttom_9_logoff_1="Выйти из web интерфейса";  
