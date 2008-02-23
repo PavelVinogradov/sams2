@@ -208,7 +208,7 @@ function UpdateShablonForm()
   while($row=mysql_fetch_array($result))
       {
         print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
-        print("<IMG SRC=\"$SAMSConf->ICONSET/stop.jpg\">");
+        print("<IMG SRC=\"$SAMSConf->ICONSET/adir.gif\">");
 
         $result2=mysql_query("SELECT * FROM sconfig WHERE sconfig.sname=\"$id\"&&sconfig.set=\"$row[filename]\" ");
         $row2=mysql_fetch_array($result2);
