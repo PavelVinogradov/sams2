@@ -304,7 +304,7 @@ int TestLocalURL(char *url)
   		
 		for(i=0,count=0;i<strlen(url);i++)
 		{
-       			if(i>=249)
+       			if(i>=249 || count>=URL_LEN)
           			i=strlen(url);
 
 			if (url[i] == ':')
