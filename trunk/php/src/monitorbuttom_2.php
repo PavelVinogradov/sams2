@@ -8,8 +8,10 @@
 function Monitor_2()
 {
   global $SAMSConf;
-  $timeout=10;
-  if(isset($_GET["timeout"])) $timeout=$_GET["timeout"];
+
+  $timeout = 10;
+  if(isset($_GET["timeout"]) and is_int($_GET["timeout"))
+    $timeout = $_GET["timeout"] >= 10 ? $_GET["timeout"] : 10;
   
   printf("<SCRIPT LANGUAGE=\"javascript\">\n");
   printf("function Refr() \n");
