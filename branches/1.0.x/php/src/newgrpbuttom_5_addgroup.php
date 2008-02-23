@@ -8,18 +8,26 @@
 function AddGroup()
 {
   global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
 
   $groupname=TempName();
-  $result=mysql_query("INSERT INTO groups VALUES('3','$groupname','$groupnick','open') ");
-  if($result!=FALSE)
+
+  $result=mysql_query("SELECT nick FROM groups where nick = '$groupnick';");
+  if($result and mysql_fetch_row($result) == FALSE) {
+    $result=mysql_query("INSERT INTO groups VALUES('3','$groupname','$groupnick','open') ");
+    if($result!=FALSE)
       UpdateLog("$SAMSConf->adminname","Added group  $groupnick ","02");
 
-  print("<SCRIPT>\n");
-  print("  parent.lframe.location.href=\"lframe.php\"; \n");
-  print("  parent.tray.location.href=\"tray.php?show=usergrouptray&groupname=$groupname&groupnick=$groupnick\";\n");
-  print("</SCRIPT> \n");
+    print("<SCRIPT>\n");
+    print("  parent.lframe.location.href=\"lframe.php\"; \n");
+    print("  parent.tray.location.href=\"tray.php?show=usergrouptray&groupname=$groupname&groupnick=$groupnick\";\n");
+    print("</SCRIPT> \n");
+  } else {
+    PageTop("usergroup_48.jpg","$newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist");
+  }
 }
 
 
@@ -57,15 +65,13 @@ function newgrpbuttom_5_addgroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
- $SAMSConf->access=UserAccess();
- if($SAMSConf->access==2)
+  $SAMSConf->access=UserAccess();
+  if($SAMSConf->access==2)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=newgroupform&filename=newgrpbuttom_5_addgroup.php",
 	               "basefrm","useradd_32.jpg","useradd_48.jpg","$newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1");
     }
-
-
 }
 
 ?>
