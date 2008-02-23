@@ -41,8 +41,8 @@
 struct url_replace {
   char user[25];
   char domain[25];
-  char url[50];
-  char newurl[50];
+  char url[URL_LEN];
+  char newurl[URL_LEN];
   int  checkip;
 };
 
@@ -68,14 +68,14 @@ struct samsusers
 };
 /*
 struct local_url {
-  char url[50];
+  char url[URL_LEN];
   int  ip[6];
   int  mask[6];
   int ipflag;
 };
 */
 struct dns_cache {
-  char url[50];
+  char url[URL_LEN];
   int  ip[6];
   int  mask[6];
   int len;
@@ -279,11 +279,11 @@ int TestLocalURL(char *url)
   /* Get domain name for URL like http://<domain name>/ */
   if(strstr(url,"://") !=NULL)
   {
-  	for(i=0,count=0;i<strlen(url);i++)
-	{
-       		if(i>=249)
-          		i=strlen(url);
-
+        for(i=0,count=0;i<strlen(url);i++)
+        {
+       	        if(i>=249 || count>=URL_LEN)
+                        i=strlen(url);
+                
        		if(slashe>=2)
 		{
 			if(slashe<3&&url[i]!='/')

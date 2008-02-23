@@ -5,6 +5,7 @@
 #define def_socket_name NULL
 #define def_port_num 0
 #define BUFFER_SIZE             (16*1024)
+#define URL_LEN 50
 
 struct samsconf {
   char *samsdb;     
