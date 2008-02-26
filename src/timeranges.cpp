@@ -26,6 +26,11 @@
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "timeranges.h"
 #include "timerange.h"
 #include "debug.h"
