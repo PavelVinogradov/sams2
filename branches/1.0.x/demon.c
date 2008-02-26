@@ -321,7 +321,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                                     flag=send_mysql_query(conn2,&str[0]);
 				    if(flag==0)
 				      {
-                                        sprintf(&str[0],"Disable user %s traffic %.0f>%.0f",users[samsuser-1].user,users[samsuser-1].size,users[samsuser-1].quote);
+                                        sprintf(&str[0],"Disable user %s traffic %.0f>%.0f",users[samsuser-1].user,users[samsuser-1].traffic,users[samsuser-1].quote);
                                         AddLog(conn2,0,"sams",&str[0]);
 			                if(UDSCRIPT>0)
 				          {
