@@ -18,6 +18,6 @@ This package not finished yet. It miss some issues:
 All sql files placed in /usr/share/sams/mysql
 
 If you find some bugs in this package - fell free to submite bug to
-http://sams.nixdev.net/ ob debpackage component.
+http://sams.nixdev.net/ on deb-package component.
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
