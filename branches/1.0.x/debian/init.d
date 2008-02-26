@@ -15,7 +15,7 @@
 #
 # Author:	Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 #
-# /etc/init.d/samsd: start and stop the sams daemon
+# /etc/init.d/sams: start and stop the sams daemon
 
 SAMSPATH=`cat /etc/sams.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
