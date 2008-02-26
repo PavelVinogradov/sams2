@@ -34,17 +34,11 @@ else
 endif
 
 config.status: configure patch
-
-configure:
 	dh_testdir
-	# Add here commands to configure the package.
-<<<<<<< .mine
-	cp Makefile.cvs Makefile
-	make
-=======
 	make -f Makefile.cvs
->>>>>>> .r243
+	# Add here commands to configure the package.
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+
 
 #Architecture 
 build: build-arch build-indep
@@ -99,15 +93,18 @@ install-arch:
 
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
+	#$(MAKE) prefix=$(CURDIR)/debian/sams install
 
 	dh_install -s
+	dh_movefiles --sourcedir=debian/sams
+	#ln -s ../doc/sams/html $(CURDIR)/debian/sams/usr/share/sams/doc 
 # Must not depend on anything. This is to be called by
 # binary-arch/binary-indep
 # in another 'make' thread.
 binary-common:
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs ChangeLog
+	dh_installchangelogs CHANGELOG
 	dh_installdocs
 	dh_installexamples
 #	dh_installmenu
@@ -119,7 +116,7 @@ binary-common:
 	dh_installinit
 #	dh_installcron
 	dh_installman
-#	dh_link
+	dh_link
 	dh_strip
 	dh_compress 
 	dh_fixperms
