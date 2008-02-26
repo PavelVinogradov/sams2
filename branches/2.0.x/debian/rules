@@ -104,7 +104,7 @@ install-arch:
 binary-common:
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs CHANGELOG
+	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
 #	dh_installmenu
