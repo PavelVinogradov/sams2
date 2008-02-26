@@ -225,6 +225,7 @@ function UserTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
+//echo "id=$id,". $SAMSConf->ToUserDataAccess($id, "WGSC") ." SAMSConf->access=$SAMSConf->access<BR>";
 	if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
 	{
 		print("<SCRIPT>\n");
@@ -233,13 +234,22 @@ function UserTray()
 		print("</SCRIPT> \n");
 		exit(0);
 	}
+/*
 	if(strlen($SAMSConf->domainusername)==0&&$SAMSConf->access==0)
         {
 		print("<SCRIPT>\n");
 		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&userid=$id\";\n");
 		print("</SCRIPT> \n");
         }
-
+*/
+	if( $SAMSConf->access==0 && strlen($SAMSConf->domainusername)==0)
+	{
+		print("<SCRIPT>\n");
+		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id\";\n");
+//		print(" parent.basefrm.location.href=\"main.php\";\n");
+		print("</SCRIPT> \n");
+		exit(0);
+	}
 
   print("<SCRIPT>\n");
   JSUserInfo();
