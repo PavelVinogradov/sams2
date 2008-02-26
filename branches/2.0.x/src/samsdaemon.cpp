@@ -37,6 +37,11 @@ using namespace std;
 #include "mysqlquery.h"
 #endif
 
+#ifdef USE_PQ
+#include "pgconn.h"
+#include "pgquery.h"
+#endif
+
 #include "debug.h"
 #include "samsconfig.h"
 #include "processmanager.h"
