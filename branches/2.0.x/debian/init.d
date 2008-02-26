@@ -17,7 +17,7 @@
 #
 # /etc/init.d/samsd: start and stop the sams daemon
 
-SAMSPATH=`cat /etc/sams.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
+SAMSPATH=`cat /etc/sams2.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
 DAEMON=$SAMSPATH/bin/samsdaemon
 LOCKFILE=/var/lock/samsd

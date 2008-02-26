@@ -7,6 +7,6 @@
 version=3
 
 # Uncomment to examine a Webserver directory
-http://nixdev.net/release/sams/sams2-(.*)\.tar\.gz
+http://nixdev.net/release/sams/sams-(.*)\.tar\.gz
 
 

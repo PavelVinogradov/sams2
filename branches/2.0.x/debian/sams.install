@@ -1,0 +1,3 @@
+etc/sams2.conf etc
+sams samsdaemon samsf samsredir bin
+mysql usr/share/sams2

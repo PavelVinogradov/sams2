@@ -1,5 +1,5 @@
 This package was debianized by Pavel Vinogradov <Pavel.Vinogradov@nixdev.net> on
-Fri, 11 Jan 2008 10:57:04 +0500.
+Fri,  3 Aug 2007 10:57:04 +0500.
 
 It was downloaded from http://sams.perm.ru/ http://nixdev.net/release/sams/
 
@@ -17,5 +17,6 @@ On Debian systems, the complete text of the GNU General Public
 License can be found in the file `/usr/share/common-licenses/GPL-2'.
 
 
-The Debian packaging is (C) 2008, Pavel Vinogradov <Pavel.Vinogradov@nixdev.net> and
-is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+The Debian packaging is (C) 2007-2008, Pavel Vinogradov
+<Pavel.Vinogradov@nixdev.net> and is licensed under the GPL,
+see `/usr/share/common-licenses/GPL'.
