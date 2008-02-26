@@ -148,7 +148,7 @@ function UsersTrafficPeriod()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-echo "main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate <BR>";
+//echo "main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate <BR>";
   PageTop("usergroup_48.jpg","$usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
   print("<BR>\n");
 

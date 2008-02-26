@@ -76,6 +76,20 @@ if(isset($_GET["EYea"])) $eyea=$_GET["EYea"];
 if(isset($_GET["SHou"])) $shou=$_GET["SHou"];
 if(isset($_GET["EHou"])) $ehou=$_GET["EHou"];
 
+if(isset($_GET["sdate"]))
+	{
+		$a=explode("-",$_GET["sdate"]);
+		$syea=$a[0];
+		$smon=$a[1];
+		$sday=$a[2];
+	}
+if(isset($_GET["edate"]))
+	{
+		$a=explode("-",$_GET["edate"]);
+		$eyea=$a[0];
+		$emon=$a[1];
+		$eday=$a[2];
+	}
 $reloadleftframe=0;
 $settime=0;
 
