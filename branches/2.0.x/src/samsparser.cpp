@@ -274,7 +274,7 @@ int main (int argc, char *argv[])
 
   if ((commands & CMD_CLEAR) == CMD_CLEAR || (commands & CMD_TRUNCATE) == CMD_TRUNCATE)
     {
-      cleaner = new DBCleaner (proxyid);
+      cleaner = new DBCleaner ();
       cleaner->setDateFilter (dateFilter);
       cleaner->setUserFilter (userFilter);
     }

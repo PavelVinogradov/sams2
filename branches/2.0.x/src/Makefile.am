@@ -14,10 +14,10 @@ samsparser_SOURCES = samsparser.cpp debug.cpp samsconfig.cpp tools.cpp \
 			dbconn.cpp dbquery.cpp mysqlquery.cpp templates.cpp template.cpp groups.cpp \
 	pgconn.cpp pgquery.cpp
 noinst_HEADERS = debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
-					filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \
-					localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
-					mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
-			squidconf.h timerange.h timeranges.h pgconn.h pgquery.h
+						filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \
+						localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
+						mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
+				squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h
 samsparser_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB) $(PQ_LIB)
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
 
@@ -57,11 +57,12 @@ BUILT_SOURCES += configmake.h
 CLEANFILES += configmake.h configmake.h-t
 
 samsdaemon_SOURCES = datefilter.cpp debug.cpp filter.cpp ip.cpp \
-						localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
-						proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
-						userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
-						template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
-			squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp
+								localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
+								proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
+								userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
+								template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
+					squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
+	dbcleaner.cpp
 samsdaemon_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB) $(PQ_LIB)
 samsredir_SOURCES = dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 		logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \

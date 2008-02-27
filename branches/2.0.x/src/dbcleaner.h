@@ -20,10 +20,12 @@
 using namespace std;
 
 #include <string>
+#include <vector>
 
 class SamsConfig;
 class UserFilter;
 class DateFilter;
+class SAMSUser;
 
 /**
  * @brief Очистка таблиц кэша и счетчиков пользователей
@@ -33,10 +35,8 @@ class DBCleaner
 public:
   /**
    * @brief Конструктор
-   *
-   * @param proxyid Идентификатор прокси
    */
-  DBCleaner (int proxyid);
+  DBCleaner ();
 
   /**
    * @brief Деструктор
@@ -50,6 +50,8 @@ public:
    */
   void setUserFilter (UserFilter * filt);
 
+  void setUserFilter (const vector<SAMSUser *> & usersList);
+
   /**
    * @brief Устанавливает фильтр по датам
    *
@@ -57,18 +59,36 @@ public:
    */
   void setDateFilter (DateFilter * filt);
 
+  void setDateFilter (const string & dateSpec);
+
   /**
    * @brief Очищает счетчики пользователей
+   *
+   * Если установлен фильтр по пользователям, то очищаются счетчики
+   * только тех пользователей, которые перечислены в фильтре
    */
   void clearCounters ();
 
   /**
    * @brief Очищает кэш протоколов доступа squid
+   *
+   * Если установлен фильтр по пользователям, то очищается кеш
+   * только тех пользователей, которые перечислены в фильтре.
+   * Если установлен фильтр по датам, то очищается кеш только
+   * в указанном интервале дат.
    */
   void clearCache ();
 
+  /**
+   * @brief Очищает кэш протоколов доступа squid
+   *
+   * Удаляются только записи старше @a nmonth месяцев. Фильтры игнорируются.
+   *
+   * @param nmonth Количество месяцев
+   */
+  void clearOldCache (int nmonth);
+
 protected:
-  int _proxyid;                 ///< Идентификатор прокси
   DateFilter *_date_filter;     ///< Текущий фильтр по датам
   UserFilter *_user_filter;     ///< Текущий фильтр по пользователям
 };

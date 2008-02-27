@@ -51,9 +51,12 @@ using namespace std;
 #include "localnetworks.h"
 #include "groups.h"
 #include "templates.h"
+#include "template.h"
 #include "timeranges.h"
 #include "tools.h"
 #include "squidconf.h"
+#include "dbcleaner.h"
+#include "dbexporter.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -111,6 +114,10 @@ void version ()
   cout << "or FITNESS FOR A PARTICULAR PURPOSE." << endl;
 }
 
+int check_interval; //Интервал в секунах, через который нужно проверять наличие команд для демона
+long steptime;      //Интервал в минутах, через который нужно обрабатывать лог squid
+Proxy::ParserType parserType; // Тип обработки лог файла squid
+
 void reload (int signal_number)
 {
   DEBUG (DEBUG_DAEMON, "Reloading");
@@ -121,6 +128,18 @@ void reload (int signal_number)
   LocalNetworks::reload();
   Groups::reload ();
   SAMSUsers::reload ();
+
+  int err;
+
+  check_interval = SamsConfig::getInt (defSLEEPTIME, err);
+  if (err != ERR_OK)
+    {
+      ERROR ("Cannot get sleep time for daemon. See debugging messages for more details.");
+      exit (1);
+    }
+
+  Proxy::getParserType (parserType, steptime);
+
 }
 
 
@@ -225,12 +244,6 @@ int main (int argc, char *argv[])
       exit (parse_errors);
     }
 
-//  if (dbglevel == 100);
-//    {
-//      dbglevel = SamsConfig::getInt (defDEBUG, err);
-//      if (err != ERR_OK)
-//          dbglevel = 0;
-//    }
   int proxyid = SamsConfig::getInt (defPROXYID, err);
   if (err != ERR_OK)
     {
@@ -238,19 +251,10 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-  // Интервал в секунах, через который нужно проверять наличие команд для демона
-  int check_interval = SamsConfig::getInt (defSLEEPTIME, err);
+  check_interval = SamsConfig::getInt (defSLEEPTIME, err);
   if (err != ERR_OK)
     {
       ERROR ("Cannot get sleep time for daemon. See debugging messages for more details.");
-      exit (1);
-    }
-
-  // Интервал в минутах, через который нужно считывать данные из access.log
-  int steptime = SamsConfig::getInt (defDAEMONSTEP, err);
-  if (err != ERR_OK)
-    {
-      ERROR ("Cannot get step time for daemon. See debugging messages for more details.");
       exit (1);
     }
 
@@ -270,10 +274,6 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-//  struct sigaction sigchld_action;
-//  memset (&sigchld_action, 0, sizeof (sigchld_action));
-//  sigchld_action.sa_handler = &clean_up_child_process;
-//  sigaction (SIGCHLD, &sigchld_action, NULL);
 
   pid_t childpid=0;
 
@@ -293,6 +293,7 @@ int main (int argc, char *argv[])
       exit(0);
     }
 
+  Proxy::getParserType (parserType, steptime);
 
   struct sigaction sighup_action;
   memset (&sighup_action, 0, sizeof (sighup_action));
@@ -320,6 +321,14 @@ int main (int argc, char *argv[])
       return 1;
       #endif
     }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      #else
+      return 1;
+      #endif
+    }
   else
     return 1;
 
@@ -329,6 +338,8 @@ int main (int argc, char *argv[])
       return 1;
     }
 
+  // Программу запустили только для остановки демона
+  // Поэтому заносим в БД команду остановки и выходим
   if (stop_it)
     {
       DBQuery *q = NULL;
@@ -342,6 +353,12 @@ int main (int argc, char *argv[])
         {
           #ifdef USE_MYSQL
           q = new MYSQLQuery((MYSQLConn*)conn);
+          #endif
+        }
+      else if (engine == DBConn::DB_PGSQL)
+        {
+          #ifdef USE_PQ
+          q = new PgQuery((PgConn*)conn);
           #endif
         }
       basic_stringstream < char >cmd_stop;
@@ -387,9 +404,11 @@ int main (int argc, char *argv[])
   int seconds_to_reconnect = reconnect_timeout;
   static string service_proxy = "proxy";
   static string service_squid = "squid";
+  static string service_dbase = "database";
   static string action_shutdown = "shutdown";
   static string action_reload = "reload";
   static string action_reconfig = "reconfig";
+  static string action_export = "export";
 
   string reconfiguresquid = squidbindir + "/squid -k reconfigure";
 
@@ -397,6 +416,15 @@ int main (int argc, char *argv[])
   time_t loop_end = time (NULL);
   int looptime;
   int sleeptime;
+  struct tm *time_now;
+  struct tm time_clear;
+  struct tm time_was;
+  vector <long> tpl_ids;
+  Template *tpl = NULL;
+  uint i;
+  time_was.tm_mday = -1;
+  string dateEnd;
+  string dateStart;
   while (true)
     {
       looptime = (int) difftime(loop_start, loop_end);
@@ -407,9 +435,12 @@ int main (int argc, char *argv[])
       if (sleeptime > 0)
         sleep (sleeptime);
 
-      seconds_to_parse     -= (looptime + sleeptime);
-      if (seconds_to_parse < 0)
-        seconds_to_parse = 0;
+      if (parserType == Proxy::PARSE_DISCRET)
+        {
+          seconds_to_parse -= (looptime + sleeptime);
+          if (seconds_to_parse < 0)
+            seconds_to_parse = 0;
+        }
       seconds_to_reconnect -= (looptime + sleeptime);
 
       if (seconds_to_reconnect <= 0)
@@ -438,6 +469,12 @@ int main (int argc, char *argv[])
               query = new MYSQLQuery((MYSQLConn*)conn);
               #endif
             }
+          else if (engine == DBConn::DB_PGSQL)
+            {
+              #ifdef USE_PQ
+              query = new PgQuery((PgConn*)conn);
+              #endif
+            }
           if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
             {
               delete query;
@@ -452,7 +489,10 @@ int main (int argc, char *argv[])
             }
         }
 
-      DEBUG (DEBUG_DAEMON, "Process " << squidcachefile << " in " << seconds_to_parse << " second[s]");
+      if (parserType == Proxy::PARSE_DISCRET)
+        {
+          DEBUG (DEBUG_DAEMON, "Process " << squidcachefile << " in " << seconds_to_parse << " second[s]");
+        }
 
       if (!query->sendQueryDirect (cmd_check.str()) )
         {
@@ -462,6 +502,40 @@ int main (int argc, char *argv[])
 
       loop_start = time (NULL);
 
+      time_now = localtime (&loop_start);
+      // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
+      if ((time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
+        {
+          DBCleaner *cleaner = NULL;
+          vector<SAMSUser *> lstUsers;
+          tpl_ids = Templates::getIds ();
+          for (i = 0; i < tpl_ids.size (); i++)
+            {
+              tpl = Templates::getTemplate (tpl_ids[i]);
+              // У шаблона месячный период и начался новый месяц
+              // или у шаблона недельный период и начался понедельник
+              // или шаблон имеет нестандартный период, и настал день очистки счетчиков
+              if  ( ((tpl->getPeriodType () == Template::PERIOD_MONTH) && (time_now->tm_mday == 1)) ||
+                    ((tpl->getPeriodType () == Template::PERIOD_WEEK) && (time_now->tm_wday == 1))  ||
+                    (tpl->getClearDate (time_clear) && (time_now->tm_year == time_clear.tm_year) && (time_now->tm_yday == time_clear.tm_yday))
+                  )
+                {
+                  DEBUG (DEBUG_DAEMON, "Clear counters for template " << tpl_ids[i]);
+                  SAMSUsers::getUsersByTemplate (tpl_ids[i], lstUsers);
+                  if (lstUsers.size () > 0)
+                    {
+                      if (!cleaner)
+                        cleaner = new DBCleaner ();
+                      cleaner->setUserFilter (lstUsers);
+                      cleaner->clearCounters ();
+                    }
+                }
+            }
+        }
+
+      memcpy (&time_was, time_now, sizeof (struct tm));
+
+      // обрабатываем команды, поступившие извне (если они есть)
       while (query->fetch ())
         {
           //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='shutdown'
@@ -519,9 +593,23 @@ int main (int argc, char *argv[])
 
               Logger::addLog (Logger::LK_DAEMON, msg.str ());
             }
+          //insert into reconfig set s_proxy_id=1, s_service='database', s_action='export'
+          if (s_service == service_dbase && s_action == action_export)
+            {
+              cmd_del.str("");
+              cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
+              cmd_del << " and s_service='" << service_dbase << "'";
+              cmd_del << " and s_action='" << action_export << "'";
+              query->sendQueryDirect (cmd_del.str());
+              DBExporter *exporter = new DBExporter ();
+              exporter->setDateFilter ("2007-10-22");
+              exporter->exportToFile ("/tmp/sams-2007-10-22.txt");
+              delete exporter;
+            }
         }
 
-      if (seconds_to_parse == 0)
+      // Если дискретная обработка лог файла и время пришло, то запускаем обработку
+      if ( (parserType == Proxy::PARSE_DISCRET) && (seconds_to_parse == 0) )
         {
           DEBUG (DEBUG_DAEMON, "Processing " << squidcachefile << " ...");
           parser = new SquidLogParser (proxyid);

@@ -18,10 +18,10 @@
 
 #include "debug.h"
 
-Template::Template (long id, const string & name)
+Template::Template (long id)
 {
   _id = id;
-  _name = name;
+  _period_type = Template::PERIOD_MONTH;
 }
 
 
@@ -71,6 +71,39 @@ void Template::setQuote (long quote)
 long Template::getQuote () const
 {
   return _quote;
+}
+
+void Template::setPeriod (Template::PeriodType ptype, long days)
+{
+  _period_type = ptype;
+  _period_days = days;
+}
+
+Template::PeriodType Template::getPeriodType ()
+{
+  return _period_type;
+}
+
+void Template::setClearDate (const string & dateSpec)
+{
+  _clear_date = dateSpec + " 00:00:00";
+}
+
+bool Template::getClearDate (struct tm & clear_date)
+{
+  if (_period_type != Template::PERIOD_CUSTOM)
+    return false;
+  if (_clear_date.empty ())
+    return false;
+
+  char *rest;
+  rest = strptime (_clear_date.c_str (), "%Y-%m-%d %H:%M:%S", &clear_date);
+  if (rest == NULL)
+    {
+      ERROR ("Invalid date specification: " << _clear_date);
+      return false;
+    }
+  return true;
 }
 
 void Template::setAllDeny (bool alldeny)

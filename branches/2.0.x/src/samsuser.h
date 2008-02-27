@@ -24,9 +24,6 @@ using namespace std;
 #include "ip.h"
 
 
-
-#define DOMAIN_SEPARATORS "+@\\"
-
 /**
  * @brief Пользователь SAMS
  */

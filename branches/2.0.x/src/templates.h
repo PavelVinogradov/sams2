@@ -26,7 +26,8 @@ using namespace std;
 class Template;
 class DBConn;
 
-class Templates{
+class Templates
+{
 public:
   static bool reload();
 
@@ -38,15 +39,13 @@ public:
 
   static Template * getTemplate(long id);
 
-  static vector<string> getNames();
-
   static vector<long> getIds();
 
 private:
   static bool load();
 
   static bool _loaded;
-  static map<string, Template*> _list;
+  static map<long, Template*> _list;
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;
 };

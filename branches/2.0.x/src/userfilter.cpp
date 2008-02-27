@@ -41,6 +41,16 @@ bool UserFilter::setUsersList (const string & usersList)
   return _validity;
 }
 
+bool UserFilter::setUsersList (const vector<SAMSUser *> & usersList)
+{
+  _tblUsers.clear ();
+  vector<SAMSUser *>::const_iterator it;
+  for (it = usersList.begin (); it != usersList.end (); it++)
+      _tblUsers.push_back ((*it)->asString ());
+
+  return true;
+}
+
 bool UserFilter::match (SAMSUser * user)
 {
   vector < string >::iterator it;
@@ -79,4 +89,9 @@ bool UserFilter::match (SAMSUser * user)
     }
 
   return matched;
+}
+
+vector <string> UserFilter::getUsersList ()
+{
+  return _tblUsers;
 }

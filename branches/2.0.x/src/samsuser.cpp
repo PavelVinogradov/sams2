@@ -183,6 +183,29 @@ long SAMSUser::getGroupId() const
 
 string SAMSUser::asString () const
 {
+  string res = "";
+  Template *tpl = Templates::getTemplate (getShablonId());
+  if (!tpl)
+    {
+      WARNING ("User " << getId() << "lost template");
+      return res;
+    }
+
+  if (tpl->getAuth() == Proxy::AUTH_IP)
+    {
+      res = _ip.asString ();
+    }
+  else
+    {
+      if (!_domain.empty ())
+        {
+          res = _domain + "\\";
+        }
+      res += _nick;
+    }
+
+  return res;
+/*
   basic_stringstream < char >s;
 
   if (!_domain.empty ())
@@ -197,10 +220,12 @@ string SAMSUser::asString () const
   s << _hit << " ";
 
   return s.str ();
+*/
 }
 
 ostream & operator<< (ostream & out, const SAMSUser & user)
 {
+/*
   Template *tpl = Templates::getTemplate (user.getShablonId());
   if (!tpl)
     {
@@ -220,6 +245,7 @@ ostream & operator<< (ostream & out, const SAMSUser & user)
         }
       out << user._nick;
     }
-
+*/
+  out << user.asString();
   return out;
 }

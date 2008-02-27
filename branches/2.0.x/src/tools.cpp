@@ -287,3 +287,12 @@ bool fileExist (const string & path)
 {
   return (access (path.c_str (), F_OK) == 0);
 }
+
+void timeSubstractDays(struct tm & stime, int days)
+{
+  int seconds = days * 86400; // 86400 - количество секунд в сутках
+  time_t t = mktime (&stime);
+  t -= seconds;
+  struct tm *tmp = localtime(&t);
+  memcpy (&stime, tmp, sizeof(struct tm));
+}
