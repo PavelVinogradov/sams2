@@ -37,11 +37,12 @@
 #include "samsconfig.h"
 #include "datefilter.h"
 #include "userfilter.h"
+#include "samsuser.h"
+#include "tools.h"
 #include "debug.h"
 
-DBCleaner::DBCleaner (int proxyid)
+DBCleaner::DBCleaner ()
 {
-  _proxyid = proxyid;
   _date_filter = NULL;
   _user_filter = NULL;
 }
@@ -56,31 +57,41 @@ void DBCleaner::setUserFilter (UserFilter * filt)
   _user_filter = filt;
 }
 
+void DBCleaner::setUserFilter (const vector<SAMSUser *> & usersList)
+{
+  _user_filter = new UserFilter ();
+  _user_filter->setUsersList (usersList);
+}
+
 void DBCleaner::setDateFilter (DateFilter * filt)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << filt);
   _date_filter = filt;
 }
 
+void DBCleaner::setDateFilter (const string & dateSpec)
+{
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << dateSpec);
+  _date_filter = new DateFilter (dateSpec);
+}
+
 void DBCleaner::clearCounters ()
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
+  DBConn *conn = NULL;
+  DBQuery *query = NULL;
+
   if (SamsConfig::getEngine() == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
-      ODBCConn connODBC;
-      if (!connODBC.connect ())
-        return;
-      ODBCQuery queryODBC(&connODBC);
-      if (!queryODBC.sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
+      conn = new ODBCConn();
+      if (!conn->connect ())
         {
+          delete conn;
           return;
         }
-      if (!queryODBC.sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-        {
-          return;
-        }
+      query = new ODBCQuery((ODBCConn*)conn);
       #else
       return;
       #endif
@@ -88,18 +99,13 @@ void DBCleaner::clearCounters ()
   else if (SamsConfig::getEngine() == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
-      MYSQLConn connMYSQL;
-      if (!connMYSQL.connect ())
-        return;
-      MYSQLQuery queryMYSQL(&connMYSQL);
-      if (!queryMYSQL.sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
+      conn = new MYSQLConn();
+      if (!conn->connect ())
         {
+          delete conn;
           return;
         }
-      if (!queryMYSQL.sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-        {
-          return;
-        }
+      query = new MYSQLQuery((MYSQLConn*)conn);
       #else
       return;
       #endif
@@ -107,31 +113,76 @@ void DBCleaner::clearCounters ()
   else if (SamsConfig::getEngine() == DBConn::DB_PGSQL)
     {
       #ifdef USE_PQ
-      PgConn connPg;
-      if (!connPg.connect ())
-        return;
-      PgQuery queryPg(&connPg);
-      if (!queryPg.sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
+      conn = new PgConn();
+      if (!conn->connect ())
         {
+          delete conn;
           return;
         }
-      if (!queryPg.sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-        {
-          return;
-        }
+      query = new PgQuery((PgConn*)conn);
       #else
       return;
       #endif
     }
   else
     return;
+
+  basic_stringstream < char > strUserFilter;
+  if (_user_filter)
+    {
+      vector <string> users = _user_filter->getUsersList ();
+      vector <string> tblSpec;
+      string strDomain;
+      string strUser;
+      for (uint i = 0; i < users.size (); i++)
+        {
+          Split (users[i], DOMAIN_SEPARATORS, tblSpec);
+          if (tblSpec.size () == 2)
+            {
+              strDomain = tblSpec[0];
+              strUser = tblSpec[1];
+            }
+          else if (tblSpec.size () == 1)
+            {
+              strUser = tblSpec[0];
+            }
+
+          if (!strUserFilter.str ().empty ())
+            strUserFilter << " or ";
+
+          strUserFilter << "(";
+          if (!strDomain.empty ())
+            strUserFilter << "s_domain='" << strDomain << "' and ";
+          strUserFilter << "s_user='" << strUser << "'";
+          strUserFilter << ")";
+        }
+    }
+
+  // Составляем sql команду
+  basic_stringstream < char > sqlcmd;
+  sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled=0";
+
+  if (!strUserFilter.str ().empty ())
+    sqlcmd << " and (" << strUserFilter.str () << ")";
+
+  query->sendQueryDirect (sqlcmd.str ());
+
+  delete query;
+  delete conn;
 }
 
 void DBCleaner::clearCache ()
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
-  basic_stringstream < char >sqlcmd;
+  int err;
+  int proxy_id = SamsConfig::getInt (defPROXYID, err);
+  if (err != ERR_OK)
+    {
+      ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");
+      return;
+    }
+
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
@@ -182,26 +233,52 @@ void DBCleaner::clearCache ()
   else
     return;
 
+  basic_stringstream < char > strDateFilter;
+  basic_stringstream < char > strUserFilter;
 
-  if (!query->sendQueryDirect ("update squiduser set s_size=0, s_hit=0"))
+  if (_date_filter)
     {
-      delete query;
-      delete conn;
-      return;
-    }
-  if (!query->sendQueryDirect ("update squiduser set s_enabled=1 where s_enabled=0"))
-    {
-      delete query;
-      delete conn;
-      return;
+      strDateFilter << "s_date>='" << _date_filter->getStartDateAsString () << "'";
+      strDateFilter << " and s_date<='" << _date_filter->getEndDateAsString () << "'";
     }
 
-  sqlcmd << "delete from squidcache where s_proxy_id=" << _proxyid;
-  if (_date_filter != NULL)
+  if (_user_filter)
     {
-      sqlcmd << " and s_date>='" << _date_filter->getStartDateAsString () << "'";
-      sqlcmd << " and s_date<='" << _date_filter->getEndDateAsString () << "' ";
+      vector <string> users = _user_filter->getUsersList ();
+      vector <string> tblSpec;
+      string strDomain;
+      string strUser;
+      for (uint i = 0; i < users.size (); i++)
+        {
+          Split (users[i], DOMAIN_SEPARATORS, tblSpec);
+          if (tblSpec.size () == 2)
+            {
+              strDomain = tblSpec[0];
+              strUser = tblSpec[1];
+            }
+          else if (tblSpec.size () == 1)
+            {
+              strUser = tblSpec[0];
+            }
+
+          if (!strUserFilter.str ().empty ())
+            strUserFilter << " or ";
+
+          strUserFilter << "(";
+          if (!strDomain.empty ())
+            strUserFilter << "s_domain='" << strDomain << "' and ";
+          strUserFilter << "s_user='" << strUser << "'";
+          strUserFilter << ")";
+        }
     }
+
+  basic_stringstream < char >sqlcmd;
+
+  sqlcmd << "delete from squidcache where s_proxy_id=" << proxy_id;
+  if (!strDateFilter.str ().empty ())
+    sqlcmd << " and (" << strDateFilter.str () << ")";
+  if (!strUserFilter.str ().empty ())
+    sqlcmd << " and (" << strUserFilter.str () << ")";
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
     {
@@ -211,22 +288,139 @@ void DBCleaner::clearCache ()
     }
 
   sqlcmd.str("");
-  sqlcmd << "delete from cachesum where s_proxy_id=" << _proxyid;
 
-  if (!query->sendQueryDirect (sqlcmd.str ()))
-    {
-      delete query;
-      delete conn;
-      return;
-    }
-
-  sqlcmd.str("");
-  sqlcmd << "insert into cachesum select " << _proxyid;
-  sqlcmd << ", s_date, s_user, s_domain, sum(s_size), sum(s_hit)";
-  sqlcmd << " from squidcache where s_proxy_id=" << _proxyid;
-  sqlcmd << " group by s_date, s_domain, s_user";
+  sqlcmd << "delete from cachesum where s_proxy_id=" << proxy_id;
+  if (!strDateFilter.str ().empty ())
+    sqlcmd << " and (" << strDateFilter.str () << ")";
+  if (!strUserFilter.str ().empty ())
+    sqlcmd << " and (" << strUserFilter.str () << ")";
 
   query->sendQueryDirect (sqlcmd.str ());
+
+  delete query;
+  delete conn;
+
+  return;
+}
+
+void DBCleaner::clearOldCache (int nmonth)
+{
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
+
+  int err;
+  int proxy_id = SamsConfig::getInt (defPROXYID, err);
+  if (err != ERR_OK)
+    {
+      ERROR ("No proxyid defined. Check " << defPROXYID << " in config file.");
+      return;
+    }
+
+  DBConn *conn = NULL;
+  DBQuery *query = NULL;
+
+  DBConn::DBEngine engine = SamsConfig::getEngine();
+
+  if (engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      conn = new ODBCConn();
+      if (!conn->connect ())
+        {
+          delete conn;
+          return;
+        }
+      query = new ODBCQuery((ODBCConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else if (engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      conn = new MYSQLConn();
+      if (!conn->connect ())
+        {
+          delete conn;
+          return;
+        }
+      query = new MYSQLQuery((MYSQLConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else if (engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      if (!conn->connect ())
+        {
+          delete conn;
+          return;
+        }
+      query = new PgQuery((PgConn*)conn);
+      #else
+      return;
+      #endif
+    }
+  else
+    return;
+
+  time_t now = time (NULL);
+  struct tm *time_now = localtime (&now);
+  time_now->tm_mon -= (nmonth+1);
+
+  if (time_now->tm_mon < 0)
+    {
+      time_now->tm_mon += 12;
+      time_now->tm_year -= 1;
+    }
+
+  switch (time_now->tm_mon)
+    {
+      case 0:   // Январь
+      case 2:   // Март
+      case 4:   // Май
+      case 6:   // Июль
+      case 7:   // Август
+      case 9:   // Октябрь
+      case 11:  // Декабрь
+        time_now->tm_mday = 31;
+        break;
+      case 3:   // Апрель
+      case 5:   // Июнь
+      case 8:   // Сентябрь
+      case 10:  // Ноябрь
+        time_now->tm_mday = 30;
+        break;
+      case 1:   // Февраль
+        if (time_now->tm_year % 4 == 0)
+          time_now->tm_mday = 29;
+        else
+          time_now->tm_mday = 28;
+        break;
+    }
+
+  char strbuf[15];
+  strftime (strbuf, sizeof (strbuf), "%Y-%m-%d", time_now);
+  basic_stringstream < char >sqlcmd;
+
+  sqlcmd << "delete from squidcache where s_proxy_id=" << proxy_id;
+  sqlcmd << " and s_date<='" << strbuf << "'";
+
+  if (!query->sendQueryDirect (sqlcmd.str ()))
+    {
+      delete query;
+      delete conn;
+      return;
+    }
+
+  sqlcmd.str("");
+
+  sqlcmd << "delete from cachesum where s_proxy_id=" << proxy_id;
+  sqlcmd << " and s_date<='" << strbuf << "'";
+
+  query->sendQueryDirect (sqlcmd.str ());
+
   delete query;
   delete conn;
 

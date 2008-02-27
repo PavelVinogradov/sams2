@@ -61,6 +61,15 @@ public:
   };
 
   /**
+   * @brief Способ обработки лог файла squid
+   */
+  enum ParserType
+  {
+    PARSE_NONE,                 ///< Не обрабатывать
+    PARSE_DISCRET,              ///< Обрабатывать через N минут
+    PARSE_IMMEDIATE             ///< Обрабатывать непрерывно
+  };
+  /**
    * @brief Преобразование способа авторизации в строку
    * @param t Способ авторизации
    * @return Способ авторизации в виде строки
@@ -95,6 +104,8 @@ public:
   static long getEndValue ();
 
   static long getKbSize ();
+
+  static void getParserType (ParserType & ptype, long & ptime);
 
   static TrafficType getTrafficType ();
 
@@ -141,6 +152,8 @@ protected:
   static bool _needResolve;            ///< Необходимость обращения к DNS
   static bool _usedomain;              ///< Использовать или нет домен по умолчанию
   static string _defaultdomain;        ///< Домен по умолчанию
+  static ParserType _parser_type;      ///< Тип обработки лог файла squid
+  static long _parser_time;            ///< Интервал времени, через который обрабатывать лог файл squid
   static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
   static long _defaulttpl;
   static long _defaultgrp;

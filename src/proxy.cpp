@@ -53,6 +53,8 @@ long Proxy::_endvalue = 0;
 bool Proxy::_needResolve = false;
 bool Proxy::_usedomain = false;
 string Proxy::_defaultdomain;
+Proxy::ParserType Proxy::_parser_type;
+long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
 long Proxy::_defaultgrp;
@@ -153,6 +155,14 @@ long Proxy::getKbSize ()
   load();
 
   return _kbsize;
+}
+
+void Proxy::getParserType (Proxy::ParserType & ptype, long & ptime)
+{
+  load();
+
+  ptype = _parser_type;
+  ptime = _parser_time;
 }
 
 Proxy::TrafficType Proxy::getTrafficType ()
@@ -324,6 +334,8 @@ bool Proxy::reload ()
   char s_realsize[5];
   long s_usedomain;
   char s_defaultdomain[25];
+  //long s_parser_type;
+  //long s_parser_time;
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
@@ -393,23 +405,34 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
-  if (!query->bindCol (8, DBQuery::T_LONG, &s_autouser, 0))
+  if (!query->bindCol (8, DBQuery::T_LONG, &_parser_type, 0))
     {
       delete query;
       return false;
     }
-  if (!query->bindCol (9, DBQuery::T_LONG, &s_autotpl, 0))
+  if (!query->bindCol (9, DBQuery::T_LONG, &_parser_time, 0))
     {
       delete query;
       return false;
     }
-  if (!query->bindCol (10, DBQuery::T_LONG, &s_autogrp, 0))
+  if (!query->bindCol (10, DBQuery::T_LONG, &s_autouser, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (11, DBQuery::T_LONG, &s_autotpl, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (12, DBQuery::T_LONG, &s_autogrp, 0))
     {
       delete query;
       return false;
     }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
+  sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 

@@ -37,7 +37,7 @@
 #include "samsconfig.h"
 
 bool Templates::_loaded = false;
-map<string, Template*> Templates::_list;
+map<long, Template*> Templates::_list;
 DBConn *Templates::_conn;                ///< Соединение с БД
 bool Templates::_connection_owner;
 
@@ -135,10 +135,11 @@ bool Templates::reload()
 
   long s_trange_id;
   long s_tpl_id;
-  char s_name[25];
   char s_auth[5];
   long s_quote;
   long s_alldenied;
+  char s_period[5];
+  char s_clrdate[15];
 
   if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
     {
@@ -146,25 +147,31 @@ bool Templates::reload()
       delete query2;
       return false;
     }
-  if (!query->bindCol (2, DBQuery::T_CHAR,  s_name, sizeof(s_name)))
+  if (!query->bindCol (2, DBQuery::T_CHAR,  s_auth, sizeof(s_auth)))
     {
       delete query;
       delete query2;
       return false;
     }
-  if (!query->bindCol (3, DBQuery::T_CHAR,  s_auth, sizeof(s_auth)))
+  if (!query->bindCol (3, DBQuery::T_LONG,  &s_quote, 0))
     {
       delete query;
       delete query2;
       return false;
     }
-  if (!query->bindCol (4, DBQuery::T_LONG,  &s_quote, 0))
+  if (!query->bindCol (4, DBQuery::T_LONG,  &s_alldenied, 0))
     {
       delete query;
       delete query2;
       return false;
     }
-  if (!query->bindCol (5, DBQuery::T_LONG,  &s_alldenied, 0))
+  if (!query->bindCol (5, DBQuery::T_CHAR,  s_period, sizeof(s_period)))
+    {
+      delete query;
+      delete query2;
+      return false;
+    }
+  if (!query->bindCol (6, DBQuery::T_CHAR,  s_clrdate, sizeof(s_clrdate)))
     {
       delete query;
       delete query2;
@@ -178,7 +185,7 @@ bool Templates::reload()
       return false;
     }
 
-  if (!query->sendQueryDirect ("select s_shablon_id, s_name, s_auth, s_quote, s_alldenied from shablon"))
+  if (!query->sendQueryDirect ("select s_shablon_id, s_auth, s_quote, s_alldenied, s_period, s_clrdate from shablon"))
     {
       delete query;
       delete query2;
@@ -189,13 +196,27 @@ bool Templates::reload()
 
   Template *tpl = NULL;
   _list.clear();
+  string str_period;
+  long period_days;
   while (query->fetch())
     {
-      tpl = new Template(s_tpl_id, s_name);
+      tpl = new Template(s_tpl_id);
       tpl->setAuth (s_auth);
       tpl->setQuote (s_quote);
-      tpl->setAllDeny( ((s_alldenied==0)?false:true) );
-      _list[s_name] = tpl;
+      tpl->setAllDeny ( ((s_alldenied==0)?false:true) );
+      str_period = s_period;
+      if (str_period == "M")
+        tpl->setPeriod (Template::PERIOD_MONTH, 0);
+      else if (str_period == "W")
+        tpl->setPeriod (Template::PERIOD_WEEK, 0);
+      else
+        {
+          if (sscanf (str_period.c_str (), "%ld", &period_days) != 1)
+            period_days = 10;
+          tpl->setPeriod (Template::PERIOD_CUSTOM, period_days);
+          tpl->setClearDate (s_clrdate);
+        }
+      _list[s_tpl_id] = tpl;
 
       sqlcmd.str("");
       sqlcmd << "select s_trange_id from sconfig_time where s_shablon_id=" << s_tpl_id;
@@ -246,7 +267,7 @@ void Templates::destroy()
     {
       DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not connected");
     }
-  map < string, Template* >::iterator it;
+  map < long, Template* >::iterator it;
   for (it = _list.begin (); it != _list.end (); it++)
     {
       delete (*it).second;
@@ -254,45 +275,17 @@ void Templates::destroy()
   _list.clear ();
 }
 
-Template * Templates::getTemplate(const string & name)
-{
-  load();
-
-  map < string, Template* >::iterator it = _list.find (name);
-  if (it == _list.end ())
-    {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << name << " not found");
-      return NULL;
-    }
-  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << (*it).second);
-  return (*it).second;
-}
-
 Template * Templates::getTemplate(long id)
 {
   load();
 
-  map < string, Template* >::iterator it;
-  for (it = _list.begin (); it != _list.end (); it++)
+  map < long, Template* >::iterator it = _list.find (id);
+  if (it == _list.end ())
     {
-      if (id == (*it).second->getId ())
-        return (*it).second;
+      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id << " not found");
+      return NULL;
     }
-  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id << " not found");
-  return NULL;
-}
-
-vector<string> Templates::getNames()
-{
-  load();
-
-  vector<string> lst;
-  map <string, Template*>::iterator it;
-  for (it = _list.begin (); it != _list.end (); it++)
-    {
-      lst.push_back((*it).first);
-    }
-  return lst;
+  return (*it).second;
 }
 
 vector<long> Templates::getIds()
@@ -300,10 +293,10 @@ vector<long> Templates::getIds()
   load();
 
   vector<long> lst;
-  map <string, Template*>::iterator it;
+  map <long, Template*>::iterator it;
   for (it = _list.begin (); it != _list.end (); it++)
     {
-      lst.push_back((*it).second->getId ());
+      lst.push_back((*it).first);
     }
   return lst;
 }

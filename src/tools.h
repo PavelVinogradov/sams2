@@ -25,6 +25,7 @@ using namespace std;
 
 #include <vector>
 
+#define DOMAIN_SEPARATORS "+@\\"
 
 /**
  * @brief Удаляет комментарии из строки
@@ -177,5 +178,7 @@ bool fileDelete (const string & path);
  * @retval true Если файл существует
  */
 bool fileExist (const string & path);
+
+void timeSubstractDays(struct tm & stime, int days);
 
 #endif /* SAMS_TOOLS_H */

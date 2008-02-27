@@ -28,35 +28,118 @@ class Template
 {
 public:
 
-  Template (long id, const string & name);
+  /**
+   * @brief Период лимита трафика
+   */
+  enum PeriodType
+  {
+    PERIOD_MONTH,   ///< Месяц
+    PERIOD_WEEK,    ///< Неделя
+    PERIOD_CUSTOM   ///< Указанное количество дней
+  };
+
+  Template (long id);
 
   ~Template ();
 
+  /**
+   * @brief Возвращает идентификатор шаблона
+   *
+   * @return Идентификатор шаблона
+   */
   long getId () const;
 
   void setAuth (const string & auth);
 
   void setAuth (Proxy::usrAuthType auth);
 
+  /**
+   * @brief Возвращает тип авторизации шаблона
+   *
+   * @return Тип авторизации
+   */
   Proxy::usrAuthType getAuth () const;
 
   void setQuote (long quote);
 
+  /**
+   * @brief Возвращает размер ограничения трафика
+   *
+   * @return Размер ограничения трафика
+   */
   long getQuote () const;
 
+  /**
+   * @brief Устанавливает период ограничения трафика
+   *
+   * Если тип периода месяц или неделя, то количество дней игнорируется.
+   * При нестандартном периоде необходимо установить день очистки счетчиков.
+   * @sa setClearDay
+   * @param ptype Тип периода
+   * @param days Количество дней
+   */
+  void setPeriod (Template::PeriodType ptype, long days);
+
+  /**
+   * @brief Возвращает тип периода ограничения трафика
+   * @return Тип периода ограничения трафика
+   */
+  Template::PeriodType getPeriodType ();
+
+  /**
+   * @brief Устанавливает дату очистки счетчиков
+   *
+   * Эта функция должна использоваться только при нестандартном периоде ограничения трафика.
+   * В противном случае она будет проигнорирована.
+   * @param dateSpec Дата очистки счетчиков в формате YYYY-MM-DD
+   */
+  void setClearDate (const string & dateSpec);
+
+  /**
+   * @brief Возвращает дату очистки счетчиков
+   *
+   * Если функция возвращает false, значит установлен стандартный период ограничения трафика
+   * или дата не была установлена или установлена неверная дата.
+   * @return false при ошибке и true при успешном выполнении
+   */
+  bool getClearDate (struct tm & clear_date);
+
+  /**
+   * @brief Устанавливает флаг запрета ко всем ресурсам, кроме разрешенных
+   *
+   * @param alldeny Если true, то запрещать ресурс, если он не разрешен
+   */
   void setAllDeny(bool alldeny);
 
+  /**
+   * @brief Добавляет идентификатор временного ограничения
+   *
+   * @param id Идентификатор временного ограничения
+   */
   void addTimeRange (long id);
 
+  /**
+   * @brief Возвращает список идентификаторов временных границ, когда доступ разрешен
+   *
+   * @return Список идентификаторов временных границ
+   */
   vector <long> getTimeRangeIds ();
 
+  /**
+   * @brief Возвращает признак доступности ресурса
+   *
+   * @param url url адрес ресурса
+   * @return true если ресурс доступен и false в противном случае
+   */
   bool isUrlAllowed (const string & url) const;
 
 private:
   long _id;
-  string _name;
   Proxy::usrAuthType _auth;
   long _quote;
+  Template::PeriodType _period_type;
+  long _period_days;
+  string _clear_date;
   bool _alldeny;
   vector <long> _times;
 };
