@@ -175,6 +175,7 @@ class SAMSCONFIG
   var $PROXYCOUNT;
   var $LOGLEVEL;
   var $CCLEAN;
+  var $SQUIDIP;
   
   function ReadSAMSConfFile($configfile)
     {
@@ -213,6 +214,7 @@ class SAMSCONFIG
          if(!strcasecmp($str2,"MYSQLVERSION" ))          $this->MYSQLVERSION=trim(strtok("="));
          if(!strcasecmp($str2,"SHUTDOWNCOMMAND" ))       $this->SHUTDOWN=trim(strtok("="));
          if(!strcasecmp($str2,"SAMSPATH" ))       $this->SAMSPATH=trim(strtok("="));
+         if(!strcasecmp($str2,"SQUIDIP" ))           $this->SQUIDIP=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPBASEDN" ))
            {
               $str2=trim(strtok($string,"="));
