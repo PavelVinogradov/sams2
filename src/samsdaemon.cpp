@@ -425,6 +425,8 @@ int main (int argc, char *argv[])
   time_was.tm_mday = -1;
   string dateEnd;
   string dateStart;
+  char str_prev_month[25];
+  string backup_fname;
   while (true)
     {
       looptime = (int) difftime(loop_start, loop_end);
@@ -507,7 +509,8 @@ int main (int argc, char *argv[])
       if ((time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
         {
           DBCleaner *cleaner = NULL;
-          vector<SAMSUser *> lstUsers;
+          DBExporter *exporter = NULL;
+          //vector<SAMSUser *> lstUsers;
           tpl_ids = Templates::getIds ();
           for (i = 0; i < tpl_ids.size (); i++)
             {
@@ -521,16 +524,38 @@ int main (int argc, char *argv[])
                   )
                 {
                   DEBUG (DEBUG_DAEMON, "Clear counters for template " << tpl_ids[i]);
-                  SAMSUsers::getUsersByTemplate (tpl_ids[i], lstUsers);
-                  if (lstUsers.size () > 0)
-                    {
-                      if (!cleaner)
-                        cleaner = new DBCleaner ();
-                      cleaner->setUserFilter (lstUsers);
-                      cleaner->clearCounters ();
-                    }
+                  if (!cleaner)
+                    cleaner = new DBCleaner ();
+                  cleaner->setTemplateFilter (tpl_ids[i]);
+                  cleaner->clearCounters ();
                 }
             }
+          // Если начался новый месяц, то сбрасываем логи в файл и очищаем старый кеш
+          if (time_now->tm_mday == 1)
+            {
+              if (!exporter)
+                exporter = new DBExporter ();
+
+              strftime (str_prev_month, sizeof (str_prev_month), "%Y-%m-01,%Y-%m-%d", &time_was);
+              exporter->setDateFilter (str_prev_month);
+
+              strftime (str_prev_month, sizeof (str_prev_month), "%Y-%m", &time_was);
+              backup_fname = PKGDATADIR;
+              backup_fname += "/backup/samscache.";
+              backup_fname += str_prev_month;
+              backup_fname += ".log";
+              exporter->exportToFile (backup_fname);
+
+              if (!cleaner)
+                cleaner = new DBCleaner ();
+              cleaner->clearOldCache (Proxy::getCacheAge ());
+            }
+          if (cleaner)
+            delete cleaner;
+          if (exporter)
+            delete exporter;
+          cleaner = NULL;
+          exporter = NULL;
         }
 
       memcpy (&time_was, time_now, sizeof (struct tm));

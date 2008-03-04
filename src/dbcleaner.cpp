@@ -45,34 +45,48 @@ DBCleaner::DBCleaner ()
 {
   _date_filter = NULL;
   _user_filter = NULL;
+  _date_filter_owner = false;
+  _tpl_id = -1;
 }
 
 DBCleaner::~DBCleaner ()
 {
+  if (_date_filter && _date_filter_owner)
+    delete _date_filter;
 }
 
 void DBCleaner::setUserFilter (UserFilter * filt)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << filt);
+
   _user_filter = filt;
 }
 
-void DBCleaner::setUserFilter (const vector<SAMSUser *> & usersList)
+void DBCleaner::setTemplateFilter (long tpl_id)
 {
-  _user_filter = new UserFilter ();
-  _user_filter->setUsersList (usersList);
+  _tpl_id = tpl_id;
 }
 
 void DBCleaner::setDateFilter (DateFilter * filt)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << filt);
+
+  if (_date_filter && _date_filter_owner)
+    delete _date_filter;
+
   _date_filter = filt;
+  _date_filter_owner = false;
 }
 
 void DBCleaner::setDateFilter (const string & dateSpec)
 {
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << dateSpec);
+
+  if (_date_filter && _date_filter_owner)
+    delete _date_filter;
+
   _date_filter = new DateFilter (dateSpec);
+  _date_filter_owner = true;
 }
 
 void DBCleaner::clearCounters ()
@@ -153,14 +167,17 @@ void DBCleaner::clearCounters ()
           strUserFilter << "(";
           if (!strDomain.empty ())
             strUserFilter << "s_domain='" << strDomain << "' and ";
-          strUserFilter << "s_user='" << strUser << "'";
+          strUserFilter << "s_nick='" << strUser << "'";
           strUserFilter << ")";
         }
     }
 
   // Составляем sql команду
   basic_stringstream < char > sqlcmd;
-  sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled=0";
+  sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled=0 or s_enabled=1";
+
+  if (_tpl_id != -1)
+    sqlcmd << " and (s_shablon_id=" << _tpl_id << ")";
 
   if (!strUserFilter.str ().empty ())
     sqlcmd << " and (" << strUserFilter.str () << ")";
@@ -267,7 +284,7 @@ void DBCleaner::clearCache ()
           strUserFilter << "(";
           if (!strDomain.empty ())
             strUserFilter << "s_domain='" << strDomain << "' and ";
-          strUserFilter << "s_user='" << strUser << "'";
+          strUserFilter << "s_nick='" << strUser << "'";
           strUserFilter << ")";
         }
     }

@@ -58,6 +58,7 @@ long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
 long Proxy::_defaultgrp;
+long Proxy::_squidbase;
 DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
 
@@ -131,18 +132,6 @@ long Proxy::getId ()
   return _id;
 }
 
-void Proxy::setEndValue(long endvalue)
-{
-  load();
-
-  DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] " << endvalue);
-
-  _endvalue = endvalue;
-
-  if (_endvalue < 0)
-    _endvalue = 0;
-}
-
 long Proxy::getEndValue()
 {
   load();
@@ -175,6 +164,11 @@ Proxy::TrafficType Proxy::getTrafficType ()
 string Proxy::getRedirectAddr ()
 {
   return "http://redirect.addr.here";
+}
+
+long Proxy::getCacheAge ()
+{
+  return _squidbase;
 }
 
 SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
@@ -334,8 +328,6 @@ bool Proxy::reload ()
   char s_realsize[5];
   long s_usedomain;
   char s_defaultdomain[25];
-  //long s_parser_type;
-  //long s_parser_time;
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
@@ -430,10 +422,16 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (13, DBQuery::T_LONG, &_squidbase, 0))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
+  sqlcmd << ", s_squidbase";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
