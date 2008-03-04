@@ -69,6 +69,7 @@ public:
     PARSE_DISCRET,              ///< Обрабатывать через N минут
     PARSE_IMMEDIATE             ///< Обрабатывать непрерывно
   };
+
   /**
    * @brief Преобразование способа авторизации в строку
    * @param t Способ авторизации
@@ -90,13 +91,6 @@ public:
   static long getId ();
 
   /**
-   * @brief Устанавливает смещение в файле, откуда нужно читать значения
-   *
-   * @param endvalue Смещение в файле
-   */
-  static void setEndValue (long endvalue);
-
-  /**
    * @brief Возвращает смещение в файле, откуда нужно читать значения
    *
    * @return Смещение в файле
@@ -110,6 +104,8 @@ public:
   static TrafficType getTrafficType ();
 
   static string getRedirectAddr ();
+
+  static long getCacheAge ();
 
   /**
    * @brief Поиск пользователя SAMS
@@ -143,7 +139,7 @@ protected:
    */
   static bool load ();
 
-  static bool _loaded;
+  static bool _loaded;                 ///< Флаг, показывающий загружены ли параметры из БД
   static usrAuthType _auth;            ///< Способ авторизации пользователей
   static TrafficType _trafType;        ///< Тип учитываемого трафика
   static long _id;                     ///< Идентификатор прокси
@@ -155,10 +151,11 @@ protected:
   static ParserType _parser_type;      ///< Тип обработки лог файла squid
   static long _parser_time;            ///< Интервал времени, через который обрабатывать лог файл squid
   static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
-  static long _defaulttpl;
-  static long _defaultgrp;
+  static long _defaulttpl;             ///< Идентификатор шаблона, используемого при автоматическом создании пользователя
+  static long _defaultgrp;             ///< Идентификатор группы, используемой при автоматическом создании пользователя
+  static long _squidbase;              ///< Хранить данные о трафике за последние @a _squidbase месяцев
   static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
+  static bool _connection_owner;       ///< Флаг, показывающий нужно ли закрывать соединение в методе @a destroy
 };
 
 #endif
