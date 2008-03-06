@@ -74,7 +74,8 @@ if(!$squidclass->connect($squidhost,$squidport))
 	exit(1);
 }
 $data=$squidclass->makeQuery($cachemgr_passwd);
-if($data==false){
+if($data==false)
+{
 	$squidclass->showError();
 	exit(2);
 }
@@ -91,7 +92,7 @@ if($data==false){
 		print("<TH >Connection time");
 		print("<TH >Size");
 
-
+//echo "data[con]=" . $data["con"] . "<BR>";
 		$group_by_key="host";
 		foreach($data["con"] as $key => $v)
 		{
