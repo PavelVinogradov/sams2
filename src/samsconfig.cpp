@@ -188,7 +188,7 @@ bool SamsConfig::readDB ()
 
   DBConn::DBEngine engine = SamsConfig::getEngine();
 
-  DBConn *conn;
+  DBConn *conn = NULL;
   DBQuery *query = NULL;
 
   if (engine == DBConn::DB_UODBC)

@@ -18,7 +18,7 @@ install-data-local:
 	test -f $(sysconfdir)/sams2.conf && mv $(sysconfdir)/sams2.conf $(sysconfdir)/sams2.conf.old
 	$(install_sh_DATA) $(abs_top_srcdir)/etc/sams2.conf $(sysconfdir)
 
-uninstall-data-local:
+uninstall-local:
 	test -d $(pkgdatadir) && rm -rf $(pkgdatadir)
 	test -d $(docdir) && rm -rf $(docdir)
 	test -f $(sysconfdir)/sams2.conf && rm -f $(sysconfdir)/sams2.conf

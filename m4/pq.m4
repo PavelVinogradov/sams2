@@ -10,7 +10,7 @@ AC_ARG_WITH(pq-includes,
             pq_includes="")
 
 if test "x$pq_includes" = "x"; then
-  pq_includes="/usr/local/include /usr/include"
+  pq_includes="/usr/local/include /usr/include /usr/include/pgsql"
 fi
 
 AC_MSG_CHECKING(for LibPQ headers)

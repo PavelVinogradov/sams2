@@ -18,8 +18,9 @@ noinst_HEADERS = debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
 						localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
 						mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
 				squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h
-samsparser_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB) $(PQ_LIB)
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
+
+LIBS += $(PQ_LIB)
 
 configmake.h: Makefile
 	rm -f $@-t $@
@@ -63,10 +64,8 @@ samsdaemon_SOURCES = datefilter.cpp debug.cpp filter.cpp ip.cpp \
 								template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
 					squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
 	dbcleaner.cpp
-samsdaemon_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB) $(PQ_LIB)
 samsredir_SOURCES = dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 		logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
 		processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp template.cpp \
 		templates.cpp tools.cpp url.cpp samsredir.cpp groups.cpp net.cpp pgconn.cpp \
 	pgquery.cpp
-samsredir_LDFLAGS = $(MYSQL_LIB) $(UNIXODBC_LIB) $(PQ_LIB)
