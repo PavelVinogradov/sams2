@@ -5,7 +5,6 @@ AM_INIT_AUTOMAKE(sams2, 0.2)
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
-AM_PROG_LIBTOOL
 
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
