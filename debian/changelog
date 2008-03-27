@@ -9,6 +9,7 @@ sams (1.0.1-1) unstable; urgency=low
 
   * New upstream release
   * Split package in three part
+  * Fix bugs in package
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 25 Jan 2008 10:57:04 +0500
 
