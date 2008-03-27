@@ -64,6 +64,7 @@ case "$1" in
 		[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
 		log_end_msg $RETVAL
 	;;
+esac
 
 start()
 {
