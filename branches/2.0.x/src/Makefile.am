@@ -20,7 +20,7 @@ noinst_HEADERS = debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
 				squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
 
-LIBS += $(PQ_LIB)
+LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB)
 
 configmake.h: Makefile
 	rm -f $@-t $@
