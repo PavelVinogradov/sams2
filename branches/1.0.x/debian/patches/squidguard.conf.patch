@@ -1,8 +1,30 @@
-diff -urN 1.0.x/etc/sams.conf build/etc/sams.conf
---- 1.0.x/etc/sams.conf	2007-11-02 20:45:42.000000000 +0400
-+++ build/etc/sams.conf	2007-12-15 10:31:54.000000000 +0400
-@@ -12,7 +12,7 @@
- SAMSPATH=/usr/local
+Index: 1.0.x/debian/patches/squidguard.conf.patch
+===================================================================
+--- 1.0.x/debian/patches/squidguard.conf.patch	(revision 351)
++++ 1.0.x/debian/patches/squidguard.conf.patch	(working copy)
+@@ -1,12 +0,0 @@
+-diff -urN 1.0.x/etc/sams.conf build/etc/sams.conf
+---- 1.0.x/etc/sams.conf	2007-11-02 20:45:42.000000000 +0400
+-+++ build/etc/sams.conf	2007-12-15 10:31:54.000000000 +0400
+-@@ -12,7 +12,7 @@
+- SAMSPATH=/usr/local
+- SQUIDPATH=/usr/sbin
+- SQUIDGUARDLOGPATH=/var/log
+--SQUIDGUARDDBPATH=/var/db/squidguard
+-+SQUIDGUARDDBPATH=/etc/squid
+- RECODECOMMAND=iconv -f KOI8-R -t 866 %finp > %fout
+- LDAPSERVER=servername_or_ipadress
+- LDAPBASEDN=your.domain
+Index: 1.0.x/etc/sams.conf
+===================================================================
+--- 1.0.x/etc/sams.conf	(revision 351)
++++ 1.0.x/etc/sams.conf	(working copy)
+@@ -9,10 +9,10 @@
+ SQUIDROOTDIR=/etc/squid
+ SQUIDLOGDIR=/var/log/squid
+ SQUIDCACHEDIR=/var/spool/squid
+-SAMSPATH=/usr/local
++SAMSPATH=/usr
  SQUIDPATH=/usr/sbin
  SQUIDGUARDLOGPATH=/var/log
 -SQUIDGUARDDBPATH=/var/db/squidguard
