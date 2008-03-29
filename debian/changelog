@@ -4,6 +4,7 @@ sams (1.1.0-1) unstable; urgency=low
   * Fix instalation of init.d script
   * Fix syntax of init.d script
   * All binaries now installed in /usr/bin
+  * Rename and update squidguard.conf.patch
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 29 Feb 2008 10:57:04 +0500
  
