@@ -2,23 +2,21 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src
+SUBDIRS = src doc/src
 
-EXTRA_DIST = php etc
+EXTRA_DIST = doc php etc spec
 
 dist-hook:
 	find $(distdir) -type d -name .svn | xargs rm -rf
 
 install-data-local:
-	test -d $(pkgdatadir) || mkdir $(pkgdatadir)
-	(cd $(abs_top_srcdir)/php && find . ! -wholename "*/.svn*" | cpio -pdum --no-preserve-owner $(pkgdatadir))
-	find $(pkgdatadir) -type d | xargs chmod 755
-	find $(pkgdatadir) -type f | xargs chmod 644
-	(cd $(abs_top_srcdir)/doc && find . ! -wholename "*/.svn*" | cpio -pdum --no-preserve-owner $(docdir))
-	test -f $(sysconfdir)/sams2.conf && mv $(sysconfdir)/sams2.conf $(sysconfdir)/sams2.conf.old
-	$(install_sh_DATA) $(abs_top_srcdir)/etc/sams2.conf $(sysconfdir)
+	$(mkinstalldirs) $(DESTDIR)/$(datadir)/$(distdir)
+	(cd $(abs_top_srcdir)/php && find . ! -wholename "*/.svn*" | cpio -pdum --no-preserve-owner $(DESTDIR)/$(datadir)/$(distdir))
+	find $(DESTDIR)/$(datadir)/$(distdir) -type d | xargs chmod 755
+	find $(DESTDIR)/$(datadir)/$(distdir) -type f | xargs chmod 644
+	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
+	$(install_sh) -c -m 644 $(abs_top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir)
 
-uninstall-local:
-	test -d $(pkgdatadir) && rm -rf $(pkgdatadir)
-	test -d $(docdir) && rm -rf $(docdir)
-	test -f $(sysconfdir)/sams2.conf && rm -f $(sysconfdir)/sams2.conf
+#uninstall-data:
+#	rm -f $(DESTDIR)/$(sysconfdir)/sams2.conf
+#	rm -rf $(DESTDIR)/$(datadir)/$(distdir)

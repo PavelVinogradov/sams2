@@ -37,7 +37,7 @@ private:
   static bool defineACL ();
   static string skipComments (ifstream & in, ofstream & out);
 
-  static string sams2_marker;
+  static string sams_marker;
 
 };
 
