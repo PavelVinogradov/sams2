@@ -29,7 +29,7 @@
 #include "timerange.h"
 #include "tools.h"
 
-string SquidConf::sams2_marker = " # sams2 marker";
+string SquidConf::sams_marker = " # sams marker";
 
 
 SquidConf::SquidConf()
@@ -101,7 +101,7 @@ bool SquidConf::defineACL ()
           continue;
         }
 
-      if (line.find (sams2_marker) != string::npos)
+      if (line.find (sams_marker) != string::npos)
         continue;
 
       if (line[0] == '#' && line.find ("TAG:") != string::npos)
@@ -144,7 +144,7 @@ bool SquidConf::defineACL ()
 
                   for (it = users.begin(); it != users.end(); it++)
                     {
-                      fout << "acl tpl" <<tpls[i] << " " << method << " " << *(*it) << sams2_marker << endl;
+                      fout << "acl tpl" <<tpls[i] << " " << method << " " << *(*it) << sams_marker << endl;
                     }
                 }
 
@@ -155,19 +155,19 @@ bool SquidConf::defineACL ()
                   TimeRange * tr = TimeRanges::getTimeRange(time_ids[i]);
                   if (tr->hasMidnight ())
                     {
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-23:59" << sams2_marker << endl;
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << "00:00-" << tr->getEndTimeStr () << sams2_marker << endl;
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-23:59" << sams_marker << endl;
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << "00:00-" << tr->getEndTimeStr () << sams_marker << endl;
                     }
                   else
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << sams2_marker << endl;
+                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << sams_marker << endl;
                 }
             }
 
           if (current_tag == "http_access")
             {
-              fout << "# Setup HTTP Access here" << sams2_marker << endl;
+              fout << "# Setup HTTP Access here" << sams_marker << endl;
               vector <long> times;
-              basic_stringstream < char >restrict;
+              basic_stringstream < char >restriction;
               for (i = 0; i < tpls.size (); i++)
                 {
                   tpl = Templates::getTemplate(tpls[i]);
@@ -178,18 +178,18 @@ bool SquidConf::defineACL ()
                     }
 
                   //Определяем временные границы для текущего шаблона
-                  restrict.str("");
+                  restriction.str("");
                   time_ids = tpl->getTimeRangeIds ();
                   for (j = 0; j < time_ids.size(); j++)
-                    restrict << " time" << time_ids[j];
+                    restriction << " time" << time_ids[j];
 
                   //Определяем запретные адреса для текущего шаблона
                   //Определяем запретные типы файлов для текущего шаблона
                   //Определяем запретные регулярные выражения для текущего шаблона
 
-                  restrict.str("");
+                  restriction.str("");
 
-                  fout << "http_access allow tpl" << tpls[i] << restrict.str() << sams2_marker << endl;
+                  fout << "http_access allow tpl" << tpls[i] << restriction.str() << sams_marker << endl;
                 }
             }
           fout << nextline << endl;
@@ -212,10 +212,10 @@ string SquidConf::skipComments (ifstream & in, ofstream & out)
   getline (in, line);
   while (in.good () && line[0] == '#')
     {
-      if (line.find (sams2_marker) == string::npos)
+      if (line.find (sams_marker) == string::npos)
         out << line << endl;
       getline (in, line);
-      if (line.find (sams2_marker) != string::npos)
+      if (line.find (sams_marker) != string::npos)
         line[0] = '#';
     }
   return line;

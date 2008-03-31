@@ -136,7 +136,7 @@ private:
     /**
      * @brief Чтение файла конфигурации
      *
-     * Имя файла берется из параметров configure (sysconfdir/sams2.conf)
+     * Имя файла берется из параметров configure ($sysconfdir/sams2.conf)
      *
      * @return true при отсутствии ошибок и false в противном случае
      */

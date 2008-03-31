@@ -1,7 +1,7 @@
 1) для генерации документации по исходным кодам
    необходимо исправить 2 параметра в файле Doxyfile
    STRIP_FROM_PATH        = /home/mclight77/
-   INPUT                  = /home/mclight77/sams/sams2/src
+   INPUT                  = /home/mclight77/sams/2.0.x/src
    и запустить
    doxygen Doxyfile
 
