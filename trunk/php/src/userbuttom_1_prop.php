@@ -52,15 +52,16 @@ function UpdateUser()
   $passwd=$row[0];
  
   if($auth=="ncsa"||$auth=="ip")
-   {
-     if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
-     $result2=mysql_query("SELECT passwd FROM squidusers WHERE id=\"$userid\" ");
-     $row2=mysql_fetch_array($result2);
-     $defpassw=$row2['passwd'];
-     $password=crypt($passwd, substr($passwd, 0, 2));
-     if($password!=$defpassw)
-       $passwd=$password;
-   }
+	{
+		$result2=mysql_query("SELECT passwd FROM squidusers WHERE id=\"$userid\" ");
+		$row2=mysql_fetch_array($result2);
+		if(isset($_GET["passwd"])) 
+			$passwd=$_GET["passwd"];
+		if($passwd=="")
+			$passwd=$row2['passwd'];
+		else
+			$passwd=crypt($passwd, substr($passwd, 0, 2));
+	}
 
   $result=mysql_query("UPDATE squidusers SET gauditor=\"$gauditor\",domain=\"$domain\",nick=\"$usernick\",family=\"$userfamily\",name=\"$username\",squidusers.soname=\"$usersoname\",squidusers.group=\"$usergroup\",squidusers.quotes=\"$userquote\",enabled=\"$enabled\",shablon=\"$usershablon\",ip=\"$userip\",ipmask=\"$useripmask\",passwd=\"$passwd\" WHERE id=\"$userid\" ");
 
