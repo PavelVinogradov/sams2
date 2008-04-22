@@ -838,7 +838,7 @@ int main (int argc, char *argv[])
 		        {
 		          if( (users[USERNUMBER-1].stime>users[USERNUMBER-1].etime))
 		            { 
-		              if(users[USERNUMBER-1].stime =< (t->tm_hour*60+t->tm_min) || (t->tm_hour*60+t->tm_min) =< users[USERNUMBER-1].etime)
+		              if(users[USERNUMBER-1].stime <= (t->tm_hour*60+t->tm_min) || (t->tm_hour*60+t->tm_min) <= users[USERNUMBER-1].etime)
 			       {
                                  TIMEDENIED=0;
 			       }
