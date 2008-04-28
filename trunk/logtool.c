@@ -111,6 +111,7 @@ int TestInputString(char *str)
 	  return(-1);
 	}  
     }  
+//  if((int)str[10]!=0x2E && (int)str[14]!=0x20 && (int)str[21]!=0x20)
 //  if((int)str[10]!=0x2E || (int)str[14]!=0x20 || (int)str[21]!=0x20)
   if((int)str[10]!=0x2E || (int)str[14]!=0x20)
     {
@@ -285,7 +286,9 @@ int TestLocalURL(char *url)
 			slashe++;
 		}	 
 	}
-  } else {
+  } 
+  else 
+  {
 	/* If user ask https page, we get url like: domain.name:443 */
 	if ( strstr(url,":443") != NULL) {
   		
@@ -296,7 +299,6 @@ int TestLocalURL(char *url)
 
 			if (url[i] == ':')
 			{ /* We found :443. Stop parse */
-				break;
 			} else {
 				DNS.url[count]=url[i];
 				count++;
@@ -312,7 +314,6 @@ int TestLocalURL(char *url)
 		return(0);
 	}
   }
-  
   /**  ищем в списке локальных хостов **/
   /* получаем доменное имя*/
   strcpy(&DNS.url[count],"\0");
@@ -503,12 +504,14 @@ int LocalIPAddr(char *url, int *od, int *om)
 */
 void trim(char *string)
 {
-  int i;
-  strncpy(&strim[0],"\0",255);
-  for(i=0;i<strlen(string);i++)
+  int i,j;
+  //strncpy(&strim[0],"\0",255);
+  for(i=0,j=0;i<strlen(string);i++)
      {
         if(iscntrl(string[i])==0)
-           sprintf(&strim[0],"%s%c",&strim[0],string[i]);
+	{
+        	sprintf(&strim[j++],"%c\0",string[i]);
+	}
      }
   strncpy(string,&strim[0],255);
 }
