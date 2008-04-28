@@ -19,8 +19,9 @@
 #include "logtool.c"
 
 int EMPTY;
-long ENDVALUE;
-long NEWENDVALUE;
+//long ENDVALUE;
+size_t ENDVALUE;
+size_t NEWENDVALUE;
 
 int RIPC;
 int ucount,rcount;
@@ -90,22 +91,14 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
 }
 
 
-long GetNewEndValue()
+size_t GetNewEndValue()
 {
-  long value;
-  FILE *finp;
+  struct stat st;
 
   trim(&path[0]);
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
-  if((finp=fopen( &path[0], "rb" ))==NULL)
-    {
-         printf("Don't open file %s/%s\n",conf.logdir,conf.logfile);
-         return(0);
-    }
-  fseek(finp,0,SEEK_END);
-  value=ftell(finp);
-  fclose(finp);
-  return(value);
+  lstat(&path[0],&st);
+  return(st.st_size);
 }
 
 
@@ -145,7 +138,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
   int samsuser;
   
   int userflag=0;
-  double ENDVALUE2;
+  size_t ENDVALUE2;
 
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
   trim(&path[0]);
@@ -247,6 +240,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 		              }
                           }
                       }
+printf("1\n");		      
                     if(userflag==0)
                       {
                          if((samsuser=ReturnSAMSUser("","", STR[2], 0))>0)
@@ -258,19 +252,23 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                               userflag=1;
 		           }	  
                       }
+printf("2\n");		      
                     if(userflag==0&&DEBUG!=0)
                       {
                         printf(" not found \n");
                       }
                 
+printf("3\n");		      
 		    tt=atol(STR[0]);
                     t=localtime(&tt);
 
+printf("4\n");		      
                     status=strtok(STR[3],"/");
                     if(DEBUG!=0)
                       {
                         printf("Test local domain: ");
                       }
+printf("5\n");		      
                     LOCALURL=0;
                     LOCALURL=TestLocalURL(STR[6]);
                     if(LOCALURL==0&&DEBUG!=0)
@@ -278,6 +276,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                         printf(" local domain not found \n");
                       }
                 
+printf("6\n");		      
 		    if(strcmp( status, "TCP_DENIED" )!=0&&strcmp( status, "UDP_DENIED" )!=0&&userflag!=0&&LOCALURL==0)
                       {
 		        size=atof(STR[4]);
@@ -855,7 +854,7 @@ int main (int argc, char *argv[])
         NEWENDVALUE=GetNewEndValue();
       if(DEBUG>0)
         {
-          printf("Reading file: start=%ld length=%ld\n",ENDVALUE,NEWENDVALUE);
+          printf("Reading file: start=%lu length=%lu\n",ENDVALUE,NEWENDVALUE);
         }
 
       sprintf(&real[0],"%4s",row[3]);
