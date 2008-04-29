@@ -240,7 +240,6 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 		              }
                           }
                       }
-printf("1\n");		      
                     if(userflag==0)
                       {
                          if((samsuser=ReturnSAMSUser("","", STR[2], 0))>0)
@@ -252,23 +251,19 @@ printf("1\n");
                               userflag=1;
 		           }	  
                       }
-printf("2\n");		      
                     if(userflag==0&&DEBUG!=0)
                       {
                         printf(" not found \n");
                       }
                 
-printf("3\n");		      
 		    tt=atol(STR[0]);
                     t=localtime(&tt);
 
-printf("4\n");		      
                     status=strtok(STR[3],"/");
                     if(DEBUG!=0)
                       {
                         printf("Test local domain: ");
                       }
-printf("5\n");		      
                     LOCALURL=0;
                     LOCALURL=TestLocalURL(STR[6]);
                     if(LOCALURL==0&&DEBUG!=0)
@@ -276,7 +271,6 @@ printf("5\n");
                         printf(" local domain not found \n");
                       }
                 
-printf("6\n");		      
 		    if(strcmp( status, "TCP_DENIED" )!=0&&strcmp( status, "UDP_DENIED" )!=0&&userflag!=0&&LOCALURL==0)
                       {
 		        size=atof(STR[4]);
