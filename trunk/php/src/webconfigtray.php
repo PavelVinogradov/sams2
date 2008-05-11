@@ -14,7 +14,7 @@ class UpTime
 
 function GetUpTime()
 {
-  $value=`uptime`;
+  $value=`getuptime`;
   return($value);
 }
 function GetHostName()
@@ -113,7 +113,7 @@ function SysInfo()
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
-   $uptime=`uptime`;
+   $uptime=GetUpTime();
    print("<TABLE WIDTH=90%  CLASS=samstable>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
