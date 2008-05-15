@@ -34,7 +34,7 @@
  CREATE TABLE `sguard` ( `sname` varchar(25), `name` varchar(100), `domain` char(1), `url` char(1), `expr` char(1)) TYPE=MyISAM;
  DROP TABLE IF EXISTS `shablons`;
  CREATE TABLE `shablons` ( `name` varchar(25), `nick` varchar(25), `shablonpool` bigint, `userpool` bigint, `redirect_to` varchar(100),`auth` varchar(4),`traffic` int(25) ,`days` varchar(14),`shour` tinyint(2) UNSIGNED ZEROFILL,`smin` tinyint(2) UNSIGNED ZEROFILL,`ehour` tinyint(2) UNSIGNED ZEROFILL,`emin` tinyint(2) UNSIGNED ZEROFILL, `period` char(3) NOT NULL default 'M', `clrdate` date NOT NULL default '0000-00-00',`alldenied` tinyint(1) NOT NULL default '0' ) TYPE=MyISAM;
- INSERT INTO shablons VALUES('default','Default','64000','64000','','','100','MTWHFAS','0','0','24','0','M','0000-00-00','0');
+ INSERT INTO shablons VALUES('default','Default','64000','64000','','','100','MTWHFAS','0','0','23','59','M','0000-00-00','0');
  DROP TABLE IF EXISTS `squidusers`;
  CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ) TYPE=MyISAM;
  DROP TABLE IF EXISTS `tree`;
