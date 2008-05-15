@@ -2973,7 +2973,7 @@ int main (int argc, char *argv[])
 //  lstat(&str[0],&s);
 
 /* */
-                    sprintf(&str[0],"%s/squid  -k reconfigure",conf.squidpath);
+                    sprintf(&str[0],"%s/squid -f %s/squid.conf -k reconfigure",conf.squidpath,conf.squidrootdir);
                     flag=system(&str[0]);
                     if(flag==0)
                       AddLog(conn2,0,"samsdaemon","Reconfigure & restart SQUID... Ok");
