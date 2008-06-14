@@ -10,7 +10,7 @@ Vcs-Browser: http://sams.nixdev.net/browser/trunk
 
 Package: sams
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: debconf | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
 Recommends: sams-web, mysql-server, squid
 Suggests: squidguard
 Description: Squid Account Management System (SAMS) - Deamons
