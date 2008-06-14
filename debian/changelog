@@ -1,4 +1,4 @@
-sams (1.0.2-2) unstable; urgency=low
+sams (1.0.3-1) unstable; urgency=low
 
   * Update preinst and postinst scripts
   * Use debconf to show alert for new users
