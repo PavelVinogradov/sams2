@@ -1,17 +1,29 @@
 sams (1.1.0-1) unstable; urgency=low
 
   * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 04 ct 2008 10:57:04 +0500
+
+sams (1.0.3-1) hardy; urgency=low
+
+  * Update preinst and postinst scripts
+  * Use debconf to show alert for new users
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Sat, 14 Jun 2008 18:14:42 +0500
+
+sams (1.0.2-1) unstable; urgency=low
+
+  * New upstream release
   * Fix instalation of init.d script
   * Fix syntax of init.d script
   * All binaries now installed in /usr/bin
   * Rename and update squidguard.conf.patch
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 29 Feb 2008 10:57:04 +0500
- 
+
 sams (1.0.1-1) unstable; urgency=low
 
   * New upstream release
->>>>>>> .merge-right.r352
   * Split package in three part
   * Fix bugs in package
 
