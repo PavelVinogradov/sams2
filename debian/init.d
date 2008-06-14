@@ -47,7 +47,7 @@ case "$1" in
 			fi
       			
 			start-stop-daemon --start --quiet --background \
-				--pidfile $PIDFILE --make-pidfile \
+				--pidfile $PIDFILE \
 				--exec $DAEMON
 			RETVAL=$?
 			[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
