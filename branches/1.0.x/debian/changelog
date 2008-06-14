@@ -1,3 +1,10 @@
+sams (1.0.2-2) unstable; urgency=low
+
+  * Update preinst and postinst scripts
+  * Use debconf to show alert for new users
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Sat, 14 Jun 2008 17:46:15 +0500
+
 sams (1.0.2-1) unstable; urgency=low
 
   * New upstream release
