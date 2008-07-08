@@ -23,7 +23,7 @@ DAEMON=$SAMSPATH/bin/samsdaemon
 LOCKFILE=/var/lock/samsd
 PIDFILE=/var/run/samsdaemon.pid
 RETVAL=0
-SAMS_ENABLE=false
+SAMS_ENABLE=true
 
 test -x $DAEMON || exit 0
 
