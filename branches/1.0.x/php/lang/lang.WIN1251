@@ -18,9 +18,9 @@
 
 //file user.php
   $user_usertray8="Удалить пользователя";
-  $user_usergrouptray1="Статитстика группы по пользователям";
-  $user_usergrouptray2="Статитика по размерам файлов";
-  $user_usergrouptray3="Статитстика по посещаемым сайтам";
+  $user_usergrouptray1="Статистика группы по пользователям";
+  $user_usergrouptray2="Статиcтика по размерам файлов";
+  $user_usergrouptray3="Статистика по посещаемым сайтам";
 
   $user_usergroupform3="Изменить свойства пользователя";
   $user_usergroupform4="Статистика пользователя";
@@ -208,7 +208,7 @@
 
   $usersbuttom_4_percent_UsersPercentTrafficForm_1="Статистика пользователей";
   $usersbuttom_4_percent_UsersPercentTrafficForm_2="Объем информации, полученной пользователями, в %";
-  $usersbuttom_4_percent_usersbuttom_4_percent_1="Статитстика всех пользователей по % полученной информации";
+  $usersbuttom_4_percent_usersbuttom_4_percent_1="Статистика всех пользователей по % полученной информации";
 
   $usersbuttom_3_file_UsersFileSizePeriod_1="Статистика пользователей";
   $usersbuttom_3_file_UsersFileSizePeriod_2="Список файлов, больших";
@@ -217,7 +217,7 @@
   $usersbuttom_3_file_UsersFileSizePeriod_5="Дата";
   $usersbuttom_3_file_UsersFileSizePeriod_6="Размер";
   $usersbuttom_3_file_UsersFileSizePeriod_7="Время";
-  $usersbuttom_3_file_usersbuttom_3_file_1="Статитстика всех пользователей по размеру полученных файлов";
+  $usersbuttom_3_file_usersbuttom_3_file_1="Статистика всех пользователей по размеру полученных файлов";
   $usersbuttom_3_file_usersbuttom_3_file_2="Размер файла (кб)";
 
   $usersbuttom_2_traffic_UsersTrafficPeriod_1="Статистика пользователей";
@@ -229,7 +229,7 @@
   $usersbuttom_2_traffic_UsersTrafficPeriod_7="Трафик";
   $usersbuttom_2_traffic_UsersTrafficForm_1="Объем информации, полученной пользователями, в Кб";
   $usersbuttom_2_traffic_UsersTrafficForm_2="Вывести фамилии пользователей";
-  $usersbuttom_2_traffic_usersbuttom_2_traffic_1="Статитстика всех пользователей домена";
+  $usersbuttom_2_traffic_usersbuttom_2_traffic_1="Статистика всех пользователей домена";
 
   $usersbuttom_1_domain_AddUsersFromDomain_1="Добавлен пользователь ";
   $usersbuttom_1_domain_AddUsersFromDomain_2="домен";
@@ -249,19 +249,19 @@
   $userbuttom_4_site_UserSitesPeriod_2="Список ресурсов, к которым обращался пользователь";
   $userbuttom_4_site_UserSitesPeriod_3="Размер";
   $userbuttom_4_site_UserSitesForm_1="Список ресурсов, к которым обращался пользователь";
-  $userbuttom_4_site_userbuttom_4_site_1="Статитстика по посещаемым сайтам";
+  $userbuttom_4_site_userbuttom_4_site_1="Статистика по посещаемым сайтам";
 
   $userbuttom_3_file_UserFileSizePeriod_1="Список файлов, больших";
   $userbuttom_3_file_UserFileSizePeriod_2="Размер файла (kb)";
   $userbuttom_3_file_UserFileSizePeriod_4="Размер";
   $userbuttom_3_file_UserFileSizeForm_1="Список файлов, больших ... kb";
   $userbuttom_3_file_UserFileSizeForm_2="Размер файла (kb)";
-  $userbuttom_3_file_userbuttom_3_file_3="Статитстика пользователя по размеру полученных файлов";
+  $userbuttom_3_file_userbuttom_3_file_3="Статистика пользователя по размеру полученных файлов";
 
   $userbuttom_2_traffic_UserTrafficPeriod_2="Объем информации, полученной пользователем, в Кб";
   $userbuttom_2_traffic_UserTrafficPeriod_6="Размер";
   $userbuttom_2_traffic_UserTrafficForm_1="Объем информации, полученной пользователем, в kb";
-  $userbuttom_2_traffic_userbuttom_2_traffic_1="Статитстика пользователя";
+  $userbuttom_2_traffic_userbuttom_2_traffic_1="Статистика пользователя";
 
   $userbuttom_1_prop_UpdateUser_1="Изменена информация о пользователе";
   $userbuttom_1_prop_UpdateUserForm_1="Изменение данных о пользователе";
@@ -406,14 +406,14 @@
   $groupbuttom_2_file_GroupFileSizePeriod_2="Размер файла";
   $groupbuttom_2_file_GroupFileSizeForm_1="Список файлов, больших ... kb";
   $groupbuttom_2_file_GroupFileSizeForm_2="Размер файла (kb)";
-  $groupbuttom_2_file_groupbuttom_2_file_1="Статитстика по размеру полученных файлов";
+  $groupbuttom_2_file_groupbuttom_2_file_1="Статистика по размеру полученных файлов";
 
   $groupbuttom_1_traffic_GroupTrafficPeriod_1="Объем информации, полученной пользователями, в Кб";
   $groupbuttom_1_traffic_GroupTrafficPeriod_2="Из кэш";
   $groupbuttom_1_traffic_GroupTrafficPeriod_3="Размер";
   $groupbuttom_1_traffic_GroupTrafficPeriod_4="Трафик";
   $groupbuttom_1_traffic_GroupTrafficForm_1="Объем информации, полученной пользователями, в Кб";
-  $groupbuttom_1_traffic_groupbuttom_1_traffic_1="Статитстика пользователя";
+  $groupbuttom_1_traffic_groupbuttom_1_traffic_1="Статистика пользователя";
 
   $dbtray_HelpDBForm_1="База данных SAMS";
   $dbtray_HelpDBForm_2="Получение статистики о состоянии и проверка базы данных SAMS.";
@@ -495,7 +495,7 @@
 
   $admintray_UserDoc_1="Добро пожаловать!";
   $admintray_UserDoc_2="Просмотр статистики работы в Интернет";
-  $admintray_UserDoc_3="Для просмотра стаистики работы в интернет выберите в левом фрейме пользователя,";
+  $admintray_UserDoc_3="Для просмотра статистики работы в интернет выберите в левом фрейме пользователя, ";
   $admintray_UserDoc_4="под которым вы авторизуетесь в домене windows (или вводите в броузере для работы в интернет), и введите пароль";
   $admintray_AdminTray_1="Администратор";
 
