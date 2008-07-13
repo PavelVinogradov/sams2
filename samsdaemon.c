@@ -2683,9 +2683,6 @@ int main (int argc, char *argv[])
 		 
 		 }
 
-               //if(DEBUG==1)
-  	          //printf("sams_clr_month=%d month=%d sams_clr_day=%d day=%d COUNTCLEAN=%d\n", sams_clr_month, t->tm_mon+1, sams_clr_day, t->tm_mday, COUNTCLEAN);
-
                clearflag=0;
 	       //Если настал новый месяц то проверяем необходимость ротации БД
 	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0) && conf.cachenum<2)
@@ -2731,11 +2728,11 @@ int main (int argc, char *argv[])
 		       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='M' ",conf.samsdb);
                        flag=send_mysql_query(conn2,&str[0]);
                        res=mysql_store_result(conn2);
-                       //printf("MONTH shablons count = %d\n",mysql_num_rows(res));
 		       for(i=0;i<mysql_num_rows(res);i++)
                          {
                            row=mysql_fetch_row(res);
-                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+//                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
                            sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2751,11 +2748,11 @@ int main (int argc, char *argv[])
 		       sprintf(&str[0],"SELECT period,name,nick FROM %s.shablons WHERE period='W' ",conf.samsdb);
                        flag=send_mysql_query(conn2,&str[0]);
                        res=mysql_store_result(conn2);
-                       //printf("WEEK shablons count = %d\n",mysql_num_rows(res));
 		       for(i=0;i<mysql_num_rows(res);i++)
                          {
                            row=mysql_fetch_row(res);
-                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+//                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
                            flag=send_mysql_query(conn2,&str[0]);
                            sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
 			   AddLog(conn2,0,"samsdaemon",&str[0]);
@@ -2773,7 +2770,8 @@ int main (int argc, char *argv[])
                         row=mysql_fetch_row(res);
 		        if(DEBUG>0)
 		          printf("Perod %d: %d days. Traffic cleaned\n", i, atoi(row[0]));
-                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+//                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
                         flag=send_mysql_query(conn2,&str[0]);
 
 			    tt2=tt+60*60*24*atoi(row[0]);
