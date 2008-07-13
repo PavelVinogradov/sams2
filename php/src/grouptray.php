@@ -102,6 +102,8 @@ function UserGroupForm()
   print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B>\n");
 
   $count=0;
+  $gtraffic=0;
+  $gquote=0;
   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\" ORDER BY nick");
   while($row=mysql_fetch_array($result))
       {
@@ -113,6 +115,8 @@ function UserGroupForm()
 	        $traffic=$row['size']-$row['hit'];
             else
 	        $traffic=$row['size'];
+	    $gtraffic+=$traffic;
+	    $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
             if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
                $gif="puser.gif";
             else
@@ -161,6 +165,13 @@ function UserGroupForm()
 	 
 	 $count=$count+1;  
       }
+      print("<TR><TD><TD><TD>");
+      PrintFormattedSize($gtraffic);
+      if($gquote!=0)
+	PrintFormattedSize($gquote);
+      else
+      print("<TD ALIGN=\"CENTER\">unlimited");	
+      print("<TD>\n");
   print("</TABLE>\n");
 
     if($SAMSConf->access==2)
