@@ -105,11 +105,11 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
   $result=mysql_query("SELECT sams.realsize,squidusers.*,shablons.shour,shablons.smin,shablons.ehour,shablons.emin FROM sams,squidusers LEFT JOIN shablons ON (squidusers.shablon=shablons.name) WHERE id=\"$id\" ");
   $row=mysql_fetch_array($result);
 
+  print("  <TD>");
+  if(strlen($row['nick'])>0)
+    print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick] : $row[family] $row[name]</H2></FONT> ");
   if($action=="userdisabled")
     {
-       print("  <TD>");
-       if(strlen($row['nick'])>0)
-          print("<H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
        print("<P><FONT COLOR=\"RED\"><B><H2>$blocked_php_2</H2></B></FONT> ");
        if($row['enabled']<0)
          {
@@ -131,17 +131,13 @@ print("  <TABLE BORDER=0 WIDTH=\"95%\" >");
     }
   if($action=="urldenied")
     {
-       if(strlen($row['nick'])>0)
-         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
        print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_8</H3></FONT> ");
     }
   if($action=="timedenied")
     {
-       if(strlen($row['nick'])>0)
-         print("  <TD><H2>$blocked_php_1 <FONT COLOR=\"BLUE\">$row[nick]</H2></FONT> ");
-         print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9"); 
-         print("  <BR>$blocked_php_10</H3></FONT> ");
-         print("  <P>$row[shour]:$row[smin] - $row[ehour]:$row[emin] ");
+       print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9"); 
+       print("  <BR>$blocked_php_10</H3></FONT> ");
+       print("  <P>$row[shour]:$row[smin] - $row[ehour]:$row[emin] ");
     }
 
   print("  <TR> ");
