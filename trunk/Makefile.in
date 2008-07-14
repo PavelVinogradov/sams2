@@ -206,7 +206,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	cp ./samsf $(bindir);
 	cp ./samsredir $(bindir);
 	cp ./samsdaemon $(bindir);
-	cp ./etc/samsd $(RCDPATH);
+	cp ./etc/sams $(RCDPATH);
 	cp ./mysql/recover_admin_passwd $(bindir);
 	-@if test ! -d $(datadir); then \
 		echo "creating $(datadir)"; \
@@ -256,7 +256,7 @@ uninstall-binPROGRAMS:
 	rm $(bindir)/recover_admin_passwd;
 	rm -R -f $(datadir)/sams;
 	rm $(HTTPDPATH)/sams;
-	rm -f $(RCDPATH)/samsd;
+	rm -f $(RCDPATH)/sams;
 	rm -R -f tmp/sams;
 
 update-binPROGRAMS:
@@ -264,7 +264,7 @@ update-binPROGRAMS:
 	cp ./samsf $(bindir);
 	cp ./samsredir $(bindir);
 	cp ./samsdaemon $(bindir);
-	cp ./etc/samsd $(RCDPATH);
+	cp ./etc/sams $(RCDPATH);
 	cp ./mysql/recover_admin_passwd $(bindir);
 	-@if test ! -d $(datadir)/sams; then \
 		echo "creating $(datadir)/sams"; \
