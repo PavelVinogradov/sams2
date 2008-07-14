@@ -35,7 +35,7 @@ function DisableGroupUsers()
          $enabled=1;
        if($enabled==1&&$row['enabled']!=1)
          {
-           print("enabled user<BR>");
+           //print("enabled user<BR>");
            $result2=mysql_query("UPDATE squidusers SET enabled=\"$enabled\" WHERE squidusers.id=\"$row[id]\"");
 	 }
        if($enabled<=0&&$row['enabled']==1)
