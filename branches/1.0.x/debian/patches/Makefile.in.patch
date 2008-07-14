@@ -13,7 +13,7 @@
  	cp ./samsf $(bindir);
  	cp ./samsredir $(bindir);
  	cp ./samsdaemon $(bindir);
--	cp ./etc/samsd $(RCDPATH);
+-	cp ./etc/sams $(RCDPATH);
  	cp ./mysql/recover_admin_passwd $(bindir);
  	-@if test ! -d $(datadir); then \
  		echo "creating $(datadir)"; \
