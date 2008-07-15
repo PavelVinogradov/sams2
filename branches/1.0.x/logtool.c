@@ -104,6 +104,14 @@ char path[1024];
 int TestInputString(char *str)
 {
   int i,space,scount;
+  if(str == NULL)
+    {      
+      if(DEBUG>0)
+        {
+          printf("\n*** ERROR: Input string is NULL \n");
+	  return(-1);
+	}  
+    }  
   if(strlen(str)<60)
     {
       if(DEBUG>0)
