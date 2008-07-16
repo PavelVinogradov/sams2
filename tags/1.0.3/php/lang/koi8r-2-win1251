@@ -1,0 +1,4 @@
+#!/bin/sh
+
+iconv -f KOI8-R -t CP1251 lang.KOI8-R | sed -e "s/KOI8-R/WINDOWS-1251/"> lang.WIN1251
+

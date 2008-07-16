@@ -1,0 +1,8 @@
+Template: sams/manual_config
+Type: note
+Description: SAMS require additional manual configuration
+ Currently SAMS package not ready to work out of box. Starting of samsdaemon
+ disabled in init.d script.
+ .
+ Please read /usr/share/doc/sams/README.Debain for description of additional
+ configure step.
