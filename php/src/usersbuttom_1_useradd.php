@@ -20,7 +20,6 @@ function GetDomainUsersList()
      {
         $value=ExecuteShellScript("getwbinfousers","$SAMSConf->WBINFOPATH/");
 	$a=explode(" ",$value);
-        sort($a);
 	$acount=count($a);
      }
   else
@@ -33,7 +32,6 @@ function GetDomainUsersList()
 
 	  $ldap=new adLDAP($options);
 	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
-          sort($a);
 	  $acount=count($a);
       }
 	      
@@ -147,30 +145,18 @@ function AddUser()
   mysql_select_db($SAMSConf->SAMSDB);
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
-      $pass = "";
-
-      if(isset($_GET["passwd"])) $pass = $_GET["passwd"];
-
-      if(strlen($pass) >= 3)
-        $pass=crypt($pass, substr($pass,0,2));
-      else
-	$pass=crypt("none", substr("none",0,2));
+      $pass=$_GET["passwd"];
     }
-
+  else
+    {
+      $pass="none";
+    }
   if($enabled=="on")
      $enabled=1;
   else
      $enabled=-1;
 
-  if(strlen($userip)>7)
-    {
-      $result=mysql_query("SELECT ip FROM squidusers WHERE squidusers.ip=\"$userip\" ");
-      if(mysql_num_rows($result)>0)
-        {
-           PageTop("denied.gif","<FONT COLOR=\"RED\">$usersbuttom_1_useradd_AddUser_1 $userip $usersbuttom_1_useradd_AddUser_2</FONT>");
-           exit(0);
-        }
-     }
+  //$result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\" ");
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
       $result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$newusernick\",domain=\"$userdomain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\", hit=\"0\", squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
@@ -185,10 +171,8 @@ function AddUser()
     }
   if($result==0)
     {
-       print("<FONT COLOR=\"RED\">Error creating user (mysql database)</FONT>");
-
+       print("Error creating user (mysql database)");
     }
-
   print("<CENTER>\n");
   NewUserForm();
   print("<SCRIPT>\n");

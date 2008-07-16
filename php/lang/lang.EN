@@ -855,24 +855,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $lang_pdfReport_size="Download";
   $lang_pdfReport_cache="Cache";
   $lang_pdfReport_traffic="Traffic";
-
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Automatically clear up the users traffic disabled in the SAMS settings";
-  $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
-  $shablonnew_NewShablonForm_19="Users template name has not been entered";
-  $redirlisttray_AddRedirListForm_5="List name has not been entered";
-  $CacheForm_squidbuttom_4_addcache_1="Proxy servers registered in system"; 
-  $CacheForm_squidbuttom_4_addcache_2="Number"; 
-  $CacheForm_squidbuttom_4_addcache_3="Description"; 
-  $CacheForm_squidbuttom_4_addcache_4="Remove"; 
-  $CacheForm_squidbuttom_4_addcache_5 ="Remove";
-  $CacheForm_squidbuttom_4_addcache_6 ="Add proxy server to SAMS";
-  $CacheForm_squidbuttom_4_addcache_7 ="Description";
-  $CacheForm_squidbuttom_4_addcache_8 ="Add";
-  $CacheForm_squidbuttom_4_addcache_9="Description has not been entered";
-  $grouptray_NewGroupForm_12="User group name has not been entered";
-  $usersbuttom_1_useradd_AddUser_1="The user with ip address ";
-  $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
-
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

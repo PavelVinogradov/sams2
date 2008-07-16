@@ -878,16 +878,11 @@
   $lang_pdfReport_size="Скачано";
   $lang_pdfReport_cache="Кэш";
   $lang_pdfReport_traffic="Трафик";
-
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
-  $shablonnew_NewShablonForm_18="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
-  $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
-  $redirlisttray_AddRedirListForm_5="Не задано имя списка";
-  $CacheForm_squidbuttom_4_addcache_9="Не задано описание прокси-сервера";
-  $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
-  $usersbuttom_1_useradd_AddUser_1="Пользователь с IP адресом ";
-  $usersbuttom_1_useradd_AddUser_2=" Уже зарегистрирован в системе";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
+
+
+
+
 ?>

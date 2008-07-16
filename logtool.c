@@ -36,18 +36,19 @@
 #include "config.h"
 #include "define.h"
 #include "tools.h"
+#include "pcre.h"
 
 struct url_replace {
-  char user[26];
+  char user[25];
   char domain[25];
-  char url[50];
-  char newurl[50];
+  char url[URL_LEN];
+  char newurl[URL_LEN];
   int  checkip;
 };
 
 struct samsusers 
 {
-  char user[26];
+  char user[25];
   char domain[25];
   int  ip[6];
   int  mask[6];
@@ -67,14 +68,14 @@ struct samsusers
 };
 /*
 struct local_url {
-  char url[50];
+  char url[URL_LEN];
   int  ip[6];
   int  mask[6];
   int ipflag;
 };
 */
 struct dns_cache {
-  char url[50];
+  char url[URL_LEN];
   int  ip[6];
   int  mask[6];
   int len;
@@ -120,8 +121,7 @@ int TestInputString(char *str)
 	}  
     }  
 //  if((int)str[10]!=0x2E && (int)str[14]!=0x20 && (int)str[21]!=0x20)
-//  if((int)str[10]!=0x2E || (int)str[14]!=0x20 || (int)str[21]!=0x20)
-  if((int)str[10]!=0x2E || (int)str[14]!=0x20)
+  if((int)str[10]!=0x2E || (int)str[14]!=0x20 || (int)str[21]!=0x20)
     {
       if(DEBUG>0)
         {
@@ -271,15 +271,27 @@ int TestLocalURL(char *url)
   struct dns_cache DNS;
   int i=0,count=0,slashe=0,ipflag=0;
   int found=0,localfound=0;
+  
+  pcre *re;
+  const char *re_error;
+  int re_erroffset;
+  int re_ovector[30];
+
+  re = pcre_compile(
+	"(.*):(\\d+)",
+	0,
+	&re_error,
+	&re_erroffset,
+	NULL);
 
   /* Get domain name for URL like http://<domain name>/ */
   if(strstr(url,"://") !=NULL)
   {
-  	for(i=0,count=0;i<strlen(url);i++)
-	{
-       		if(i>=249)
-          		i=strlen(url);
-
+        for(i=0,count=0;i<strlen(url);i++)
+        {
+       	        if(i>=249 || count>=URL_LEN)
+                        i=strlen(url);
+                
        		if(slashe>=2)
 		{
 			if(slashe<3&&url[i]!='/')
@@ -294,19 +306,18 @@ int TestLocalURL(char *url)
 			slashe++;
 		}	 
 	}
-  } 
-  else 
-  {
+  } else {
 	/* If user ask https page, we get url like: domain.name:443 */
-	if ( strstr(url,":443") != NULL) {
+	if ( pcre_exec(re, NULL, url, strlen(url), 0, 0, re_ovector, 30) >= 0 ) {
   		
 		for(i=0,count=0;i<strlen(url);i++)
 		{
-       			if(i>=249)
+       			if(i>=249 || count>=URL_LEN)
           			i=strlen(url);
 
 			if (url[i] == ':')
-			{ /* We found :443. Stop parse */
+			{ /* We found :<port>. Stop parse */
+				break;
 			} else {
 				DNS.url[count]=url[i];
 				count++;
@@ -322,6 +333,7 @@ int TestLocalURL(char *url)
 		return(0);
 	}
   }
+  
   /**  ищем в списке локальных хостов **/
   /* получаем доменное имя*/
   strcpy(&DNS.url[count],"\0");
@@ -512,14 +524,12 @@ int LocalIPAddr(char *url, int *od, int *om)
 */
 void trim(char *string)
 {
-  int i,j;
-  //strncpy(&strim[0],"\0",255);
-  for(i=0,j=0;i<strlen(string);i++)
+  int i;
+  strncpy(&strim[0],"\0",255);
+  for(i=0;i<strlen(string);i++)
      {
         if(iscntrl(string[i])==0)
-	{
-        	sprintf(&strim[j++],"%c\0",string[i]);
-	}
+           sprintf(&strim[0],"%s%c",&strim[0],string[i]);
      }
   strncpy(string,&strim[0],255);
 }

@@ -174,7 +174,7 @@ else
   AC_MSG_ERROR(Cannot find MySQL's libmysqlclient in $DST_MYSQL_LIBS)
 fi
 MYSQLLIBS="-L$DST_MYSQL_LIBS -lmysqlclient"
-CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1 -D_FILE_OFFSET_BITS=64"
+CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
 
 ####
 AC_MSG_CHECKING(for PCRE headers)
@@ -244,7 +244,7 @@ else
   AC_MSG_ERROR(Cannot find PCRE's libpcre in $DST_PCRE_LIBS)
 fi
 PCRELIBS="-L$DST_PCRE_LIBS -lpcre"
-#CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
+CFLAGS="-O2 -Wall -D_BSD_SOURCE=1 -D_GNU_SOURCE=1"
 
 echo "#include \"$DST_PCRE_INC/pcre.h\"" >pcre.h
 OS=`uname -s`

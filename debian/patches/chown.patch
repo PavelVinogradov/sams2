@@ -1,7 +1,7 @@
 diff -urN 1.0.x/samsdaemon.c build/samsdaemon.c
 --- 1.0.x/samsdaemon.c	2007-12-15 10:19:50.000000000 +0400
 +++ build/samsdaemon.c	2007-12-15 10:21:19.000000000 +0400
-@@ -2568,7 +2568,7 @@
+@@ -2583,7 +2583,7 @@
       printf("Ok \n");
  
    
@@ -10,7 +10,7 @@ diff -urN 1.0.x/samsdaemon.c build/samsdaemon.c
    i=0;
    tt=time(NULL);
    t=localtime(&tt);
-@@ -2939,10 +2939,10 @@
+@@ -2956,10 +2956,10 @@
  	         {
                      sprintf(&str[0],"squidGuard -C all -c %s/squidGuard.conf",conf.sgdbpath);
                      system(&str[0]);
