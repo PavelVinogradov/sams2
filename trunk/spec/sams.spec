@@ -51,7 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ru) %doc doc/KOI8-R
 %{_bindir}/*
 %{_datadir}/sams
-%{_sysconfdir}/rc.d/init.d/samsd
+%{_sysconfdir}/rc.d/init.d/sams
 %{_sysconfdir}/sams.conf
 
 %changelog
