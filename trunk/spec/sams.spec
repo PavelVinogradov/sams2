@@ -1,6 +1,6 @@
 Summary: SAMS (Squid Account Management System)
 Name: sams
-Version: 20050616
+Version: 1.1.0
 Release: 0
 Group: Applications/Internet
 License: GPL
@@ -12,6 +12,7 @@ Requires: mysql
 Requires: php
 Requires: httpd
 Requires: squid
+Requires: pcre
 
 %description
 This program basically used for administrative purposes of squid proxy.
@@ -19,7 +20,7 @@ There are access control for users by ntlm, ncsa, basic or ip
 authorization mode.
 
 %prep
-%setup -q -n %{name}
+%setup -q -n %{name}-%{version}
 
 %build
 %configure \
@@ -48,12 +49,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGELOG INSTALL* README*
 %doc doc/img
 %lang(en) %doc doc/EN
-%lang(ru) %doc doc/KOI8-R
+%lang(ru) %doc doc/RU
 %{_bindir}/*
 %{_datadir}/sams
 %{_sysconfdir}/rc.d/init.d/sams
 %{_sysconfdir}/sams.conf
 
 %changelog
+* Fri Jul 25 2008 Pavel Vinogradov <pavel.vinogradov@nixdev.net>
+New upstream version 1.1.0
+
 * Thu Jun 16 2005 Dmitry Chemerik <chemerik@mail.ru>
 New version
