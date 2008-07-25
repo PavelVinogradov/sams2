@@ -40,6 +40,8 @@ mkdir -p $RPM_BUILD_ROOT%{_var}/www/html
 %makeinstall \
 	RCDPATH=$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d \
 	HTTPDPATH=$RPM_BUILD_ROOT%{_var}/www/html
+rm -f $RPM_BUILD_ROOT%{_var}/www/html/sams
+ln -s %{_datadir}/sams $RPM_BUILD_ROOT%{_var}/www/html/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,10 +56,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/sams
 %{_sysconfdir}/rc.d/init.d/sams
 %{_sysconfdir}/sams.conf
+%{_var}/www/html/sams
 
 %changelog
 * Fri Jul 25 2008 Pavel Vinogradov <pavel.vinogradov@nixdev.net>
 New upstream version 1.0.3
+
+* Fri Jul 25 2008 Denis Zagirov <foomail@yandex.ru>
+Fixed simlink to %{_datadir}/sams
+Workaround for moving old sams.conf, ensure not to move sams.conf during rpm
+build on host with working sams. (Makefile.am lines 200-203 out)
 
 * Thu Jun 16 2005 Dmitry Chemerik <chemerik@mail.ru>
 New version
