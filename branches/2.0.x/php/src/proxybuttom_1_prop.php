@@ -694,7 +694,7 @@ function ProxyReConfigForm()
 		$USERADD="DISABLED";
 	}  
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Автоматически создавать новых пользователей</B>\n");
+  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_autouser</B>\n");
   if($PROXYConf->s_autouser==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"autouser\" onchange=EnableUserAdd(samsreconfigform) CHECKED> \n");
   else
@@ -702,7 +702,7 @@ function ProxyReConfigForm()
 /**/
 //onchange=EnableDomainName(samsreconfigform)
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Шаблон у создаваемого пользователя</B>\n");
+  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_autotpl</B>\n");
   print("<TD><SELECT NAME=\"shablon\" ID=\"shablon\" SIZE=1 TABINDEX=30 $USERADD >\n");
   print("<OPTION VALUE=\"-1\" SELECTED> NONE");
   $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
@@ -722,7 +722,7 @@ function ProxyReConfigForm()
 
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Группа у создаваемого пользователя $USERADD</B>\n");
+  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_autogrp $USERADD</B>\n");
   print("<TD><SELECT NAME=\"group\" ID=\"group\" SIZE=1 TABINDEX=30 $USERADD >\n");
   print("<OPTION VALUE=\"-1\" SELECTED> NONE");
   $num_rows=$DB->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup");

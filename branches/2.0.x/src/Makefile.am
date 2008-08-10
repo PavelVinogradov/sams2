@@ -7,17 +7,33 @@ bin_PROGRAMS = samsparser samsdaemon samsredir
 INCLUDES = $(all_includes)
 
 # the library search path.
-samsparser_SOURCES = samsparser.cpp debug.cpp samsconfig.cpp tools.cpp \
-			odbcconn.cpp squidlogline.cpp filter.cpp userfilter.cpp datefilter.cpp odbcquery.cpp \
-			samsusers.cpp samsuser.cpp net.cpp ip.cpp localnetworks.cpp url.cpp \
-			squidlogparser.cpp proxy.cpp dbcleaner.cpp logger.cpp processmanager.cpp mysqlconn.cpp \
-			dbconn.cpp dbquery.cpp mysqlquery.cpp templates.cpp template.cpp groups.cpp \
+samsparser_SOURCES = \
+	samsparser.cpp debug.cpp samsconfig.cpp tools.cpp \
+	odbcconn.cpp squidlogline.cpp filter.cpp userfilter.cpp datefilter.cpp odbcquery.cpp \
+	samsusers.cpp samsuser.cpp net.cpp ip.cpp localnetworks.cpp url.cpp \
+	squidlogparser.cpp proxy.cpp dbcleaner.cpp logger.cpp processmanager.cpp mysqlconn.cpp \
+	dbconn.cpp dbquery.cpp mysqlquery.cpp templates.cpp template.cpp groups.cpp \
 	pgconn.cpp pgquery.cpp
-noinst_HEADERS = debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
-						filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \
-						localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
-						mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
-				squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h
+samsdaemon_SOURCES = \
+	datefilter.cpp debug.cpp filter.cpp ip.cpp \
+	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
+	proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
+	userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
+	template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
+	squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
+	dbcleaner.cpp restrictions.cpp
+samsredir_SOURCES = \
+	dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
+	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
+	processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp template.cpp \
+	templates.cpp tools.cpp url.cpp samsredir.cpp groups.cpp net.cpp pgconn.cpp \
+	pgquery.cpp
+noinst_HEADERS = \
+	debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
+	filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \
+	localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
+	mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
+	squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h restrictions.h
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
 
 LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB)
@@ -57,15 +73,3 @@ configmake.h: Makefile
 BUILT_SOURCES += configmake.h
 CLEANFILES += configmake.h configmake.h-t
 
-samsdaemon_SOURCES = datefilter.cpp debug.cpp filter.cpp ip.cpp \
-								localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
-								proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp tools.cpp url.cpp \
-								userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
-								template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
-					squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
-	dbcleaner.cpp
-samsredir_SOURCES = dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
-		logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
-		processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp template.cpp \
-		templates.cpp tools.cpp url.cpp samsredir.cpp groups.cpp net.cpp pgconn.cpp \
-	pgquery.cpp

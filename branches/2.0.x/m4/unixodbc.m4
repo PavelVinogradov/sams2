@@ -46,7 +46,7 @@ AC_ARG_WITH(unixODBC-libs,
             unixODBC_libs="")
 
 if test "x$unixODBC_libs" = "x"; then
-  unixODBC_libs="/usr/local/lib /usr/lib"
+  unixODBC_libs="/usr/local/lib /usr/lib64 /usr/lib"
 fi
 
 AC_MSG_CHECKING(for unixODBC libraries)

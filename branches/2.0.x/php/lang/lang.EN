@@ -747,6 +747,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $configbuttom_1_prop_SamsReConfigForm_56="Select script for send message about deactivate user:";
 
+  $configbuttom_1_prop_SamsReConfigForm_autouser="Automaticaly create unknown users";
+  $configbuttom_1_prop_SamsReConfigForm_autotpl="Assign template for such users";
+  $configbuttom_1_prop_SamsReConfigForm_autogrp="Add those users to group";
+
   $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
   $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
   

@@ -50,7 +50,7 @@ AC_ARG_WITH(pq-libs,
             pq_libs="")
 
 if test "x$pq_libs" = "x"; then
-  pq_libs="/usr/local/lib /usr/lib"
+  pq_libs="/usr/local/lib /usr/lib64 /usr/lib"
 fi
 
 AC_MSG_CHECKING(for LibPQ libraries)

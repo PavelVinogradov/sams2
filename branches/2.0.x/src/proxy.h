@@ -61,6 +61,34 @@ public:
   };
 
   /**
+   * @brief Преобразование способа авторизации в строку
+   * @param t Способ авторизации
+   * @return Способ авторизации в виде строки
+   */
+  static string toString (usrAuthType t);
+
+  /**
+   * @brief Используемый редиректор
+   *
+   * Используется тип "перечисление" только для гипотетической возможности
+   * выполнять различные действия при различных редиректорах. На данный момент
+   * используется только для определения нужно ли вносить списки доступа и
+   * ограничения в файл squid.conf
+   */
+  enum RedirType
+  {
+    REDIR_NONE,                 ///< Не используется встроенный (sams) редиректор
+    REDIR_INTERNAL              ///< Используется встроенный (sams) редиректор
+  };
+
+  /**
+   * @brief Преобразование типа используемого редиректора в строку
+   * @param t Тип редиректора
+   * @return Тип редиректора в виде строки
+   */
+  static string toString (RedirType t);
+
+  /**
    * @brief Способ обработки лог файла squid
    */
   enum ParserType
@@ -69,13 +97,6 @@ public:
     PARSE_DISCRET,              ///< Обрабатывать через N минут
     PARSE_IMMEDIATE             ///< Обрабатывать непрерывно
   };
-
-  /**
-   * @brief Преобразование способа авторизации в строку
-   * @param t Способ авторизации
-   * @return Способ авторизации в виде строки
-   */
-  static string toString (usrAuthType t);
 
   static void useConnection (DBConn * conn);
 
@@ -97,6 +118,11 @@ public:
    */
   static long getEndValue ();
 
+  /**
+   * @brief Возвращает размер килобайта в байтах
+   *
+   * @return Размер килобайта в байтах
+   */
   static long getKbSize ();
 
   static void getParserType (ParserType & ptype, long & ptime);
@@ -105,6 +131,18 @@ public:
 
   static string getRedirectAddr ();
 
+  /**
+   * @brief Возвращает тип используемого редиректора
+   *
+   * @return Тип используемого редиректора
+   */
+  static RedirType getRedirectType ();
+
+  /**
+   * @brief Возвращает количество месяцев для хранения в БД
+   *
+   * @return Количество месяцев
+   */
   static long getCacheAge ();
 
   /**
@@ -149,6 +187,7 @@ protected:
   static bool _usedomain;              ///< Использовать или нет домен по умолчанию
   static string _defaultdomain;        ///< Домен по умолчанию
   static ParserType _parser_type;      ///< Тип обработки лог файла squid
+  static RedirType _redir_type;        ///< Тип используемого редиректора
   static long _parser_time;            ///< Интервал времени, через который обрабатывать лог файл squid
   static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
   static long _defaulttpl;             ///< Идентификатор шаблона, используемого при автоматическом создании пользователя
