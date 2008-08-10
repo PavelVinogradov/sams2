@@ -86,6 +86,8 @@ bool SamsConfig::readFile ()
   string value;
   int signpos;
 
+  DEBUG (DEBUG7, "[" << __FUNCTION__ << "] ");
+
   string conffile = SYSCONFDIR;
   conffile += "/sams2.conf";
 
@@ -175,6 +177,8 @@ bool SamsConfig::readDB ()
 {
   int err;
 
+  DEBUG (DEBUG7, "[" << __FUNCTION__ << "] ");
+
   _internal = true;
 
   int proxyid = getInt (defPROXYID, err);
@@ -230,10 +234,11 @@ bool SamsConfig::readDB ()
 
   basic_stringstream < char >s;
 
-  int s_sleep;
-  int s_parser_time;
+  long s_sleep;
+  long s_parser_time;
 
   s << "select s_sleep, s_parser_time from proxy where s_proxy_id=" << proxyid;
+  //s << "select s_parser_time, s_sleep from proxy where s_proxy_id=" << proxyid;
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_sleep, 0))
     {

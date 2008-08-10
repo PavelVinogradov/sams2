@@ -1,4 +1,3 @@
-AC_PREREQ(2.61)
 AC_INIT(sams2, 2.0.2, sams@nixdev.net)
 AM_INIT_AUTOMAKE(sams2, 2.0.2)
 AC_CONFIG_SRCDIR([src/tools.h])
@@ -48,5 +47,13 @@ echo "Use MySQL API:      $use_mysql_dev"
 echo "Use PostgreSQL API: $use_pq_dev"
 echo "Use unixODBC API:   $use_unixodbc_dev"
 echo ""
-echo "Configure completed. Run make (or gmake) to build the programs."
+
+if test "$use_mysql_dev" = "no" -a "$use_pq_dev" = "no" -a "$use_unixodbc_dev" = "no"; then
+	echo "Neither MySQL nor PostgreSQL nor unixODBC API detected."
+	echo "Install at least one of them and run configure again."
+	echo "Aborted."
+else
+	echo "Configure completed. Run make (or gmake) to build the programs."
+fi
+
 echo ""

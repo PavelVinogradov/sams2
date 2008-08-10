@@ -429,11 +429,13 @@ int main (int argc, char *argv[])
   string backup_fname;
   while (true)
     {
-      looptime = (int) difftime(loop_start, loop_end);
+      looptime = (int) difftime(loop_end, loop_start);
       sleeptime = check_interval - looptime;
-      if (sleeptime < 0)
-        sleeptime = 0;
 
+      if (sleeptime == 0)
+        sleeptime = 1; // Do not allow daemon to use CPU for 100%
+      if (sleeptime < 0)
+        sleeptime = -sleeptime;
       if (sleeptime > 0)
         sleep (sleeptime);
 
@@ -502,7 +504,8 @@ int main (int argc, char *argv[])
           continue;
         }
 
-      loop_start = time (NULL);
+      if (loop_start != loop_end)
+        loop_start = time (NULL);
 
       time_now = localtime (&loop_start);
       // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
@@ -644,7 +647,6 @@ int main (int argc, char *argv[])
         }
 
       loop_end = time (NULL);
-
     }
 
 }

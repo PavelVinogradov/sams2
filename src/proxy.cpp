@@ -54,6 +54,7 @@ bool Proxy::_needResolve = false;
 bool Proxy::_usedomain = false;
 string Proxy::_defaultdomain;
 Proxy::ParserType Proxy::_parser_type;
+Proxy::RedirType Proxy::_redir_type;
 long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
@@ -102,6 +103,24 @@ string Proxy::toString (usrAuthType t)
       break;
     case AUTH_IP:
       res = "ip";
+      break;
+    default:
+      res = "unknown";
+      break;
+    }
+  return res;
+}
+
+string Proxy::toString (RedirType t)
+{
+  string res;
+  switch (t)
+    {
+    case REDIR_NONE:
+      res = "not used";
+      break;
+    case REDIR_INTERNAL:
+      res = "internal";
       break;
     default:
       res = "unknown";
@@ -164,6 +183,11 @@ Proxy::TrafficType Proxy::getTrafficType ()
 string Proxy::getRedirectAddr ()
 {
   return "http://redirect.addr.here";
+}
+
+Proxy::RedirType Proxy::getRedirectType ()
+{
+  return _redir_type;
 }
 
 long Proxy::getCacheAge ()
@@ -328,6 +352,7 @@ bool Proxy::reload ()
   char s_realsize[5];
   long s_usedomain;
   char s_defaultdomain[25];
+  char s_redirector[25];
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
@@ -427,11 +452,16 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (14, DBQuery::T_CHAR, s_redirector, sizeof(s_redirector)))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
-  sqlcmd << ", s_squidbase";
+  sqlcmd << ", s_squidbase, s_redirector";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -489,9 +519,19 @@ bool Proxy::reload ()
       ERROR ("Unknown traffic type: " << s_realsize);
     }
 
+  if (strcasecmp (s_redirector, "NONE") == 0)
+    _redir_type = REDIR_NONE;
+  else if (strcmp (s_realsize, "sams") == 0)
+    _redir_type = REDIR_INTERNAL;
+  else
+    {
+      ERROR ("Unsupported redirector type: " << s_redirector);
+    }
+
   DEBUG (DEBUG_PROXY, "Authentication: " << toString (_auth));
   DEBUG (DEBUG_PROXY, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
   DEBUG (DEBUG_PROXY, "Traffic type: " << toString (_trafType));
+  DEBUG (DEBUG_PROXY, "Redirector type: " << toString (_redir_type));
   DEBUG (DEBUG_PROXY, "Kilobyte size: " << _kbsize);
 
   if (_usedomain)

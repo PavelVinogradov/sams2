@@ -50,7 +50,7 @@ AC_ARG_WITH(mysql-libs,
             mysql_libs="")
 
 if test "x$mysql_libs" = "x"; then
-  mysql_libs="/usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib"
+  mysql_libs="/usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib64/mysql /usr/lib/mysql /usr/local/lib /usr/lib"
 fi
 
 AC_MSG_CHECKING(for MySQL libraries)

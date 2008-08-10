@@ -148,7 +148,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   else
     return;
 
-  char s_version[5];
+  char s_version[10];
   basic_stringstream < char >sql_cmd;
   sql_cmd << "select s_version from websettings";
 
