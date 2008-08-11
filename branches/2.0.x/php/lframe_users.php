@@ -7,9 +7,12 @@
 
 function lframe_users()
 {
-  global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
-  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+
+//  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+
+ global $SAMSConf;
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+  $DB2=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if($SAMSConf->SHOWUTREE=="1"||$SAMSConf->access>0||strlen($SAMSConf->groupauditor)>0)
@@ -32,22 +35,24 @@ function lframe_users()
           default:
             $SORDER = "s_nick";
         }
-
-      
       $count=0;
       print("   users = insFld(foldersTree, gFld2(\"$lframe_sams_UserFolder_1 \", \"tray.php?show=exe&filename=userstray.php&function=userstray\", \"paddressbook.gif\"))\n");
+
       if(strlen($SAMSConf->groupauditor)>1)
         {
-          $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_name='$SAMSConf->groupauditor' ");
- //echo "SAMSConf->groupauditor = $SAMSConf->groupauditor\n\n\n";     
+	  $query="SELECT * FROM sgroup WHERE s_name='$SAMSConf->groupauditor' ";
 	}  
       else
         {
-          $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup ORDER BY s_name");
+	  $query="SELECT * FROM sgroup ORDER BY s_name";
 	}  
+      $num_rows=$DB->samsdb_query_value($query);
+
+
       while($row=$DB->samsdb_fetch_array())
          {
 	    $metka="users$count";
+//echo "<!-- $row[s_name] -->";
             print("     $metka = insFld(users, gFld2(\"$row[s_name]\", \"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\", \"pgroup.gif\"))\n");
             $num_rows_=$DB2->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
 /**/
@@ -88,6 +93,11 @@ function lframe_users()
 /**/
 	     $count++;  
          }
+
+
+
+
+
     }
 
 }

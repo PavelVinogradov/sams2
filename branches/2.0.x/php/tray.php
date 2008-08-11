@@ -34,6 +34,8 @@ if(isset($_GET["show"]))    $user=$_GET["show"];
 if(isset($_GET["filename"])) $filename=$_GET["filename"];
 if(isset($_GET["function"])) $function=$_GET["function"];
  if(isset($_GET["id"])) $proxy_id=$_GET["id"];
+if(isset($_POST["function"])) $function=$_POST["function"];
+if(isset($_POST["filename"])) $filename=$_POST["filename"];
 
  $cookie_user="";
  $cookie_passwd="";
@@ -45,6 +47,7 @@ if(isset($_GET["function"])) $function=$_GET["function"];
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
 	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
+
  if($SAMSConf->PHPVER<5)
    {
 	$SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
@@ -59,7 +62,7 @@ if(isset($_GET["function"])) $function=$_GET["function"];
 	$SAMSConf->USERID=$_COOKIE['userid'];
 	$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
    }  
- $SAMSConf->access=UserAccess();
+  $SAMSConf->access=UserAccess();
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

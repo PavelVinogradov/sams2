@@ -36,8 +36,8 @@ fclose($finp);
 
   $SAMSConf=new SAMSCONFIG();
 //  $SAMSConf->access=2;
-//  $lang="./lang/lang.$SAMSConf->LANG";
-//  require($lang);
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
  $cookie_user="";
  $cookie_passwd="";
@@ -49,6 +49,7 @@ fclose($finp);
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
 	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
+
  if($SAMSConf->PHPVER<5)
    {
      $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
@@ -63,11 +64,12 @@ fclose($finp);
 	$SAMSConf->USERID=$_COOKIE['userid'];
 	$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
    }  
+
  $SAMSConf->access=UserAccess();
 
 print("<html><head>\n");
-//print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
-print("<META  content=\"text/html; charset=KOI8-R\" http-equiv='Content-Type'>");
+print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
+//print("<META  content=\"text/html; charset=KOI8-R\" http-equiv='Content-Type'>");
 print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
 print("</head>\n");
 print("<body topmargin=16 marginheight=16 >\n");
