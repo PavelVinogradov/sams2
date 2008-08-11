@@ -11,7 +11,7 @@ function UsersTrafficPeriodPDF()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   
   if($SAMSConf->LANG=="KOI8-R")
     $lang="./lang/lang.WIN1251";
@@ -105,7 +105,7 @@ function UsersTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -135,7 +135,7 @@ function UsersTrafficPeriod()
 {
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();

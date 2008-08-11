@@ -12,7 +12,7 @@ function UserTrafficPeriodGB()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -63,7 +63,7 @@ function UserTrafficPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
  
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
@@ -93,7 +93,7 @@ function UserTrafficPeriod()
 
 //  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
-  
+echo "SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$USERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain";  
   $count=1;
   $cache=0;
   print("<TABLE CLASS=samstable>");
@@ -106,7 +106,7 @@ function UserTrafficPeriod()
     }   
   print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_5");
   $size=0;
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$USERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate' GROUP BY s_date");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$USERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
   while($row=$DB->samsdb_fetch_array())
        {
          print("<TR>");

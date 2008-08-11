@@ -58,7 +58,8 @@ class SAMSCONFIG
   var $LOGLEVEL;
   var $CCLEAN;
   var $DBNAME;
-  var $ODBC;
+  var $ODBC=0;
+  var $PDO=0;
   var $DBCONN;
   var $ODBCSOURCE;
 /*Авторизация пользователя в веб интерфейсе*/
@@ -107,12 +108,32 @@ class SAMSCONFIG
   function ReadSAMSSettings()
     {
       $dbadmin="root";
-	
-      if($this->DB_ENGINE == "MySQL" && $this->ODBC == "0" )
-		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
-      if($this->DB_ENGINE == "PostgreSQL" && $this->ODBC == "0" )
+
+//	echo "BD CONFIG: $this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->PDO<BR>";
+
+	if($this->ODBC == "1" )
 	{
-		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
+		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB,  $this->PDO);
+		if($DB->dberror != '1')
+			{
+				$num_rows=$DB->samsdb_query_value("select s_lang from websettings");         
+				$row=$DB->samsdb_fetch_array();
+				if($row[0] != "EN" )
+				  {
+					$dbadmin="";
+					echo "table is NOT created<BR>";
+					$DB->dberror=1;
+					//CreateSAMSdbPgSQL($this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
+				  }
+			}
+
+	}
+
+	if($this->DB_ENGINE == "MySQL" && $this->ODBC == "0" )
+		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->PDO, $this->PDO);
+	if($this->DB_ENGINE == "PostgreSQL" && $this->ODBC == "0" )
+	{
+		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->PDO, $this->PDO);
 		if($DB->dberror != '1')
 			{
 				$num_rows=$DB->samsdb_query_value("select count(tablename) from pg_tables where tablename LIKE 'squiduser' ");         
@@ -125,9 +146,8 @@ class SAMSCONFIG
 					//CreateSAMSdbPgSQL($this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
 				  }
 			}
-			
 	}
-      if($DB->dberror=="1")
+	if($DB->dberror=="1")
 	{
 		echo "<FONT COLOR=\"RED\">Access denied for user $this->DB_USER@$this->DB_SERVER to database $this->DB_ENGINE</FONT><BR>";
 		if(isset($_GET["function"])) $function=$_GET["function"];
@@ -165,13 +185,17 @@ class SAMSCONFIG
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"dbname\" value=\"$this->DB_ENGINE\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"samsdb\" value=\"$this->SAMSDB\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"odbc\" value=\"$this->ODBC\">\n");
+			print("<INPUT TYPE=\"HIDDEN\" NAME=\"pdo\" value=\"$this->PDO\">\n");
 			print("<TABLE WIDTH=\"90%\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB Hostname: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
+			if($this->DB_ENGINE == "MySQL")
+			{
 			print("<TR><TD ALIGN=RIGHT><P>Create SAMS DB user <INPUT TYPE=\"CHECKBOX\" NAME=\"create\" CHECKED  onclick=SetChange()><TD>\n");
 			print("<TR><TD ALIGN=RIGHT><P>SAMS DB user: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"muser\" value=\"sams@localhost\">\n");
 			print("<TR><TD ALIGN=RIGHT>SAMS DB user password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"mpass\">\n");
+			}
 			print("</TABLE>\n");
 
 			printf("<BR><CENTER>");
@@ -204,6 +228,8 @@ class SAMSCONFIG
 */
       $DB->samsdb_query("SELECT * FROM websettings");
       $row=$DB->samsdb_fetch_array();
+//echo "samsclass.php: ".$row['s_lang']."<BR>";
+//exit(0);
       $this->LANG=$row['s_lang'];
       if ($this->LANG=="EN") 
         $this->LANGCODE = "EN"; 
@@ -253,6 +279,8 @@ class SAMSCONFIG
          if(!strcasecmp($str2,"DB_SERVER" ))         $this->DB_SERVER=trim(strtok("="));
 
          if(!strcasecmp($str2,"ODBC" ))       $this->ODBC=trim(strtok("="));
+         if(!strcasecmp($str2,"PDO" ))       $this->PDO=trim(strtok("="));
+
          if(!strcasecmp($str2,"ODBCSOURCE" ))       $this->ODBCSOURCE=trim(strtok("="));
 
          if(!strcasecmp($str2,"SAMS_DB" ))               $this->SAMSDB=trim(strtok("="));

@@ -9,7 +9,7 @@ function ReturnDate($string)
 function UserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["id"])) $id=$_POST["id"];
@@ -81,7 +81,7 @@ function UserAuth()
 function NotUsersTreeUserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["user"])) $userdomain=$_POST["user"];
@@ -241,10 +241,13 @@ function ExecuteFunctions($path, $mask, $id)
 function UserAuthenticate($user,$passwd)
 {
   global $SAMSConf;
+
   if(strlen($user)>0 && strlen($passwd)>0)
 	{
-	  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", "0", $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+
+	  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 	  $num_rows=$DB->samsdb_query_value("SELECT s_user FROM passwd WHERE s_user='$user' and s_pass='$passwd' ");
+
 //echo "<h1>=$num_rows=</h1>";
 	  if($num_rows > 0)
 		{

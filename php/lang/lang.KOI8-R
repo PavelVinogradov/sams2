@@ -732,10 +732,6 @@
   $configbuttom_1_prop_SamsReConfigForm_55="месяцев. <BR>Данные сохраняются в файл и удаляются из базы.";
   $configbuttom_1_prop_SamsReConfigForm_56="Выберите скрипт, используемый для отправки сообщения при отключении пользователей:";
 
-  $configbuttom_1_prop_SamsReConfigForm_autouser="Автоматически создавать новых пользователей";
-  $configbuttom_1_prop_SamsReConfigForm_autotpl="Шаблон у создаваемого пользователя";
-  $configbuttom_1_prop_SamsReConfigForm_autogrp="Группа у создаваемого пользователя";
-
   $logbuttom_4_logbuttom_5_1="Журнал событий, связанных с работой программ sams";
   $configbuttom_1_prop_SamsReConfigForm_57="Введите адрес администратора, на который следует посылать сообщения";
 

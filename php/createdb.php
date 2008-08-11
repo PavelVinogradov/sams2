@@ -10,6 +10,7 @@
   if(isset($_GET["dbname"])) $dbname=$_GET["dbname"];
   if(isset($_GET["samsdb"])) $samsdb=$_GET["samsdb"];
   if(isset($_GET["odbc"])) $odbc=$_GET["odbc"];
+  if(isset($_GET["pdo"])) $pdo=$_GET["pdo"];
 //  if(isset($_GET["action"])) 		$action=$_GET["action"];
   if(isset($_GET["muser"])) 		$muser=$_GET["muser"];
   if(isset($_GET["mpass"])) 		$mpass=$_GET["mpass"];
@@ -46,6 +47,6 @@
 		echo "<br><center><font color=red><b>ERROR:safe_mode = off</b></font><BR> Switch php into safe_mode = on</center><BR><BR> ";
 	}
   //print("$dbname, $odbc, $hostname, $username ,$pass, $samsdb");
-  CreateSAMSdb($dbname, $odbc, $hostname, $username ,$pass, $samsdb, $create, $muser, $mpass);
+  CreateSAMSdb($dbname, $odbc, $hostname, $username ,$pass, $samsdb, $create, $muser, $mpass, $pdo);
   print("</body>");
 ?>

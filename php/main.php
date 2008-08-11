@@ -99,7 +99,9 @@ if($shou==0)
    $shou=0;
 $DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
-$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+
+$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+
 $lang="./lang/lang.$SAMSConf->LANG";
 require($lang);
 
@@ -294,6 +296,7 @@ if($gb!=1)
     print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");//     if($autherrorc==1&&$autherrort>0)
     print("<center>\n");
   }
+//echo "BD CONFIG: $SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO";
 
   if(strstr($filename,"proxy"))
 	{
@@ -365,7 +368,6 @@ if($function=="autherror")
           print("<h2>next logon after $time2 second</h2> \n");
        }   
   }   
-
 print("</center>\n");
 print("</body></html>\n");
 
