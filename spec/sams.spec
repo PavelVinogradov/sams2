@@ -1,8 +1,8 @@
-##%define _prefix /usr/local
+%define _prefix /usr/local
 
 Name:          sams2
-Version:       2.0.2
-Release:       0
+Version:       2.0.0
+Release:       a1
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
@@ -31,7 +31,8 @@ authorization mode.
 Summary:       SAMS2 web administration tool
 Group:         Applications/System
 Requires:      httpd
-Provides:      sams2-web = %{version}-%{release}
+Provides:      sams2-web = %{version}
+#BuildArch:     noarch
 
 %description web
 The sams2-web package provides web administration tool
@@ -42,7 +43,8 @@ Web browser.
 %package doc
 Summary:       SAMS2 Documentation
 Group:         Documentation/Other
-Provides:      sams2-doc = %{version}-%{release}
+Provides:      sams2-doc = %{version}
+#BuildArch:     noarch
 BuildRequires: doxygen
 Prereq:        /usr/bin/find /bin/rm /usr/bin/xargs
 
@@ -54,7 +56,7 @@ The sams2-doc package includes the HTML versions of the "Using SAMS2".
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
 %build
 ./configure \

@@ -170,10 +170,28 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   query = NULL;
 
   string str_ver = TrimSpaces(s_version);
-  if (str_ver != VERSION)
+  if (str_ver == "1.9.9")
     {
-      ERROR ("Incompatible database version. Expected " << VERSION << ", but got " << str_ver);
-      return;
+      INFO ("Internal database version.");
+    }
+  else if (str_ver != VERSION)
+    {
+      char daemon_ver[10];
+      char database_ver[10];
+      strncpy(daemon_ver, VERSION, 5);
+      strncpy(database_ver, str_ver.c_str(), 5);
+      daemon_ver[5] = 0;
+      database_ver[5] = 0;
+
+      if (strncmp(daemon_ver, database_ver, 5))
+      {
+        ERROR ("Incompatible database version. Expected " << daemon_ver << ", but got " << database_ver);
+        return;
+      }
+      else
+      {
+        DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Database version accepted.");
+      }
     }
   else
     {
@@ -200,7 +218,10 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     fpos = Proxy::getEndValue();
 
   if (fpos > fsize)
-    fpos = 0;
+    {
+      fpos = 0;
+      DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Previous position bigger then file size. Process from offset 0");
+    }
 
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "file size " << fsize << ", use offset " << fpos);
 
@@ -657,6 +678,16 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       if (line.empty ())
         continue;
 
+      DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Incoming line: " << line);
+
+      if (!from_begin) // Запомним сразу что строка уже прочитана
+        {
+          fpos = in.tellg ();
+          DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Store file position: " << fpos);
+          updProxyQuery->sendQuery ();
+          Proxy::setEndValue(fpos);
+        }
+
       // Игнорируем строки с неверным форматом
       if (sll.setLine (line) != true)
         continue;
@@ -666,8 +697,9 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
       // Если пользователь по каким-то причинам не найден, то переходим к следующей строке
       if (usr == NULL)
-        continue;
-
+        {
+            continue;
+        }
       // Применяем различные фильтры
       date_time = sll.getTime ();
       strftime (s_date, sizeof (s_date), "%Y-%m-%d", &date_time);
@@ -796,14 +828,6 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         }
       s_enabled = (long)usr->getEnabled();
       updUserQuery->sendQuery ();
-
-
-      // Обновляем смещение в файле access.log
-      if (!from_begin)
-        {
-          fpos = in.tellg ();
-          updProxyQuery->sendQuery ();
-        }
     }
   in.close ();
 
