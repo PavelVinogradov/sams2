@@ -158,6 +158,11 @@ long Proxy::getEndValue()
   return _endvalue;
 }
 
+void Proxy::setEndValue (long val)
+{
+  _endvalue = val;
+}
+
 long Proxy::getKbSize ()
 {
   load();
