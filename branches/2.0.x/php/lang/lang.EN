@@ -749,6 +749,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
   $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
+
+  $configbuttom_1_prop_SamsReConfigForm_58="Create unknown users";
+  $configbuttom_1_prop_SamsReConfigForm_59="Template for unknown user";
+  $configbuttom_1_prop_SamsReConfigForm_60="Group for unknown user";
   
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Groups added";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
