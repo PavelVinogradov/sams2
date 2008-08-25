@@ -14,7 +14,7 @@
 export DH_VERBOSE=1
 
 # quilt support
-#include /usr/share/quilt/quilt.make
+include /usr/share/quilt/quilt.make
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
@@ -33,7 +33,7 @@ else
 	CFLAGS += -O2
 endif
 
-config.status:
+config.status: patch
 	dh_testdir
 	make -f Makefile.cvs
 	# Add here commands to configure the package.
@@ -57,7 +57,7 @@ build-indep-stamp:  config.status
 	#$(MAKE) doc
 	touch $@
 
-clean:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
