@@ -17,13 +17,13 @@
 #
 # /etc/init.d/sams: start and stop the sams daemon
 
-SAMSPATH=`cat /etc/sams2.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
+SAMSPATH=`cat /etc/sams.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
 DAEMON=$SAMSPATH/bin/samsdaemon
 LOCKFILE=/var/lock/samsd
 PIDFILE=/var/run/samsdaemon.pid
 RETVAL=0
-SAMSENABLE=true
+SAMS_ENABLE=false
 
 test -x $DAEMON || exit 0
 
@@ -38,7 +38,7 @@ fi
 
 case "$1" in 
 	start)
-		if "$SAMSENABLE"; then
+		if "$SAMS_ENABLE"; then
 			log_daemon_msg "Starting $NAME daemon" "$NAME"
 			if [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE) >/dev/null 2>&1; then
 				log_progress_msg "apparently already running"
@@ -47,65 +47,36 @@ case "$1" in
 			fi
       			
 			start-stop-daemon --start --quiet --background \
-				--pidfile $PIDFILE --make-pidfile \
+				--pidfile $PIDFILE \
 				--exec $DAEMON
 			RETVAL=$?
 			[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
 			log_end_msg $RETVAL
 		else
-			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting..."
+			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams/README.Debian."
 		fi
 	;;
 
 	stop)
-		log_daemon_msg "Stopping $NAME daemon" "$NAME"
-		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE 
-		RETVAL=$?
-		[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
-		log_end_msg $RETVAL
+		if "$SAMS_ENABLE"; then
+			log_daemon_msg "Stopping $NAME daemon" "$NAME"
+			start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE 
+			RETVAL=$?
+			[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
+			log_end_msg $RETVAL
+		else
+			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not stoping..."
+		fi
+			
 	;;
 
-start()
-{
-	echo -n "Starting samsd: "
-	start-stop-daemon --start --quiet --exec $DAEMON
-	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
-        echo
-}
-
-stop()
-{
-	echo -n "Shutting down samsd: "
-	start-stop-daemon --stop --quiet --pidfile $PIDFILE
-	RETVAL=$?
-	[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
-        echo
-}
-
-restart()
-{
-	stop
-	start
-}
-
-# See how we were called.
-case "$1" in
-	start)
-		start
-		;;
-	stop)
-		stop
-		;;
-	restart)
-		restart
-		;;
-	status)
-	        status "$DAEMON"
-		;;
+	restart|force-reload)
+		/etc/init.d/sams stop
+		/etc/init.d/sams start
+	;;
+	
 	*)
 		echo "Usage: ${0##*/} {start|stop|restart}"
 		RETVAL=1
+	;;
 esac
-
-exit $RETVAL
