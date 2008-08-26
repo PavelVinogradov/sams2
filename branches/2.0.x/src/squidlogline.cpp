@@ -18,6 +18,7 @@
 #include "squidlogline.h"
 #include "debug.h"
 #include "tools.h"
+#include "stdlib.h"
 
 #include <vector>
 
