@@ -20,6 +20,7 @@
 using namespace std;
 
 #include <string>
+#include <sys/types.h>
 
 class DBConn;
 

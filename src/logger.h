@@ -21,6 +21,7 @@ using namespace std;
 
 #include <string>
 #include <fstream>
+#include <sys/types.h>
 
 class DBConn;
 class DBQuery;

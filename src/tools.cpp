@@ -20,11 +20,15 @@
 #include <unistd.h>
 #include <fnmatch.h>
 #include <errno.h>
+#include <string>
+#include <string.h>
 
 #include "tools.h"
 #include "debug.h"
 
 #define SPACECHARS " \t\r\n"
+
+using namespace std;
 
 string StripComments (const string & str)
 {

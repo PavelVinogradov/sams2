@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <vector>
 #include <sstream>
+#include <string.h>
 
 #include "config.h"
 

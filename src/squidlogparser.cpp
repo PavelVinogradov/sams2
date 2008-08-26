@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "config.h"
+#include <string.h>
 
 #ifdef USE_UNIXODBC
 #include "odbcconn.h"
