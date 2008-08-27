@@ -22,6 +22,7 @@ set -e
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     	if ["$1" = purge]; then
+		echo "purging sams2"
 #		update-rc.d sams remove
 	fi
     ;;

@@ -34,3 +34,9 @@ Description: Squid Account Management System (SAMS) - Web interface
  .
  This package contain web-interface to access collected statistic and
  manage user access to proxy server
+
+Package: sams-doc
+Architecture: all
+Depends: doxygen
+Description: Squid Account Management System 2 (SAMS) - Documentation
+ The sams2-doc package includes the HTML versions of the "Using SAMS2".
