@@ -20,7 +20,7 @@ set -e
 
 case "$1" in
     configure)
-    	update-rc.d sams defaults
+#    	update-rc.d sams defaults
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
