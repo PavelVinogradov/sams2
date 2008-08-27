@@ -20,6 +20,7 @@ set -e
 
 case "$1" in
     configure)
+    	echo "sams2 postinst"
 #    	update-rc.d sams defaults
     ;;
 
