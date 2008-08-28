@@ -436,7 +436,7 @@ $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 	  {
 		echo "Database $dbname is created<BR>\n";
 	   }
-	$sDB=new SAMSDB($db, $odbc, $host, $user, $passwd, $dbname);
+	$sDB=new SAMSDB($db, $odbc, $host, $user, $passwd, $dbname, $pdo);
 	$sDB->mysqldb_connect($host,$user,$passwd,$dbname);
 	for( $i=0; $i<count($pgdb); $i++)
 	   {
