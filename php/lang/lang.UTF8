@@ -18,9 +18,9 @@
 
 //file user.php
   $user_usertray8="Удалить пользователя";
-  $user_usergrouptray1="Статистика группы по пользователям";
-  $user_usergrouptray2="Статиcтика по размерам файлов";
-  $user_usergrouptray3="Статистика по посещаемым сайтам";
+  $user_usergrouptray1="Статитстика группы по пользователям";
+  $user_usergrouptray2="Статитика по размерам файлов";
+  $user_usergrouptray3="Статитстика по посещаемым сайтам";
 
   $user_usergroupform3="Изменить свойства пользователя";
   $user_usergroupform4="Статистика пользователя";
@@ -152,14 +152,14 @@
   $usertray_UserAuthForm_1="Введите пароль пользователя";
   $usertray_UserForm_1="Пользователь";
   $usertray_UserForm_2="Домен:";
-  $usertray_UserForm_3="IP адрес/маска";
+  $usertray_UserForm_3="IP адрес";
   $usertray_UserForm_4="Имя";
   $usertray_UserForm_5="Отчество";
   $usertray_UserForm_6="Фамилия";
   $usertray_UserForm_7="Группа";
   $usertray_UserForm_8="Квота на скачивание";
   $usertray_UserForm_9="Получено";
-  $usertray_UserForm_10="Активен";
+  $usertray_UserForm_10="Статус";
   $usertray_UserForm_11="Отключен";
   $usertray_UserForm_12="Шаблон";
   $usertray_UserTray_1="Пользователь";
@@ -173,7 +173,7 @@
   $userstray_NewUserForm_4="Домен";
   $userstray_NewUserForm_5="Пароль для допуска пользователя<BR> в интернет и просмотра статистики";
   $userstray_NewUserForm_6="Пароль для просмотра<BR> статистики пользователем";
-  $userstray_NewUserForm_7="IP адрес/маска";
+  $userstray_NewUserForm_7="IP адрес";
   $userstray_NewUserForm_8="Имя";
   $userstray_NewUserForm_9="Отчество";
   $userstray_NewUserForm_10="Фамилия";
@@ -208,7 +208,7 @@
 
   $usersbuttom_4_percent_UsersPercentTrafficForm_1="Статистика пользователей";
   $usersbuttom_4_percent_UsersPercentTrafficForm_2="Объем информации, полученной пользователями, в %";
-  $usersbuttom_4_percent_usersbuttom_4_percent_1="Статистика всех пользователей по % полученной информации";
+  $usersbuttom_4_percent_usersbuttom_4_percent_1="Статитстика всех пользователей по % полученной информации";
 
   $usersbuttom_3_file_UsersFileSizePeriod_1="Статистика пользователей";
   $usersbuttom_3_file_UsersFileSizePeriod_2="Список файлов, больших";
@@ -217,7 +217,7 @@
   $usersbuttom_3_file_UsersFileSizePeriod_5="Дата";
   $usersbuttom_3_file_UsersFileSizePeriod_6="Размер";
   $usersbuttom_3_file_UsersFileSizePeriod_7="Время";
-  $usersbuttom_3_file_usersbuttom_3_file_1="Статистика всех пользователей по размеру полученных файлов";
+  $usersbuttom_3_file_usersbuttom_3_file_1="Статитстика всех пользователей по размеру полученных файлов";
   $usersbuttom_3_file_usersbuttom_3_file_2="Размер файла (кб)";
 
   $usersbuttom_2_traffic_UsersTrafficPeriod_1="Статистика пользователей";
@@ -229,7 +229,7 @@
   $usersbuttom_2_traffic_UsersTrafficPeriod_7="Трафик";
   $usersbuttom_2_traffic_UsersTrafficForm_1="Объем информации, полученной пользователями, в Кб";
   $usersbuttom_2_traffic_UsersTrafficForm_2="Вывести фамилии пользователей";
-  $usersbuttom_2_traffic_usersbuttom_2_traffic_1="Статистика всех пользователей домена";
+  $usersbuttom_2_traffic_usersbuttom_2_traffic_1="Статитстика всех пользователей домена";
 
   $usersbuttom_1_domain_AddUsersFromDomain_1="Добавлен пользователь ";
   $usersbuttom_1_domain_AddUsersFromDomain_2="домен";
@@ -249,32 +249,32 @@
   $userbuttom_4_site_UserSitesPeriod_2="Список ресурсов, к которым обращался пользователь";
   $userbuttom_4_site_UserSitesPeriod_3="Размер";
   $userbuttom_4_site_UserSitesForm_1="Список ресурсов, к которым обращался пользователь";
-  $userbuttom_4_site_userbuttom_4_site_1="Статистика по посещаемым сайтам";
+  $userbuttom_4_site_userbuttom_4_site_1="Статитстика по посещаемым сайтам";
 
   $userbuttom_3_file_UserFileSizePeriod_1="Список файлов, больших";
   $userbuttom_3_file_UserFileSizePeriod_2="Размер файла (kb)";
   $userbuttom_3_file_UserFileSizePeriod_4="Размер";
   $userbuttom_3_file_UserFileSizeForm_1="Список файлов, больших ... kb";
   $userbuttom_3_file_UserFileSizeForm_2="Размер файла (kb)";
-  $userbuttom_3_file_userbuttom_3_file_3="Статистика пользователя по размеру полученных файлов";
+  $userbuttom_3_file_userbuttom_3_file_3="Статитстика пользователя по размеру полученных файлов";
 
   $userbuttom_2_traffic_UserTrafficPeriod_2="Объем информации, полученной пользователем, в Кб";
   $userbuttom_2_traffic_UserTrafficPeriod_6="Размер";
   $userbuttom_2_traffic_UserTrafficForm_1="Объем информации, полученной пользователем, в kb";
-  $userbuttom_2_traffic_userbuttom_2_traffic_1="Статистика пользователя";
+  $userbuttom_2_traffic_userbuttom_2_traffic_1="Статитстика пользователя";
 
   $userbuttom_1_prop_UpdateUser_1="Изменена информация о пользователе";
   $userbuttom_1_prop_UpdateUserForm_1="Изменение данных о пользователе";
   $userbuttom_1_prop_UpdateUserForm_2="Домен";
   $userbuttom_1_prop_UpdateUserForm_3="Пароль";
-  $userbuttom_1_prop_UpdateUserForm_4="IP адрес/маска";
+  $userbuttom_1_prop_UpdateUserForm_4="IP адрес";
   $userbuttom_1_prop_UpdateUserForm_5="Имя";
   $userbuttom_1_prop_UpdateUserForm_6="Отчество";
   $userbuttom_1_prop_UpdateUserForm_7="Фамилия";
   $userbuttom_1_prop_UpdateUserForm_8="Группа";
   $userbuttom_1_prop_UpdateUserForm_9="Разрешенный";
   $userbuttom_1_prop_UpdateUserForm_10="трафик (Мб)";
-  $userbuttom_1_prop_UpdateUserForm_11="Пользователь активен";
+  $userbuttom_1_prop_UpdateUserForm_11="Статус";
   $userbuttom_1_prop_UpdateUserForm_12="Шаблон";
   $userbuttom_1_prop_UpdateUserForm_13="Изменить данные";
   $userbuttom_1_prop_UpdateUserForm_14="Имеет право смотреть статистику<BR> пользователей своей группы:";
@@ -348,7 +348,7 @@
   $redirlisttray_AddRedirListForm_2="Название списка";
   $redirlisttray_AddRedirListForm_3="Создать";
   $redirlisttray_AddRedirListForm_4="Список содержит URL, запросы пользователей к которым будет перенаправлены";
-  $redirlisttray_RedirListTray_1="Перенаправление запроса.<BR> Список";
+  $redirlisttray_RedirListTray_1=" Перенаправление запроса <BR> Список ";
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1="Удалить список";
 
@@ -406,14 +406,14 @@
   $groupbuttom_2_file_GroupFileSizePeriod_2="Размер файла";
   $groupbuttom_2_file_GroupFileSizeForm_1="Список файлов, больших ... kb";
   $groupbuttom_2_file_GroupFileSizeForm_2="Размер файла (kb)";
-  $groupbuttom_2_file_groupbuttom_2_file_1="Статистика по размеру полученных файлов";
+  $groupbuttom_2_file_groupbuttom_2_file_1="Статитстика по размеру полученных файлов";
 
   $groupbuttom_1_traffic_GroupTrafficPeriod_1="Объем информации, полученной пользователями, в Кб";
   $groupbuttom_1_traffic_GroupTrafficPeriod_2="Из кэш";
   $groupbuttom_1_traffic_GroupTrafficPeriod_3="Размер";
   $groupbuttom_1_traffic_GroupTrafficPeriod_4="Трафик";
   $groupbuttom_1_traffic_GroupTrafficForm_1="Объем информации, полученной пользователями, в Кб";
-  $groupbuttom_1_traffic_groupbuttom_1_traffic_1="Статистика пользователя";
+  $groupbuttom_1_traffic_groupbuttom_1_traffic_1="Статитстика пользователя";
 
   $dbtray_HelpDBForm_1="База данных SAMS";
   $dbtray_HelpDBForm_2="Получение статистики о состоянии и проверка базы данных SAMS.";
@@ -495,7 +495,7 @@
 
   $admintray_UserDoc_1="Добро пожаловать!";
   $admintray_UserDoc_2="Просмотр статистики работы в Интернет";
-  $admintray_UserDoc_3="Для просмотра статистики работы в интернет выберите в левом фрейме пользователя, ";
+  $admintray_UserDoc_3="Для просмотра стаистики работы в интернет выберите в левом фрейме пользователя,";
   $admintray_UserDoc_4="под которым вы авторизуетесь в домене windows (или вводите в броузере для работы в интернет), и введите пароль";
   $admintray_AdminTray_1="Администратор";
 
@@ -674,7 +674,7 @@
   $userbuttom_6_chpasswd_ChUserPasswd_1="Сменен пароль пользователя ";
 
   $adminbuttom_1_prop_SamsReConfigForm_44="Домен пользователя в access.log записывается МАЛЕНЬКИМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывать";
+  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывть";
   $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫМИ";
   $adminbuttom_1_prop_SamsReConfigForm_20b="строчными";
   $adminbuttom_1_prop_SamsReConfigForm_20c="Без изменения";
@@ -735,11 +735,14 @@
   $logbuttom_4_logbuttom_5_1="Журнал событий, связанных с работой программ sams";
   $configbuttom_1_prop_SamsReConfigForm_57="Введите адрес администратора, на который следует посылать сообщения";
 
+  $configbuttom_1_prop_SamsReConfigForm_58="Автоматически создавать новых пользователей";
+  $configbuttom_1_prop_SamsReConfigForm_59="Шаблон у создаваемого пользователя";
+  $configbuttom_1_prop_SamsReConfigForm_60="Группа у создаваемого пользователя";
+
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Добавлены группы";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Загрузка групп пользователей из домена  Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Найдены группы Active Directory";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Добавить группу пользователей";
-  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Такая группа уже существует.";
   $newgrouptray_NewGrpTray_1="Создание группы пользователей";
   $URLTimeForm_userbuttom_4_time_1="Список ресурсов, к которым обращался пользователь в течении дня";
   $userbuttom_9_logoff_userbuttom_9_logoff_1="Выйти из web интерфейса";  
@@ -871,14 +874,6 @@
   $userstray_AllUsersForm_13="Искать пользователей:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="Настройки SAMS";
 
-  $lang_pdfReport_page="Стр.";
-  $lang_pdfReport_user="Пользователь";
-  $lang_pdfReport_date="Дата";
-  $lang_pdfReport_site="Сайт";
-  $lang_pdfReport_size="Скачано";
-  $lang_pdfReport_cache="Кэш";
-  $lang_pdfReport_traffic="Трафик";
-
   $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_18="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
@@ -887,7 +882,26 @@
   $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
   $usersbuttom_1_useradd_AddUser_1="Пользователь с IP адресом ";
   $usersbuttom_1_useradd_AddUser_2=" Уже зарегистрирован в системе";
+
+  $filedeniedlisttray_filedeniedlisttray_1="Расширения файлов.  <BR>Список";
+
+  $shablonbuttom_9_delete_DeleteShablon_1="Шаблон присвоен";
+  $shablonbuttom_9_delete_DeleteShablon_2="пользователям";
+  $shablonbuttom_9_delete_DeleteShablon_3="Ошибка удаления шаблона";
+
+  $userbuttom_1_prop_UpdateUserForm_18="Имеет право смотреть свою статистику";
+  $userbuttom_1_prop_UpdateUserForm_19="Имеет право смотреть статистику пользователей своей группы";
+  $userbuttom_1_prop_UpdateUserForm_20="Имеет право смотреть статистику Всех пользователей";
+  $userbuttom_1_prop_UpdateUserForm_21="Имеет право активировать/отключать пользователей";
+  $userbuttom_1_prop_UpdateUserForm_22="Имеет право добавлять пользователей в SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
+  $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
+
+
+
+
 ?>

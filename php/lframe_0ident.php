@@ -12,13 +12,13 @@ global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 //exit(0);
-
-  if(strlen($SAMSConf->domainusername)>0||strlen($SAMSConf->adminname)>0)
+//echo "============================= 1 ====== $SAMSConf->domainusername == $SAMSConf->adminname ===================";
+  if(strlen($SAMSConf->domainusername)>0||strlen($SAMSConf->adminname)>0 || $SAMSConf->USERPASSWD==1)
     {
       print("   logoff = insFld(foldersTree, gFld2(\" logoff\", \"main.php?function=logoff\", \"logoff_20.gif\"))\n");
     }  
   
-  print("   auth = insFld(foldersTree, gFld2(\"$lframe_0ident_lframe_0ident_1\", \"tray.php?show=exe&function=admintray\", \"ident.gif\"))\n");
+  print("   auth = insFld(foldersTree, gFld2(\"$lframe_0ident_lframe_0ident_1\", \"tray.php?show=exe&filename=admintray.php&function=admintray\", \"ident.gif\"))\n");
 
 }
 

@@ -176,7 +176,7 @@
   $userstray_NewUserForm_4=" Domain "; 
   $userstray_NewUserForm_5=" Internet and statistics look-up password "; 
   $userstray_NewUserForm_6=" User statistics password ";
-  $userstray_NewUserForm_7="IP address/mask "; 
+  $userstray_NewUserForm_7="IP address "; 
   $userstray_NewUserForm_8=" Name "; 
   $userstray_NewUserForm_9=" Middle name"; 
   $userstray_NewUserForm_10=" Last name "; 
@@ -271,7 +271,7 @@
   $userbuttom_1_prop_UpdateUserForm_1=" User data change "; 
   $userbuttom_1_prop_UpdateUserForm_2=" Domain "; 
   $userbuttom_1_prop_UpdateUserForm_3=" Password "; 
-  $userbuttom_1_prop_UpdateUserForm_4=" IP address/mask "; 
+  $userbuttom_1_prop_UpdateUserForm_4=" IP address "; 
   $userbuttom_1_prop_UpdateUserForm_5=" Name "; 
   $userbuttom_1_prop_UpdateUserForm_6=" Middle name "; 
   $userbuttom_1_prop_UpdateUserForm_7=" Last name ";
@@ -351,7 +351,7 @@
   $redirlisttray_AddRedirListForm_2=" List name "; 
   $redirlisttray_AddRedirListForm_3=" Set up "; 
   $redirlisttray_AddRedirListForm_4=" List contains URL, to which user's demands would be redirected "; 
-  $redirlisttray_RedirListTray_1=" Demand redirection <BR> List"; 
+  $redirlisttray_RedirListTray_1=" List"; 
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1=" Delete the list "; 
 
@@ -725,7 +725,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_5="Family"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_6="Family Name"; 
   $adminbuttom_1_prop_SamsReConfigForm_45="Users traffic";
-  $adminbuttom_1_prop_SamsReConfigForm_46="TrafficË";
+  $adminbuttom_1_prop_SamsReConfigForm_46="Traffic";
   $adminbuttom_1_prop_SamsReConfigForm_47="Real (get on squid)";
   $adminbuttom_1_prop_SamsReConfigForm_48=" Full (get on squid + squid cache)";
   $adminbuttom_1_prop_SamsReConfigForm_49=" Bind DNS name";
@@ -748,13 +748,16 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $configbuttom_1_prop_SamsReConfigForm_56="Select script for send message about deactivate user:";
 
   $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
-  $configbuttom_1_prop_SamsReConfigForm_57="Enter Admiistrator address";
+  $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
+
+  $configbuttom_1_prop_SamsReConfigForm_58="Create unknown users";
+  $configbuttom_1_prop_SamsReConfigForm_59="Template for unknown user";
+  $configbuttom_1_prop_SamsReConfigForm_60="Group for unknown user";
   
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Groups added";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Active Directory groups found";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Add users group";
-  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Group already exists";
   $newgrouptray_NewGrpTray_1="Users group creating";
   $URLTimeForm_userbuttom_4_time_1="URL list";
   $userbuttom_9_logoff_userbuttom_9_logoff_1="logoff";  
@@ -848,15 +851,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $userstray_AllUsersForm_13="Users search:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="SAMS configuration";
 
-  $lang_pdfReport_page="Page";
-  $lang_pdfReport_user="User";
-  $lang_pdfReport_date="Date";
-  $lang_pdfReport_site="Site";
-  $lang_pdfReport_size="Download";
-  $lang_pdfReport_cache="Cache";
-  $lang_pdfReport_traffic="Traffic";
-
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Automatically clear up the users traffic disabled in the SAMS settings";
+  $shablonbuttom_1_prop_UpdateShablonForm_26=" Automatically clear up the users traffic disabled in the SAMS settings";
   $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
   $shablonnew_NewShablonForm_19="Users template name has not been entered";
   $redirlisttray_AddRedirListForm_5="List name has not been entered";
@@ -872,6 +867,20 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $grouptray_NewGroupForm_12="User group name has not been entered";
   $usersbuttom_1_useradd_AddUser_1="The user with ip address ";
   $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
+
+  $filedeniedlisttray_filedeniedlisttray_1="File extensions.  <BR>List";
+
+  $shablonbuttom_9_delete_DeleteShablon_1="Template contains";
+  $shablonbuttom_9_delete_DeleteShablon_2="users";
+  $shablonbuttom_9_delete_DeleteShablon_3="Error of removal a template";
+
+  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
+  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
+  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
+  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
+  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
+  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";

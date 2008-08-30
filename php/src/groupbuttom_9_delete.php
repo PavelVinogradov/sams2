@@ -23,32 +23,26 @@ function NotEmptyGroupWarning($groupnick)
 function DeleteGroup()
 {
   global $SAMSConf;
-  
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
+  if(isset($_GET["id"])) $id=$_GET["id"];
 
-   $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
-  
-  $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\"");
-  $count=0;
-  while($row=mysql_fetch_array($result))
-     {
-        $count++;
-     }
+  $num_rows=$DB->samsdb_query_value("SELECT count(*) FROM squiduser WHERE s_group_id='$id' ");
+  $row=$DB->samsdb_fetch_array();
+  $count=$row[0];
+  $DB->free_samsdb_query();
   if($count>0)
-     {
-        NotEmptyGroupWarning($groupnick);
-	 }
+	{
+        NotEmptyGroupWarning($id);
+	}
   else
      {
-        $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
-        $row=mysql_fetch_array($result);
-        $result=mysql_query("DELETE FROM groups WHERE name=\"$groupname\" ");
-	if($result!=FALSE)
-                   UpdateLog("$SAMSConf->adminname","Deleted group  $row[nick] ","02");
+        $num_rows=$DB->samsdb_query("DELETE FROM sgroup WHERE s_group_id='$id' ");
+//	if($result!=FALSE)
+//                   UpdateLog("$SAMSConf->adminname","Deleted group  $row[nick] ","02");
 
         print("<SCRIPT>\n");
         print("  parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
@@ -60,24 +54,25 @@ function DeleteGroup()
 
 
 
-function groupbuttom_9_delete($groupname)
+function groupbuttom_9_delete()
 {
   global $SAMSConf;
-  
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+ if(isset($_GET["id"])) $id=$_GET["id"];
 
   
-  $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
-  $row=mysql_fetch_array($result);
+  $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
+  $row=$DB->samsdb_fetch_array();
 
       print("<SCRIPT language=JAVASCRIPT>\n");
       print("function DeleteUser(username,userid)\n");
       print("{\n");
-      print("  value=window.confirm(\"$groupbuttom_9_delete_groupbuttom_9_delete_1 $row[nick]? \" );\n");
+      print("  value=window.confirm(\"$groupbuttom_9_delete_groupbuttom_9_delete_1 $row[s_name]? \" );\n");
       print("  if(value==true) \n");
       print("     {\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletegroup&filename=groupbuttom_9_delete.php&groupname=$groupname\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletegroup&filename=groupbuttom_9_delete.php&id=$id\";\n");
       print("     }\n");
       print("}\n");
       print("</SCRIPT> \n");

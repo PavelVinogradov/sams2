@@ -7,21 +7,32 @@
 
 function MoveUsersToShablon()
 {
- if(isset($_GET["shablonname"])) $id=$_GET["shablonname"];
- if(isset($_GET["username"])) $users=$_GET["username"];
+  global $SAMSConf;
+  global $SHABLONConf;
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["username"])) $users=$_GET["username"];
   for($i=0;$i<count($users);$i++)
     {
-           $result=mysql_query("UPDATE squidusers SET shablon=\"$id\" WHERE squidusers.id=\"$users[$i]\"");
+	$a=explode("+",$users[$i]);
+	if($a[1]!=$a[2])
+		$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_shablon_id='$id' WHERE s_user_id='$a[0]'");
+	else
+		$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_shablon_id='$id',s_quote='$a[3]' WHERE s_user_id='$a[0]'");
     }
   print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&function=shablonusers&id=$id&sid=ALL\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$id&sid=ALL\";\n");
   print("</SCRIPT> \n");
 }
 
 function ShablonUsers()
 {
   global $SAMSConf;
+  global $SHABLONConf;
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -29,31 +40,25 @@ function ShablonUsers()
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["sid"])) $sid=$_GET["sid"];
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
   
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB)
-       or print("Error\n");
-  $result=mysql_query("SELECT * FROM shablons WHERE shablons.name=\"$id\" ");
-  $row=mysql_fetch_array($result);
-  $nick1=$row['nick'];
-  PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$nick1</FONT>");
+  PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
 
   print("<TABLE>\n");
-  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_19</B><TD><FONT COLOR=\"BLUE\">$row[auth]</FONT>\n");
-  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_4</B><TD><FONT COLOR=\"BLUE\">$row[traffic]</FONT>\n");
-  if( $row['traffic'] == 0 )
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_19</B><TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_auth</FONT>\n");
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_4</B><TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_quote</FONT>\n");
+  if( $SHABLONConf->s_quote == 0 )
  	print(" <FONT COLOR=\"BLUE\">(unlimited traffic)</FONT>");  
   print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_20</B><TD>");
-  if($row['period']=="M")   
+  if($SHABLONConf->s_period=="M")   
      print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_24</FONT>\n");
-  else if($row['period']=="W")   
+  else if($SHABLONConf->s_period=="W")   
      print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_25</FONT>\n");
   else
 	{
-		print("<FONT COLOR=\"BLUE\">$row[period] $shablonbuttom_1_prop_UpdateShablonForm_17</FONT>\n");
-		 print("<TR><TD>$shablonbuttom_1_prop_UpdateShablonForm_18:<TD><FONT COLOR=\"BLUE\">$row[clrdate]</FONT>");
+		print("<FONT COLOR=\"BLUE\">$SHABLONConf->s_period $shablonbuttom_1_prop_UpdateShablonForm_17</FONT>\n");
+		 print("<TR><TD>$shablonbuttom_1_prop_UpdateShablonForm_18:<TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_clrdate</FONT>");
 	}
  $weekday=array("", "M","T","W","H","F","A","S");  
  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_14 </B><TD><FONT COLOR=\"BLUE\">\n");
@@ -66,87 +71,89 @@ function ShablonUsers()
   print("</TABLE>\n");
 
 
-  $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon=\"$id\" ORDER BY nick");
+  $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE squiduser.s_shablon_id='$id' ORDER BY s_nick");
 
  print("<H2>$shablontray_ShablonUsers_4: </H2>\n");
   print("<TABLE>\n");
-  while($row=mysql_fetch_array($result))
+  while($row=$DB->samsdb_fetch_array())
       {
        print("<TR>\n");
        print("<TD>");
-       if($row['enabled']>0)
+       if($row['s_enabled']>0)
          {
            if($SAMSConf->realtraffic=="real")
-	     $traffic=$row['size']-$row['hit'];
+	     $traffic=$row['s_size']-$row['s_hit'];
            else
-	     $traffic=$row['size'];
-	   if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
+	     $traffic=$row['s_size'];
+	   if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
               $gif="puser.gif";
            else
-              if($row['quotes']>0)
+              if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
          }
-       if($row['enabled']==0)
+       if($row['s_enabled']==0)
          {
             $gif="puserd.gif";
          }
-       if($row['enabled']<0)
+       if($row['s_enabled']<0)
          {
             $gif="duserd.gif";
          }
        print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\" TITLE=\"\"> ");
-       print("<TD> <B>$row[nick] </B>");
-       print("<TD> $row[family] ");
-       print("<TD> $row[name] ");
-       print("<TD> $row[soname] ");
+       print("<TD> <B>$row[s_nick] </B>");
+       print("<TD> $row[s_family] ");
+       print("<TD> $row[s_name] ");
+       print("<TD> $row[s_soname] ");
       }
+  $DB->free_samsdb_query();
   print("</TABLE>\n");
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
 
 	print("<SCRIPT language=JAVASCRIPT>\n");
         print("function SelectUsers(id)\n");
         print("{\n");
-        print("   var shablon = \"main.php?show=exe&function=shablonusers&id=$id&sid=\" +  id ; \n");
+        print("   var shablon = \"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$SHABLONConf->s_shablon_id&sid=\" +  id ; \n");
         print("   parent.basefrm.location.href=shablon;\n");
         print("}\n");
 	print("</SCRIPT>\n");
 
-      print("<P><BR><B>$shablontray_ShablonUsers_2 $nick1:</B> ");
+      print("<P><BR><B>$shablontray_ShablonUsers_2 $SHABLONConf->s_name:</B> ");
       print("<FORM NAME=\"moveform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"shablontray.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"moveuserstoshablon\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"shablonname\" value=\"$id\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$SHABLONConf->s_shablon_id\">\n");
 
       print("<SELECT NAME=\"shablonid\" onchange=SelectUsers(moveform.shablonid.value)>\n");
-      $result=mysql_query("SELECT * FROM shablons ORDER BY nick");
+      $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id!='$SHABLONConf->s_shablon_id' ORDER BY s_name");
       if($sid=="ALL")
         print("<OPTION VALUE=\"ALL\" SELECTED> ALL\n");
       else
         print("<OPTION VALUE=\"ALL\"> ALL\n");
 
-      while($row=mysql_fetch_array($result))
+      while($row=$DB->samsdb_fetch_array())
          {
 	    $SECTED="";
-	    if($row['name']==$sid)
+	    if($row['s_shablon_id']==$sid)
 		$SECTED="SELECTED";
-	    if($row['name']!=$id)
-               print("<OPTION VALUE=\"$row[name]\" $SECTED> $row[nick]\n");
+            print("<OPTION VALUE=\"$row[s_shablon_id]\" $SECTED> $row[s_name] \n");
          }
       print("</SELECT>\n");
-
+      $DB->free_samsdb_query();
+//echo "<BR>SELECT * FROM squiduser WHERE s_shablon_id='$sid'&&s_shablon_id!='$id' ORDER BY s_nick<BR>";
       print("<SELECT NAME=\"username[]\" SIZE=10 MULTIPLE >\n");
       if($sid=="ALL")
-	$result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon!=\"$id\" ORDER BY nick");
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.s_user_id,squiduser.s_nick,squiduser.s_quote,shablon.s_quote as def_quote FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE shablon.s_shablon_id!='$id' ORDER BY s_nick");
       else
-	$result=mysql_query("SELECT * FROM squidusers WHERE squidusers.shablon=\"$sid\"&&squidusers.shablon!=\"$id\" ORDER BY nick");
-      while($row=mysql_fetch_array($result))
+	$num_rows=$DB->samsdb_query_value("SELECT squiduser.s_user_id,squiduser.s_nick,squiduser.s_quote,shablon.s_quote as def_quote FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE shablon.s_shablon_id='$sid' ORDER BY s_nick");
+      while($row=$DB->samsdb_fetch_array())
          {
-            print("<OPTION ID=\"$row[id]\" VALUE=$row[id]> $row[nick]\n");
+            print("<OPTION ID=\"$row[s_user_id]\" VALUE=$row[s_user_id]+$row[s_quote]+$row[def_quote]+$SHABLONConf->s_quote> $row[s_nick]\n");
          }
       print("</SELECT>\n");
-      print("<P> <INPUT TYPE=\"SUBMIT\" VALUE=\"$shablontray_ShablonUsers_3 '$nick1'\" \n> ");
+      print("<P> <INPUT TYPE=\"SUBMIT\" VALUE=\"$shablontray_ShablonUsers_3 '$SHABLONConf->s_name'\" \n> ");
       print("</FORM>\n");
     } 
 
@@ -156,27 +163,20 @@ function ShablonUsers()
 function ShablonTray()
 {
   global $SAMSConf;
+  global $SHABLONConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-
-  if(isset($_GET["id"])) $id=$_GET["id"];
-
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
-      db_connect($SAMSConf->SAMSDB) or exit();
-      mysql_select_db($SAMSConf->SAMSDB);
-      $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
-      $row=mysql_fetch_array($result);
-
       print("<SCRIPT>\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&function=shablonusers&id=$id&sid=ALL\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$SHABLONConf->s_shablon_id&sid=ALL\";\n");
       print("</SCRIPT> \n");
 
       print("<TABLE border=0 WIDTH=\"100%\">\n");
       print("<TR>\n");
       print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
-      print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$row[nick]</FONT></B>\n");
+      print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$SHABLONConf->s_name</FONT></B>\n");
 
       ExecuteFunctions("./src", "shablonbuttom","1");
     }

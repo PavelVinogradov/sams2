@@ -1,71 +1,126 @@
-Summary: SAMS (Squid Account Management System)
-Name: sams
-Version: 1.1.0
-Release: 0
-Group: Applications/Internet
-License: GPL
-Source: http://sams.perm.ru/downloads/%{name}-%{version}.tar.gz
-URL: http://sams.perm.ru
-BuildRoot: %{_tmppath}/%{name}-buildroot
+%define _prefix /usr/local
+
+Name:          sams2
+Version:       2.0.0
+Release:       a1
+Summary:       SAMS2 (Squid Account Management System)
+Group:         Applications/Internet
+License:       GPL
+Source:        %{name}-%{version}.tar.gz
+URL:           http://sams.perm.ru
+Vendor:        SAMS Development group
+Packager:      SAMS Development Group
+Requires:      mysql
+Requires:      squid
+
+Provides:      sams2 = %{version}
+
+Prefix:        %{_prefix}
+BuildRoot:     %{_tmppath}/%{name}-buildroot
 BuildRequires: mysql-devel
-Requires: mysql
-Requires: php
-Requires: httpd
-Requires: squid
-Requires: pcre
+BuildRequires: postgresql-devel
+BuildRequires: unixODBC-devel
 
 %description
 This program basically used for administrative purposes of squid proxy.
-There are access control for users by ntlm, ncsa, basic or ip
+There are access control for users by ntlm, ldap, ncsa, basic or ip
 authorization mode.
+
+#######################################################################
+%package web
+Summary:       SAMS2 web administration tool
+Group:         Applications/System
+Requires:      httpd
+Provides:      sams2-web = %{version}
+#BuildArch:     noarch
+
+%description web
+The sams2-web package provides web administration tool
+for remotely managing sams2 using your favorite
+Web browser.
+
+#######################################################################
+%package doc
+Summary:       SAMS2 Documentation
+Group:         Documentation/Other
+Provides:      sams2-doc = %{version}
+#BuildArch:     noarch
+BuildRequires: doxygen
+Prereq:        /usr/bin/find /bin/rm /usr/bin/xargs
+
+%description doc
+The sams2-doc package includes the HTML versions of the "Using SAMS2".
+
+
+#######################################################################
+
 
 %prep
 %setup -q -n %{name}-%{version}
 
 %build
-%configure \
-	--with-configfile=%{_sysconfdir}/sams.conf \
-	--with-rcd-locations=%{_sysconfdir}/rc.d/init.d \
-	--with-httpd-locations=%{_var}/www/html
+./configure \
+	--prefix=%{_prefix}
 
 make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+# Clean up in case there is trash left from a previous build
+[ "${RPM_BUILD_ROOT}" != "/" ] && [ -d "${RPM_BUILD_ROOT}" ] && \
+	rm -rf "${RPM_BUILD_ROOT}"
 
-mkdir -p $RPM_BUILD_ROOT%{_bindir}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-mkdir -p $RPM_BUILD_ROOT%{_var}/www/html
+make DESTDIR=$RPM_BUILD_ROOT install
 
-%makeinstall \
-	RCDPATH=$RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d \
-	HTTPDPATH=$RPM_BUILD_ROOT%{_var}/www/html
-rm -f $RPM_BUILD_ROOT%{_var}/www/html/sams
-ln -s %{_datadir}/sams $RPM_BUILD_ROOT%{_var}/www/html/
+install -d "${RPM_BUILD_ROOT}%{_initrddir}"
+install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d
+
+install -m755 redhat/init.d 					\
+		"${RPM_BUILD_ROOT}%{_initrddir}"/sams2
+sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
+		"${RPM_BUILD_ROOT}%{_initrddir}"/sams2
+install -m644 redhat/httpd_conf					\
+		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
+sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name}-%{version},g'	\
+		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
+sed -i -e 's,sams2.conf,%{_prefix}/etc/sams2.conf,g'		\
+		"${RPM_BUILD_ROOT}%{_datadir}"/"%{name}"-"%{version}"/config.php
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+[ "${RPM_BUILD_ROOT}" != "/" ] && [ -d "${RPM_BUILD_ROOT}" ] && \
+	rm -rf "${RPM_BUILD_ROOT}"
 
+%post
+/sbin/chkconfig --add sams2
+
+%post web
+%{_initrddir}/httpd reload
+
+%preun
+if [ $1 = 0 ] ; then
+    /sbin/service sams2 stop >/dev/null 2>&1
+    /sbin/chkconfig --del sams2
+fi
+
+#######################################################################
+## Files section                                                     ##
+#######################################################################
 %files
 %defattr(-,root,root,-)
-%doc CHANGELOG INSTALL* README*
-%doc doc/img
-%lang(en) %doc doc/EN
-%lang(ru) %doc doc/RU
-%{_bindir}/*
-%{_datadir}/sams
-%{_sysconfdir}/rc.d/init.d/sams
-%{_sysconfdir}/sams.conf
-%{_var}/www/html/sams
+%{_prefix}/bin/samsparser
+%{_prefix}/bin/samsdaemon
+%{_prefix}/bin/samsredir
+%{_initrddir}/sams2
+%attr(640,apache,apache) %config(noreplace) %{_prefix}/etc/sams2.conf
 
-%changelog
-* Fri Jul 25 2008 Pavel Vinogradov <pavel.vinogradov@nixdev.net>
-New upstream version 1.1.0
+##########
+%files doc
+%defattr(-,root,root)
+%doc ChangeLog INSTALL* README*
+%doc doc/*
 
-* Fri Jul 25 2008 Denis Zagirov <foomail@yandex.ru>
-Fixed simlink to %{_datadir}/sams
-Workaround for moving old sams.conf, ensure not to move sams.conf during rpm
-build on host with working sams. (Makefile.am lines 200-203 out)
-
-* Thu Jun 16 2005 Dmitry Chemerik <chemerik@mail.ru>
-New version
+##########
+%files web
+%defattr(-,apache,apache)
+%attr(640,apache,apache) %config(noreplace) %{_prefix}/etc/sams2.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/sams2.conf
+%{_datadir}/%{name}-%{version}

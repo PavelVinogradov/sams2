@@ -1,52 +1,34 @@
-################################################################################
-#
-# SAMS (Squid Account Management System)
-#
-# Copyleft 2007-2008 Dmitry Chemerik
-# Web: http://sams.perm.ru
-#
-# This code is open source and may be copied and modified as long as the source
-# code is always made freely available.
-# Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
-################################################################################
+Если logrotate для файла access.log у squid настроен на маленький размер файла
+и стоит дискретная обработка логов через длительный период времени, то возможна ситуация
+когда access.log будет ротирован дважды в этот установленный период и часть трафика не будет учтена.
 
-How to setup SAMS ?
+Схожая ситуация
+Допустим, файл ротируется каждый час, а обработчик логов запускается каждые 40 минут
+тогда имеем примерно следующее:
+00:00 запущена вся система с нуля, файл access.log нулевой
+      обработчик логов обрабатывает информацию за период до 00:00
+00:40 обработчик логов обрабатывает информацию за период 00:00-00:40
+01:00 файл access.log ротируется
+01:20 запускается обработчик логов и должен обрабатывать информацию
+      за период 00:40-01:20, но данные в интервале времени 00:40-01:00
+      еще не обработаны, но уже в архиве, и не попадают в статистику
 
-SAMS needs the following components:
-- MySQL version 3.23 or higher
-- libmysql-devel 
-- Apache version 1.3.33 or higher / Apache version 2.0.X or higher
-- Apache Mod_php
-- libpcre, libpcre-devel
-- libgd, libgd-devel
-- PHP 4.3.2 or higher
-- Zlib support for PHP.
-- php-mysql: MySQL support for PHP.
-- php-gd: GD support for PHP.
-- Zlib support for PHP.
+частичное решение проблемы:
+в настройках logrotate для файла access.log
+вставить строку
+   prerotate
+       /путь/к/файлу/samsparser
+   endscript
 
-Compilation:
+при этом остается ситуация, когда, допустим, за секунду до начала ротирования
+запустился samsparser и в момент ротирования работает, тогда обработчик, запускаемый
+перед ротацией обнаружит уже запущенную программу, закончит работу немедленно и
+файл будет ротирован в то время, когда значения считываются из него.
 
-SAMS now has autoconf: building should just be (in the sams-<version> dir:
+Во избежание этой проблемы можно добавить опцию --wait-myself
+при которой обработчик не заканчивает работу если обнаружил уже запущенную копию,
+а ждет ее завершения и, дождавшись, выполняет порученное задание.
 
-./configure
-make
-
-If you like you can do a:
-
-make install
-
-after the make. This will place SAMS binaries in  /usr/local/bin, WEB-interface 
-in /usr/local/share/sams.
-
-Fix the /etc/init.d/samsd startup file.
-
-Running samsdaemon: service samsd start
-
-Open the file http://yourserver/sams/index.html in your browser. SAMS should 
-now display a welcome screen and a login dialog. You can be reading the 
-user "Admin" password in the file INSTALL.
-
-Enjoy SAMS ;-)
-
-SAMS Team
+----------------------------------------------------------------------------------------
+для обнаружения утечек памяти можно использовать
+valgrind --show-reachable=yes --log-file=samsparser.valgrind --leak-check=full ./samsparser

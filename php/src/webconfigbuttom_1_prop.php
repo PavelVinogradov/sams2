@@ -9,9 +9,14 @@
 function WebInterfaceReConfig()
 {
   global $SAMSConf;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  $showgraph="";
+    $s_urlaccess=0;
+    $s_useraccess=0;
+    $s_showutree=0;
+    $s_showgraph=0;
+
   if(isset($_GET["lang"])) $lang=$_GET["lang"];
   if(isset($_GET["urlaccess"])) $urlaccess=$_GET["urlaccess"];
   if(isset($_GET["useraccess"])) $useraccess=$_GET["useraccess"];
@@ -23,43 +28,49 @@ function WebInterfaceReConfig()
   if(isset($_GET["showgraph"])) $showgraph=$_GET["showgraph"];
   if(isset($_GET["createpdf"])) $createpdf=$_GET["createpdf"];
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
-  
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
+
   if($urlaccess=="on")
-    $urlaccess="Y";
+    $s_urlaccess=1;
+
   if($useraccess=="on")
-    $useraccess="Y";
+    $s_useraccess=1;
+
   if($showutree=="on")
-    $showutree="Y";
+    $s_showutree=1;
+
   if($showgraph=="on")
-    $showgraph="Y";
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("UPDATE globalsettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
+    $s_showgraph=1;
+
+  $DB->samsdb_query("UPDATE websettings SET s_createpdf='$createpdf', s_showname='$showname', s_showutree='$s_showutree', s_iconset='$iconset', s_lang='$lang', s_urlaccess='$s_urlaccess', s_useraccess='$s_useraccess', s_showgraph='$s_showgraph' ");
+  //$result=mysql_query("UPDATE websettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
   $SAMSConf->LoadConfig();
+  PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
+  print("<SCRIPT>\n");
+  print("        parent.lframe.location.href=\"lframe.php\";\n");
+  print("</SCRIPT> \n");
+
 }
 
 
 function WebInterfaceReConfigForm()
 {
   global $SAMSConf;
-   
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   //$SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+	{       exit;     }
 
   $aaa = strtolower($SAMSConf->adminname);  
   
   PageTop("config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
   print("<P>\n");
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("SELECT * FROM globalsettings");
-  $row=mysql_fetch_array($result);
+  $num_rows=$DB->samsdb_query_value("SELECT * FROM websettings");
+  $row=$DB->samsdb_fetch_array();
   print("<FORM NAME=\"samsreconfigform\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"webinterfacereconfig\">\n");
@@ -81,7 +92,7 @@ function WebInterfaceReConfigForm()
   		   $filename2=str_replace("lang.","",$file);
 		   $language=ReturnLanguage("lang/$file");
                   // echo "$file $language<BR>";
- 		 if($row['lang']=="$filename2")
+ 		 if($row['s_lang']=="$filename2")
      			print("<OPTION VALUE=\"$filename2\" SELECTED> $language");
   		else
      			print("<OPTION VALUE=\"$filename2\"> $language");
@@ -95,13 +106,13 @@ function WebInterfaceReConfigForm()
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_14</B><TD>\n");
   print("<TR>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_15</B>\n");
-  if($row['useraccess']=="Y")
+  if($row['s_useraccess']==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"useraccess\" CHECKED> \n");
   else
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"useraccess\"> \n");
   print("<TR>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_16</B>\n");
-  if($row['urlaccess']=="Y")
+  if($row['s_urlaccess']==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"urlaccess\" CHECKED> \n");
   else
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"urlaccess\"> \n");
@@ -117,7 +128,7 @@ function WebInterfaceReConfigForm()
             {
  	      if(strlen($file)>4)
                 {
- 		 if($row['iconset']=="$file")
+ 		 if($row['s_iconset']=="$file")
      			print("<OPTION VALUE=\"$file\" SELECTED> $file");
   		else
      			print("<OPTION VALUE=\"$file\"> $file");
@@ -129,26 +140,26 @@ function WebInterfaceReConfigForm()
 ##############################
   print("<TR>\n");
   print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_1</B>\n");
-  if($row['showutree']=="Y")
+  if($row['s_showutree']==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"showutree\" CHECKED> \n");
   else
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"showutree\"> \n");
 
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_2</B>\n");
   print("<TD><SELECT NAME=\"showname\">\n");
-       if($row['showname']=="nick")
+       if($row['s_showname']=="nick")
           print("<OPTION VALUE=\"nick\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_3");
        else
           print("<OPTION VALUE=\"nick\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_3");
-       if($row['showname']=="nickd")
+       if($row['s_showname']=="nickd")
           print("<OPTION VALUE=\"nickd\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_4");
        else
           print("<OPTION VALUE=\"nickd\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_4");
-       if($row['showname']=="fam")
+       if($row['s_showname']=="fam")
           print("<OPTION VALUE=\"fam\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_5");
        else
           print("<OPTION VALUE=\"fam\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_5");
-       if($row['showname']=="famn")
+       if($row['s_showname']=="famn")
           print("<OPTION VALUE=\"famn\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_6");
        else
           print("<OPTION VALUE=\"famn\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_6");
@@ -156,13 +167,13 @@ function WebInterfaceReConfigForm()
   print("</SELECT>\n");
   
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_7 (byte)</B>\n");
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"kbsize\" value=\"$row[kbsize]\">\n");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"kbsize\" value=\"$row[s_kbsize]\">\n");
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_8 (byte)</B>\n");
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"$row[mbsize]\">\n");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"$row[s_mbsize]\">\n");
   
   print("<TR>\n");
-  print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_9</B>\n");
-  if($row['showgraph']=="Y")
+  print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_9 $row[s_showgraph]</B>\n");
+  if($row['s_showgraph']==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"showgraph\" CHECKED> \n");
   else
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"showgraph\"> \n");
@@ -170,12 +181,12 @@ function WebInterfaceReConfigForm()
   
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_10:</B>\n");
   print("<TD><SELECT NAME=\"createpdf\">\n");
-       if($SAMSConf->PDFLIB=="none")
-          print("<OPTION VALUE=\"none\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_11");
+       if($SAMSConf->PDFLIB=="NONE")
+          print("<OPTION VALUE=\"NONE\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_11");
        else
-          print("<OPTION VALUE=\"none\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_11");
+          print("<OPTION VALUE=\"NONE\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_11");
        if($SAMSConf->PDFLIB=="fpdf")
-          print("<OPTION VALUE=\"fpdf\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_12 ");
+          print("<OPTION VALUE=\"fpdf\" SELECTED>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_12");
        else
           print("<OPTION VALUE=\"fpdf\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_12");
        if($SAMSConf->PDFLIB=="pdflib")
@@ -201,8 +212,7 @@ function webconfigbuttom_1_prop()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=webinterfacereconfigform&filename=webconfigbuttom_1_prop.php",

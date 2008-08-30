@@ -14,7 +14,7 @@ class UpTime
 
 function GetUpTime()
 {
-  $value=`getuptime`;
+  $value=`uptime`;
   return($value);
 }
 function GetHostName()
@@ -113,7 +113,7 @@ function SysInfo()
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
-   $uptime=GetUpTime();
+   $uptime=`uptime`;
    print("<TABLE WIDTH=90%  CLASS=samstable>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
@@ -197,7 +197,7 @@ function WebConfigTray()
   require($lang);
 
   print("<SCRIPT>\n");
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
   else
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }

@@ -95,13 +95,15 @@ function FileSystemUsage()
 function SysInfo()
 {
   global $SAMSConf;
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
 
-   $uptime=ExecuteShellScript("getuptime","");
+   $uptime=ExecuteShellScript("uptime","");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
@@ -132,8 +134,8 @@ function SysInfo()
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
-  $row=mysql_fetch_array($result);
+  $num_rows=$DB->samsdb_query_value("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This month\n");
    $aaa=FormattedString("$row[0]");
@@ -144,8 +146,8 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
-  $row=mysql_fetch_array($result);
+  $num_rows=$DB->samsdb_query_value("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
+  $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This day\n");
    $aaa=FormattedString("$row[0]");
@@ -195,7 +197,6 @@ function ConfigTray()
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
   print("<TR>\n");
   print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
-  //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
   print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
 
     ExecuteFunctions("./src", "configbuttom","1");
