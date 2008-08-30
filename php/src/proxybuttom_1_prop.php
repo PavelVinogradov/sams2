@@ -566,7 +566,7 @@ function ProxyReConfigForm()
 //Disable discret parser (#239)
 //  if($PROXYConf->s_parser==2)
 //    {
-//	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
+	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
 //       $DISABLED_PARSER="DISABLED";
 ///	}
 //  else
@@ -574,7 +574,7 @@ function ProxyReConfigForm()
 //       print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
 //	}
 //  if($PROXYConf->s_parser==1)
-     print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+//     print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
 //  else
 //     print("<OPTION VALUE=\"1\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
   print("</SELECT>\n");
