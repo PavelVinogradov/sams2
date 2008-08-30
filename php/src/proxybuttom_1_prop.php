@@ -563,19 +563,20 @@ function ProxyReConfigForm()
 
   print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B> $adminbuttom_1_prop_SamsReConfigForm_40</B>\n");
   print("<TD><SELECT NAME=\"parser\" $DISABLED_PARSER  onchange=DisableParserTime(samsreconfigform)>\n");
-  if($PROXYConf->s_parser==2)
-    {
-	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
-       $DISABLED_PARSER="DISABLED";
-	}
-  else
-    {
-       print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
-	}
-  if($PROXYConf->s_parser==1)
+//Disable discret parser (#239)
+//  if($PROXYConf->s_parser==2)
+//    {
+//	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
+//       $DISABLED_PARSER="DISABLED";
+///	}
+//  else
+//    {
+//       print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
+//	}
+//  if($PROXYConf->s_parser==1)
      print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
-  else
-     print("<OPTION VALUE=\"1\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+//  else
+//     print("<OPTION VALUE=\"1\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
   print("</SELECT>\n");
 
   if($PROXYConf->s_parser_time>0)
