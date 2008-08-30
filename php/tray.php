@@ -13,10 +13,11 @@
   require('./samsclass.php');
   require('./tools.php');
   //require('./str/grouptray.php');
+  include('./pluginmanager.php');  
 
   $SAMSConf=new SAMSCONFIG();
-$SAMSConf->access=2;
-
+  $SAMSConf->access=2;
+$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER,   		$SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
  $filename="";
  $sday=0;
  $smon=0;
@@ -31,6 +32,7 @@ $SAMSConf->access=2;
  $user="";
 
 if(isset($_GET["show"]))    $user=$_GET["show"];
+if(isset($_GET["module"]))    $module=$_GET["module"]; else $module = null;
 if(isset($_GET["filename"])) $filename=$_GET["filename"];
 if(isset($_GET["function"])) $function=$_GET["function"];
  if(isset($_GET["id"])) $proxy_id=$_GET["id"];
@@ -101,24 +103,20 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	$SHABLONConf=new SAMSSHABLON($id);
 	//$PROXYConf->PrintProxyClass();
 	}
-//echo "filename=$filename";
-//  if(stristr($filename,".php" )==FALSE)
-//    {
-//      $filename="";
-//      exit(0);
-//    }
-  if(stristr($filename,".php" )==FALSE) 
-    {
-      $filename="";
-    }
-  $req="src/$filename";
-  if(strlen($req)>4)
-    {
-      require($req);
-    }
-  $function();
 
-
+  if(stristr($filename,".php" )==TRUE) 
+    {
+		$req="src/$filename";
+		if(strlen($req)>4) {
+			require($req);
+			$function();
+		}
+    } 
+	
+	if ($module !== null) {
+		$manager = new PluginManager($DB, 1, $SAMSConf);
+		print ($manager->dispatch($module, $function));
+	} 
 
 print("</body></html>\n");
 

@@ -1,0 +1,889 @@
+<?php
+#LANGUAGE:English 
+
+ $CHARSET="";
+ $langtest="";
+
+
+//file usergroup.php
+ $usergroup_add="The usergroup is added"; 
+
+//file urlregex.php
+ $urlregex_addform1="The access is forbidden. <BR> Setting up the new list";
+ $urlregex_addform2="The name of the list:";
+ $urlregex_addform3=" Create a new one";
+ $urlregex_addform4="The list contains the URL expressions that are forbidden for the users."; 
+ $urlregex_add1="The new group is added to the list of forbidden expressions"; 
+// $urlregex_="";
+
+//file user.php
+  $user_usertray8="Delete the user"; 
+  $user_usergrouptray1="The usergroup statistics"; 
+  $user_usergrouptray2="The file size statistics"; 
+  $user_usergrouptray3="Frequently visited web-sites statistics"; 
+
+  $user_usergroupform3="Change the user properties"; 
+  $user_usergroupform4="the user statistics"; 
+  $user_usergroupform5="Delete the user"; 
+
+// file traffic.php
+
+// file shablon.php
+  $shablon_1="The user template"; 
+
+
+// file localtraf.php
+  $localtraf_localtraftray1="List of local domains"; 
+  $localtraf_localtraftray2="Import the list"; 
+  $localtraf_localtraftray3="Export the list"; 
+  $localtraf_localtraftray4="Delete the list"; 
+
+// file denied.php
+  $denied_quickadddeniedurlform1="The page download is prohibited"; 
+  $denied_quickadddeniedurlform2="Add the Url:"; 
+  $denied_quickadddeniedurlform3="into the group:"; 
+  $denied_quickadddeniedurlform4="Add"; 
+  $denied_adddeniedform1="The access is forbidden.<BR> Set up new URL list"; 
+  $denied_adddeniedform2="List name:"; 
+  $denied_adddeniedform3="This list is ACCESSIBLE"; 
+  $denied_adddeniedform4="Create a new one"; 
+  $denied_adddeniedform5="The list contains the URL expressions that are forbidden for the users "; 
+
+  $denied_adddeniedgroup1="The new group is added to the list of forbidden expressions"; 
+
+  $denied_showdenied1="The access is prohibited"; 
+
+// file backup.php
+  $backup_showbackup1="Save the configuration"; 
+  $backup_sendbackupfile1="Download the file"; 
+
+
+// file monitor.php
+
+// file log.php
+  $log_showalllogform1="Change the URL groups"; 
+  $log_showalllogform2="Change the database SQUID"; 
+  $log_showalllogform3="Show the journal"; 
+
+// file grptraffic.php
+  $grptraffic_fullgroupsitetraffic1="The list of used resources"; 
+  $grptraffic_fullgroupsitetraffic2="User"; 
+  $grptraffic_fullgroupsitetraffic3="Total"; 
+  $grptraffic_groupsitetrafficform="The list of used resources";
+
+
+// file alltraffic.php
+  $alltraffic_showgrpercenttrafficform1="The amount of information received by the users in %"; 
+  $alltraffic_allfilesizeform1="List of files, big ...Kb"; 
+
+// file admin.php
+
+  $admin_userauthetificateform1="Enter your login and password"; 
+
+  $admin_showreplaceurltable8="new URL"; 
+
+/********************************************************************************/
+  $grptraffic_1="Group statistics"; 
+  $grptraffic_2="Date"; 
+  $grptraffic_3="File size"; 
+  $traffic_1="User statistics"; 
+  $traffic_2="Time from"; 
+  $traffic_3="till"; 
+  $traffic_data="Date"; 
+
+// file mysqltools.php
+  $month=array("","January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"); 
+
+  $mysqltools_dateselect1="Beginning of the period"; 
+  $mysqltools_dateselect2="Ok"; 
+  $mysqltools_dateselect3="End of period"; 
+  $mysqltools_dateselect4="Show";
+  $mysqltools_dateselect5="List of files, big ...Kb";
+
+  $mysqltools_dateselect6="List of the users, accessed the URL"; 
+
+
+// file redir.php
+  $redir_1=" List "; 
+  $redir_clearurllist1="The URL list is cleared "; 
+  $redir_loadfurllist1=" Import of the URL list from the file "; 
+  $redir_selectimporturllistform1=" Choose the URL list:"; 
+  $redir_selectimporturllistform2=" Download the list "; 
+  $redir_importurllistform1=" Open the file "; 
+  $redir_exporturllist1=" The URL list export from the file "; 
+  $redir_exporturllist2=" Download file "; 
+  $redir_redirtray1=" List "; 
+  $redir_redirtray2=" Import the list "; 
+  $redir_redirtray3=" Export the list "; 
+  $redir_redirtray4=" Delete the list "; 
+  $redir_quickaddurl1=" Into the group "; 
+  $redir_quickaddurl2=" URL is added "; 
+  $redir_quickaddurlform1=" Redirect the demand "; 
+  $redir_quickaddurlform2=" Add "; 
+  $redir_openurlbase2=" Local domains "; 
+  $redir_openurlbase3=" The access to the URL, which contains regular expressions, is forbidden "; 
+  $redir_openurlbase4=" Redirect the demand "; 
+  $redir_openurlbase5=" The access to the URL is free "; 
+  $redir_openurlbase6=" the access to the URL is forbidden "; 
+  $redir_openurlbase7=" Delete the URL "; 
+  $redir_openurlbase8=" Add the URL "; 
+  $redir_openurlbase9=" Clear the list "; 
+  $redir_openurlbase10=" List contains the domains, which user-access data is not implied into the log data SQUID "; 
+  $redir_openurlbase11=" The  domain user traffic is not considered "; 
+  $redir_openurlbase12="For example:"; 
+  $redir_openurlbase13=" traffic from the linux.perm.ru domain is not implied into the data "; 
+  $redir_openurlbase14=" the host traffic 192.168.0.10 is not implied into the data "; 
+  $redir_openurlbase15="192.168.0.0/24 or 192.168.0.0/255.255.255.0 - the web traffic from network 192.168.0.x is not implied into the data "; 
+  $redir_addurl1=" into the group "; 
+  $redir_addurl2=" URL is added "; 
+  $redir_deleteurl1=" form the group "; 
+  $redir_deleteurl2=" the URL is deleted "; 
+  $redir_deleteredirectgroup1=" the URL group is deleted from the redirected demands "; 
+  $redir_addredirectgroup1=" New URL group is added to the redirection list "; 
+  $redir_addredirectform1=" Demand redirection.<BR> Setting up the new URL list "; 
+  $redir_addredirectform2=" Name of the list "; 
+  $redir_addredirectform3=" Set up "; 
+  $redir_addredirectform4=" The list contains URL, the user demands to which ... would  be redirected "; 
+
+  $redir_filetypesform1="The access is forbidden.<br>Set up new file types list";
+  $redir_filetypesform2="Delete";
+  $redir_filetypesform3="Change";
+  $redir_filetypesform4="Add";
+
+  $alltraffic_1=" User statistics "; 
+
+  $usertray_UserAuthForm_1=" Enter your password "; 
+  $usertray_UserForm_1=" User "; 
+  $usertray_UserForm_2=" Domain: ";
+  $usertray_UserForm_3="IP Address/mask "; 
+  $usertray_UserForm_4=" Name "; 
+  $usertray_UserForm_5=" Middle name "; 
+  $usertray_UserForm_6=" Last name "; 
+  $usertray_UserForm_7=" Group "; 
+  $usertray_UserForm_8=" Download quote ";
+  $usertray_UserForm_9=" Accepted "; 
+  $usertray_UserForm_10=" Activated "; 
+  $usertray_UserForm_11=" Switch off "; 
+  $usertray_UserForm_12=" Template "; 
+  $usertray_UserTray_1=" User "; 
+
+  $userstray_AddUser_1=" The user has been added "; 
+  $userstray_AddUser_2=" Domain "; 
+
+  $userstray_NewUserForm_1=" New user registration "; 
+  $userstray_NewUserForm_2=" Domain users "; 
+  $userstray_NewUserForm_3=" User "; 
+  $userstray_NewUserForm_4=" Domain "; 
+  $userstray_NewUserForm_5=" Internet and statistics look-up password "; 
+  $userstray_NewUserForm_6=" User statistics password ";
+  $userstray_NewUserForm_7="IP address "; 
+  $userstray_NewUserForm_8=" Name "; 
+  $userstray_NewUserForm_9=" Middle name"; 
+  $userstray_NewUserForm_10=" Last name "; 
+  $userstray_NewUserForm_11=" Group "; 
+  $userstray_NewUserForm_12=" Permitted "; 
+  $userstray_NewUserForm_13=" Traffic (Ìב)"; 
+  $userstray_NewUserForm_14=" The user is active "; 
+  $userstray_NewUserForm_15=" Template "; 
+  $userstray_NewUserForm_16=" Add user "; 
+
+  $userstray_UsersTray_1=" All users "; 
+
+  $usersbuttom_6_clear_ClearUsersTrafficCounter=" The user traffic has been cleared "; 
+  $usersbuttom_6_clear_usersbuttom_6_clear_1=" Clear ALL users traffic "; 
+  $usersbuttom_6_clear_usersbuttom_6_clear_2=" Clear user traffic "; 
+
+  $usersbuttom_5_recalc_RecalcUsersTraffic_1=" Volume of the information from the users "; 
+  $usersbuttom_5_recalc_RecalcUsersTraffic_2=" recounted "; 
+  $usersbuttom_5_recalc_RecalcUsersTraffic_3=" Monthly user traffic has been recounted "; 
+
+  $usersbuttom_5_recalc_usersbuttom_5_recalc_1=" Recount the user traffic?"; 
+  $usersbuttom_5_recalc_usersbuttom_5_recalc_2=" Recount the user traffic "; 
+
+  $usersbuttom_4_percent_UsersPercentTraffic_1=" User statistics "; 
+  $usersbuttom_4_percent_UsersPercentTraffic_2=" Volume of  information from the users (%)"; 
+  $usersbuttom_4_percent_UsersPercentTraffic_3=" User "; 
+  $usersbuttom_4_percent_UsersPercentTraffic_4=" Domain "; 
+  $usersbuttom_4_percent_UsersPercentTraffic_5="Size (באיע)";
+  $usersbuttom_4_percent_UsersPercentTraffic_6=" Size (Mb)"; 
+  $usersbuttom_4_percent_UsersPercentTraffic_7=" Total:"; 
+  $usersbuttom_4_percent_UsersPercentTraffic_8=" Group "; 
+
+  $usersbuttom_4_percent_UsersPercentTrafficForm_1=" User statistics "; 
+  $usersbuttom_4_percent_UsersPercentTrafficForm_2=" Volume of the information from the users (%)"; 
+  $usersbuttom_4_percent_usersbuttom_4_percent_1=" User statistics according to the received information (%)";
+
+  $usersbuttom_3_file_UsersFileSizePeriod_1=" Users statiscs "; 
+  $usersbuttom_3_file_UsersFileSizePeriod_2=" List of files, biggest to "; 
+  $usersbuttom_3_file_UsersFileSizePeriod_3=" File size (Kb)"; 
+  $usersbuttom_3_file_UsersFileSizePeriod_4=" User "; 
+  $usersbuttom_3_file_UsersFileSizePeriod_5=" Date "; 
+  $usersbuttom_3_file_UsersFileSizePeriod_6=" Size "; 
+  $usersbuttom_3_file_UsersFileSizePeriod_7=" Time "; 
+  $usersbuttom_3_file_usersbuttom_3_file_1=" All users statistics according to the received files size "; 
+  $usersbuttom_3_file_usersbuttom_3_file_2=" File size (Kb)"; 
+
+  $usersbuttom_2_traffic_UsersTrafficPeriod_1=" User statistics "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_2=" Volume of information received from the users in Kb "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_3=" Show users last names "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_4=" User "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_5=" Taken from CACHE "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_6=" Received "; 
+  $usersbuttom_2_traffic_UsersTrafficPeriod_7=" Traffic "; 
+  $usersbuttom_2_traffic_UsersTrafficForm_1=" Volume of information received from the users in Kb "; 
+
+  $usersbuttom_2_traffic_UsersTrafficForm_2=" Show users last names "; 
+  $usersbuttom_2_traffic_usersbuttom_2_traffic_1="All users domain statistics"; 
+
+  $usersbuttom_1_domain_AddUsersFromDomain_1=" User has been added "; 
+  $usersbuttom_1_domain_AddUsersFromDomain_2=" doamin "; 
+  $usersbuttom_1_domain_AddUsersFromDomainForm_1=" Registration of the new users entering domain "; 
+  $usersbuttom_1_domain_AddUsersFromDomainForm_2=" Domain users have been found:"; 
+  $usersbuttom_1_domain_AddUsersFromDomainForm_3=" Place into the SAMS group:"; 
+  $usersbuttom_1_domain_AddUsersFromDomainForm_4=" Set up the template:"; 
+  $usersbuttom_1_domain_AddUsersFromDomainForm_5=" Add "; 
+  $usersbuttom_1_domain_usersbuttom_1_domain_1=" Insert all the domain users "; 
+
+  $userbuttom_1_delete_deleteuser_1=" User has been deleted "; 
+  $userbuttom_1_delete_deleteuser_2=" doamin "; 
+  $userbuttom_1_delete_userbuttom_9_delete=" Delete the user "; 
+  $userbuttom_5_clear_ClearUserTrafficCounter_1=" The user traffic has been cleared "; 
+  $userbuttom_5_clear_userbuttom_5_clear_1=" Clear the user traffic "; 
+
+  $userbuttom_4_site_UserSitesPeriod_2=" List of resources used by the user "; 
+  $userbuttom_4_site_UserSitesPeriod_3=" Size "; 
+  $userbuttom_4_site_UserSitesForm_1=" List of resources used by the user "; 
+  $userbuttom_4_site_userbuttom_4_site_1="Statistics of the visited Web-pages"; 
+
+  $userbuttom_3_file_UserFileSizePeriod_1=" List of big files "; 
+  $userbuttom_3_file_UserFileSizePeriod_2=" File size (Kb)"; 
+  $userbuttom_3_file_UserFileSizePeriod_4=" Size "; 
+  $userbuttom_3_file_UserFileSizeForm_1=" List of big files ...kb "; 
+  $userbuttom_3_file_UserFileSizeForm_2=" File size (kb)"; 
+  $userbuttom_3_file_userbuttom_3_file_3=" Received files size statistics "; 
+
+  $userbuttom_2_traffic_UserTrafficPeriod_2=" Volume of the information received from the users in KB "; 
+  $userbuttom_2_traffic_UserTrafficPeriod_6=" Size "; 
+  $userbuttom_2_traffic_UserTrafficForm_1=" Volume of the information received from the users in Kb "; 
+  $userbuttom_2_traffic_userbuttom_2_traffic_1=" User statistics "; 
+
+  $userbuttom_1_prop_UpdateUser_1=" The user information has been changed "; 
+  $userbuttom_1_prop_UpdateUserForm_1=" User data change "; 
+  $userbuttom_1_prop_UpdateUserForm_2=" Domain "; 
+  $userbuttom_1_prop_UpdateUserForm_3=" Password "; 
+  $userbuttom_1_prop_UpdateUserForm_4=" IP address "; 
+  $userbuttom_1_prop_UpdateUserForm_5=" Name "; 
+  $userbuttom_1_prop_UpdateUserForm_6=" Middle name "; 
+  $userbuttom_1_prop_UpdateUserForm_7=" Last name ";
+  $userbuttom_1_prop_UpdateUserForm_8=" Group ";
+  $userbuttom_1_prop_UpdateUserForm_9=" Permitted ";
+  $userbuttom_1_prop_UpdateUserForm_10=" traffic (Mb)";
+  $userbuttom_1_prop_UpdateUserForm_11=" User is active "; 
+  $userbuttom_1_prop_UpdateUserForm_12=" Template "; 
+  $userbuttom_1_prop_UpdateUserForm_13=" Change the data ";
+  
+  $userbuttom_1_prop_userbuttom_1_prop_1=" Change the user data "; 
+
+  $urllistfunction_DeleteList_1=" List has been deleted "; 
+  $urllistfunction_AddNewList_1=" New group has been added to the redirection list "; 
+  $urllistfunction_DeleteAllURLFromList_1=" The URL list has been cleared "; 
+  $urllistfunction_AddURLFromList_1=" Into the group "; 
+  $urllistfunction_AddURLFromList_2=" URL has been added "; 
+  $urllistfunction_DeleteURLFromList_1=" Out of the group (from the group)"; 
+  $urllistfunction_DeleteURLFromList_2=" URL has been deleted "; 
+
+  $squidtray_HelpSquidForm_1=" SQUID reconfiguration "; 
+  $squidtray_HelpSquidForm_2=" Reconfiguration of SQUID and saving of the SQUID log data into the file "; 
+
+  $squidbuttom_3_delete_ClearSquidLog_1=" All the marks from the SQUID log data have been deleted ";
+  $squidbuttom_3_delete_ClearSquidLogForm_1=" SQUID log data clear-up "; 
+  $squidbuttom_3_delete_squidbuttom_3_delete_1=" Clear the SQUID log data "; 
+
+  $squidbuttom_2_loadbase_LoadSquidLogForm_1=" Download SQUID logs into the data out of the archive "; 
+
+  $squidbuttom_2_loadbase_LoadSquidLogForm_2=" Choose the file with the data archive "; 
+  $squidbuttom_2_loadbase_LoadSquidLogForm_3=" Open file "; 
+  $squidbuttom_2_loadbase_LoadSquidLogForm_4=" Download file "; 
+  $squidbuttom_2_loadbase_squidbuttom_2_loadbase_1=" Download SQUID logs into the data "; 
+
+  $squidbuttom_1_savebase_SaveSquidLogForm_1=" Archivate log data SQUID "; 
+  $squidbuttom_1_savebase_squidbuttom_1_savebase_1=" Save SQUID logs in achieve "; 
+  $squidbuttom_1_savebase_SaveSquidLog_1=" Download file "; 
+
+
+  $squidbuttom_0_reconfig_ReconfigSquid_1=" SQUID reconfiguration "; 
+  $squidbuttom_0_reconfig_ReconfigSquid_2=" Demand on SQUID reconfiguration has been sent "; 
+  $squidbuttom_0_reconfig_ReconfigSquid_3=" Demand on SQUID reconfiguration has been received by the daemon "; 
+  $squidbuttom_0_reconfig_ReconfigSquid_4=" Demand on SQUID reconfiguration has not been received by the daemon;<BR> check your daemon settings "; 
+
+  $squidbuttom_0_reconfig_ReconfigSquidForm_1=" SQUID reconfiguration "; 
+  $squidbuttom_0_reconfig_ReconfigSquidForm_2=" Reconfigurate ";     $squidbuttom_0_reconfig_squidbuttom_0_reconfig_1=" SQUID reconfiguration "; 
+
+  $shablontray_ShablonUsers_1=" Template "; 
+  $shablontray_ShablonTray_1=" Template ";
+
+  $shablonnew_AddShablon_1=" New template has been added "; 
+  $shablonnew_NewShablonForm_1=" Setting up the new template "; 
+  $shablonnew_NewShablonForm_2=" Template name "; 
+  $shablonnew_NewShablonForm_3=" Volume of user's traffic default template (Mb)"; 
+  $shablonnew_NewShablonForm_4=" Speed channel for the whole template (byte/s)"; 
+  $shablonnew_NewShablonForm_5=" Speed channel for the separate user (byte/s)"; 
+  $shablonnew_NewShablonForm_6=" Add template "; 
+  $shablonnew_NewShablonForm_7=" Templates are used for the managing the user's access to the Internet resources."; 
+  $shablonnew_NewShablonForm_8=" Template has got the information whether forbidden lists or redirection lists are set up for the user or not."; 
+
+  $shablonbuttom_9_delete_DeleteShablon_1=" Template has been deleted "; 
+  $shablonbuttom_9_delete_shablonbuttom_9_delete_1=" Delete template "; 
+
+  $shablonbuttom_1_prop_UpdateShablonForm_1=" Template editing "; 
+  $shablonbuttom_1_prop_UpdateShablonForm_2=" SAMS lists:"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_3=" SquidGuard lists:"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_4=" Value of restriction the traffic of the user to default (Kb)"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_5=" (byte/s)"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_6=" Speed channel for the separate user (byte/s)"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_7=" Save changes "; 
+  $shablonbuttom_1_prop_shablonbuttom_1_prop_1=" Change template "; 
+
+  $redirlisttray_RedirListForm_1=" Delete URL "; 
+  $redirlisttray_RedirListForm_2=" Add URL "; 
+  $redirlisttray_RedirListForm_3=" Clear the list "; 
+  $redirlisttray_AddRedirListForm_1=" Demand redirection <BR> Set up new URL list "; 
+  $redirlisttray_AddRedirListForm_2=" List name "; 
+  $redirlisttray_AddRedirListForm_3=" Set up "; 
+  $redirlisttray_AddRedirListForm_4=" List contains URL, to which user's demands would be redirected "; 
+  $redirlisttray_RedirListTray_1=" List"; 
+
+  $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1=" Delete the list "; 
+
+  $contextlisttray_RedirListForm_1=" Delete the URL "; 
+  $contextlisttray_RedirListForm_2=" Add URL "; 
+  $contextlisttray_RedirListForm_3=" Clear the list "; 
+
+  $redirlisttray_RedirListForm_4=" The list contains domains, which access data is not placed into the SQUID log data "; 
+  $redirlisttray_RedirListForm_5=" User traffic is not considered concerning these doamins "; 
+  $redirlisttray_RedirListForm_6=" For example:"; 
+  $redirlisttray_RedirListForm_7="linux.perm.ru - traffic from the linux.perm.ru domain is not placed into the database "; 
+  $redirlisttray_RedirListForm_8="192.168.0.10 - traffic from the host 192.168.0.10 is not placed into the database "; 
+  $redirlisttray_RedirListForm_9="192.168.0 - the web traffic from 192.168.0 network is not implied into the database "; 
+  $monitortray_MonitorTray_1=" Monitor "; 
+  $monitorbuttom_2_monitorbuttom_2_1=" User work monitoring in real time concerning the volume of received information "; 
+  $monitorbuttom_1_monitorbuttom_1_1=" User work monitoring in real time "; 
+
+  $log_1=" Events journal "; 
+  $log_2=" Uers:"; 
+  $log_3=" Event:"; 
+  $log_4=" Date:"; 
+  $log_5=" Time:"; 
+  $log_6=" SuperUser:"; 
+  $logtray_LogTray_1=" Journal "; 
+  $logbuttom_4_logbuttom_4_1=" Journal of events, connected with the SQUID log data change "; 
+  $logbuttom_3_logbuttom_3_1=" Journal of events, connected with the users change "; 
+  $logbuttom_2_logbuttom_2_1=" Journal of events, connected with the user conditions change "; 
+  $logbuttom_1_ShowAllLogForm_2=" Change the URL groups "; 
+  $logbuttom_1_ShowAllLogForm_3=" Change the SQUID log data "; 
+  $logbuttom_1_ShowAllLogForm_4=" user Administrator "; 
+  $logbuttom_1_logbuttom_1_1=" Journal of all the events "; 
+
+  $grouptray_UserGroupForm_1=" Users "; 
+  $grouptray_UserGroupForm_2=" Group "; 
+  $grouptray_GroupTray_1=" Group "; 
+  $grouptray_NewGroupForm_1=" User groups.<BR> Setting up the new group "; 
+  $grouptray_NewGroupForm_2=" Name of the group:"; 
+  $grouptray_NewGroupForm_3=" Set up new group "; 
+  $grouptray_NewGroupForm_4=" User groups are set up for the convenience of user administrating."; 
+
+  $groupbuttom_9_delete_NotEmptyGroupWarning_1=" This group contains users!"; 
+  $groupbuttom_9_delete_NotEmptyGroupWarning_2=" Delete users or place them into another group and repeat the deleting process "; 
+  $groupbuttom_9_delete_DeleteGroup_1=" Users group is deleted "; 
+  $groupbuttom_9_delete_groupbuttom_9_delete_1=" Delete the group ";
+  $groupbuttom_9_delete_groupbuttom_9_delete_2=" Delete the group ";
+
+  $groupbuttom_3_site_GroupSitesPeriod_1=" List of resources used by the users "; 
+  $grptraffic_groupsitetraffic2=" Place into the list of forbidden access "; 
+  $grptraffic_groupsitetraffic3=" Place into the list of forbidden access "; 
+
+  $groupbuttom_3_site_GroupSitesForm_1=" List of resources used by the users "; 
+
+  $groupbuttom_3_site_groupbuttom_3_site_1=" Statistics of the visited sites ";
+
+  $groupbuttom_2_file_GroupFileSizePeriod_1=" List of big files "; 
+  $groupbuttom_2_file_GroupFileSizePeriod_2=" File size ";
+  $groupbuttom_2_file_GroupFileSizeForm_1=" List of files, big...Kb "; 
+  $groupbuttom_2_file_GroupFileSizeForm_2=" File size (kb)"; 
+  $groupbuttom_2_file_groupbuttom_2_file_1=" Statistics according to the size of the received files "; 
+
+  $groupbuttom_1_traffic_GroupTrafficPeriod_1=" Volume of the information received by the users, in Kb.."; 
+  $groupbuttom_1_traffic_GroupTrafficPeriod_2=" From Cash "; 
+  $groupbuttom_1_traffic_GroupTrafficPeriod_3=" Size "; 
+  $groupbuttom_1_traffic_GroupTrafficPeriod_4=" Traffic "; 
+  $groupbuttom_1_traffic_GroupTrafficForm_1=" Volume of the information, received by the users, Kb "; 
+  $groupbuttom_1_traffic_groupbuttom_1_traffic_1=" User statistics "; 
+
+  $dbtray_HelpDBForm_1=" SAMS database "; 
+  $dbtray_HelpDBForm_2=" Receiving statistics concerning the conditions and checking SAMS database."; 
+
+  $dbbuttom_6_statdb_ShowReplaceURLTable_1=" Table of the change of URL, asked by the users "; 
+  $dbbuttom_6_statdb_ShowReplaceURLTable_2=" User "; 
+  $dbbuttom_6_statdb_ShowReplaceURLTable_3=" Domain ";
+  $dbbuttom_6_statdb_ShowReplaceURLTable_4=" Add ";
+  $dbbuttom_6_statdb_ShowReplaceURLTable_5=" Delete URL:"; 
+  $dbbuttom_6_statdb_ShowReplaceURLTable_6=" User ";
+  $dbbuttom_6_statdb_ShowReplaceURLTable_7=" Domain ";
+  $dbbuttom_6_statdb_ShowReplaceURLTable_8=" new URL "; 
+
+  $dbbuttom_6_statdb_DBStat_1=" Statistics of SAMS data ";
+  $dbbuttom_6_statdb_DBStat_2=" Registered in the system "; 
+  $dbbuttom_6_statdb_DBStat_3=" Quantity of <BR> remarks "; 
+  $dbbuttom_6_statdb_DBStat_4=" Users in total:"; 
+  $dbbuttom_6_statdb_DBStat_5=" in group "; 
+  $dbbuttom_6_statdb_DBStat_6=" Total URL in the lists of redirection and banned access:"; 
+  $dbbuttom_6_statdb_DBStat_7=" In the list "; 
+  $dbbuttom_6_statdb_DBStat_8=" Total of the messages in the SQUID proxy-server data:"; 
+  $dbbuttom_6_statdb_DBStat_9=" user "; 
+  $dbbuttom_6_statdb_dbbuttom_6_statdb_1=" Data statistics "; 
+
+  $dbbuttom_1_dbcheck_dbcheck_1=" Checking the SAMS database tables for the errors "; 
+  $dbbuttom_1_dbcheck_dbcheck_2=" There were found damaged tables in squidctrl:"; 
+  $dbbuttom_1_dbcheck_dbcheck_3=" There were found damaged tables in squidctrl:"; 
+
+  $dbbuttom_1_dbcheck_dbcheck_4=" try to restore the damaged tables?"; 
+  $dbbuttom_1_dbcheck_dbcheck_5=" Pick up tables from the list "; 
+  $dbbuttom_1_dbcheck_dbcheck_6=" Restore "; 
+  $dbbuttom_1_dbcheck_dbrepair_1=" Recovery of the database tables "; 
+  $dbbuttom_1_dbcheck_dbbuttom_1_dbcheck_1=" Test the database tables "; 
+
+  $backuptray_HelpBackUpForm_1=" Save the configuration "; 
+  $backuptray_HelpBackUpForm_2=" Save the SAMS configuration into the file "; 
+  $backuptray_BackUpTray_1=" Saving <BR> configuration"; 
+  $backupbuttom_2_loadbase_CountUserTraffic_1=" Volume of information, received by the users from..."; 
+  $backupbuttom_2_loadbase_CountUserTraffic_2=" Recounted "; 
+  $backupbuttom_2_loadbase_CountUserTraffic_3=" Volume of user traffic for the month has been recounted "; 
+  $backupbuttom_2_loadbase_LoadBackUp_1=" Restore configuration from the file "; 
+  $backupbuttom_2_loadbase_LoadBackUp_2=" Open file "; 
+  $backupbuttom_2_loadbase_LoadBackUp_3=" Download file "; 
+  $backupbuttom_2_loadbase_LoadBackUp_4=" Choose the data groups for restoration:"; 
+  $backupbuttom_2_loadbase_LoadBackUp_5=" Users groups:"; 
+  $backupbuttom_2_loadbase_LoadBackUp_6=" Users:"; 
+  $backupbuttom_2_loadbase_LoadBackUp_7=" List of demand redirection <BR>and forbidden access:"; 
+  $backupbuttom_2_loadbase_LoadBackUp_8=" User templates:"; 
+  $backupbuttom_2_loadbase_LoadBackUp_9=" Restore "; 
+  $backupbuttom_2_loadbase_LoadBackUpForm_1=" Restore configuration from the file "; 
+  $backupbuttom_2_loadbase_LoadBackUpForm_2=" Open file "; 
+  $backupbuttom_2_loadbase_LoadBackUpForm_3=" Download file "; 
+  $backupbuttom_2_loadbase_LoadBackUpForm_4=" Choose the file with database archive "; 
+  $backupbuttom_2_loadbase_backupbuttom_2_loadbase_1=" Restore the settings from the file "; 
+
+  $backupbuttom_1_savebase_SaveBackUp_1=" Download file "; 
+  $backupbuttom_1_savebase_SaveBackUpForm_1=" Save the configuration into the file "; 
+  $backupbuttom_1_savebase_SaveBackUpForm_2=" You can save the configuration in the file now "; 
+  $backupbuttom_1_savebase_SaveBackUpForm_3=" Save "; 
+  $backupbuttom_1_savebase_backupbuttom_1_savebase_1=" Save the settings into the file "; 
+
+  $auth_ShowDomainUserName_1=" User password has been entered "; 
+  $auth_ShowDomainUserName_2=" User password has not been recognized by the domain controller "; 
+  $auth_UserAuthetificateForm_1=" Enter login and password "; 
+  $auth_ShowCookieInfo_1=" Administrator has been registered in the system "; 
+  $auth_ShowCookieInfo_2=" User password has been entered "; 
+  $auth_ShowCookieInfo_3=" Password of the user Administrator has not been recognized "; 
+  $auth_CheckUserPassword_1=" User password has been entered "; 
+  $auth_GetUserPasswordForm_1=" This page is available only for the user, that has the administrating rights "; 
+  $auth_GetUserPasswordForm_2= "Enter the user password \" Administrator \"";
+  $auth_GetPasswordForm_1="SAMS: Access denied";
+  $auth_GetPasswordForm_2=" Enter "; 
+  $auth_SaveUserName_1=" User password has been entered "; 
+  $auth_GetAdminPasswordForm_1=" Enter the user password \" Administrator \""; 
+
+  $auth_GetAdminPasswordForm_2=" Enter "; 
+
+  $admintray_UserDoc_1=" You are welcome!"; 
+  $admintray_UserDoc_2=" look up the Internet work statistics "; 
+  $admintray_UserDoc_3=" To look up the internet work statistics choose the left user frame "; 
+  $admintray_UserDoc_4=" under which you authorize in the windows domain (or enter in the browser to work in the Internet), and enter the password
+"; 
+$admintray_AdminTray_1=" Administrator ";
+
+  $adminbuttom_5_deladmin_DeleteAdmin_1=" User "; 
+  $adminbuttom_5_deladmin_DeleteAdmin_2=" deleted "; 
+  $adminbuttom_5_deladmin_DeleteAdmin_3=" You can not delete another superuser"; 
+  $adminbuttom_5_deladmin_DeleteAdminForm_1="Deleting the User \"Administrator\"";
+  $adminbuttom_5_deladmin_DeleteAdminForm_2=" Delete "; 
+  $adminbuttom_5_deladmin_DeleteAdminForm_3=" You can not delete another superuser "; 
+  $adminbuttom_5_deladmin_adminbuttom_5_deladmin_1=" Delete the user who has administrating rights "; 
+
+  $adminbuttom_4_chpasswd_ChangeAdminPasswd_1=" User password "; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswd_2=" changed "; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswd_3=" You can not change the password of another superuser "; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_1=" Change password of the user \" Administrator \"";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_2=" Change "; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_3="User name has not been entered"; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_4=" Length of entered passwords does not coincide "; 
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_5=" Entered password do not coincide "; 
+  $adminbuttom_4_chpasswd_adminbuttom_4_chpasswd_1=" Change the user password "; 
+
+  $adminbuttom_3_addadm_AddAdmin_1=" User Administrator has been added "; 
+  $adminbuttom_3_addadm_AddAdmin_2=" User with administrative rights has been registered "; 
+  $adminbuttom_3_addadm_AddAdminForm_1=" Registration of the new user \" Administrator \""; 
+  $adminbuttom_3_addadm_AddAdminForm_2=" Add ";
+  $adminbuttom_3_addadm_AddAdminForm_3=" You can not make up another superuser "; 
+  $adminbuttom_3_addadm_AddAdminForm_4=" User name has not been entered "; 
+  $adminbuttom_3_addadm_AddAdminForm_5=" Length of entered passwords does not coincide "; 
+  $adminbuttom_3_addadm_AddAdminForm_6=" Entered passwords do not coincide "; 
+  $adminbuttom_3_addadm_adminbuttom_3_addadm_1=" Add user with administrating rights "; 
+
+  $adminbuttom_2_chuser_ChangeUser_1=" Change user "; 
+  $adminbuttom_2_chuser_ChangeUser_2=" Enter password of the user \" Administrator \""; 
+  $adminbuttom_2_chuser_ChangeUser_3=" User name has not been entered "; 
+  $adminbuttom_2_chuser_adminbuttom_2_chuser_1=" Access under the name of another superuser "; 
+
+  $adminbuttom_1_prop_SamsReConfig_1=" Reconfiguration completed "; 
+  $adminbuttom_1_prop_SamsReConfigForm_1=" SAMS settings "; 
+  $adminbuttom_1_prop_SamsReConfigForm_2=" Identifying pattern of the user:"; 
+  $adminbuttom_1_prop_SamsReConfigForm_3=" Path to wbinfo:"; 
+  $adminbuttom_1_prop_SamsReConfigForm_4=" demand redirection file "; 
+  $adminbuttom_1_prop_SamsReConfigForm_5=" Path to the catalogue of the stored file of forbidden access "; 
+  $adminbuttom_1_prop_SamsReConfigForm_6=" Redirector "; 
+  $adminbuttom_1_prop_SamsReConfigForm_7=" Built-in SAMS "; 
+  $adminbuttom_1_prop_SamsReConfigForm_8=" Built-in SQUID "; 
+  $adminbuttom_1_prop_SamsReConfigForm_9=" Switch on the speed limit of the user access (delaypool)"; 
+  $adminbuttom_1_prop_SamsReConfigForm_10=" Allow the users access to your own URL statistics "; 
+  $adminbuttom_1_prop_SamsReConfigForm_11=" Allow the users access to your own URL statistics "; 
+  $adminbuttom_1_prop_SamsReConfigForm_12=" Save changes "; 
+  $adminbuttom_1_prop_SamsReConfigForm_13=" Language:"; 
+
+
+  $adminbuttom_1_prop_SamsReConfigForm_14=" Allow the users access to  your own statisatics:"; 
+  $adminbuttom_1_prop_SamsReConfigForm_15=" on daily traffic ";  
+  $adminbuttom_1_prop_SamsReConfigForm_16=" on URL visiting ";  
+  $adminbuttom_1_prop_SamsReConfigForm_17=" Settings of the user authorization:"; 
+  $adminbuttom_1_prop_SamsReConfigForm_18=" Switch on Use the user domain "; 
+  $adminbuttom_1_prop_SamsReConfigForm_19=" Switch on Use the user domain "; 
+  $adminbuttom_1_prop_SamsReConfigForm_24=" with NTLM users authorization:"; 
+  $adminbuttom_1_prop_SamsReConfigForm_25=" If you have several domains switch on \" Use of user domain \""; 
+  $adminbuttom_1_prop_SamsReConfigForm_26=" If your PC gives out the user domain with the capital letters, switch on \" User domain is entered with the CAPITAL letters \"";   
+$adminbuttom_1_prop_SamsReConfigForm_27=" If your PC gives out the user domain with the capital letters, switch on \" User domain is entered with the CAPITAL letters \"";
+$adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names "; 
+  $adminbuttom_1_prop_SamsReConfigForm_29=" recoding files SQUID command should be listed in the sams.conf file "; 
+  $adminbuttom_1_prop_SamsReConfigForm_30=" Setting up samsdaemon "; 
+  $adminbuttom_1_prop_SamsReConfigForm_31=" Check for the reconfiguration squid command every ..."; 
+  $adminbuttom_1_prop_SamsReConfigForm_32=" second "; 
+  $adminbuttom_1_prop_SamsReConfigForm_33=" Constant parser "; 
+  $adminbuttom_1_prop_SamsReConfigForm_34=" Discret parser "; 
+  $adminbuttom_1_prop_SamsReConfigForm_35=" Read through "; 
+  $adminbuttom_1_prop_SamsReConfigForm_36=" minute "; 
+  $adminbuttom_1_prop_SamsReConfigForm_37=" Automatically clear up the users traffic"; 
+  $adminbuttom_1_prop_SamsReConfigForm_38=" Insert SQUID logs in database";
+
+  $adminbuttom_1_prop_adminbuttom_1_propadmintray_1=" SAMS settings "; 
+  $lframe_sams_FolderContextDenied_1=" Regular expressions "; 
+  $lframe_sams_lframe_sams_2=" SAMS administration "; 
+  $lframe_sams_lframe_sams_1=" Local domains "; 
+  $lframe_sams_lframe_sams_3=" Monitor ";
+  $lframe_sams_lframe_sams_4=" Journal ";
+  $lframe_sams_lframe_sams_5=" Save configuration "; 
+  $lframe_sams_lframe_sams_6=" Help "; 
+  $lframe_sams_UserFolder_1=" Users "; 
+  $lframe_sams_UserGroupsFolder_1=" Users groups "; 
+  $lframe_sams_UserShablonFolder_1=" Users templates "; 
+  $lframe_sams_FileDenied_1=" File types "; 
+  $lframe_sams_FolderDenied_1=" URL access forbidden "; 
+  $lframe_sams_FolderRedirect_1=" Redirection ";
+
+  $userbuttom_4_site_SiteUserList_1=" URL list received from "; 
+  $userbuttom_4_site_SiteUserList_2=" Edit the URL "; 
+  $userbuttom_4_site_SiteUserList_3=" into the group "; 
+  $userbuttom_4_site_SiteUserList_4=" Add "; 
+  $userbuttom_4_site_SiteUserList_6=" User "; 
+  $userbuttom_4_site_SiteUserList_7=" Size "; 
+  $userbuttom_4_site_SiteUserList_8=" Domain "; 
+
+  $groupbuttom_3_site_SiteGroupList_1=" URL list received from "; 
+  $groupbuttom_3_site_SiteGroupList_2=" Edit the URL "; 
+  $groupbuttom_3_site_SiteGroupList_3=" Into the group "; 
+  $groupbuttom_3_site_SiteGroupList_4=" Add "; 
+  $groupbuttom_3_site_SiteGroupList_6=" User "; 
+  $groupbuttom_3_site_SiteGroupList_7=" Size "; 
+  $groupbuttom_3_site_SiteGroupList_8=" Domain "; 
+
+  $adminbuttom_1_prop_SamsReConfigForm_39="Test PDC response";
+  $adminbuttom_1_prop_SamsReConfigForm_40="used:";
+  $adminbuttom_1_prop_SamsReConfigForm_41=" Settings of the SAMS web interface";
+  $adminbuttom_1_prop_SamsReConfigForm_42="Icon set";
+  $adminbuttom_1_prop_SamsReConfigForm_43="Not used redirector";
+
+  $userbuttom_1_prop_UpdateUserForm_14="This user see statistic of his group users";
+  $usertray_UserTray_1="User";
+  $deniedlisttray_DeniedListTray_1="The access is forbidden.  <BR>List";
+  $allowlisttray_allowlisttray_1="The access is allowed.  <BR>List";
+  $addallowlistform_AddAllowListForm_1="The access is allowed<BR>  Setting up the new list ";
+
+  $grouptray_NewGroupForm_3="Enabled";
+  $grouptray_NewGroupForm_4="User";
+  $grouptray_NewGroupForm_5="Domain";
+  $grouptray_NewGroupForm_6="Traffic";
+  $grouptray_NewGroupForm_7="Quota";
+  $grouptray_NewGroupForm_8="Username";
+  $grouptray_NewGroupForm_9="Change";
+
+  $userstray_AllUsersForm_1="Enabled";
+  $userstray_AllUsersForm_2="User";
+  $userstray_AllUsersForm_3="Group";
+  $userstray_AllUsersForm_4="Traffic";
+  $userstray_AllUsersForm_5="Quota";
+  $userstray_AllUsersForm_6="Username";
+  $userstray_AllUsersForm_7="Delete user";
+  $userstray_AllUsersForm_8="Change";
+
+  $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="URL access allowed";
+  $allowlisttray_AddAllowListForm_1="The list contains the URL expressions that are allowed for the users."; 
+  
+  $userbuttom_2_traffic_UserTrafficPeriod_3="Received";
+  $userbuttom_2_traffic_UserTrafficPeriod_4="Taken from CACHE";
+  $userbuttom_2_traffic_UserTrafficPeriod_5="Traffic";
+
+  $userbuttom_4_site_UserSitesPeriod_4="Taken from CACHE";
+  $userbuttom_4_site_UserSitesPeriod_5="Traffic";
+  
+  $DateTimeSelect_mysqltools_1="Date";
+  $DateTimeSelect_mysqltools_2="Time";
+  $DateTimeSelect_mysqltools_3="";
+  $DateTimeSelect_mysqltools_4="to";
+  $DateTimeSelect_mysqltools_5="hour";
+     
+  $groupbuttom_3_site_GroupSitesPeriod_2="Size";
+
+  $groupbuttom_2_file_GroupFileSizePeriod_3="Size";
+  
+  $adminbuttom_9_logoff_logoff_1="logoff to web interface";         
+  $user_usertray4="Export the list";
+  $user_usertray3="Import the list";
+         
+  $vsego="in all";
+
+  $usersbuttom_1_useradd_usersbuttom_1_useradd_1="Add user";
+  
+  $week=array("", "Mon", "Tue","Wed", "Thu", "Fri", "Sat","Sun");
+  
+  $shablonbuttom_1_prop_UpdateShablonForm_8="Redirection lists";
+  $shablonbuttom_1_prop_UpdateShablonForm_9="Access forbidden lists";
+  $shablonbuttom_1_prop_UpdateShablonForm_10=" Regular expressions lists";
+  $shablonbuttom_1_prop_UpdateShablonForm_11="Access allowed lists";
+  $shablonbuttom_1_prop_UpdateShablonForm_12="Built-in";
+  $shablonbuttom_1_prop_UpdateShablonForm_13="Time";
+  $shablonbuttom_1_prop_UpdateShablonForm_14="Days of week";
+           
+  $userbuttom_6_chpasswd_userbuttom_6_chpasswd_1="Change the user password";
+  $userbuttom_6_chpasswd_ChUserPasswdForm_1="Change password to the user ";
+  $userbuttom_6_chpasswd_ChUserPasswd_1="The user password has been changed";
+
+// File EN/blocked.php
+  $blocked_php_1="User";
+  $blocked_php_2="Access to proxy disabled";
+  $blocked_php_3="Access to URL";
+  $blocked_php_4="disabled";
+  $blocked_php_5="You are switch off";
+  $blocked_php_6="Quota limit exceed";
+  $blocked_php_7="receive:";
+  $blocked_php_8="Access to this URL is restricted";
+  $blocked_php_9="You can't access to proxy in sthi day of week";
+  $blocked_php_10="or proxy access time diapason exceed";
+  $blocked_php_11="quota:";
+  $blocked_php_12="Mb";
+  $blocked_php_13="Kb";
+
+//  $adminbuttom_1_prop_SamsReConfigForm_44="User domain into access.log is entered with the םבלומרכיםי ÂÕË×ÁÍÉ";
+  $adminbuttom_1_prop_SamsReConfigForm_20="User domain into access.log is entered with the";
+  $adminbuttom_1_prop_SamsReConfigForm_20a="CAPITAL";
+  $adminbuttom_1_prop_SamsReConfigForm_20b="small";
+  $adminbuttom_1_prop_SamsReConfigForm_20c="no change";
+  $adminbuttom_1_prop_SamsReConfigForm_20d=" letters";
+  $adminbuttom_1_prop_SamsReConfigForm_22="User name is entered with the ";
+  $usertray_UserForm_13="Switch on";
+  
+   $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Insert NCSA users from file ";
+   $usersbuttom_1_ncsa_LoadNCSAUsersForm_2="Select file";
+   $usersbuttom_1_ncsa_usersbuttom_1_ncsa_1="Insert NCSA users from file";
+  
+   $usersbuttom_1_ncsa_SelectNCSAUsersForm_1="Users found";
+   $usersbuttom_1_ncsa_SelectNCSAUsersForm_2="Switch on users";   
+   $usersbuttom_1_ncsa_SelectNCSAUsersForm_3="Save users";
+
+   $dbbuttom_7_chname_dbbuttom_7_chname_1="Change user name & domain into squid log base ";
+   $dbbuttom_7_chname_ChUserForm_1="Change username into squid log base ";
+   $dbbuttom_7_chname_ChUserForm_2="from:";
+   $dbbuttom_7_chname_ChUserForm_3="to:";
+   $dbbuttom_7_chname_ChUser_1="User's traffic data moved";
+
+   $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1="WEB-interface settings";
+   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_1="Show users tree"; 
+
+  $lframe_0ident_lframe_0ident_1="User authenticate";
+  $lframe_1webconf_lframe_1webconf_1="WEB interface settings";
+
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_2="Show users as"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_3="User"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_4="User / Domain"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_5="Family"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_6="Family Name"; 
+  $adminbuttom_1_prop_SamsReConfigForm_45="Users traffic";
+  $adminbuttom_1_prop_SamsReConfigForm_46="Traffic";
+  $adminbuttom_1_prop_SamsReConfigForm_47="Real (get on squid)";
+  $adminbuttom_1_prop_SamsReConfigForm_48=" Full (get on squid + squid cache)";
+  $adminbuttom_1_prop_SamsReConfigForm_49=" Bind DNS name";
+  $adminbuttom_1_prop_SamsReConfigForm_50=" Separator";
+
+  $usersbuttom_1_domain_AddUsersFromDomainForm_6=" User is active";
+  $usersbuttom_1_domain_AddUsersFromDomainForm_7="Domain ";
+   
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_7="Kilobyte size of your ISP"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_8="Megabyte size of your ISP"; 
+
+  $adminbuttom_1_prop_SamsReConfigForm_51="Log level";
+  $adminbuttom_1_prop_SamsReConfigForm_52="Default domain name";
+
+  $squidtray_HelpSquidForm_3="SQUID database BackUp files found:";
+  $configbuttom_1_prop_SamsReConfigForm_53="Save backup SQUID base after ";
+  $configbuttom_1_prop_SamsReConfigForm_54="Do not save";
+  $configbuttom_1_prop_SamsReConfigForm_55="month. <BR>Data removed from databased.";       
+
+  $configbuttom_1_prop_SamsReConfigForm_56="Select script for send message about deactivate user:";
+
+  $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
+  $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
+
+  $configbuttom_1_prop_SamsReConfigForm_58="Create unknown users";
+  $configbuttom_1_prop_SamsReConfigForm_59="Template for unknown user";
+  $configbuttom_1_prop_SamsReConfigForm_60="Group for unknown user";
+  
+  $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Groups added";
+  $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
+  $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Active Directory groups found";
+  $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Add users group";
+  $newgrouptray_NewGrpTray_1="Users group creating";
+  $URLTimeForm_userbuttom_4_time_1="URL list";
+  $userbuttom_9_logoff_userbuttom_9_logoff_1="logoff";  
+  $dbbuttom_6_statdb_ShowReplaceURLTable_1="Delete";
+  $AdminTray_UserDoc_1="Insert login and password";
+
+  $usersbuttom_2_traffic_UsersTrafficPeriod_8="Family";
+  
+  $groupbuttom_0_prop_UpdateGroupForm_1="Users group";
+  $groupbuttom_0_prop_UpdateGroupForm_2="Group name";
+  $groupbuttom_0_prop_groupbuttom_0_prop_1="Change group name";    
+  
+  $shablonbuttom_1_prop_UpdateShablonForm_15="Another";
+  $shablonbuttom_1_prop_UpdateShablonForm_16="period";
+  $shablonbuttom_1_prop_UpdateShablonForm_17=" days";
+  $shablonbuttom_1_prop_UpdateShablonForm_18="Date of clearing of users traffic counters";
+
+  $shablonnew_NewShablonForm_9="users access to SQUID:";
+  $shablonnew_NewShablonForm_10="traffic quota:";
+  $shablonnew_NewShablonForm_11="Month";
+  $shablonnew_NewShablonForm_12="Week";
+  $shablonnew_NewShablonForm_13="Another";
+  $shablonnew_NewShablonForm_14="period";
+  $shablonnew_NewShablonForm_15=" days";
+  $shablonnew_NewShablonForm_16="Date of clearing traffic";
+
+  $shablonbuttom_1_prop_UpdateShablonForm_19="users access to SQUID: ";
+  $shablonbuttom_1_prop_UpdateShablonForm_20="traffic quota: ";
+
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_9="Create diagrams"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_10="Create PDF reports"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_11="Do not create"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_12="Create with fpdf"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_13="Create with pdflib"; 
+  
+  $shablonnew_NewShablonForm_17="select default authorisation method into SAMS settings";
+
+  $shablonbuttom_1_prop_UpdateShablonForm_21=" Access allowed lists to file extensions";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1="LDAP Domain groups:";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2="Select group";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_3="Active Directory users";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4="Users of Active directory group";
+  $shablonbuttom_1_prop_UpdateShablonForm_22="Access is forbidden to all URL";
+  $shablonbuttom_1_prop_UpdateShablonForm_23="Interdiction of loading files on expansions";
+  $logbuttom_9_delete_ClearLog_1="Logs removed ";
+
+  $shablontray_ShablonUsers_2="Select users to set template";
+  $shablontray_ShablonUsers_3="Set template ";
+  $grouptray_NewGroupForm_10="Select users to move into group";
+  $grouptray_NewGroupForm_11="Move selected users into group";
+
+  $squidbuttom_5_readcache_LoadFileForm_1="File loaded";
+  $squidbuttom_5_readcache_LoadFileForm_2="from cache";
+  $squidbuttom_5_readcache_LoadFileForm_3="File loaded";
+  $squidbuttom_5_readcache_LoadFileForm_4="File not loaded";
+  $squidbuttom_5_readcache_LoadFileForm_5="Check up, whether it is started samsdaemon";
+  $squidbuttom_5_readcache_LoadFileForm_6="File uploaded into ";
+  $squidbuttom_5_readcache_ReadCacheFilesList_1="Scanning cache directories";
+  $squidbuttom_5_readcache_ReadCacheFilesList_2="Scanning is ended";
+  $squidbuttom_5_readcache_ReadCacheFiles_1="Scanning files into cache directories";
+  $squidbuttom_5_readcache_ReadCacheFiles_2="Scanning...";
+  $squidbuttom_5_readcache_ReadCacheFiles_3="Scanning cache directories";
+  $squidbuttom_5_readcache_ReadCacheFiles_4="The command on scanning of cache SQUID is not received by a demon<BR>check up, whether it is started samsdaemon";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_1="Scanning files into cache directories";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_2="Show all files, with size > ";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_3="Start scanning";
+  $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Get files into SQUID cache";
+  $squidbuttom_6_readcache_ReadCacheSquidForm_4="Files are found in the catalogue ";
+
+  $usersbuttom_4_site_UsersSitesPeriod_1=" List of resources used by the users";
+  $logbuttom_9_delete_ClearLogForm_1="Clear log";
+  $redirbuttom_4_redirstat_ShowRedirStat_1="Statistics of the redirection list";
+
+  $shablonbuttom_1_prop_UpdateShablonForm_24="Month";
+  $shablonbuttom_1_prop_UpdateShablonForm_25="Week";
+
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Old password";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Retype new passwd";
+  $shablontray_ShablonUsers_4="Users";
+  $userbuttom_1_prop_UpdateUserForm_15="Enabled";
+  $userbuttom_1_prop_UpdateUserForm_16="traffic Off";
+  $userbuttom_1_prop_UpdateUserForm_17="Disabled";
+
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Show all domain users";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Enter name of AD group manually";
+  $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Field of manual input of group";
+
+  $userstray_AllUsersForm_13="Users search:";  
+  $backupbuttom_2_loadbase_LoadBackUp_10="SAMS configuration";
+
+  $shablonbuttom_1_prop_UpdateShablonForm_26=" Automatically clear up the users traffic disabled in the SAMS settings";
+  $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
+  $shablonnew_NewShablonForm_19="Users template name has not been entered";
+  $redirlisttray_AddRedirListForm_5="List name has not been entered";
+  $CacheForm_squidbuttom_4_addcache_1="Proxy servers registered in system"; 
+  $CacheForm_squidbuttom_4_addcache_2="Number"; 
+  $CacheForm_squidbuttom_4_addcache_3="Description"; 
+  $CacheForm_squidbuttom_4_addcache_4="Remove"; 
+  $CacheForm_squidbuttom_4_addcache_5 ="Remove";
+  $CacheForm_squidbuttom_4_addcache_6 ="Add proxy server to SAMS";
+  $CacheForm_squidbuttom_4_addcache_7 ="Description";
+  $CacheForm_squidbuttom_4_addcache_8 ="Add";
+  $CacheForm_squidbuttom_4_addcache_9="Description has not been entered";
+  $grouptray_NewGroupForm_12="User group name has not been entered";
+  $usersbuttom_1_useradd_AddUser_1="The user with ip address ";
+  $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
+
+  $filedeniedlisttray_filedeniedlisttray_1="File extensions.  <BR>List";
+
+  $shablonbuttom_9_delete_DeleteShablon_1="Template contains";
+  $shablonbuttom_9_delete_DeleteShablon_2="users";
+  $shablonbuttom_9_delete_DeleteShablon_3="Error of removal a template";
+
+  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
+  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
+  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
+  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
+  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
+  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
+
+//  global $LANG;
+//  $lang="./lang/lang.$LANG";
+//  require($lang);
+
+?>
