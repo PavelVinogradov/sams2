@@ -25,19 +25,23 @@ class PluginManager {
         if ($handle = opendir($this->path)) {
             while (false !== ($file = readdir($handle))) {
 				if (is_dir($this->path . $file) and $file != '.' and $file != '..') {
-					$this->plugins[$count++] = $this->loadPlugin($file);
+					$descr = $this->loadPlugin($file);
+					if ($descr !== null)
+						$this->plugins[$count++]  = $descr;
 				}
             }
         }
     }
 
     function loadPlugin ($name) {
+		$descr = null;
 		$class = $name . "descr";
 		$file = $this->path . $name ."/". $class.".php";
-		
-		#print "loadPlugin:  " . $file. "\n";
-        include	 ($file);
-        $descr = new $class();
+		if (is_file($file)) {
+			#print "loadPlugin:  " . $file. "\n";
+			include	 ($file);
+			$descr = new $class();
+		}
         return $descr; 
     }
 
