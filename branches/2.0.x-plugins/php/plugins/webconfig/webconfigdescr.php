@@ -1,11 +1,11 @@
 <?php
 
 class WebConfigDescr {
-    var $name = "WebConfig";
+    var $name = "webconfig";
 	var $descr = "WEB interface settings";
     var $author = "Pavel Vinogradov";
     var $path = "webconfig";
-    var $content = "SysInfo";
+    var $content = "sysinfo";
     var $tray = "tray";
 	var $functions = array();
 	var $classFile = "webconfigimpl.php";
