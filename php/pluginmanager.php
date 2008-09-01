@@ -55,7 +55,7 @@ class PluginManager {
 		$result = null;
 		
 		for ($i = 0; $i <= count($this->plugins); $i++) {
-            if ($this->plugins[$i]->name == $name)
+            if (strtolower($name) == $this->plugins[$i]->name)
 				$result =  $this->plugins[$i];
         }	
 		
