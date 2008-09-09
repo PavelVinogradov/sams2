@@ -28,6 +28,8 @@ using namespace std;
 #include <string>
 #include "dbconn.h"
 
+class DBQuery;
+
 /**
  * @brief Подключение к базе данных через PostgreSQL API
  */
@@ -41,6 +43,8 @@ public:
   ~PgConn();
 
   bool connect ();
+
+  DBQuery * newQuery ();
 
   void disconnect ();
 

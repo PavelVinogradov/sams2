@@ -32,7 +32,7 @@
 
 #include "samsconfig.h"
 #include "debug.h"
-#include "processmanager.h"
+//#include "processmanager.h"
 #include "samsusers.h"
 #include "samsuser.h"
 #include "proxy.h"
@@ -79,6 +79,8 @@ void usage ()
   cout << "                In case of file you can set filename for output (DEFAULT: samsparser.log)." << endl;
   cout << "                E.g. -l syslog" << endl;
   cout << "                E.g. -l file:/path/to/file" << endl;
+  cout << "    -C, --config=FILE" << endl;
+  cout << "                Use config file FILE." << endl;
   cout << endl;
 }
 
@@ -102,15 +104,10 @@ int main (int argc, char *argv[])
   string optname = "";
   bool must_fork = true;
   bool use_must_fork = false;
-
-  // Сначала прочитаем конфигурацию, параметры командной строки
-  // имеют приоритет, потому анализируются позже
-  if (!SamsConfig::reload ())
-    {
-      return false;
-    }
-
-  Logger::setSender("samsredir");
+  bool verbose = false;
+  string log_engine = "";
+  string config_file = SYSCONFDIR;
+  config_file += "/sams2.conf";
 
   static struct option long_options[] = {
     {"help",     0, 0, 'h'},     // Показывает справку по опциям командной строки и завершает работу
@@ -120,6 +117,7 @@ int main (int argc, char *argv[])
     {"fork",     0, 0, 'f'},     // Запускать в фоновом режиме
     {"no-fork",  0, 0, 'F'},     // Не запускать в фоновом режиме
     {"logger",   1, 0, 'l'},     // Устанавливает движок вывода сообщений
+    {"config",   1, 0, 'C'},     // Использовать альтернативный конфигурационный файл
     {0, 0, 0, 0}
   };
 
@@ -127,7 +125,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVvd:fFt:l:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVvd:fFt:l:C:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -170,12 +168,26 @@ int main (int argc, char *argv[])
           DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
           Logger::setEngine (optarg);
           break;
+        case 'C':
+          config_file = optarg;
+          break;
         case '?':
           break;
         default:
           printf ("?? getopt return character code 0%o ??\n", c);
         }
     }
+
+  Logger::setSender("samsredir");
+  SamsConfig::useFile (config_file);
+
+  // Сначала прочитаем конфигурацию, параметры командной строки
+  // имеют приоритет, потому анализируются позже
+  SamsConfig::reload ();
+
+  Logger::setEngine (log_engine);
+  Logger::setVerbose (verbose);
+  Logger::setDebugLevel (dbglevel);
 
   if (parse_errors > 0)
     {
@@ -252,18 +264,18 @@ int main (int argc, char *argv[])
   delete conn;
   conn = NULL;
 
-  ProcessManager process;
+//  basic_stringstream < char >mess;
 
-  if (!process.start ("samsdaemon"))
-    {
-      exit (0);
-    }
+//  mess << "Started with pid " << pid << ".";
+
+//  Logger::addLog(Logger::LK_DAEMON, mess.str());
+
 
   char line[2048];
   vector < string > fields;
   vector < string > source;
-  SAMSUser *usr;
-  Template *tpl;
+  SAMSUser *usr = NULL;
+  Template *tpl = NULL;
   while (1)
     {
       cin.getline(line, sizeof(line));
@@ -280,9 +292,9 @@ int main (int argc, char *argv[])
       Split (fields[1], "/", source);
 
       // Мы незнаем что такое попалось, но на всякий случай ничего менять не будем
-      if (fields.size () != 4)
+      if (fields.size () < 4)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Invalid fields count: " << fields.size() << endl);
+          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Invalid fields count: " << fields.size());
           cout << endl;
           continue;
         }
@@ -290,7 +302,7 @@ int main (int argc, char *argv[])
       // url считается локальным и неважно какой пользователь обратился, разрешаем доступ
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Url is local" << endl);
+          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Url is local");
           cout << endl;
           continue;
         }
@@ -300,20 +312,22 @@ int main (int argc, char *argv[])
       // Пользователь не найден, блокируем доступ
       if (!usr)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] User not found" << endl);
+          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] User not found");
           if (fields[2] != "-")
-            cout << Proxy::getRedirectAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << endl;
+            cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << endl;
           else
-            cout << Proxy::getRedirectAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << endl;
+            cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << endl;
           continue;
         }
+
+      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Found user " << usr);
 
       // нарушена целостность БД (отсутствует шаблон пользователя), блокируем доступ
       tpl = Templates::getTemplate (usr->getShablonId ());
       if (!tpl)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Nothing to do without template" << endl);
-          cout << Proxy::getRedirectAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << endl;
+          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Nothing to do without template");
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << endl;
           continue;
         }
 
@@ -322,12 +336,12 @@ int main (int argc, char *argv[])
       // Если url по каким-то причинам не разрешен, блокируем доступ
       if (!tpl->isUrlAllowed (fields[0]))
         {
-          cout << Proxy::getRedirectAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
-      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Access granted" << endl);
+      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Access granted");
       cout << endl;
     }
 

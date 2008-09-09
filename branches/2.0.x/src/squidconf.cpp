@@ -22,6 +22,8 @@
 #include "samsconfig.h"
 #include "samsusers.h"
 #include "samsuser.h"
+#include "urlgrouplist.h"
+#include "urlgroup.h"
 #include "proxy.h"
 #include "templates.h"
 #include "template.h"
@@ -29,7 +31,7 @@
 #include "timerange.h"
 #include "tools.h"
 
-string SquidConf::sams_marker = " # sams marker";
+//string SquidConf::sams_marker = " # sams marker";
 
 
 SquidConf::SquidConf()
@@ -88,8 +90,10 @@ bool SquidConf::defineACL ()
 
   vector<long> tpls = Templates::getIds();
   vector<long> time_ids;
+  vector<long> group_ids;
   Template * tpl;
   uint i, j;
+  bool haveBlockedUsers = false;
 
   while (fin.good ())
     {
@@ -101,8 +105,16 @@ bool SquidConf::defineACL ()
           continue;
         }
 
-      if (line.find (sams_marker) != string::npos)
+      // Строка от нашей старой конфигурации - игнорируем ее
+      if (line.find ("Sams2") != string::npos)
         continue;
+
+      // Используется редиректор, поэтому не вносим новые правила в конфигурационный файл
+      if (Proxy::getRedirectType () == Proxy::REDIR_INTERNAL)
+        {
+          fout << line << endl;
+          continue;
+        }
 
       if (line[0] == '#' && line.find ("TAG:") != string::npos)
         {
@@ -144,7 +156,13 @@ bool SquidConf::defineACL ()
 
                   for (it = users.begin(); it != users.end(); it++)
                     {
-                      fout << "acl tpl" <<tpls[i] << " " << method << " " << *(*it) << sams_marker << endl;
+                      if ((*it)->getEnabled() != SAMSUser::STAT_ACTIVE)
+                        {
+                          haveBlockedUsers = true;
+                          fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
+                        }
+                      else
+                        fout << "acl Sams2Template" << tpls[i] << " " << method << " " << *(*it) << endl;
                     }
                 }
 
@@ -153,23 +171,56 @@ bool SquidConf::defineACL ()
               for (i = 0; i < time_ids.size (); i++)
                 {
                   TimeRange * tr = TimeRanges::getTimeRange(time_ids[i]);
-                  if (tr->hasMidnight ())
-                    {
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-23:59" << sams_marker << endl;
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << "00:00-" << tr->getEndTimeStr () << sams_marker << endl;
-                    }
+                  if (!tr)
+                    continue;
+                  else if (tr->isFullDay())
+                    continue;
+                  else if (tr->hasMidnight ())
+                    fout << "acl Sams2time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getEndTimeStr () << "-" << tr->getStartTimeStr () << endl;
                   else
-                    fout << "acl time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << sams_marker << endl;
+                    fout << "acl Sams2time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
                 }
+
+              // Создаем списки запретных адресов
+              group_ids = UrlGroupList::getAllowGroupIds();
+              for (i = 0; i < group_ids.size (); i++)
+                {
+                  UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
+                  if (!grp)
+                    continue;
+                  else
+                    fout << "acl Sams2Allow" << group_ids[i] << " dstdom_regex " << *grp << endl;
+                }
+
+              // Создаем списки разрешенных адресов
+              group_ids = UrlGroupList::getDenyGroupIds();
+              for (i = 0; i < group_ids.size (); i++)
+                {
+                  UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
+                  if (!grp)
+                    continue;
+                  else
+                    fout << "acl Sams2Deny" << group_ids[i] << " dstdom_regex " << *grp << endl;
+                }
+
             }
 
           if (current_tag == "http_access")
             {
-              fout << "# Setup HTTP Access here" << sams_marker << endl;
+              fout << "# Setup Sams2 HTTP Access here" << endl;
               vector <long> times;
               basic_stringstream < char >restriction;
+
+              if (haveBlockedUsers)
+                fout << "http_access deny Sams2BlockedUsers" << endl;
+
+              vector<SAMSUser *> users;
               for (i = 0; i < tpls.size (); i++)
                 {
+                  SAMSUsers::getUsersByTemplate (tpls[i], users);
+                  if (users.empty ())
+                    continue;
+
                   tpl = Templates::getTemplate(tpls[i]);
                   if ((tpl->getAuth() != Proxy::AUTH_NCSA) && (tpl->getAuth() != Proxy::AUTH_IP))
                     {
@@ -177,19 +228,42 @@ bool SquidConf::defineACL ()
                       continue;
                     }
 
-                  //Определяем временные границы для текущего шаблона
                   restriction.str("");
+
+                  //Определяем временные границы для текущего шаблона
                   time_ids = tpl->getTimeRangeIds ();
                   for (j = 0; j < time_ids.size(); j++)
-                    restriction << " time" << time_ids[j];
+                    {
+                      TimeRange * tr = TimeRanges::getTimeRange(time_ids[j]);
+                      if (!tr)
+                        continue;
+                      if (tr->isFullDay())
+                        continue;
+                      if (tr->hasMidnight())
+                        restriction << " !Sams2time" << time_ids[j];
+                      else
+                        restriction << " Sams2time" << time_ids[j];
+                    }
 
-                  //Определяем запретные адреса для текущего шаблона
+                  //Определяем разрешенные и запретные адреса для текущего шаблона
+                  group_ids = tpl->getUrlGroupIds ();
+                  for (j = 0; j < group_ids.size(); j++)
+                    {
+                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
+                      if (!grp)
+                        continue;
+                      if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
+                        restriction << " Sams2Allow" << group_ids[j];
+                      else if (grp->getAccessType () == UrlGroup::ACC_DENY)
+                        restriction << " !Sams2Deny" << group_ids[j];
+                    }
+
                   //Определяем запретные типы файлов для текущего шаблона
                   //Определяем запретные регулярные выражения для текущего шаблона
 
-                  restriction.str("");
+//                  restriction.str("");
 
-                  fout << "http_access allow tpl" << tpls[i] << restriction.str() << sams_marker << endl;
+                  fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
                 }
             }
           fout << nextline << endl;
@@ -212,10 +286,10 @@ string SquidConf::skipComments (ifstream & in, ofstream & out)
   getline (in, line);
   while (in.good () && line[0] == '#')
     {
-      if (line.find (sams_marker) == string::npos)
+      if (line.find ("Sams2") == string::npos)
         out << line << endl;
       getline (in, line);
-      if (line.find (sams_marker) != string::npos)
+      if (line.find ("Sams2") != string::npos)
         line[0] = '#';
     }
   return line;

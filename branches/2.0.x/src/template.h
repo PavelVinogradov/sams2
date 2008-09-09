@@ -84,7 +84,7 @@ public:
    * @brief Возвращает тип периода ограничения трафика
    * @return Тип периода ограничения трафика
    */
-  Template::PeriodType getPeriodType ();
+  Template::PeriodType getPeriodType () const;
 
   /**
    * @brief Устанавливает дату очистки счетчиков
@@ -102,7 +102,7 @@ public:
    * или дата не была установлена или установлена неверная дата.
    * @return false при ошибке и true при успешном выполнении
    */
-  bool getClearDate (struct tm & clear_date);
+  bool getClearDate (struct tm & clear_date) const;
 
   /**
    * @brief Устанавливает флаг запрета ко всем ресурсам, кроме разрешенных
@@ -123,7 +123,21 @@ public:
    *
    * @return Список идентификаторов временных границ
    */
-  vector <long> getTimeRangeIds ();
+  vector <long> getTimeRangeIds () const;
+
+  /**
+   * @brief Добавляет идентификатор групы ресурсов
+   *
+   * @param id Идентификатор группы ресурсов
+   */
+  void addUrlGroup (long id);
+
+  /**
+   * @brief Возвращает список идентификаторов групп ресурсов
+   *
+   * @return Список идентификаторов групп ресурсов
+   */
+  vector <long> getUrlGroupIds () const;
 
   /**
    * @brief Возвращает признак доступности ресурса
@@ -142,6 +156,7 @@ private:
   string _clear_date;
   bool _alldeny;
   vector <long> _times;
+  vector <long> _urlgroups;
 };
 
 #endif

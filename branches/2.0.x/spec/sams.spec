@@ -1,4 +1,6 @@
 %define _prefix /usr/local
+%define debug_packages  %{nil}
+
 
 Name:          sams2
 Version:       2.0.0
@@ -82,8 +84,6 @@ install -m644 redhat/httpd_conf					\
 		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
 sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name}-%{version},g'	\
 		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
-sed -i -e 's,sams2.conf,%{_prefix}/etc/sams2.conf,g'		\
-		"${RPM_BUILD_ROOT}%{_datadir}"/"%{name}"-"%{version}"/config.php
 
 %clean
 [ "${RPM_BUILD_ROOT}" != "/" ] && [ -d "${RPM_BUILD_ROOT}" ] && \

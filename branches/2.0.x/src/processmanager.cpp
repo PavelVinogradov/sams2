@@ -51,7 +51,7 @@ bool ProcessManager::start (const string & procname, bool wait_myself)
   fstream f;
   pid_t pid;
 
-  _fname = "/tmp/" + procname + ".pid";
+  _fname = "/var/run/" + procname + ".pid";
 
   if (fileExist (_fname))
     {
@@ -106,6 +106,36 @@ bool ProcessManager::start (const string & procname, bool wait_myself)
   return true;
 }
 
+pid_t ProcessManager::isRunning (const string & procname)
+{
+  fstream f;
+  string pid_fname;
+  pid_t pid = 0;
+  bool is_runing = false;
+
+  pid_fname = "/var/run/" + procname + ".pid";
+
+  if (fileExist (pid_fname))
+    {
+      f.open (pid_fname.c_str (), ios_base::in);
+      if (!f.is_open ())
+        {
+          ERROR ("Failed to open file " << pid_fname);
+          return 0;
+        }
+      f >> pid;
+      f.close ();
+
+      is_runing = (kill (pid, 0) == 0);
+
+      if (!is_runing)
+        {
+          pid = 0;
+          WARNING ("Pid file exists, but no program running. Unexpected crash?");
+        }
+    }
+  return pid;
+}
 
 void ProcessManager::stop ()
 {

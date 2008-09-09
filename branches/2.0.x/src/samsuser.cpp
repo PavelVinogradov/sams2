@@ -56,37 +56,44 @@ SAMSUser::~SAMSUser ()
 
 void SAMSUser::setId (long id)
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
+
   _id = id;
 }
 
 long SAMSUser::getId () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _id);
   return _id;
 }
 
 void SAMSUser::setNick (const string & nick)
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << nick);
   _nick = nick;
 }
 
 string SAMSUser::getNick () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _nick);
   return _nick;
 }
 
 void SAMSUser::setDomain (const string & domain)
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << domain);
   _domain = domain;
 }
 
 string SAMSUser::getDomain () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _domain);
   return _domain;
 }
 
 void SAMSUser::setIP (const string & ip)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << ip);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << ip);
   _ip.parseString (ip);
 }
 
@@ -97,13 +104,13 @@ IP SAMSUser::getIP () const
 
 void SAMSUser::setEnabled (int enabled)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << enabled);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << enabled);
   _enabled = (usrStatus) enabled;
 }
 
 void SAMSUser::setEnabled (usrStatus enabled)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << (int) enabled);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << (int) enabled);
   _enabled = enabled;
 }
 
@@ -114,12 +121,13 @@ SAMSUser::usrStatus SAMSUser::getEnabled () const
 
 void SAMSUser::setSize (long long size)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << size);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << size);
   _size = size;
 }
 
 void SAMSUser::addSize (long size)
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << size);
   _size += size;
   if (_hit > _size)
     {
@@ -129,55 +137,61 @@ void SAMSUser::addSize (long size)
 
 long long SAMSUser::getSize () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _size);
   return _size;
 }
 
 void SAMSUser::setHit (long long hit)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << hit);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << hit);
   _hit = hit;
 }
 
 void SAMSUser::addHit (long hit)
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << hit);
   _hit += hit;
 }
 
 long long SAMSUser::getHit () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _hit);
   return _hit;
 }
 
 void SAMSUser::setQuote (long quote)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << quote);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << quote);
   _quote = quote;
 }
 
 long SAMSUser::getQuote () const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _quote);
   return _quote;
 }
 
 void SAMSUser::setShablonId (long id)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << id);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
   _tpl_id = id;
 }
 
 long SAMSUser::getShablonId() const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _tpl_id);
   return _tpl_id;
 }
 
 void SAMSUser::setGroupId (long id)
 {
-  DEBUG (DEBUG_USER, "[" << this << "->" << __FUNCTION__ << "] " << id);
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
   _grp_id = id;
 }
 
 long SAMSUser::getGroupId() const
 {
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _grp_id);
   return _grp_id;
 }
 
@@ -205,47 +219,10 @@ string SAMSUser::asString () const
     }
 
   return res;
-/*
-  basic_stringstream < char >s;
-
-  if (!_domain.empty ())
-    {
-      s << _domain << "\\";
-    }
-
-  s << _nick << " ";
-  s << _ip.asString () << " ";
-  s << _quote << " ";
-  s << _size << " ";
-  s << _hit << " ";
-
-  return s.str ();
-*/
 }
 
 ostream & operator<< (ostream & out, const SAMSUser & user)
 {
-/*
-  Template *tpl = Templates::getTemplate (user.getShablonId());
-  if (!tpl)
-    {
-      out << "user lost template";
-      return out;
-    }
-
-  if (tpl->getAuth() == Proxy::AUTH_IP)
-    {
-      out << user._ip.asString ();
-    }
-  else
-    {
-      if (!user._domain.empty ())
-        {
-          out << user._domain << "\\";
-        }
-      out << user._nick;
-    }
-*/
   out << user.asString();
   return out;
 }

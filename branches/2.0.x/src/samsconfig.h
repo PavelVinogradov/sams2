@@ -48,6 +48,15 @@ using namespace std;
 class SamsConfig
 {
 public:
+    /**
+     *  @brief Устанавливает путь к конфигурационному файлу.
+     *
+     *  Используется только для чтения альтернативного конфигурационного файла.
+     *
+     * @param fname Полный или относительный путь к конфигурационному файлу.
+     */
+  static void useFile (const string &fname);
+
   static bool reload ();
 
   static void destroy ();
@@ -152,6 +161,7 @@ private:
      */
   static bool readDB ();
 
+  static string _config_file;
   static bool _file_loaded;
   static bool _db_loaded;
   static bool _internal;

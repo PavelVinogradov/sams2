@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sstream>
 #include <time.h>
+#include <unistd.h>
 
 #include "config.h"
 
@@ -49,6 +50,7 @@ Logger::LoggerEngine Logger::_engine = OUT_CONSOLE;
 ofstream Logger::_fout;
 DBConn *Logger::_conn = NULL;
 bool Logger::_connection_owner = false;
+pid_t Logger::_pid = 0;
 
 void Logger::sendInfo (const string & mess)
 {
@@ -58,10 +60,10 @@ void Logger::sendInfo (const string & mess)
   switch (_engine)
     {
     case OUT_CONSOLE:
-      cout << mess << endl;
+      cout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << mess << endl;
+      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_INFO, "%s", mess.c_str ());
@@ -80,10 +82,10 @@ void Logger::sendDebug (uint level, const string & mess)
   switch (_engine)
     {
     case OUT_CONSOLE:
-      cout << mess << endl;
+      cout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << mess << endl;
+      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_DEBUG, "%s", mess.c_str ());
@@ -99,10 +101,10 @@ void Logger::sendWarning (const string & mess)
   switch (_engine)
     {
     case OUT_CONSOLE:
-      cerr << mess << endl;
+      cerr << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << mess << endl;
+      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_WARNING, "%s", mess.c_str ());
@@ -118,10 +120,10 @@ void Logger::sendError (const string & mess)
   switch (_engine)
     {
     case OUT_CONSOLE:
-      cerr << mess << endl;
+      cerr << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << mess << endl;
+      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_ERR, "%s", mess.c_str ());
@@ -163,7 +165,7 @@ bool Logger::setEngine (const string & engine)
       else
         fname = _sender + ".log";
 
-      _fout.open (fname.c_str (), ios::out);
+      _fout.open (fname.c_str (), ios::out | ios::app);
 
       _started = true;
 
@@ -292,34 +294,12 @@ void Logger::addLog(LogKind code, const string &mess)
       _connection_owner = true;
     }
 
-  DBQuery *query = NULL;
+  DBQuery *query = _conn->newQuery ();
 
-  if (_conn->getEngine() == DBConn::DB_UODBC)
+  if (!query)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
       return;
-      #endif
     }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery((PgConn*)_conn);
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
 
   time_t now;
   char str_today[15];

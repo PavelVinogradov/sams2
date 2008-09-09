@@ -2,7 +2,7 @@
 #
 #   Startup/shutdown script for the SQUID Access Management System (SAMS).
 #
-#   chkconfig: 345 56 10
+#   chkconfig: 345 70 30
 #   description: Startup/shutdown script for the SQUID Access \
 #                Management System (SAMS).
 #
@@ -12,6 +12,19 @@ PATH="/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin"
 # Source function library.
 . /etc/init.d/functions
 
+# check if the sams conf file is present
+[ -f /etc/sams2.conf ] || exit 0
+
+if [ -f /etc/sysconfig/sams2 ]; then
+  . /etc/sysconfig/sams2
+fi
+
+# don't raise an error if the config file is incomplete
+# set defaults instead:
+OPTIONS=${OPTIONS:-"-l syslog"}
+PIDFILE_TIMEOUT=${PIDFILE_TIMEOUT:-5}
+SHUTDOWN_TIMEOUT=${SHUTDOWN_TIMEOUT:-60}
+
 DAEMON=__PREFIX/samsdaemon
 
 prog=sams
@@ -20,10 +33,26 @@ start () {
 	echo -n $"Starting $prog: "
 
 	# start daemon
-	daemon $DAEMON
-        RETVAL=$?
+	$DAEMON $OPTIONS
+
+
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
+		timeout=0;
+		while : ; do
+			[ ! -f /var/run/samsdaemon.pid ] || break
+			if [ $timeout -ge $PIDFILE_TIMEOUT ]; then
+				RETVAL=1
+				break
+			fi
+			sleep 1 && echo -n "."
+			timeout=$((timeout+1))
+		done
+	fi
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/samsdaemon
+	[ $RETVAL -eq 0 ] && echo_success
+	[ $RETVAL -ne 0 ] && echo_failure
 	echo
-	[ $RETVAL = 0 ] && touch /var/lock/subsys/samsdaemon
 	return $RETVAL
 }
 
@@ -32,8 +61,26 @@ stop () {
 	echo -n $"Stopping $prog: "
 	$DAEMON --stop
 	RETVAL=$?
-	echo
-	[ $RETVAL = 0 ] && rm -f /var/lock/subsys/samsdaemon
+	if [ $RETVAL -eq 0 ] ; then
+		rm -f /var/lock/subsys/samsdaemon
+		timeout=0
+		while : ; do
+			[ -f /var/run/samsdaemon.pid ] || break
+			if [ $timeout -ge $SHUTDOWN_TIMEOUT ]; then
+				echo_failure
+				echo
+				return 1
+			fi
+			sleep 2 && echo -n "."
+			timeout=$((timeout+2))
+		done
+		echo_success
+		echo
+	else
+		echo_failure
+		echo
+	fi
+	return $RETVAL
 }
 
 restart() {
@@ -58,6 +105,8 @@ case $1 in
 		echo -n $"Reloading $prog: "
 		killproc $DAEMON -HUP
 		RETVAL=$?
+		[ $RETVAL -eq 0 ] && echo_success
+		[ $RETVAL -ne 0 ] && echo_failure
 		echo
 	;;
 	status)

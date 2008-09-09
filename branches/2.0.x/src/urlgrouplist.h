@@ -14,50 +14,46 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MYSQLCONN_H
-#define MYSQLCONN_H
-
-#include "config.h"
-
-#ifdef USE_MYSQL
+#ifndef URLGROUPLIST_H
+#define URLGROUPLIST_H
 
 using namespace std;
 
-#include <mysql.h>
-#include <string>
-#include "dbconn.h"
+#include <vector>
 
-class DBQuery;
+class DBConn;
+class UrlGroup;
 
 /**
- * @brief Подключение к базе данных через MYSQL API
+ * @brief Список групп разрешенных и запрещенных ресурсов
  */
-class MYSQLConn : public DBConn
+class UrlGroupList
 {
-friend class MYSQLQuery;
-
+  friend class Proxy;
 public:
-  MYSQLConn ();
+  static void useConnection (DBConn * conn);
 
-  ~MYSQLConn ();
+  static bool reload();
 
-  bool connect ();
+  static void destroy();
 
-  DBQuery * newQuery ();
+  static vector<long> getAllowGroupIds ();
 
-  void disconnect ();
+  static vector<long> getDenyGroupIds ();
 
-  MYSQL *_mysql;
-
+  static UrlGroup* getUrlGroup (long id);
 private:
+  /**
+   * @brief Загружает группы из БД
+   *
+   * @return true при успешном завершении и false при любой ошибке
+   */
+  static bool load ();
 
-protected:
-  string _dbname;               ///< Имя базы данных
-  string _user;                 ///< Логин
-  string _pass;                 ///< Пароль
-  string _host;                 ///< Имя сервера
+  static bool _loaded;
+  static vector < UrlGroup * >_groups;       ///< список групп
+  static DBConn * _conn;                     ///< Используемое соединение с БД
+  static bool _connection_owner;
 };
-
-#endif // #ifdef USE_MYSQL
 
 #endif

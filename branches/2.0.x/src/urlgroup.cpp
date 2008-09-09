@@ -14,50 +14,57 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MYSQLCONN_H
-#define MYSQLCONN_H
-
-#include "config.h"
-
-#ifdef USE_MYSQL
 
 using namespace std;
 
-#include <mysql.h>
-#include <string>
-#include "dbconn.h"
+#include "urlgroup.h"
+#include "debug.h"
 
-class DBQuery;
-
-/**
- * @brief Подключение к базе данных через MYSQL API
- */
-class MYSQLConn : public DBConn
+UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
 {
-friend class MYSQLQuery;
+  _id = id;
+  _type = access;
+}
 
-public:
-  MYSQLConn ();
+UrlGroup::~UrlGroup ()
+{
+}
 
-  ~MYSQLConn ();
+long UrlGroup::getId ()
+{
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _id);
+  return _id;
+}
 
-  bool connect ();
+UrlGroup::accessType UrlGroup::getAccessType ()
+{
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << ((_type==UrlGroup::ACC_ALLOW)?"allow":"deny"));
+  return _type;
+}
 
-  DBQuery * newQuery ();
+void UrlGroup::addUrl (const string & url)
+{
+  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << url);
+  _list.push_back (url);
+}
 
-  void disconnect ();
+string UrlGroup::asString () const
+{
+  string res = "";
+  vector<string>::const_iterator it;
 
-  MYSQL *_mysql;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      if ( ! res.empty () )
+        res += " ";
+      res += (*it);
+    }
 
-private:
+  return res;
+}
 
-protected:
-  string _dbname;               ///< Имя базы данных
-  string _user;                 ///< Логин
-  string _pass;                 ///< Пароль
-  string _host;                 ///< Имя сервера
-};
-
-#endif // #ifdef USE_MYSQL
-
-#endif
+ostream & operator<< (ostream & out, const UrlGroup & grp)
+{
+  out << grp.asString();
+  return out;
+}

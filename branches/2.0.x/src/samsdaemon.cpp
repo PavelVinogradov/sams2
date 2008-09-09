@@ -49,6 +49,7 @@ using namespace std;
 #include "processmanager.h"
 #include "squidlogparser.h"
 #include "samsusers.h"
+#include "urlgrouplist.h"
 #include "proxy.h"
 #include "localnetworks.h"
 #include "groups.h"
@@ -101,6 +102,8 @@ void usage ()
   cout << "                In case of file you can set filename for output (DEFAULT: samsparser.log)." << endl;
   cout << "                E.g. -l syslog" << endl;
   cout << "                E.g. -l file:/path/to/file" << endl;
+  cout << "    -C, --config=FILE" << endl;
+  cout << "                Use config file FILE." << endl;
   cout << endl;
 }
 
@@ -123,6 +126,7 @@ Proxy::ParserType parserType; // Тип обработки лог файла squ
 void reload (int signal_number)
 {
   DEBUG (DEBUG_DAEMON, "Reloading");
+
   SamsConfig::reload ();
   TimeRanges::reload ();
   Templates::reload ();
@@ -130,6 +134,7 @@ void reload (int signal_number)
   LocalNetworks::reload();
   Groups::reload ();
   SAMSUsers::reload ();
+  UrlGroupList::reload();
 
   int err;
 
@@ -141,7 +146,6 @@ void reload (int signal_number)
     }
 
   Proxy::getParserType (parserType, steptime);
-
 }
 
 
@@ -158,11 +162,10 @@ int main (int argc, char *argv[])
   bool must_fork = true;
   bool use_must_fork = false;
   bool stop_it = false;
-  Logger::setSender("samsdaemon");
-
-  // Сначала прочитаем конфигурацию, параметры командной строки
-  // имеют приоритет, потому анализируются позже
-  SamsConfig::reload ();
+  bool verbose = false;
+  string log_engine = "";
+  string config_file = SYSCONFDIR;
+  config_file += "/sams2.conf";
 
   static struct option long_options[] = {
     {"stop",     0, 0, 's'},     // Показывает справку по опциям командной строки и завершает работу
@@ -174,6 +177,7 @@ int main (int argc, char *argv[])
     {"no-fork",  0, 0, 'F'},     // Не запускать в фоновом режиме
     {"timeout",  1, 0, 't'},     // Устанавливает время переподключения к БД
     {"logger",   1, 0, 'l'},     // Устанавливает движок вывода сообщений
+    {"config",   1, 0, 'C'},     // Использовать альтернативный конфигурационный файл
     {0, 0, 0, 0}
   };
 
@@ -181,57 +185,49 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "shVvd:fFt:l:", long_options, &option_index);
+      c = getopt_long (argc, argv, "shVvd:fFt:l:C:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
         {
         case 0:
           optname = long_options[option_index].name;
-          DEBUG (DEBUG_CMDARG, "option: " << optname << "=" << optarg);
           break;
         case 's':
-          DEBUG (DEBUG_CMDARG, "option: --stop");
           stop_it = true;
           break;
         case 'h':
-          DEBUG (DEBUG_CMDARG, "option: --help");
           usage ();
           exit (0);
           break;
         case 'V':
-          DEBUG (DEBUG_CMDARG, "option: --version");
           version ();
           exit (0);
           break;
         case 'v':
-          DEBUG (DEBUG_CMDARG, "option: --verbose");
-          Logger::setVerbose (true);
+          verbose = true;
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          Logger::setDebugLevel (dbglevel);
-          DEBUG (DEBUG_CMDARG, "option: --debug=" << dbglevel);
           break;
         case 'f':
-          DEBUG (DEBUG_CMDARG, "option: --fork");
           must_fork = true;
           use_must_fork = true;
           break;
         case 'F':
-          DEBUG (DEBUG_CMDARG, "option: --no-fork");
           must_fork = false;
           use_must_fork = true;
           break;
         case 't':
           if (sscanf (optarg, "%d", &reconnect_timeout) != 1)
             reconnect_timeout = 3600;
-          DEBUG (DEBUG_CMDARG, "option: --timeout=" << reconnect_timeout);
           break;
         case 'l':
-          DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
-          Logger::setEngine (optarg);
+          log_engine = optarg;
+          break;
+        case 'C':
+          config_file = optarg;
           break;
         case '?':
           break;
@@ -239,6 +235,17 @@ int main (int argc, char *argv[])
           printf ("?? getopt return character code 0%o ??\n", c);
         }
     }
+
+  Logger::setSender("samsdaemon");
+  SamsConfig::useFile (config_file);
+
+  // Сначала прочитаем конфигурацию, параметры командной строки
+  // имеют приоритет, потому анализируются позже
+  SamsConfig::reload ();
+
+  Logger::setEngine (log_engine);
+  Logger::setVerbose (verbose);
+  Logger::setDebugLevel (dbglevel);
 
   if (parse_errors > 0)
     {
@@ -276,6 +283,17 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
+  pid_t found_pid = ProcessManager::isRunning ("samsdaemon");
+  if ( stop_it && !found_pid )
+    {
+      WARNING ("Not running");
+      exit (1);
+    }
+  else if (!stop_it && found_pid)
+    {
+      ERROR ("Already running with pid " << found_pid);
+      exit (1);
+    }
 
   pid_t childpid=0;
 
@@ -344,24 +362,11 @@ int main (int argc, char *argv[])
   // Поэтому заносим в БД команду остановки и выходим
   if (stop_it)
     {
-      DBQuery *q = NULL;
-      if (engine == DBConn::DB_UODBC)
+      DBQuery *q = conn->newQuery ();
+      if (!q)
         {
-          #ifdef USE_UNIXODBC
-          q = new ODBCQuery((ODBCConn*)conn);
-          #endif
-        }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          q = new MYSQLQuery((MYSQLConn*)conn);
-          #endif
-        }
-      else if (engine == DBConn::DB_PGSQL)
-        {
-          #ifdef USE_PQ
-          q = new PgQuery((PgConn*)conn);
-          #endif
+          delete conn;
+          return 2;
         }
       basic_stringstream < char >cmd_stop;
       cmd_stop << "insert into reconfig set s_proxy_id=" << proxyid << ", s_service='proxy', s_action='shutdown'";
@@ -383,13 +388,14 @@ int main (int argc, char *argv[])
   Templates::useConnection (conn);
   TimeRanges::useConnection (conn);
   Logger::useConnection (conn);
+  UrlGroupList::useConnection (conn);
 
   ProcessManager process;
 
   if (!process.start ("samsdaemon"))
     {
       delete conn;
-      exit (0);
+      exit (1);
     }
 
   char s_service[15];
@@ -463,24 +469,8 @@ int main (int argc, char *argv[])
 
       if (!query)
         {
-          if (engine == DBConn::DB_UODBC)
-            {
-              #ifdef USE_UNIXODBC
-              query = new ODBCQuery((ODBCConn*)conn);
-              #endif
-            }
-          else if (engine == DBConn::DB_MYSQL)
-            {
-              #ifdef USE_MYSQL
-              query = new MYSQLQuery((MYSQLConn*)conn);
-              #endif
-            }
-          else if (engine == DBConn::DB_PGSQL)
-            {
-              #ifdef USE_PQ
-              query = new PgQuery((PgConn*)conn);
-              #endif
-            }
+          query = conn->newQuery ();
+
           if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
             {
               delete query;
@@ -579,10 +569,11 @@ int main (int argc, char *argv[])
               DEBUG (DEBUG_DAEMON, "Shutdown");
               process.stop();
               Proxy::destroy();
-              LocalNetworks::destroy();
-              SAMSUsers::destroy();
-              Templates::destroy();
-              Logger::destroy();
+              LocalNetworks::destroy ();
+              SAMSUsers::destroy ();
+              Templates::destroy ();
+              UrlGroupList::destroy ();
+              Logger::destroy (); // всегда уничтожаем его последним
               delete query;
               delete conn;
               exit(0);
@@ -590,29 +581,39 @@ int main (int argc, char *argv[])
           //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='reload'
           if (s_service == service_proxy && s_action == action_reload)
             {
-              cmd_del.str("");
+              cmd_del.str ("");
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_proxy << "'";
               cmd_del << " and s_action='" << action_reload << "'";
               query->sendQueryDirect (cmd_del.str());
-              reload(-1);
+              reload (-1);
             }
           //insert into reconfig set s_proxy_id=1, s_service='squid', s_action='reconfig'
           if (s_service == service_squid && s_action == action_reconfig)
             {
-              cmd_del.str("");
+              cmd_del.str ("");
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_squid << "'";
               cmd_del << " and s_action='" << action_reconfig << "'";
               query->sendQueryDirect (cmd_del.str());
 
-              Logger::addLog(Logger::LK_DAEMON, "Got request to reconfigure SQUID");
+              Logger::addLog (Logger::LK_DAEMON, "Got request to reconfigure SQUID");
+
+              // Если получили запрос на реконфигурирование, то скорей всего в БД что-то изменилось
+              // значит нужно получить эти изменения
+              reload (-1);
 
               // Изменить squid.conf и если ошибок нет, то перезапустить squid
-              msg.str("");
-              if (SquidConf::defineAccessRules())
+              msg.str ("");
+
+              // Даже если используется редиректор, необходимо вызывать функцию defineAccessRules
+              // Возможна ситуация когда изменили настройки прокси и поставили использование редиректора
+              // тогда необходимо удалить старые правила.
+              // Возможна оптимизация: если раньше использовали редиректор, и  сейчас его используем
+              // тогда ничего менять не надо
+              if (SquidConf::defineAccessRules ())
                 {
-                  err = system (reconfiguresquid.c_str());
+                  err = system (reconfiguresquid.c_str ());
                   if (err)
                     msg << "Failed to restart SQUID: " << err;
                   else
@@ -626,7 +627,7 @@ int main (int argc, char *argv[])
           //insert into reconfig set s_proxy_id=1, s_service='database', s_action='export'
           if (s_service == service_dbase && s_action == action_export)
             {
-              cmd_del.str("");
+              cmd_del.str ("");
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_dbase << "'";
               cmd_del << " and s_action='" << action_export << "'";

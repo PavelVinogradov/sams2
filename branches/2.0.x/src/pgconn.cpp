@@ -20,6 +20,7 @@
 
 #include "debug.h"
 #include "samsconfig.h"
+#include "pgquery.h"
 
 PgConn::PgConn():DBConn (DBConn::DB_PGSQL)
 {
@@ -61,6 +62,16 @@ bool PgConn::connect ()
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
 
   return true;
+}
+
+DBQuery * PgConn::newQuery ()
+{
+  if (!_connected)
+    return NULL;
+
+  DBQuery * query = new PgQuery( this );
+
+  return query;
 }
 
 void PgConn::disconnect ()

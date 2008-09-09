@@ -105,6 +105,17 @@ bool ODBCConn::connect ()
 }
 
 
+DBQuery * ODBCConn::newQuery ()
+{
+  if (!_connected)
+    return NULL;
+
+  DBQuery * query = new ODBCQuery( this );
+
+  return query;
+}
+
+
 void ODBCConn::disconnect ()
 {
   if (!_connected)

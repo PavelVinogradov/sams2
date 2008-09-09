@@ -42,6 +42,12 @@ bool DBConn::connect ()
 }
 
 
+DBQuery * DBConn::newQuery ()
+{
+  return NULL;
+}
+
+
 bool DBConn::isConnected ()
 {
   return _connected;

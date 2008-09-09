@@ -56,6 +56,7 @@ bool Proxy::_usedomain = false;
 string Proxy::_defaultdomain;
 Proxy::ParserType Proxy::_parser_type;
 Proxy::RedirType Proxy::_redir_type;
+string Proxy::_deny_addr;
 long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
@@ -191,6 +192,11 @@ string Proxy::getRedirectAddr ()
   return "http://redirect.addr.here";
 }
 
+string Proxy::getDenyAddr ()
+{
+  return _deny_addr;
+}
+
 Proxy::RedirType Proxy::getRedirectType ()
 {
   return _redir_type;
@@ -210,7 +216,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   string usrNick;
   vector < string > identTbl;
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << ip << ":" << ident);
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] ip:" << ip << ", ident:" << ident);
 
   Split (ident, DOMAIN_SEPARATORS, identTbl);
   if (identTbl.size () == 2)
@@ -274,9 +280,11 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr->setEnabled (SAMSUser::STAT_ACTIVE);
           if (!SAMSUsers::addNewUser (usr))
             {
+              DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Failed to create new user.");
               delete usr;
               return NULL;
             }
+          DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] User created.");
         }
     }
 
@@ -359,6 +367,7 @@ bool Proxy::reload ()
   long s_usedomain;
   char s_defaultdomain[25];
   char s_redirector[25];
+  char s_denied_to[100];
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
@@ -463,11 +472,17 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (15, DBQuery::T_CHAR, s_denied_to, sizeof(s_denied_to)))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << ", s_squidbase, s_redirector";
+  sqlcmd << ", s_denied_to";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -533,6 +548,8 @@ bool Proxy::reload ()
     {
       ERROR ("Unsupported redirector type: " << s_redirector);
     }
+
+  _deny_addr = s_denied_to;
 
   DEBUG (DEBUG_PROXY, "Authentication: " << toString (_auth));
   DEBUG (DEBUG_PROXY, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));

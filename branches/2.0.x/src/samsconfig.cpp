@@ -39,11 +39,17 @@
 #include "debug.h"
 #include "tools.h"
 
+string SamsConfig::_config_file = "";
 bool SamsConfig::_file_loaded = false;
 bool SamsConfig::_db_loaded = false;
 bool SamsConfig::_internal = false;
 DBConn::DBEngine SamsConfig::_engine;
 map < string, string > SamsConfig::_attributes;
+
+void SamsConfig::useFile (const string &fname)
+{
+  _config_file = fname;
+}
 
 bool SamsConfig::load()
 {
@@ -88,13 +94,10 @@ bool SamsConfig::readFile ()
 
   DEBUG (DEBUG7, "[" << __FUNCTION__ << "] ");
 
-  string conffile = SYSCONFDIR;
-  conffile += "/sams2.conf";
-
-  in.open (conffile.c_str (), ios_base::in);
+  in.open (_config_file.c_str (), ios_base::in);
   if (!in.is_open ())
     {
-      ERROR ("Failed to open file " << conffile);
+      ERROR ("Failed to open file " << _config_file);
       return false;
     }
 
