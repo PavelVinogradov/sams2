@@ -27,11 +27,13 @@ Template::Template (long id)
 
 Template::~Template ()
 {
-  _times.clear();
+  _times.clear ();
+  _urlgroups.clear ();
 }
 
 long Template::getId () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _id);
   return _id;
 }
 
@@ -65,11 +67,13 @@ Proxy::usrAuthType Template::getAuth () const
 
 void Template::setQuote (long quote)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << quote);
   _quote = quote;
 }
 
 long Template::getQuote () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _quote);
   return _quote;
 }
 
@@ -79,7 +83,7 @@ void Template::setPeriod (Template::PeriodType ptype, long days)
   _period_days = days;
 }
 
-Template::PeriodType Template::getPeriodType ()
+Template::PeriodType Template::getPeriodType () const
 {
   return _period_type;
 }
@@ -89,7 +93,7 @@ void Template::setClearDate (const string & dateSpec)
   _clear_date = dateSpec + " 00:00:00";
 }
 
-bool Template::getClearDate (struct tm & clear_date)
+bool Template::getClearDate (struct tm & clear_date) const
 {
   if (_period_type != Template::PERIOD_CUSTOM)
     return false;
@@ -108,18 +112,30 @@ bool Template::getClearDate (struct tm & clear_date)
 
 void Template::setAllDeny (bool alldeny)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << alldeny);
   _alldeny = alldeny;
 }
 
 void Template::addTimeRange (long id)
 {
-  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
   _times.push_back (id);
 }
 
-vector <long> Template::getTimeRangeIds ()
+vector <long> Template::getTimeRangeIds () const
 {
   return _times;
+}
+
+void Template::addUrlGroup (long id)
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
+  _urlgroups.push_back (id);
+}
+
+vector <long> Template::getUrlGroupIds () const
+{
+  return _urlgroups;
 }
 
 bool Template::isUrlAllowed (const string &url) const

@@ -63,11 +63,11 @@ bool SAMSUsers::reload()
   SAMSUser *usr;
 
   long s_user_id;
-  int s_group_id;
-  int s_shablon_id;
+  long s_group_id;
+  long s_shablon_id;
   char s_nick[50];
   char s_domain[50];
-  int s_quote;
+  long s_quote;
   long long s_size;
   long long s_hit;
   long s_enabled;
@@ -118,32 +118,13 @@ bool SAMSUsers::reload()
       DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
-  if (_conn->getEngine() == DBConn::DB_UODBC)
+  query =_conn->newQuery ();
+
+  if (query == NULL)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery( (ODBCConn*)_conn );
-      #else
+      ERROR("Unable to create query.");
       return false;
-      #endif
     }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery( (MYSQLConn*)_conn );
-      #else
-      return false;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery( (PgConn*)_conn );
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_user_id, 0))
     {
@@ -276,6 +257,8 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
   if (!load())
     return NULL;
 
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] domain=" << domain << ", nick=" << nick);
+
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
@@ -286,6 +269,7 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
           break;
         }
     }
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] found " << usr);
   return usr;
 }
 
@@ -293,6 +277,8 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
 {
   if (!load ())
     return NULL;
+
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << ip);
 
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
@@ -304,6 +290,7 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
           break;
         }
     }
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] found " << usr);
   return usr;
 }
 
@@ -333,40 +320,25 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   if (!load())
     return false;
 
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << user);
+
   if (user->getId() > 0)
     {
       DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "User must have id < 0");
       return false;
     }
 
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "_conn=" << _conn);
+
   DBQuery *query = NULL;
 
-  if (_conn->getEngine() == DBConn::DB_UODBC)
+  query =_conn->newQuery();
+
+  if (query == NULL)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery( (ODBCConn*)_conn );
-      #else
+      ERROR("Unable to create query.");
       return false;
-      #endif
     }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery( (MYSQLConn*)_conn );
-      #else
-      return false;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery( (PgConn*)_conn );
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
   basic_stringstream < char >sql_cmd;
   sql_cmd << "insert into squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip)";
@@ -387,6 +359,8 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
       delete query;
       return false;
     }
+
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "User inserted into db");
 
   long s_user_id;
   if (!query->bindCol(1, DBQuery::T_LONG, &s_user_id, 0))
@@ -412,6 +386,8 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
       return false;
     }
 
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "Got id " << s_user_id);
+
   user->setId (s_user_id);
 
   _users.push_back (user);
@@ -424,5 +400,6 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   Logger::addLog(Logger::LK_USER, mess.str());
 
   delete query;
+
   return true;
 }

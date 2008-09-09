@@ -79,6 +79,11 @@ bool TimeRange::hasMidnight () const
   return _hasMidnight;
 }
 
+bool TimeRange::isFullDay () const
+{
+  return (_tstart == _tend);
+}
+
 string TimeRange::getDays () const
 {
   return _days;

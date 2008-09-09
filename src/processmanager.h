@@ -50,6 +50,8 @@ public:
    */
   bool start (const string & procname, bool wait_myself=false);
 
+  static pid_t isRunning (const string & procname);
+
   /**
    * @brief Остановка текущего процесса
    *

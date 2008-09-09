@@ -17,4 +17,4 @@ install-data-local:
 	find $(DESTDIR)/$(datadir)/$(distdir) -type f | xargs chmod 644
 	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
 	$(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir)
-
+	sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php

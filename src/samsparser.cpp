@@ -87,6 +87,8 @@ void usage ()
   cout << "                In case of file you can set filename for output (DEFAULT: samsparser.log)." << endl;
   cout << "                E.g. -l syslog" << endl;
   cout << "                E.g. -l file:/path/to/file" << endl;
+  cout << "    -C, --config=FILE" << endl;
+  cout << "                Use config file FILE." << endl;
   cout << "    -w, --wait-myself" << endl;
   cout << "                If already running program found, do not exit immediatly," << endl;
   cout << "                but wait until it ends and finish the task." << endl;
@@ -134,17 +136,10 @@ int main (int argc, char *argv[])
   string logfilename = "";
   DateFilter *dateFilter = NULL;
   UserFilter *userFilter = NULL;
-
-  // Сначала прочитаем конфигурацию, параметры командной строки
-  // имеют приоритет, потому анализируются позже
-  // Первое обращение к get функциям вызывает загрузку конфигурации
-  dbglevel = SamsConfig::getInt (defDEBUG, err);
-
-  Logger::setSender("samsparser");
-
-  if (err == ERR_OK)
-    Logger::setDebugLevel (dbglevel);
-
+  bool verbose = false;
+  string log_engine = "";
+  string config_file = SYSCONFDIR;
+  config_file += "/sams2.conf";
 
   static struct option long_options[] = {
     {"help",        0, 0, 'h'},    // Показывает справку по опциям командной строки и завершает работу
@@ -159,6 +154,7 @@ int main (int argc, char *argv[])
     {"verbose",     0, 0, 'v'},    // Устанавливает режим многословности
     {"debug",       1, 0, 'd'},    // Устанавливает уровень отладки
     {"logger",      1, 0, 'l'},    // Устанавливает движок вывода сообщений
+    {"config",      1, 0, 'C'},    // Использовать альтернативный конфигурационный файл
     {"wait-myself", 0, 0, 'w'},    // Устанавливает движок вывода сообщений
     {0, 0, 0, 0}
   };
@@ -168,70 +164,58 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVuectf:U:D:vd:l:w", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVuectf:U:D:vd:l:C:w", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
         {
         case 0:
           optname = long_options[option_index].name;
-          DEBUG (DEBUG_CMDARG, "option: " << optname << "=" << optarg);
           break;
         case 'h':
-          DEBUG (DEBUG_CMDARG, "option: --help");
           usage ();
           exit (0);
           break;
         case 'V':
-          DEBUG (DEBUG_CMDARG, "option: --version");
           version ();
           exit (0);
           break;
         case 'u':
-          DEBUG (DEBUG_CMDARG, "option: --update");
           commands += CMD_UPDATE;
           break;
         case 'e':
-          DEBUG (DEBUG_CMDARG, "option: --export");
           commands += CMD_EXPORT;
           break;
         case 'c':
-          DEBUG (DEBUG_CMDARG, "option: --clear");
           commands += CMD_CLEAR;
           break;
         case 't':
-          DEBUG (DEBUG_CMDARG, "option: --truncate");
           commands += CMD_TRUNCATE;
           break;
         case 'f':
           logfilename = optarg;
-          DEBUG (DEBUG_CMDARG, "option: --file=" << logfilename);
           break;
         case 'U':
-          DEBUG (DEBUG_CMDARG, "option: --user");
           WARNING ("Filter for users is NOT implemented.");
           userFilter = new UserFilter (optarg);
           break;
         case 'D':
-          DEBUG (DEBUG_CMDARG, "option: --date");
           dateFilter = new DateFilter (optarg);
           break;
         case 'v':
-          DEBUG (DEBUG_CMDARG, "option: --verbose");
-          Logger::setVerbose (true);
+          verbose = true;
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          Logger::setDebugLevel (dbglevel);
-          DEBUG (DEBUG_CMDARG, "option: --debug=" << dbglevel);
           break;
         case 'l':
-          DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
-          Logger::setEngine (optarg);
+          log_engine = optarg;
+          break;
+        case 'C':
+          config_file = optarg;
           break;
         case 'w':
-          DEBUG (DEBUG_CMDARG, "option: --wait-myself");
           wait_myself = true;
           break;
         case '?':
@@ -240,6 +224,17 @@ int main (int argc, char *argv[])
           printf ("?? getopt return character code 0%o ??\n", c);
         }
     }
+
+  Logger::setSender("samsparser");
+  SamsConfig::useFile (config_file);
+
+  // Сначала прочитаем конфигурацию, параметры командной строки
+  // имеют приоритет, потому анализируются позже
+  SamsConfig::reload ();
+
+  Logger::setEngine (log_engine);
+  Logger::setVerbose (verbose);
+  Logger::setDebugLevel (dbglevel);
 
   if (parse_errors > 0)
     {

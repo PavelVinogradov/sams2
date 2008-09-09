@@ -20,6 +20,7 @@
 
 #include "debug.h"
 #include "samsconfig.h"
+#include "mysqlquery.h"
 
 MYSQLConn::MYSQLConn ():DBConn (DBConn::DB_MYSQL)
 {
@@ -60,6 +61,27 @@ bool MYSQLConn::connect ()
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
 
   return true;
+}
+
+DBQuery * MYSQLConn::newQuery ()
+{
+  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "]");
+
+  if (!_connected)
+    return NULL;
+
+  DBQuery * query = new MYSQLQuery( this );
+
+  if (query)
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "New query " << query);
+    }
+  else
+    {
+      ERROR ("Unable to create new query.");
+    }
+
+  return query;
 }
 
 void MYSQLConn::disconnect ()

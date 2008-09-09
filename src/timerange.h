@@ -35,7 +35,7 @@ public:
   void setTimeRange(const string &days, const string &tstart, const string &tend);
 
   bool hasMidnight () const;
-
+  bool isFullDay () const;
   string getDays () const;
 
   string getStartTimeStr () const;

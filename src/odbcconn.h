@@ -61,6 +61,8 @@ public:
    */
   bool connect ();
 
+  DBQuery * newQuery ();
+
   void disconnect ();
 
   bool isConnected ();

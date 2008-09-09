@@ -22,6 +22,8 @@ using namespace std;
 #include <string>
 #include <map>
 
+class DBQuery;
+
 /**
  * @brief Базовый класс для различных способов подключений к БД
  */
@@ -54,6 +56,15 @@ public:
    * @return true если соединение установлено и false при какой либо ошибке
    */
   virtual bool connect ();
+
+  /**
+   * @brief Создание нового запроса
+   *
+   * Метод должен быть переопределен у наследника.
+   *
+   * @return Экземпляр объекта DBQuery или NULL при какой либо ошибке
+   */
+  virtual DBQuery * newQuery ();
 
   /**
    * @brief Возвращает состояние соединения

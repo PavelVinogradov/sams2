@@ -144,6 +144,7 @@ protected:
   static ofstream _fout;               ///< Поток вывода в файл
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;
+  static pid_t _pid;                   ///< Идентификатор текущего процесса
 };
 
 #endif

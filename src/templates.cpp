@@ -98,40 +98,26 @@ bool Templates::reload()
     }
 
 
-  DBQuery *query = NULL;
-  DBQuery *query2 = NULL;
+  DBQuery *query = _conn->newQuery ();
+  if (!query)
+    {
+      return false;
+    }
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  DBQuery *query2 = _conn->newQuery ();
+  if (!query2)
+    {
+      delete query;
+      return false;
+    }
 
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *query3 = _conn->newQuery ();
+  if (!query3)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      query2 = new ODBCQuery((ODBCConn*)_conn);
-      #else
+      delete query;
+      delete query2;
       return false;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      query2 = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return false;
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery((PgConn*)_conn);
-      query2 = new PgQuery((PgConn*)_conn);
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
   long s_trange_id;
   long s_tpl_id;
@@ -140,41 +126,48 @@ bool Templates::reload()
   long s_alldenied;
   char s_period[5];
   char s_clrdate[15];
+  long s_redirect_id;
 
   if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_CHAR,  s_auth, sizeof(s_auth)))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
   if (!query->bindCol (3, DBQuery::T_LONG,  &s_quote, 0))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
   if (!query->bindCol (4, DBQuery::T_LONG,  &s_alldenied, 0))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
   if (!query->bindCol (5, DBQuery::T_CHAR,  s_period, sizeof(s_period)))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
   if (!query->bindCol (6, DBQuery::T_CHAR,  s_clrdate, sizeof(s_clrdate)))
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
 
@@ -182,6 +175,15 @@ bool Templates::reload()
     {
       delete query;
       delete query2;
+      delete query3;
+      return false;
+    }
+
+  if (!query3->bindCol (1, DBQuery::T_LONG,  &s_redirect_id, 0))
+    {
+      delete query;
+      delete query2;
+      delete query3;
       return false;
     }
 
@@ -189,6 +191,7 @@ bool Templates::reload()
     {
       delete query;
       delete query2;
+      delete query3;
       return false;
     }
 
@@ -220,17 +223,27 @@ bool Templates::reload()
 
       sqlcmd.str("");
       sqlcmd << "select s_trange_id from sconfig_time where s_shablon_id=" << s_tpl_id;
-      if (!query2->sendQueryDirect (sqlcmd.str ()))
+      if (query2->sendQueryDirect (sqlcmd.str ()))
         {
-          continue;
+          while (query2->fetch())
+            {
+              tpl->addTimeRange (s_trange_id);
+            }
         }
-      while (query2->fetch())
+
+      sqlcmd.str("");
+      sqlcmd << "select a.s_redirect_id from sconfig a, shablon b where a.s_shablon_id=b.s_shablon_id and b.s_shablon_id=" << s_tpl_id;
+      if (query3->sendQueryDirect (sqlcmd.str ()))
         {
-          tpl->addTimeRange (s_trange_id);
+          while (query3->fetch())
+            {
+              tpl->addUrlGroup (s_redirect_id);
+            }
         }
     }
   delete query;
   delete query2;
+  delete query3;
   _loaded = true;
 
   return true;
