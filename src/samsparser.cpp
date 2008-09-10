@@ -130,7 +130,7 @@ int main (int argc, char *argv[])
   int parse_errors = 0;
   int c;
   int err;
-  uint dbglevel;
+  uint dbglevel = 0;
   bool wait_myself = false;
   string optname = "";
   string logfilename = "";

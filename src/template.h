@@ -140,12 +140,22 @@ public:
   vector <long> getUrlGroupIds () const;
 
   /**
+   * @brief Возвращает возможность подключения в текущее время
+   *
+   * На текущей реализации параметр \a url игнорируется, т.к. не позволяет структура БД
+   *
+   * @param url url адрес ресурса
+   * @return true если ресурс в текущее время доступен и false в противном случае
+   */
+  bool isTimeDenied (const string & url) const;
+
+  /**
    * @brief Возвращает признак доступности ресурса
    *
    * @param url url адрес ресурса
-   * @return true если ресурс доступен и false в противном случае
+   * @return false если ресурс доступен и true в противном случае
    */
-  bool isUrlAllowed (const string & url) const;
+  bool isUrlDenied (const string & url) const;
 
 private:
   long _id;

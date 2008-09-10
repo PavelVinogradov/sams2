@@ -435,13 +435,15 @@ int main (int argc, char *argv[])
   string dateStart;
   char str_prev_month[25];
   string backup_fname;
+
+  if (check_interval == 0)
+    check_interval = 1;
+
   while (true)
     {
       looptime = (int) difftime(loop_end, loop_start);
       sleeptime = check_interval - looptime;
 
-      if (sleeptime == 0)
-        sleeptime = 1; // Do not allow daemon to use CPU for 100%
       if (sleeptime < 0)
         sleeptime = -sleeptime;
       if (sleeptime > 0)
@@ -496,10 +498,9 @@ int main (int argc, char *argv[])
           continue;
         }
 
-      if (loop_start != loop_end)
-        loop_start = time (NULL);
-
+      loop_start = time (NULL);
       time_now = localtime (&loop_start);
+
       // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
       if ((time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
         {

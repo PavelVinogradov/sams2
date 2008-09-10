@@ -15,6 +15,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "template.h"
+#include "timeranges.h"
+#include "timerange.h"
 
 #include "debug.h"
 
@@ -138,7 +140,24 @@ vector <long> Template::getUrlGroupIds () const
   return _urlgroups;
 }
 
-bool Template::isUrlAllowed (const string &url) const
+bool Template::isTimeDenied (const string & url) const
 {
+  TimeRange * tr = NULL;
+  vector <long>::const_iterator it;
+
+  for (it = _times.begin (); it != _times.end(); it++)
+    {
+      tr = TimeRanges::getTimeRange (*it);
+      if (!tr)
+        continue;
+      if (tr->hasNow ())
+        return false;
+    }
+
   return true;
+}
+
+bool Template::isUrlDenied (const string &url) const
+{
+  return false;
 }

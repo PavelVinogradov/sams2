@@ -91,28 +91,12 @@ bool TimeRanges::reload()
 
 
   basic_stringstream < char >sqlcmd;
-  DBQuery *query = NULL;
+  DBQuery *query = _conn->newQuery ();
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
-
-  if (engine == DBConn::DB_UODBC)
+  if (!query)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
       return false;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
   long s_trange_id;
   char s_name[25];

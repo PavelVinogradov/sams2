@@ -74,6 +74,27 @@ void TimeRange::setTimeRange(const string &days, const string &tstart, const str
     _hasMidnight = false;
 }
 
+bool TimeRange::hasNow () const
+{
+  char strbuf[10];
+  string spec;
+  struct tm date_time;
+
+  time_t now = time (NULL);
+
+  strftime (strbuf, sizeof (strbuf), "%H:%M:%S", localtime (&now));
+  spec = "2000-01-01 ";
+  spec += strbuf;
+  DEBUG (DEBUG9, "Converting time " << spec);
+  strptime (spec.c_str (), "%Y-%m-%d %H:%M:%S", &date_time);
+  now = mktime (&date_time);
+
+  if (difftime (now, _time_start) >= 0 && difftime (_time_end, now) >= 0)
+    return true;
+  else
+    return false;
+}
+
 bool TimeRange::hasMidnight () const
 {
   return _hasMidnight;
