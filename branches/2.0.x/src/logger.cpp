@@ -144,7 +144,7 @@ bool Logger::setEngine (const string & engine)
 
   vector < string > tblOptions;
 
-  if (engine == "syslog")
+  if ( engine == "syslog" || engine.empty () )
     {
       openlog (_sender.c_str(), LOG_PID | LOG_CONS, LOG_DAEMON);
       _engine = OUT_SYSLOG;

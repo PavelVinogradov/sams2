@@ -64,17 +64,11 @@ bool SamsConfig::load()
 
 bool SamsConfig::reload()
 {
-  if (!_file_loaded)
-    {
-      if (!readFile())
-        return false;
-    }
+  if (!readFile())
+    return false;
 
-  if (!_db_loaded)
-    {
-      if (!readDB())
-        return false;
-    }
+  if (!readDB())
+    return false;
 
   return true;
 }
@@ -118,7 +112,10 @@ bool SamsConfig::readFile ()
 
       name = TrimSpaces (name);
       value = TrimSpaces (value);
-      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << value);
+      if (name != defDBPASSWORD)
+        {
+          DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << value);
+        }
       setString (name, value);
     }
 

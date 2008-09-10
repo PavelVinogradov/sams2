@@ -13,7 +13,7 @@ samsparser_SOURCES = \
 	samsusers.cpp samsuser.cpp net.cpp ip.cpp localnetworks.cpp url.cpp \
 	squidlogparser.cpp proxy.cpp dbcleaner.cpp logger.cpp processmanager.cpp mysqlconn.cpp \
 	dbconn.cpp dbquery.cpp mysqlquery.cpp templates.cpp template.cpp groups.cpp \
-	pgconn.cpp pgquery.cpp
+	pgconn.cpp pgquery.cpp timeranges.cpp timerange.cpp
 samsdaemon_SOURCES = \
 	datefilter.cpp debug.cpp filter.cpp ip.cpp \
 	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
@@ -27,7 +27,7 @@ samsredir_SOURCES = \
 	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
 	processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsusers.cpp template.cpp \
 	templates.cpp tools.cpp url.cpp samsredir.cpp groups.cpp net.cpp pgconn.cpp \
-	pgquery.cpp urlgrouplist.cpp urlgroup.cpp
+	pgquery.cpp urlgrouplist.cpp urlgroup.cpp timeranges.cpp timerange.cpp
 noinst_HEADERS = \
 	debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
 	filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \

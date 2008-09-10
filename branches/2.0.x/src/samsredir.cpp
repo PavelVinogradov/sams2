@@ -32,7 +32,6 @@
 
 #include "samsconfig.h"
 #include "debug.h"
-//#include "processmanager.h"
 #include "samsusers.h"
 #include "samsuser.h"
 #include "proxy.h"
@@ -100,7 +99,7 @@ int main (int argc, char *argv[])
 {
   int parse_errors = 0;
   int c;
-  uint dbglevel;
+  uint dbglevel = 0;
   string optname = "";
   bool must_fork = true;
   bool use_must_fork = false;
@@ -132,41 +131,32 @@ int main (int argc, char *argv[])
         {
         case 0:
           optname = long_options[option_index].name;
-          DEBUG (DEBUG_CMDARG, "option: " << optname << "=" << optarg);
           break;
         case 'h':
-          DEBUG (DEBUG_CMDARG, "option: --help");
           usage ();
           exit (0);
           break;
         case 'V':
-          DEBUG (DEBUG_CMDARG, "option: --version");
           version ();
           exit (0);
           break;
         case 'v':
-          DEBUG (DEBUG_CMDARG, "option: --verbose");
-          Logger::setVerbose (true);
+          verbose = true;
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          Logger::setDebugLevel (dbglevel);
-          DEBUG (DEBUG_CMDARG, "option: --debug=" << dbglevel);
           break;
         case 'f':
-          DEBUG (DEBUG_CMDARG, "option: --fork");
           must_fork = true;
           use_must_fork = true;
           break;
         case 'F':
-          DEBUG (DEBUG_CMDARG, "option: --no-fork");
           must_fork = false;
           use_must_fork = true;
           break;
         case 'l':
-          DEBUG (DEBUG_CMDARG, "option: --logger=" << optarg);
-          Logger::setEngine (optarg);
+          log_engine = optarg;
           break;
         case 'C':
           config_file = optarg;
@@ -261,8 +251,8 @@ int main (int argc, char *argv[])
   // where t_r.s_shablon_id=t.s_shablon_id
   //       and t_r.s_redirect_id=r.s_redirect_id
   //       and u.s_redirect_id=r.s_redirect_id;
-  delete conn;
-  conn = NULL;
+  //delete conn;
+  //conn = NULL;
 
 //  basic_stringstream < char >mess;
 
@@ -276,7 +266,7 @@ int main (int argc, char *argv[])
   vector < string > source;
   SAMSUser *usr = NULL;
   Template *tpl = NULL;
-  while (1)
+  while (true)
     {
       cin.getline(line, sizeof(line));
 
@@ -287,7 +277,7 @@ int main (int argc, char *argv[])
       if (fields.size () == 0)
         break;
 
-      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Input: " << line);
+      INFO ("[" << __FUNCTION__ << "] Input: " << line);
 
       Split (fields[1], "/", source);
 
@@ -302,7 +292,7 @@ int main (int argc, char *argv[])
       // url считается локальным и неважно какой пользователь обратился, разрешаем доступ
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Url is local");
+          INFO ("[" << __FUNCTION__ << "] Url is local");
           cout << endl;
           continue;
         }
@@ -312,7 +302,6 @@ int main (int argc, char *argv[])
       // Пользователь не найден, блокируем доступ
       if (!usr)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] User not found");
           if (fields[2] != "-")
             cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << endl;
           else
@@ -320,28 +309,39 @@ int main (int argc, char *argv[])
           continue;
         }
 
-      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Found user " << usr);
+      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Found user: " << *usr);
+
+      if ( usr->getEnabled () != SAMSUser::STAT_ACTIVE )
+        {
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << endl;
+          continue;
+        }
 
       // нарушена целостность БД (отсутствует шаблон пользователя), блокируем доступ
       tpl = Templates::getTemplate (usr->getShablonId ());
       if (!tpl)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Nothing to do without template");
+          INFO ("[" << __FUNCTION__ << "] Nothing to do without template");
           cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << endl;
           continue;
         }
 
-      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Found user: " << *usr);
+      // Если url в текущее время не разрешен, блокируем доступ
+      if (tpl->isTimeDenied (fields[0]))
+        {
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << endl;
+          continue;
+        }
 
       // Если url по каким-то причинам не разрешен, блокируем доступ
-      if (!tpl->isUrlAllowed (fields[0]))
+      if (tpl->isUrlDenied (fields[0]))
         {
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
-      DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Access granted");
+      INFO ("[" << __FUNCTION__ << "] Access granted");
       cout << endl;
     }
 
