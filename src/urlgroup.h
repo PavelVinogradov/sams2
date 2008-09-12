@@ -71,6 +71,8 @@ public:
    */
   void addUrl (const string & url);
 
+  bool hasUrl (const string & url) const;
+
   /**
    * @brief Формирует значения экземпляра класса в виде строки
    *

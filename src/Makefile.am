@@ -13,7 +13,7 @@ samsparser_SOURCES = \
 	samsusers.cpp samsuser.cpp net.cpp ip.cpp localnetworks.cpp url.cpp \
 	squidlogparser.cpp proxy.cpp dbcleaner.cpp logger.cpp processmanager.cpp mysqlconn.cpp \
 	dbconn.cpp dbquery.cpp mysqlquery.cpp templates.cpp template.cpp groups.cpp \
-	pgconn.cpp pgquery.cpp timeranges.cpp timerange.cpp
+	pgconn.cpp pgquery.cpp timeranges.cpp timerange.cpp urlgrouplist.cpp urlgroup.cpp
 samsdaemon_SOURCES = \
 	datefilter.cpp debug.cpp filter.cpp ip.cpp \
 	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \

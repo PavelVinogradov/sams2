@@ -39,6 +39,7 @@
 #include "groups.h"
 #include "templates.h"
 #include "template.h"
+#include "urlgrouplist.h"
 #include "tools.h"
 
 /**
@@ -239,12 +240,14 @@ int main (int argc, char *argv[])
   Groups::useConnection (conn);
   Proxy::useConnection (conn);
   Templates::useConnection (conn);
+  UrlGroupList::useConnection (conn);
 
   SAMSUsers::reload ();
   LocalNetworks::reload ();
   Groups::reload ();
   Proxy::reload ();
   Templates::reload ();
+  UrlGroupList::reload();
 
   // select t.s_shablon_id, r.s_type, u.s_url
   // from shablon t, sconfig t_r, redirect r, url u
@@ -277,7 +280,7 @@ int main (int argc, char *argv[])
       if (fields.size () == 0)
         break;
 
-      INFO ("[" << __FUNCTION__ << "] Input: " << line);
+      INFO ("Input: " << line);
 
       Split (fields[1], "/", source);
 
@@ -292,7 +295,7 @@ int main (int argc, char *argv[])
       // url считается локальным и неважно какой пользователь обратился, разрешаем доступ
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
-          INFO ("[" << __FUNCTION__ << "] Url is local");
+          INFO ("Url is local");
           cout << endl;
           continue;
         }
@@ -321,27 +324,43 @@ int main (int argc, char *argv[])
       tpl = Templates::getTemplate (usr->getShablonId ());
       if (!tpl)
         {
-          INFO ("[" << __FUNCTION__ << "] Nothing to do without template");
+          INFO ("Nothing to do without template");
           cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << endl;
           continue;
         }
 
+      // Если url существует в белом списке, разрешаем доступ
+      if ( tpl->isUrlWhitelisted (fields[0]) )
+        {
+          INFO ("In white list");
+          cout << endl;
+          continue;
+        }
+
+      // Если url существует в черном списке, блокируем доступ
+      if ( tpl->isUrlBlacklisted (fields[0]) )
+        {
+          INFO ("In black list");
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
+          continue;
+        }
+
       // Если url в текущее время не разрешен, блокируем доступ
-      if (tpl->isTimeDenied (fields[0]))
+      if ( tpl->isTimeDenied (fields[0]) )
         {
           cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << endl;
           continue;
         }
 
-      // Если url по каким-то причинам не разрешен, блокируем доступ
-      if (tpl->isUrlDenied (fields[0]))
+      if ( tpl->getAllDeny () )
         {
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
+          INFO ("Denied to all and not whitelisted");
+          cout << endl;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
-      INFO ("[" << __FUNCTION__ << "] Access granted");
+      INFO ("Access granted");
       cout << endl;
     }
 

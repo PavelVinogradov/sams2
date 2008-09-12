@@ -17,6 +17,8 @@
 #include "template.h"
 #include "timeranges.h"
 #include "timerange.h"
+#include "urlgrouplist.h"
+#include "urlgroup.h"
 
 #include "debug.h"
 
@@ -118,6 +120,12 @@ void Template::setAllDeny (bool alldeny)
   _alldeny = alldeny;
 }
 
+bool Template::getAllDeny () const
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _alldeny);
+  return _alldeny;
+}
+
 void Template::addTimeRange (long id)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
@@ -145,6 +153,9 @@ bool Template::isTimeDenied (const string & url) const
   TimeRange * tr = NULL;
   vector <long>::const_iterator it;
 
+  if (_times.empty () )
+    return false;
+
   for (it = _times.begin (); it != _times.end(); it++)
     {
       tr = TimeRanges::getTimeRange (*it);
@@ -157,7 +168,34 @@ bool Template::isTimeDenied (const string & url) const
   return true;
 }
 
-bool Template::isUrlDenied (const string &url) const
+bool Template::isUrlWhitelisted (const string &url) const
 {
+  vector <long>::const_iterator it;
+  UrlGroup *grp = NULL;
+
+  for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
+    {
+      grp = UrlGroupList::getUrlGroup (*it);
+      if (!grp)
+        continue;
+      if (grp->getAccessType () == UrlGroup::ACC_ALLOW && grp->hasUrl (url))
+        return true;
+    }
+  return false;
+}
+
+bool Template::isUrlBlacklisted (const string &url) const
+{
+  vector <long>::const_iterator it;
+  UrlGroup *grp = NULL;
+
+  for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
+    {
+      grp = UrlGroupList::getUrlGroup (*it);
+      if (!grp)
+        continue;
+      if (grp->getAccessType () == UrlGroup::ACC_DENY && grp->hasUrl (url))
+        return true;
+    }
   return false;
 }

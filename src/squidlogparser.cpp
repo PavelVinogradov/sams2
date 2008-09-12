@@ -119,35 +119,11 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 {
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname << ", " << from_begin);
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
-
-  DBQuery *query = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *query = conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)conn);
-      #else
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)conn);
-      #else
-      return;
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery((PgConn*)conn);
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
 
   char s_version[10];
   basic_stringstream < char >sql_cmd;
@@ -252,24 +228,10 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   long s_user_id;
 
 
-  DBQuery *updUserQuery = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *updUserQuery = conn->newQuery ();
+  if (!updUserQuery)
     {
-      #ifdef USE_UNIXODBC
-      updUserQuery = new ODBCQuery((ODBCConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      updUserQuery = new MYSQLQuery((MYSQLConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      updUserQuery = new PgQuery((PgConn*)conn);
-      #endif
+      return;
     }
   basic_stringstream < char > user_update_cmd;
   user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
@@ -300,24 +262,11 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     }
 
 
-  DBQuery *updCacheQuery = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *updCacheQuery = conn->newQuery ();
+  if (!updCacheQuery)
     {
-      #ifdef USE_UNIXODBC
-      updCacheQuery = new ODBCQuery((ODBCConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      updCacheQuery = new MYSQLQuery((MYSQLConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      updCacheQuery = new PgQuery((PgConn*)conn);
-      #endif
+      delete updUserQuery;
+      return;
     }
   basic_stringstream < char > cache_update_cmd;
   cache_update_cmd << "insert into squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_ipaddr, s_period, s_method, s_url)";
@@ -390,26 +339,14 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     }
 
 
-  DBQuery *updProxyQuery = NULL;
+  DBQuery *updProxyQuery = conn->newQuery ();
   if (!from_begin)
   {
-    if (engine == DBConn::DB_UODBC)
+    if (!updProxyQuery)
       {
-        #ifdef USE_UNIXODBC
-        updProxyQuery = new ODBCQuery((ODBCConn*)conn);
-        #endif
-      }
-    else if (engine == DBConn::DB_MYSQL)
-      {
-        #ifdef USE_MYSQL
-        updProxyQuery = new MYSQLQuery((MYSQLConn*)conn);
-        #endif
-      }
-    else if (engine == DBConn::DB_PGSQL)
-      {
-        #ifdef USE_PQ
-        updProxyQuery = new PgQuery((PgConn*)conn);
-        #endif
+        delete updCacheQuery;
+        delete updUserQuery;
+        return;
       }
     basic_stringstream < char > proxy_update_cmd;
     proxy_update_cmd << "update proxy set s_endvalue=? where s_proxy_id=" << _proxyid;
@@ -429,24 +366,13 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       }
   }
 
-  DBQuery *selCachesumQuery = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *selCachesumQuery = conn->newQuery ();
+  if (!selCachesumQuery)
     {
-      #ifdef USE_UNIXODBC
-      selCachesumQuery = new ODBCQuery((ODBCConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      selCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      selCachesumQuery = new PgQuery((PgConn*)conn);
-      #endif
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
     }
   basic_stringstream < char > cachesum_select_cmd;
 /*
@@ -503,24 +429,14 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 */
 
 
-  DBQuery *insCachesumQuery = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *insCachesumQuery = conn->newQuery ();
+  if (!insCachesumQuery)
     {
-      #ifdef USE_UNIXODBC
-      insCachesumQuery = new ODBCQuery((ODBCConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      insCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      insCachesumQuery = new PgQuery((PgConn*)conn);
-      #endif
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
     }
   basic_stringstream < char > cachesum_insert_cmd;
   cachesum_insert_cmd << "insert into cachesum (s_proxy_id, s_date, s_domain, s_user, s_size, s_hit)";
@@ -581,24 +497,15 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     }
 
 
-  DBQuery *updCachesumQuery = NULL;
-  if (engine == DBConn::DB_UODBC)
+  DBQuery *updCachesumQuery = conn->newQuery ();
+  if (!updCachesumQuery)
     {
-      #ifdef USE_UNIXODBC
-      updCachesumQuery = new ODBCQuery((ODBCConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      updCachesumQuery = new MYSQLQuery((MYSQLConn*)conn);
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      updCachesumQuery = new PgQuery((PgConn*)conn);
-      #endif
+      delete insCachesumQuery;
+      delete selCachesumQuery;
+      delete updProxyQuery;
+      delete updCacheQuery;
+      delete updUserQuery;
+      return;
     }
   basic_stringstream < char > cachesum_update_cmd;
   cachesum_update_cmd << "update cachesum set s_size=?, s_hit=? where s_date=? and s_domain=? and s_user=? and s_proxy_id=" << _proxyid;
@@ -671,6 +578,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   SAMSUser *usr;
   long long used_size;
   long long allowed_limit;
+  bool need_reconfig = false;
   while (in.good ())
     {
       getline (in, line);
@@ -826,6 +734,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
           mess << "User " << *usr << " deactivated.";
           INFO (mess.str ());
           Logger::addLog(Logger::LK_USER, mess.str());
+          need_reconfig = true;
         }
       s_enabled = (long)usr->getEnabled();
       updUserQuery->sendQuery ();
@@ -839,6 +748,21 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   delete updProxyQuery;
   delete updCacheQuery;
   delete updUserQuery;
+
+
+  if (need_reconfig)
+    {
+      DBQuery *reconfigQuery = conn->newQuery ();
+      if (!reconfigQuery)
+        {
+          return;
+        }
+      basic_stringstream < char > reconfig_cmd;
+      reconfig_cmd << "insert into reconfig (s_proxy_id, s_service, s_action)";
+      reconfig_cmd << " VALUES ("<<_proxyid<<", 'squid', 'reconfig')";
+      reconfigQuery->sendQueryDirect (reconfig_cmd.str());
+      delete reconfigQuery;
+    }
 
   return;
 }

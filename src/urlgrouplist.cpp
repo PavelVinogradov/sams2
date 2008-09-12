@@ -139,8 +139,8 @@ bool UrlGroupList::reload()
       return false;
     }
 
-  //string sqlcmd = "select s_redirect_id, s_type from redirect";
-  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url from redirect a, url b where a.s_redirect_id=b.s_redirect_id";
+  // Локальные сети анализируются в специальном классе LocalNetworks
+  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url from redirect a, url b where a.s_redirect_id=b.s_redirect_id and a.s_type!='local'";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
