@@ -111,6 +111,8 @@ public:
    */
   void setAllDeny(bool alldeny);
 
+  bool getAllDeny () const;
+
   /**
    * @brief Добавляет идентификатор временного ограничения
    *
@@ -153,9 +155,17 @@ public:
    * @brief Возвращает признак доступности ресурса
    *
    * @param url url адрес ресурса
-   * @return false если ресурс доступен и true в противном случае
+   * @return true если ресурс присутствует в "белых" списках и false в противном случае
    */
-  bool isUrlDenied (const string & url) const;
+  bool isUrlWhitelisted (const string & url) const;
+
+  /**
+   * @brief Возвращает признак доступности ресурса
+   *
+   * @param url url адрес ресурса
+   * @return true если ресурс присутствует в списках запрета и false в противном случае
+   */
+  bool isUrlBlacklisted (const string & url) const;
 
 private:
   long _id;

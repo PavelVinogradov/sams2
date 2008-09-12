@@ -53,10 +53,16 @@ bool Net::hasHost (const string & host)
   if (_domain && isname)
     {
       DEBUG (DEBUG5, "[" << this << "] " << "domain specifications");
-      pos = host.find (_net);
-      if (pos != -1)
+
+      // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
+      if (_net.size () > host.size ())
+        return false;
+
+      pos = host.compare (host.size ()-_net.size (), _net.size (), _net);
+
+      if (pos == 0)
         {
-          DEBUG (DEBUG5, "[" << this << "] " << host << " is part of " << _net);
+          DEBUG (DEBUG4, "[" << this << "] Host " << host << " is part of net " << _net);
           return true;
         }
       else

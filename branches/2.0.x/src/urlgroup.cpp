@@ -18,6 +18,8 @@
 using namespace std;
 
 #include "urlgroup.h"
+#include "url.h"
+
 #include "debug.h"
 
 UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
@@ -46,6 +48,33 @@ void UrlGroup::addUrl (const string & url)
 {
   DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << url);
   _list.push_back (url);
+}
+
+bool UrlGroup::hasUrl (const string & url) const
+{
+  vector<string>::const_iterator it;
+  Url u;
+  u.setUrl (url);
+
+  string domain = u.getAddress ();
+
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      if (_type == UrlGroup::ACC_ALLOW || _type == UrlGroup::ACC_DENY)
+        {
+          // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
+          if ((*it).size () > domain.size ())
+            continue;
+
+          if (domain.compare (domain.size ()-(*it).size (), (*it).size (), (*it)) == 0)
+            {
+              DEBUG (DEBUG4, "[" << this << "] Host " << domain << " is part of net " << *it);
+              return true;
+            }
+        }
+    }
+
+  return false;
 }
 
 string UrlGroup::asString () const
