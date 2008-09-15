@@ -18,21 +18,8 @@
 
 #include "config.h"
 
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "dbcleaner.h"
 #include "samsconfig.h"
 #include "datefilter.h"
@@ -43,6 +30,7 @@
 
 DBCleaner::DBCleaner ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _date_filter = NULL;
   _user_filter = NULL;
   _date_filter_owner = false;
@@ -51,6 +39,7 @@ DBCleaner::DBCleaner ()
 
 DBCleaner::~DBCleaner ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   if (_date_filter && _date_filter_owner)
     delete _date_filter;
 }
@@ -96,50 +85,26 @@ void DBCleaner::clearCounters ()
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  if (SamsConfig::getEngine() == DBConn::DB_UODBC)
+  conn = SamsConfig::newConnection ();
+  if (!conn)
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new ODBCQuery((ODBCConn*)conn);
-      #else
+      ERROR ("Unable to create connection.");
       return;
-      #endif
     }
-  else if (SamsConfig::getEngine() == DBConn::DB_MYSQL)
+
+  if (!conn->connect ())
     {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
-      #else
+      delete conn;
       return;
-      #endif
     }
-  else if (SamsConfig::getEngine() == DBConn::DB_PGSQL)
+
+  query = conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new PgQuery((PgConn*)conn);
-      #else
+      ERROR ("Unable to create query.");
+      delete conn;
       return;
-      #endif
     }
-  else
-    return;
 
   basic_stringstream < char > strUserFilter;
   if (_user_filter)
@@ -203,52 +168,26 @@ void DBCleaner::clearCache ()
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  conn = SamsConfig::newConnection ();
+  if (!conn)
+    {
+      ERROR ("Unable to create connection.");
+      return;
+    }
 
-  if (engine == DBConn::DB_UODBC)
+  if (!conn->connect ())
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new ODBCQuery((ODBCConn*)conn);
-      #else
+      delete conn;
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
+
+  query = conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
-      #else
+      ERROR("Unable to create query.");
+      delete conn;
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new PgQuery((PgConn*)conn);
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
 
   basic_stringstream < char > strDateFilter;
   basic_stringstream < char > strUserFilter;
@@ -335,52 +274,26 @@ void DBCleaner::clearOldCache (int nmonth)
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  conn = SamsConfig::newConnection ();
+  if (!conn)
+    {
+      ERROR ("Unable to create connection.");
+      return;
+    }
 
-  if (engine == DBConn::DB_UODBC)
+  if (!conn->connect ())
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new ODBCQuery((ODBCConn*)conn);
-      #else
+      delete conn;
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
+
+  query = conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
-      #else
+      ERROR("Unable to create query.");
+      delete conn;
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return;
-        }
-      query = new PgQuery((PgConn*)conn);
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
 
   time_t now = time (NULL);
   struct tm *time_now = localtime (&now);

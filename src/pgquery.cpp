@@ -27,6 +27,8 @@
 
 PgQuery::PgQuery (PgConn *conn):DBQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _conn = conn;
   _res = NULL;
   _prepeared = false;
@@ -42,6 +44,8 @@ PgQuery::PgQuery (PgConn *conn):DBQuery ()
 
 PgQuery::~PgQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   destroy ();
 }
 

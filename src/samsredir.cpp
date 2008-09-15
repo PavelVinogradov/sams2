@@ -20,16 +20,7 @@
 #include "config.h"
 #include "configmake.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
+#include "dbconn.h"
 #include "samsconfig.h"
 #include "debug.h"
 #include "samsusers.h"
@@ -208,26 +199,12 @@ int main (int argc, char *argv[])
 
   DBConn *conn = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
-
-  if (engine == DBConn::DB_UODBC)
+  conn = SamsConfig::newConnection ();
+  if (!conn)
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      #else
+      ERROR ("Unable to create connection.");
       return 1;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      #else
-      return 1;
-      #endif
-    }
-  else
-    return 1;
 
   if (!conn->connect ())
     {
@@ -288,7 +265,7 @@ int main (int argc, char *argv[])
       if (fields.size () < 4)
         {
           DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Invalid fields count: " << fields.size());
-          cout << endl;
+          cout << line;
           continue;
         }
 
@@ -296,7 +273,7 @@ int main (int argc, char *argv[])
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
           INFO ("Url is local");
-          cout << endl;
+	  cout << line;
           continue;
         }
 
@@ -333,7 +310,7 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlWhitelisted (fields[0]) )
         {
           INFO ("In white list");
-          cout << endl;
+	  cout << line;
           continue;
         }
 
@@ -355,13 +332,13 @@ int main (int argc, char *argv[])
       if ( tpl->getAllDeny () )
         {
           INFO ("Denied to all and not whitelisted");
-          cout << endl;
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
       INFO ("Access granted");
-      cout << endl;
+      cout << line;
     }
 
   return 0;

@@ -26,6 +26,7 @@
 
 DBConn::DBConn (DBEngine engine)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _connected = false;
   _engine = engine;
 }
@@ -33,6 +34,7 @@ DBConn::DBConn (DBEngine engine)
 
 DBConn::~DBConn ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 

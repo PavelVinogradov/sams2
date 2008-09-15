@@ -2,7 +2,7 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src doc/src
+SUBDIRS = src doc/src plugins/loadavg
 
 EXTRA_DIST = doc php etc spec debian redhat
 
@@ -16,5 +16,7 @@ install-data-local:
 	find $(DESTDIR)/$(datadir)/$(distdir) -type d | xargs chmod 755
 	find $(DESTDIR)/$(datadir)/$(distdir) -type f | xargs chmod 644
 	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
-	$(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir)
-	sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php
+	if [ ! -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
+		$(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir) ;\
+		sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php ;\
+	fi

@@ -24,6 +24,8 @@ using namespace std;
 #include <map>
 #include <string>
 
+#include "dbconn.h"
+
 #define defDEBUG              "DEBUGLEVEL"
 #define defDBSERVER           "DB_SERVER"
 #define defDBENGINE           "DB_ENGINE"
@@ -38,7 +40,6 @@ using namespace std;
 #define defPROXYID            "CACHENUM"
 #define defSLEEPTIME          "s_sleep"
 #define defDAEMONSTEP         "s_parser_time"
-#include "dbconn.h"
 
 /**
  * @brief Чтение и запись настроек, используя файл и БД
@@ -136,6 +137,8 @@ public:
      * @param value Значение параметра
      */
   static void setBool (const string attrname, const bool value);
+
+  static DBConn * newConnection ();
 
   static DBConn::DBEngine getEngine();
 

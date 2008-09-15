@@ -20,16 +20,20 @@
 
 TimeRange::TimeRange(long id, const string &name)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _id = id;
 }
 
 
 TimeRange::~TimeRange()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 long TimeRange::getId () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _id);
   return _id;
 }
 
@@ -39,6 +43,8 @@ void TimeRange::setTimeRange(const string &days, const string &tstart, const str
   char *rest;
   char strbuf[10];
   string spec;
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << days << ", " << tstart << ", " << tend << ")]");
 
   spec = "2000-01-01 " + tstart;
   DEBUG (DEBUG9, "Converting time " << tstart);
@@ -82,6 +88,24 @@ bool TimeRange::hasNow () const
 
   time_t now = time (NULL);
 
+  struct tm *tm_now = localtime(&now);
+  string week_day = "";
+  switch (tm_now->tm_wday)
+    {
+      case 0: week_day = "S"; break;
+      case 1: week_day = "M"; break;
+      case 2: week_day = "T"; break;
+      case 3: week_day = "W"; break;
+      case 4: week_day = "H"; break;
+      case 5: week_day = "F"; break;
+      case 6: week_day = "A"; break;
+      default: return false; break; // По идее такого не должно быть
+    }
+
+  //текущий день недели не входит в указанный список
+  if (_days.find(week_day) == string::npos)
+    return false;
+
   strftime (strbuf, sizeof (strbuf), "%H:%M:%S", localtime (&now));
   spec = "2000-01-01 ";
   spec += strbuf;
@@ -97,6 +121,7 @@ bool TimeRange::hasNow () const
 
 bool TimeRange::hasMidnight () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _hasMidnight);
   return _hasMidnight;
 }
 
@@ -107,16 +132,19 @@ bool TimeRange::isFullDay () const
 
 string TimeRange::getDays () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _days);
   return _days;
 }
 
 string TimeRange::getStartTimeStr () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _tstart);
   return _tstart;
 }
 
 string TimeRange::getEndTimeStr () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _tend);
   return _tend;
 }
 

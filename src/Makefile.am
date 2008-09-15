@@ -21,7 +21,7 @@ samsdaemon_SOURCES = \
 	userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
 	template.cpp templates.cpp squidlogparser.cpp squidlogline.cpp groups.cpp \
 	squidconf.cpp timerange.cpp timeranges.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
-	dbcleaner.cpp restrictions.cpp urlgrouplist.cpp urlgroup.cpp
+	dbcleaner.cpp urlgrouplist.cpp urlgroup.cpp pluginlist.cpp
 samsredir_SOURCES = \
 	dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
@@ -33,11 +33,15 @@ noinst_HEADERS = \
 	filter.h userfilter.h datefilter.h odbcquery.h samsusers.h samsuser.h net.h ip.h \
 	localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
 	mysqlconn.h dbconn.h dbquery.h mysqlquery.h templates.h template.h groups.h \
-	squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h restrictions.h \
-	urlgrouplist.h urlgroup.h
+	squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h \
+	urlgrouplist.h urlgroup.h pluginlist.h
+
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
 
 LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB)
+
+samsdaemon_LDADD = -ldl
+samsdaemon_LDFLAGS = -rdynamic
 
 configmake.h: Makefile
 	rm -f $@-t $@

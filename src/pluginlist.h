@@ -14,40 +14,49 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef RESTRICTIONS_H
-#define RESTRICTIONS_H
+#ifndef PLUGINLIST_H
+#define PLUGINLIST_H
 
 using namespace std;
 
+#include <string>
+#include <vector>
+
 class DBConn;
 
-class Restrictions
+struct Plugin
+{
+  void *handle;
+  string (*getInfo)();
+  string (*getName)();
+  string (*getVersion)();
+  string (*getAuthor)();
+};
+
+/**
+ * @brief Список плагинов
+ */
+class PluginList
 {
 public:
-  enum rstType
-  {
-    TYPE_BLOCK,                   ///< Блокировать доступ к ресурсу путем перенаправления на картинку в 1 пиксел
-    TYPE_DENY,                    ///< Блокировать доступ к ресурсу с сообщением о причине
-    TYPE_ALLOW,                   ///< Разрешать доступ к ресурсу
-    TYPE_EXT,                     ///< Блокировать доступ к файлам с расширением
-    TYPE_REGEX,                   ///< Регулярные выражения
-    TYPE_LOCAL
-  };
-
-  static void useConnection (DBConn * conn);
-
-  static bool reload();
-
-  static void destroy();
-
-
-private:
+  static bool reload ();
+  static void useConnection (DBConn *conn);
+  static void destroy ();
+  static bool updateInfo ();
+protected:
+  /**
+   * @brief Загружает и инициализирует плагины
+   *
+   * @return true если ошибок нет и false в противном случае
+   */
   static bool load ();
 
-  static bool _loaded;
-  static DBConn * _conn;                     ///< Используемое соединение с БД
-  static bool _connection_owner;
+  static bool loadPlugin (const string &path);
 
+  static bool _loaded;
+  static DBConn *_conn;                ///< Соединение с БД
+  static bool _connection_owner;
+  static vector < Plugin * >_plugins;      ///< Список плагинов
 };
 
 #endif

@@ -33,15 +33,15 @@ using namespace std;
 
 
 #define DEBUG0     0            ///< Отключить вывод отладочной информации
-#define DEBUG1     1
-#define DEBUG2     2
-#define DEBUG3     3            ///< Выводить запросы к БД
-#define DEBUG4     4            ///< Показывать работу с учетными записями
-#define DEBUG5     5            ///< Показывать работу со списком хостов
-#define DEBUG6     6
-#define DEBUG7     7
-#define DEBUG8     8            ///< Показывает работу с операциями над файлами
-#define DEBUG9     9            ///< Показывает работу вспомогательных функций
+#define DEBUG1     1            ///< Сообщения, попадающие в БД
+#define DEBUG2     2            ///<
+#define DEBUG3     3            ///< Используемые настройки
+#define DEBUG4     4            ///<
+#define DEBUG5     5            ///< Результат поиска в списках
+#define DEBUG6     6            ///< Запросы к БД и управление подключениями
+#define DEBUG7     7            ///< Работа конструкторов и деструкторов
+#define DEBUG8     8            ///< Установка/запрос атрибутов объекта
+#define DEBUG9     9            ///< Вспомогательные функции и большие циклы
 
 #define DEBUG_CMDARG  DEBUG2
 #define DEBUG_PROXY   DEBUG2
@@ -56,10 +56,9 @@ using namespace std;
 #define DEBUG_TPL     DEBUG6
 #define DEBUG_LOGGER  DEBUG7
 #define DEBUG_FILE    DEBUG8
-//extern Logger *logger;
 
 
-/** Если определена, то в макросах ERROR и WARNING будет выодится
+/** Если определена, то в макросах ERROR и WARNING будет выводится
  *  дополнительный префикс.
  */
 #define DISPLAY_DEBUG_PREFIX 1

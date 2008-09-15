@@ -27,6 +27,8 @@
 
 ODBCConn::ODBCConn () : DBConn(DBConn::DB_UODBC)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _source = "";
   _user = "";
   _pass = "";
@@ -37,6 +39,8 @@ ODBCConn::ODBCConn () : DBConn(DBConn::DB_UODBC)
 
 ODBCConn::~ODBCConn ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   disconnect ();
 }
 
@@ -50,7 +54,7 @@ bool ODBCConn::connect ()
   string username = SamsConfig::getString (defDBUSER, err);
   string password = SamsConfig::getString (defDBPASSWORD, err);
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << datasource << " as " << username);
+  DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << datasource << " as " << username);
 
   err = SQLAllocHandle (SQL_HANDLE_ENV, SQL_NULL_HANDLE, &_env);
   if ((err != SQL_SUCCESS) && (err != SQL_SUCCESS_WITH_INFO))
@@ -99,7 +103,7 @@ bool ODBCConn::connect ()
   _user = username;
   _pass = password;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
 
   return true;
 }
@@ -107,10 +111,21 @@ bool ODBCConn::connect ()
 
 DBQuery * ODBCConn::newQuery ()
 {
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
+
   if (!_connected)
     return NULL;
 
   DBQuery * query = new ODBCQuery( this );
+
+  if (query)
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] = " << query);
+    }
+  else
+    {
+      ERROR ("Unable to create new query.");
+    }
 
   return query;
 }
@@ -121,7 +136,7 @@ void ODBCConn::disconnect ()
   if (!_connected)
     return;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _user << "@" << _source);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _user << "@" << _source);
 
   unregisterAllQueries ();
 
@@ -135,8 +150,6 @@ void ODBCConn::disconnect ()
   _env = SQL_NULL_HENV;
   _hdbc = SQL_NULL_HDBC;
   _connected = false;
-
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnected.");
 }
 
 
@@ -188,7 +201,7 @@ void ODBCConn::registerQuery (ODBCQuery * query)
 
   query->_conn = this;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " registered.");
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " registered.");
 }
 
 
@@ -211,7 +224,7 @@ void ODBCConn::unregisterQuery (ODBCQuery * query)
   _queries.erase (it);
   query->destroy ();
   query->_conn = NULL;
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " unregistered.");
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " unregistered.");
 }
 
 
@@ -225,7 +238,7 @@ void ODBCConn::unregisterAllQueries ()
       (*it).second->_conn = NULL;
     }
   _queries.clear ();
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "All queries unregistered.");
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "All queries unregistered.");
 }
 
 #endif // #ifdef USE_UNIXODBC

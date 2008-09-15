@@ -2,7 +2,7 @@
 #
 #   Startup/shutdown script for the SQUID Access Management System (SAMS).
 #
-#   chkconfig: 345 70 30
+#   chkconfig: - 70 30
 #   description: Startup/shutdown script for the SQUID Access \
 #                Management System (SAMS).
 #

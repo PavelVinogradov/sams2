@@ -16,14 +16,18 @@
  ***************************************************************************/
 #include "filter.h"
 
+#include "debug.h"
+
 Filter::Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _validity = false;
 }
 
 
 Filter::~Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 
@@ -34,5 +38,6 @@ Filter::~Filter ()
  */
 bool Filter::isValid ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _validity);
   return _validity;
 }

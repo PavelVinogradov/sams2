@@ -29,21 +29,8 @@ using namespace std;
 #include "config.h"
 #include "configmake.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "debug.h"
 #include "samsconfig.h"
 #include "processmanager.h"
@@ -60,6 +47,8 @@ using namespace std;
 #include "squidconf.h"
 #include "dbcleaner.h"
 #include "dbexporter.h"
+
+#include "pluginlist.h"
 
 /**
  *  Выводит список опций командной строки с кратким описанием
@@ -125,7 +114,7 @@ Proxy::ParserType parserType; // Тип обработки лог файла squ
 
 void reload (int signal_number)
 {
-  DEBUG (DEBUG_DAEMON, "Reloading");
+  DEBUG (DEBUG2, "Reloading");
 
   SamsConfig::reload ();
   TimeRanges::reload ();
@@ -135,6 +124,7 @@ void reload (int signal_number)
   Groups::reload ();
   SAMSUsers::reload ();
   UrlGroupList::reload();
+  PluginList::reload ();
 
   int err;
 
@@ -323,34 +313,13 @@ int main (int argc, char *argv[])
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  conn = SamsConfig::newConnection ();
 
-  if (engine == DBConn::DB_UODBC)
+  if (!conn)
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      #else
+      ERROR ("Unable to create connection.");
       return 1;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      #else
-      return 1;
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      #else
-      return 1;
-      #endif
-    }
-  else
-    return 1;
 
   if (!conn->connect ())
     {
@@ -365,6 +334,7 @@ int main (int argc, char *argv[])
       DBQuery *q = conn->newQuery ();
       if (!q)
         {
+          ERROR("Unable to create query.");
           delete conn;
           return 2;
         }
@@ -574,6 +544,7 @@ int main (int argc, char *argv[])
               SAMSUsers::destroy ();
               Templates::destroy ();
               UrlGroupList::destroy ();
+              PluginList::destroy ();
               Logger::destroy (); // всегда уничтожаем его последним
               delete query;
               delete conn;
@@ -647,6 +618,7 @@ int main (int argc, char *argv[])
           parser = new SquidLogParser (proxyid);
           parser->parseFile (conn, squidlogdir + "/" + squidcachefile, false);
           delete parser;
+          PluginList::updateInfo ();
           seconds_to_parse = (60 * steptime);
         }
 

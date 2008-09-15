@@ -22,21 +22,8 @@
 
 #include "config.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "logger.h"
 #include "tools.h"
 #include "samsconfig.h"
@@ -257,34 +244,12 @@ void Logger::addLog(LogKind code, const string &mess)
 {
   if (!_conn)
     {
-      DBConn::DBEngine engine = SamsConfig::getEngine();
-
-      if (engine == DBConn::DB_UODBC)
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
         {
-          #ifdef USE_UNIXODBC
-          _conn = new ODBCConn();
-          #else
+          ERROR ("Unable to create connection.");
           return;
-          #endif
         }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          _conn = new MYSQLConn();
-          #else
-          return;
-          #endif
-        }
-      else if (engine == DBConn::DB_PGSQL)
-        {
-          #ifdef USE_PQ
-          _conn = new PgConn();
-          #else
-          return;
-          #endif
-        }
-      else
-        return;
 
       if (!_conn->connect ())
         {
@@ -298,6 +263,7 @@ void Logger::addLog(LogKind code, const string &mess)
 
   if (!query)
     {
+      ERROR("Unable to create query.");
       return;
     }
 

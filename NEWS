@@ -27,9 +27,9 @@
    * IP
    * Net
    * LocalNetworks
-   + SamsConfig
-   - SAMSUser
-   - SAMSUsers
+   * SamsConfig
+   * SAMSUser
+   * SAMSUsers
    * SquidLogLine
    - Filter
    - UserFilter

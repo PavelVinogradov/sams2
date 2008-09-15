@@ -20,15 +20,17 @@
 
 Url::Url ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 Url::~Url ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 void Url::setUrl (const string & url)
 {
-  DEBUG (DEBUG5, "[" << this << "] " << url);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
   _url = url;
   _proto = "";
   _user = "";
@@ -41,31 +43,37 @@ void Url::setUrl (const string & url)
 
 string Url::getProto ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _proto);
   return _proto;
 }
 
 string Url::getUser ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _user);
   return _user;
 }
 
 string Url::getPass ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = *hidden*");
   return _pass;
 }
 
 string Url::getAddress ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _addr);
   return _addr;
 }
 
 string Url::getPort ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _port);
   return _port;
 }
 
 string Url::getPath ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _path);
   return _path;
 }
 
@@ -74,7 +82,7 @@ string Url::asString () const
   return _url;
 }
 
-     Url *Url::fromString (const string & str)
+Url *Url::fromString (const string & str)
 {
   Url *obj = new Url ();
   obj->setUrl (str);

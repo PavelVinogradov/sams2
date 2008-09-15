@@ -36,11 +36,13 @@
 
 SquidConf::SquidConf()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 
 SquidConf::~SquidConf()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 bool SquidConf::defineAccessRules()
@@ -152,8 +154,9 @@ bool SquidConf::defineACL ()
                     method = "src";
                   else
                     method = "proxy_auth";
-                  vector<SAMSUser *>::iterator it;
 
+                  //TODO Пользователи могут быть заблокированы из разных шаблонов с разными типами авторизации
+                  vector<SAMSUser *>::iterator it;
                   for (it = users.begin(); it != users.end(); it++)
                     {
                       if ((*it)->getEnabled() != SAMSUser::STAT_ACTIVE)
@@ -164,8 +167,30 @@ bool SquidConf::defineACL ()
                       else
                         fout << "acl Sams2Template" << tpls[i] << " " << method << " " << *(*it) << endl;
                     }
+
+                  //Определяем временные границы для текущего шаблона
+                  time_ids = tpl->getTimeRangeIds ();
+                  for (j = 0; j < time_ids.size(); j++)
+                    {
+                      TimeRange * tr = TimeRanges::getTimeRange(time_ids[j]);
+                      if (!tr)
+                        continue;
+                      if (tr->isFullDay())
+                        continue;
+                      fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
+                      if (tr->hasMidnight())
+                        {
+                          fout << tr->getStartTimeStr () << "-23:59" << endl;
+                          fout << "00:00-" << tr->getEndTimeStr () << endl;
+                        }
+                      else
+                        {
+                          fout << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
+                        }
+                    }
                 }
 
+/*
               // Создаем списки временных границ
               time_ids = TimeRanges::getIds();
               for (i = 0; i < time_ids.size (); i++)
@@ -180,7 +205,7 @@ bool SquidConf::defineACL ()
                   else
                     fout << "acl Sams2time" <<time_ids[i] << " time " << tr->getDays () << " " << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
                 }
-
+*/
               // Создаем списки запретных адресов
               group_ids = UrlGroupList::getAllowGroupIds();
               for (i = 0; i < group_ids.size (); i++)
@@ -221,15 +246,18 @@ bool SquidConf::defineACL ()
                   if (users.empty ())
                     continue;
 
+                  DEBUG(DEBUG_DAEMON, "Processing template " << tpls[i]);
+
                   tpl = Templates::getTemplate(tpls[i]);
-                  if ((tpl->getAuth() != Proxy::AUTH_NCSA) && (tpl->getAuth() != Proxy::AUTH_IP))
-                    {
-                      DEBUG(DEBUG_DAEMON, "Template " << tpls[i] << " has external auth scheme, skipping.");
-                      continue;
-                    }
 
                   restriction.str("");
 
+                  time_ids = tpl->getTimeRangeIds ();
+                  if (!time_ids.empty())
+                    {
+                      restriction << " Sams2Template" <<tpls[i] << "time";
+                    }
+                  /*
                   //Определяем временные границы для текущего шаблона
                   time_ids = tpl->getTimeRangeIds ();
                   for (j = 0; j < time_ids.size(); j++)
@@ -244,6 +272,7 @@ bool SquidConf::defineACL ()
                       else
                         restriction << " Sams2time" << time_ids[j];
                     }
+                  */
 
                   //Определяем разрешенные и запретные адреса для текущего шаблона
                   group_ids = tpl->getUrlGroupIds ();

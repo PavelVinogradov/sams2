@@ -16,21 +16,8 @@
  ***************************************************************************/
 #include "config.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "templates.h"
 #include "template.h"
 #include "debug.h"
@@ -55,34 +42,12 @@ bool Templates::reload()
 
   if (!_conn)
     {
-      DBConn::DBEngine engine = SamsConfig::getEngine();
-
-      if (engine == DBConn::DB_UODBC)
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
         {
-          #ifdef USE_UNIXODBC
-          _conn = new ODBCConn();
-          #else
+          ERROR ("Unable to create connection.");
           return false;
-          #endif
         }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          _conn = new MYSQLConn();
-          #else
-          return false;
-          #endif
-        }
-      else if (engine == DBConn::DB_PGSQL)
-        {
-          #ifdef USE_PQ
-          _conn = new PgConn();
-          #else
-          return false;
-          #endif
-        }
-      else
-        return false;
 
       if (!_conn->connect ())
         {
@@ -90,23 +55,25 @@ bool Templates::reload()
           return false;
         }
       _connection_owner = true;
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
     }
     else
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
 
   DBQuery *query = _conn->newQuery ();
   if (!query)
     {
+      ERROR("Unable to create query.");
       return false;
     }
 
   DBQuery *query2 = _conn->newQuery ();
   if (!query2)
     {
+      ERROR("Unable to create query.");
       delete query;
       return false;
     }
@@ -114,6 +81,7 @@ bool Templates::reload()
   DBQuery *query3 = _conn->newQuery ();
   if (!query3)
     {
+      ERROR("Unable to create query.");
       delete query;
       delete query2;
       return false;
@@ -253,12 +221,12 @@ void Templates::useConnection (DBConn * conn)
 {
   if (_conn)
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Already using " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Already using " << _conn);
       return;
     }
   if (conn)
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Using external connection " << conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }
@@ -268,17 +236,17 @@ void Templates::destroy()
 {
   if (_connection_owner && _conn)
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
       delete _conn;
       _conn = NULL;
     }
   else if (_conn)
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
   else
     {
-      DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] Not connected");
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
   map < long, Template* >::iterator it;
   for (it = _list.begin (); it != _list.end (); it++)

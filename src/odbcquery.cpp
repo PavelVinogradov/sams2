@@ -23,6 +23,8 @@
 
 ODBCQuery::ODBCQuery (ODBCConn * conn)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _conn = NULL;
   statement = SQL_NULL_HSTMT;
 
@@ -36,6 +38,8 @@ ODBCQuery::ODBCQuery (ODBCConn * conn)
 
 ODBCQuery::~ODBCQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   destroy ();
 
   if (_conn)
