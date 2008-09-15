@@ -24,6 +24,7 @@
 using namespace std;
 
 #include <vector>
+#include <string>
 
 #define DOMAIN_SEPARATORS "+@\\"
 
@@ -179,6 +180,8 @@ bool fileDelete (const string & path);
  */
 bool fileExist (const string & path);
 
-void timeSubstractDays(struct tm & stime, int days);
+vector<string> fileList (const string & path, const string & filemask);
+
+void timeSubstractDays (struct tm & stime, int days);
 
 #endif /* SAMS_TOOLS_H */

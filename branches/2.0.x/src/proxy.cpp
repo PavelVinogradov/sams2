@@ -20,21 +20,8 @@
 
 #include "config.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "proxy.h"
 #include "debug.h"
 #include "tools.h"
@@ -135,12 +122,12 @@ void Proxy::useConnection (DBConn * conn)
 {
   if (_conn)
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Already using " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Already using " << _conn);
       return;
     }
   if (conn)
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using external connection " << conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }
@@ -311,34 +298,12 @@ bool Proxy::reload ()
 {
   if (!_conn)
     {
-      DBConn::DBEngine engine = SamsConfig::getEngine();
-
-      if (engine == DBConn::DB_UODBC)
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
         {
-          #ifdef USE_UNIXODBC
-          _conn = new ODBCConn();
-          #else
+          ERROR ("Unable to create connection.");
           return false;
-          #endif
         }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          _conn = new MYSQLConn();
-          #else
-          return false;
-          #endif
-        }
-      else if (engine == DBConn::DB_PGSQL)
-        {
-          #ifdef USE_PQ
-          _conn = new PgConn();
-          #else
-          return false;
-          #endif
-        }
-      else
-        return false;
 
       if (!_conn->connect ())
         {
@@ -346,11 +311,11 @@ bool Proxy::reload ()
           return false;
         }
       _connection_owner = true;
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
     }
     else
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
   int err;
@@ -375,32 +340,12 @@ bool Proxy::reload ()
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
 
-  if (_conn->getEngine() == DBConn::DB_UODBC)
+  query = _conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery((ODBCConn*)_conn);
-      #else
+      ERROR("Unable to create query.");
       return false;
-      #endif
     }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery((MYSQLConn*)_conn);
-      #else
-      return false;
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery((PgConn*)_conn);
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
   if (!query->bindCol (1, DBQuery::T_CHAR, s_auth, sizeof (s_auth)))
     {
@@ -551,21 +496,21 @@ bool Proxy::reload ()
 
   _deny_addr = s_denied_to;
 
-  DEBUG (DEBUG_PROXY, "Authentication: " << toString (_auth));
-  DEBUG (DEBUG_PROXY, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
-  DEBUG (DEBUG_PROXY, "Traffic type: " << toString (_trafType));
-  DEBUG (DEBUG_PROXY, "Redirector type: " << toString (_redir_type));
-  DEBUG (DEBUG_PROXY, "Kilobyte size: " << _kbsize);
+  DEBUG (DEBUG3, "Authentication: " << toString (_auth));
+  DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
+  DEBUG (DEBUG3, "Traffic type: " << toString (_trafType));
+  DEBUG (DEBUG3, "Redirector type: " << toString (_redir_type));
+  DEBUG (DEBUG3, "Kilobyte size: " << _kbsize);
 
   if (_usedomain)
     {
-      DEBUG (DEBUG_PROXY, "Default domain: " << _defaultdomain);
+      DEBUG (DEBUG3, "Default domain: " << _defaultdomain);
     }
 
   if (_autouser)
     {
-      DEBUG (DEBUG_PROXY, "AutoUserTemplate: " << _defaulttpl);
-      DEBUG (DEBUG_PROXY, "AutoUserGroup: " << _defaultgrp);
+      DEBUG (DEBUG3, "AutoUserTemplate: " << _defaulttpl);
+      DEBUG (DEBUG3, "AutoUserGroup: " << _defaultgrp);
     }
   delete query;
 
@@ -578,17 +523,17 @@ void Proxy::destroy()
 {
   if (_connection_owner && _conn)
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
       delete _conn;
       _conn = NULL;
     }
   else if (_conn)
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
   else
     {
-      DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Not connected");
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
 }
 

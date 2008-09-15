@@ -145,12 +145,12 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
 
       if (token.size () > 0)
         {
-          DEBUG (DEBUG9, "token: " << token);
+          //DEBUG (DEBUG9, "token: " << token);
           tbl.push_back (token);
         }
       else if (!removeEmpty)
         {
-          DEBUG (DEBUG9, "token: " << token);
+          //DEBUG (DEBUG9, "token: " << token);
           tbl.push_back (token);
         }
       prev += next - prev + 1;
@@ -160,12 +160,12 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
       token = s.substr (prev, s.size () - prev);
       if (token.size () > 0)
         {
-          DEBUG (DEBUG9, "token: " << token);
+          //DEBUG (DEBUG9, "token: " << token);
           tbl.push_back (token);
         }
       else if (!removeEmpty)
         {
-          DEBUG (DEBUG9, "token: " << token);
+          //DEBUG (DEBUG9, "token: " << token);
           tbl.push_back (token);
         }
     }
@@ -209,7 +209,7 @@ bool fileDelete (const string & path, const string & filemask)
             }
           else
             {
-              DEBUG (DEBUG_FILE, fullname << " deleted.");
+              DEBUG (DEBUG4, fullname << " deleted.");
             }
         }
     }
@@ -230,11 +230,11 @@ bool fileDelete (const string & path)
   if (unlink (path.c_str ()) != 0)
     {
       res = false;
-      ERROR (path << ": " << strerror (errno));
+      WARNING (path << ": " << strerror (errno));
     }
   else
     {
-      DEBUG (DEBUG_FILE, path << " deleted.");
+      DEBUG (DEBUG4, path << " deleted.");
     }
 
   return res;
@@ -290,6 +290,43 @@ bool fileCopy (const string & name, const string & newname)
 bool fileExist (const string & path)
 {
   return (access (path.c_str (), F_OK) == 0);
+}
+
+vector<string> fileList (const string & path, const string & filemask)
+{
+  DIR *dir;
+  register struct dirent *dirbuf;
+  string fullname;
+  vector<string> res;
+
+  if (path.empty ())
+    {
+      WARNING ("Empty path");
+      return res;
+    }
+  if (filemask.empty ())
+    {
+      WARNING ("Empty filemask");
+      return res;
+    }
+
+  dir = opendir (path.c_str ());
+  if (dir == NULL)
+    {
+      WARNING (path << ": " << strerror (errno));
+      return res;
+    }
+  while ((dirbuf = readdir (dir)) != NULL)
+    {
+      if (fnmatch (filemask.c_str (), dirbuf->d_name, FNM_FILE_NAME) == 0)
+        {
+          fullname = path + "/" + dirbuf->d_name;
+          res.push_back (fullname);
+        }
+    }
+  closedir (dir);
+
+  return res;
 }
 
 void timeSubstractDays(struct tm & stime, int days)

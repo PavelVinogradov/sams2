@@ -24,12 +24,16 @@
 
 PgConn::PgConn():DBConn (DBConn::DB_PGSQL)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _pgconn = NULL;
 }
 
 
 PgConn::~PgConn()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   disconnect ();
 }
 
@@ -41,7 +45,7 @@ bool PgConn::connect ()
   _user = SamsConfig::getString (defDBUSER, err);
   _pass = SamsConfig::getString (defDBPASSWORD, err);
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
 
   _pgconn = PQsetdbLogin(_host.c_str (), NULL, NULL, NULL, _dbname.c_str (), _user.c_str (), _pass.c_str ());
 
@@ -59,17 +63,28 @@ bool PgConn::connect ()
 
   _connected = true;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
 
   return true;
 }
 
 DBQuery * PgConn::newQuery ()
 {
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
+
   if (!_connected)
     return NULL;
 
   DBQuery * query = new PgQuery( this );
+
+  if (query)
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] = " << query);
+    }
+  else
+    {
+      ERROR ("Unable to create new query.");
+    }
 
   return query;
 }
@@ -79,13 +94,11 @@ void PgConn::disconnect ()
   if (!_connected)
     return;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
 
   PQfinish (_pgconn);
   _pgconn = NULL;
   _connected = false;
-
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnected.");
 }
 
 #endif // #ifdef USE_PQ

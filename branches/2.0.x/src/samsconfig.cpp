@@ -86,7 +86,7 @@ bool SamsConfig::readFile ()
   string value;
   int signpos;
 
-  DEBUG (DEBUG7, "[" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG4, "[" << __FUNCTION__ << "] ");
 
   in.open (_config_file.c_str (), ios_base::in);
   if (!in.is_open ())
@@ -112,10 +112,6 @@ bool SamsConfig::readFile ()
 
       name = TrimSpaces (name);
       value = TrimSpaces (value);
-      if (name != defDBPASSWORD)
-        {
-          DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << name << "=" << value);
-        }
       setString (name, value);
     }
 
@@ -140,7 +136,7 @@ bool SamsConfig::readFile ()
       ERROR ("MySQL engine is not enabled. Reconfigure package to enable it or change engine.");
       return false;
       #else
-      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using MySQL engine.");
+      DEBUG (DEBUG3, "[" << __FUNCTION__ << "] " << "using MySQL engine.");
       _engine = DBConn::DB_MYSQL;
       #endif
     }
@@ -150,7 +146,7 @@ bool SamsConfig::readFile ()
       ERROR ("unixODBC engine is not enabled. Reconfigure package to enable it or change engine.");
       return false;
       #else
-      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using unixODBC engine.");
+      DEBUG (DEBUG3, "[" << __FUNCTION__ << "] " << "using unixODBC engine.");
       _engine = DBConn::DB_UODBC;
       #endif
     }
@@ -160,7 +156,7 @@ bool SamsConfig::readFile ()
       ERROR ("PostgreSQL engine is not enabled. Reconfigure package to enable it or change engine.");
       return false;
       #else
-      DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] " << "using PostgreSQL engine.");
+      DEBUG (DEBUG3, "[" << __FUNCTION__ << "] " << "using PostgreSQL engine.");
       _engine = DBConn::DB_PGSQL;
       #endif
     }
@@ -177,7 +173,7 @@ bool SamsConfig::readDB ()
 {
   int err;
 
-  DEBUG (DEBUG7, "[" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG4, "[" << __FUNCTION__ << "] ");
 
   _internal = true;
 
@@ -193,27 +189,23 @@ bool SamsConfig::readDB ()
   DBConn::DBEngine engine = SamsConfig::getEngine();
 
   DBConn *conn;
-  DBQuery *query = NULL;
 
   if (engine == DBConn::DB_UODBC)
     {
       #ifdef USE_UNIXODBC
       conn = new ODBCConn();
-      query = new ODBCQuery((ODBCConn*)conn);
       #endif
     }
   else if (engine == DBConn::DB_MYSQL)
     {
       #ifdef USE_MYSQL
       conn = new MYSQLConn();
-      query = new MYSQLQuery((MYSQLConn*)conn);
       #endif
     }
   else if (engine == DBConn::DB_PGSQL)
     {
       #ifdef USE_PQ
       conn = new PgConn();
-      query = new PgQuery((PgConn*)conn);
       #endif
     }
   else
@@ -222,15 +214,24 @@ bool SamsConfig::readDB ()
       return false;
     }
 
-  DEBUG (DEBUG_DB, "[" << __FUNCTION__ << "] Using connection " << conn);
+  DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using connection " << conn);
 
   if (!conn->connect ())
     {
-      delete query;
       delete conn;
       _internal = false;
       return false;
     }
+
+  DBQuery *query = conn->newQuery ();
+  if (!query)
+    {
+      ERROR("Unable to create query.");
+      delete conn;
+      _internal = false;
+      return false;
+    }
+
 
   basic_stringstream < char >s;
 
@@ -291,10 +292,19 @@ string SamsConfig::getString (const string & attrname, int &err)
   if (it == _attributes.end ())
     {
       err = ATTR_NOT_FOUND;
-      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << " not found");
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ")] = not found");
       return "";
     }
-  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << (*it).second);
+
+  if (attrname == defDBPASSWORD)
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ")] = *hidden*");
+    }
+  else
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ")] = " << (*it).second);
+    }
+
   err = ERR_OK;
   return (*it).second;
 }
@@ -354,7 +364,15 @@ bool SamsConfig::getBool (const string & attrname, int &err)
 
 void SamsConfig::setString (const string & attrname, const string & value)
 {
-  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << value);
+  if (attrname == defDBPASSWORD)
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ", *hidden*)]");
+    }
+  else
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ", " << value << ")]");
+    }
+
   _attributes[attrname] = value;
 }
 
@@ -380,6 +398,32 @@ void SamsConfig::setBool (const string attrname, const bool value)
   sprintf (&buf[0], "%d", (value == true) ? 1 : 0);
   DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << attrname << "=" << buf);
   _attributes[attrname] = buf;
+}
+
+DBConn * SamsConfig::newConnection ()
+{
+  DBConn * conn = NULL;
+
+  if (_engine == DBConn::DB_UODBC)
+    {
+      #ifdef USE_UNIXODBC
+      conn = new ODBCConn();
+      #endif
+    }
+  else if (_engine == DBConn::DB_MYSQL)
+    {
+      #ifdef USE_MYSQL
+      conn = new MYSQLConn();
+      #endif
+    }
+  else if (_engine == DBConn::DB_PGSQL)
+    {
+      #ifdef USE_PQ
+      conn = new PgConn();
+      #endif
+    }
+
+  return conn;
 }
 
 DBConn::DBEngine SamsConfig::getEngine()

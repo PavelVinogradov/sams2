@@ -22,12 +22,14 @@
 
 IP::IP ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _ip.s_addr = htonl (IP_ANY);
 }
 
 
 IP::~IP ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 /*
@@ -72,6 +74,8 @@ bool IP::parseString (const string & str)
 {
   int ok;
 
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << str << ")]");
+
   if (!str.empty ())
     {
       ok = inet_aton (str.c_str (), &_ip);
@@ -98,6 +102,8 @@ string IP::asString () const
   basic_stringstream < char >s;
 
   s << inet_ntoa (_ip);
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s);
 
   return s.str ();
 }

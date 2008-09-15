@@ -28,12 +28,16 @@
 
 ProcessManager::ProcessManager ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _started = false;
 }
 
 
 ProcessManager::~ProcessManager ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   stop ();
 }
 

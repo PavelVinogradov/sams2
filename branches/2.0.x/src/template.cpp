@@ -24,6 +24,8 @@
 
 Template::Template (long id)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _id = id;
   _period_type = Template::PERIOD_MONTH;
 }
@@ -31,18 +33,22 @@ Template::Template (long id)
 
 Template::~Template ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _times.clear ();
   _urlgroups.clear ();
 }
 
 long Template::getId () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _id);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _id);
   return _id;
 }
 
 void Template::setAuth (const string & auth)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << auth << ")]");
+
   if (auth == "ip")
     _auth = Proxy::AUTH_IP;
   else if (auth == "ncsa")
@@ -61,44 +67,52 @@ void Template::setAuth (const string & auth)
 
 void Template::setAuth (Proxy::usrAuthType auth)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(...)]");
   _auth = auth;
 }
 
 Proxy::usrAuthType Template::getAuth () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _auth;
 }
 
 void Template::setQuote (long quote)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << quote);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << quote << ")]");
   _quote = quote;
 }
 
 long Template::getQuote () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _quote);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _quote);
   return _quote;
 }
 
 void Template::setPeriod (Template::PeriodType ptype, long days)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(..., " << days << ")]");
+
   _period_type = ptype;
   _period_days = days;
 }
 
 Template::PeriodType Template::getPeriodType () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _period_type;
 }
 
 void Template::setClearDate (const string & dateSpec)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << dateSpec << ")]");
   _clear_date = dateSpec + " 00:00:00";
 }
 
 bool Template::getClearDate (struct tm & clear_date) const
 {
+  // Если период очистки счетчиков стандартный, то нужно проверять по смене периода
+  // например, начало новой недели или начало нового месяца
   if (_period_type != Template::PERIOD_CUSTOM)
     return false;
   if (_clear_date.empty ())
@@ -116,19 +130,19 @@ bool Template::getClearDate (struct tm & clear_date) const
 
 void Template::setAllDeny (bool alldeny)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << alldeny);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << alldeny << ")]");
   _alldeny = alldeny;
 }
 
 bool Template::getAllDeny () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _alldeny);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _alldeny);
   return _alldeny;
 }
 
 void Template::addTimeRange (long id)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
   _times.push_back (id);
 }
 
@@ -139,7 +153,7 @@ vector <long> Template::getTimeRangeIds () const
 
 void Template::addUrlGroup (long id)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << id);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
   _urlgroups.push_back (id);
 }
 

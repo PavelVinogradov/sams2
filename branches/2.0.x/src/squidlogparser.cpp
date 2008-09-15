@@ -20,21 +20,8 @@
 #include "config.h"
 #include <string.h>
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "squidlogparser.h"
 #include "squidlogline.h"
 #include "localnetworks.h"
@@ -49,6 +36,8 @@
 
 SquidLogParser::SquidLogParser (int proxyid)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _proxyid = proxyid;
   _date_filter = NULL;
   _user_filter = NULL;
@@ -57,52 +46,33 @@ SquidLogParser::SquidLogParser (int proxyid)
 
 SquidLogParser::~SquidLogParser ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 void SquidLogParser::setUserFilter (UserFilter * filt)
 {
-  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << filt);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << filt << ")]");
   _user_filter = filt;
 }
 
 void SquidLogParser::setDateFilter (DateFilter * filt)
 {
-  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << filt);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << filt << ")]");
   _date_filter = filt;
 }
 
 void SquidLogParser::parseFile (const string & fname, bool from_begin)
 {
+  //DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << fname << ", " << from_begin << ")]");
+
   DBConn *conn = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
-
-  if (engine == DBConn::DB_UODBC)
+  conn = SamsConfig::newConnection ();
+  if (!conn)
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      #else
+      ERROR ("Unable to create connection.");
       return;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      #else
-      return;
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      #else
-      return;
-      #endif
-    }
-  else
-    return;
 
   if (!conn->connect ())
     {
@@ -122,6 +92,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   DBQuery *query = conn->newQuery ();
   if (!query)
     {
+      ERROR("Unable to create query.");
       return;
     }
 
@@ -146,33 +117,25 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   delete query;
   query = NULL;
 
-  string str_ver = TrimSpaces(s_version);
-  if (str_ver == "1.9.9")
-    {
-      INFO ("Internal database version.");
-    }
-  else if (str_ver != VERSION)
-    {
-      char daemon_ver[10];
-      char database_ver[10];
-      strncpy(daemon_ver, VERSION, 5);
-      strncpy(database_ver, str_ver.c_str(), 5);
-      daemon_ver[5] = 0;
-      database_ver[5] = 0;
+  string str_db_ver = TrimSpaces(s_version);
+  string str_pkg_ver = VERSION;
 
-      if (strncmp(daemon_ver, database_ver, 5))
-      {
-        ERROR ("Incompatible database version. Expected " << daemon_ver << ", but got " << database_ver);
-        return;
-      }
-      else
-      {
-        DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Database version accepted.");
-      }
+  if (str_db_ver.compare (2, 3, "9.9") == 0)
+    {
+      DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Internal database version.");
+    }
+  else if (str_db_ver.compare (0, 3, str_pkg_ver, 0, 3) != 0)
+    {
+      DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Database version accepted.");
+    }
+  else if (str_db_ver.compare (0, 5, str_pkg_ver, 0, 5) != 0)
+    {
+      ERROR ("Incompatible database version. Expected " << str_pkg_ver.substr (0, 5) << ", but got " << str_db_ver.substr (0, 5));
+      return;
     }
   else
     {
-      DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Database version ok.");
+      DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Database version ok.");
     }
 
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Reading file " << fname);
@@ -231,6 +194,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   DBQuery *updUserQuery = conn->newQuery ();
   if (!updUserQuery)
     {
+      ERROR("Unable to create query.");
       return;
     }
   basic_stringstream < char > user_update_cmd;
@@ -265,6 +229,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   DBQuery *updCacheQuery = conn->newQuery ();
   if (!updCacheQuery)
     {
+      ERROR("Unable to create query.");
       delete updUserQuery;
       return;
     }
@@ -344,6 +309,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   {
     if (!updProxyQuery)
       {
+        ERROR("Unable to create query.");
         delete updCacheQuery;
         delete updUserQuery;
         return;
@@ -375,16 +341,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       return;
     }
   basic_stringstream < char > cachesum_select_cmd;
-/*
-  if (!selCachesumQuery->prepareQuery (cachesum_select_cmd.str ()))
-    {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
-      return;
-    }
-*/
+
   if (!selCachesumQuery->bindCol (1, DBQuery::T_LONGLONG, &cachesum_size, 0))
     {
       delete selCachesumQuery;
@@ -401,33 +358,6 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       delete updUserQuery;
       return;
     }
-/*
-  if (!selCachesumQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
-    {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
-      return;
-    }
-  if (!selCachesumQuery->bindParam (2, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
-    {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
-      return;
-    }
-  if (!selCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
-    {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
-      return;
-    }
-*/
-
 
   DBQuery *insCachesumQuery = conn->newQuery ();
   if (!insCachesumQuery)
@@ -500,6 +430,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   DBQuery *updCachesumQuery = conn->newQuery ();
   if (!updCachesumQuery)
     {
+      ERROR("Unable to create query.");
       delete insCachesumQuery;
       delete selCachesumQuery;
       delete updProxyQuery;
@@ -637,6 +568,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
       // Анализируем входную строку
       s_hit = 0;
+      s_size = 0;
       switch (sll.getCacheResult ())
         {
         case SquidLogLine::CR_UNKNOWN:
@@ -755,6 +687,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       DBQuery *reconfigQuery = conn->newQuery ();
       if (!reconfigQuery)
         {
+          ERROR("Unable to create query.");
           return;
         }
       basic_stringstream < char > reconfig_cmd;

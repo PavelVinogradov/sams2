@@ -26,6 +26,8 @@
 
 MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _conn = conn;
   _bind_param = NULL;
   _bind_column = NULL;
@@ -50,6 +52,8 @@ MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
 
 MYSQLQuery::~MYSQLQuery()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   destroy ();
 
 //  if (_conn)
@@ -58,7 +62,7 @@ MYSQLQuery::~MYSQLQuery()
 
 bool MYSQLQuery::sendQueryDirect (const string & query)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << query);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << query);
 
   if (!_conn)
   {
@@ -109,7 +113,7 @@ bool MYSQLQuery::bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int 
 
 bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
 
   if (colNum == 1 && _columns.size()>0)
     {
@@ -162,7 +166,7 @@ bool MYSQLQuery::bindParam (uint num, DBQuery::VarType dstType, void *buf, int b
 
 bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int bufLen)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
 
   if (num == 1 && _params.size()>0)
     {
@@ -193,7 +197,7 @@ bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int b
 
 bool MYSQLQuery::prepareQuery (const string & query)
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << query);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << query);
 
   if (!createStatement ())
     {
@@ -233,7 +237,7 @@ bool MYSQLQuery::sendQuery ()
       memset (_param_real_len, 0, sizeof (ulong) * _params.size());
       for (i=0; i<_params.size(); i++)
         {
-          DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill marker " << i);
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill marker " << i);
           switch (_params[i].t)
             {
               case MYSQL_TYPE_STRING:
@@ -258,7 +262,7 @@ bool MYSQLQuery::sendQuery ()
           if (!ok)
             break;
         }
-      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill bind structure: ok");
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill bind structure: ok");
     }
 
   if (!ok)
@@ -273,7 +277,7 @@ bool MYSQLQuery::sendQuery ()
       memset (_columns_real_len, 0, sizeof (ulong) * _columns.size());
       for (i=0; i<_columns.size(); i++)
         {
-          DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill column " << i);
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill column " << i);
           switch (_columns[i].t)
             {
               case MYSQL_TYPE_STRING:
@@ -291,14 +295,14 @@ bool MYSQLQuery::sendQuery ()
                 _bind_column[i].length = 0;
                 break;
               default:
-                ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported column type (" << _columns[i].t << ")");
+                ERROR ("[" << this << "->" << __FUNCTION__ << "] " << "Unsupported column type (" << _columns[i].t << ")");
                 ok = false;
                 break;
             }
           if (!ok)
             break;
         }
-      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Fill bind structure: ok");
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill bind structure: ok");
     }
 
   if (!ok)
@@ -313,7 +317,7 @@ bool MYSQLQuery::sendQuery ()
           ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
           return false;
         }
-      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Bind markers: ok");
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Bind markers: ok");
       _param_binded = true;
     }
 
@@ -326,7 +330,7 @@ bool MYSQLQuery::sendQuery ()
           ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
           return false;
         }
-      DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << "Bind columns: ok");
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Bind columns: ok");
       _col_binded = true;
     }
 
@@ -349,11 +353,11 @@ bool MYSQLQuery::sendQuery ()
   DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] mysql_stmt_execute(" << _statement << ")");
   if (mysql_stmt_execute(_statement))
   {
-    ERROR("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
+    ERROR ("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
     return false;
   }
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ok");
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] ok");
   return true;
 }
 
@@ -376,7 +380,7 @@ bool MYSQLQuery::fetch ()
         }
       else if (ret == MYSQL_NO_DATA)
         {
-          ERROR("[" << this << "->" << __FUNCTION__ << "] " << "failed: No rows");
+          DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] = No rows");
           return false;
         }
     }
@@ -384,7 +388,7 @@ bool MYSQLQuery::fetch ()
     {
       if (!_res)
         {
-          DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No results");
+          DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] = No results");
           return false;
         }
 
@@ -392,7 +396,7 @@ bool MYSQLQuery::fetch ()
       DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] mysql_fetch_row(" << _res << ")=" << row);
       if (!row)
         {
-          DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No rows");
+          DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] = No rows");
           return false;
         }
       int res_len;
@@ -425,7 +429,7 @@ bool MYSQLQuery::fetch ()
         }
     }
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << ((ok) ? ("ok") : ("failed")));
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << ((ok) ? ("ok") : ("failed")));
 
   return ok;
 }
@@ -449,18 +453,18 @@ bool MYSQLQuery::createStatement ()
   DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] mysql_stmt_init(" << _conn->_mysql << ")=" << _statement);
   if (!_statement)
     {
-      ERROR("[" << this << "->" << __FUNCTION__ << "] " << "Cannot initialize statement.");
+      ERROR ("[" << this << "->" << __FUNCTION__ << "] " << "Cannot initialize statement.");
       return false;
     }
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ok");
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] ok");
 
   return true;
 }
 
 void MYSQLQuery::destroy ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "] ");
 
   if (_res)
     mysql_free_result (_res);

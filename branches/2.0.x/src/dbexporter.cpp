@@ -21,21 +21,8 @@
 
 #include "config.h"
 
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "dbexporter.h"
 #include "samsconfig.h"
 #include "datefilter.h"
@@ -45,6 +32,7 @@
 
 DBExporter::DBExporter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _date_filter = NULL;
   _user_filter = NULL;
   _date_filter_owner = false;
@@ -53,6 +41,7 @@ DBExporter::DBExporter ()
 
 DBExporter::~DBExporter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   if (_date_filter && _date_filter_owner)
     delete _date_filter;
 }
@@ -97,53 +86,26 @@ bool DBExporter::exportToFile (const string &fname)
   DBConn *conn = NULL;
   DBQuery *query = NULL;
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  conn = SamsConfig::newConnection ();
+  if (!conn)
+    {
+      ERROR ("Unable to create connection.");
+      return false;
+    }
 
-  if (engine == DBConn::DB_UODBC)
+  if (!conn->connect ())
     {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new ODBCQuery((ODBCConn*)conn);
-      #else
+      delete conn;
       return false;
-      #endif
     }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new MYSQLQuery((MYSQLConn*)conn);
-      #else
-      return false;
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      if (!conn->connect ())
-        {
-          delete conn;
-          return false;
-        }
-      query = new PgQuery((PgConn*)conn);
-      #else
-      return false;
-      #endif
-    }
-  else
-    return false;
 
+  query = conn->newQuery ();
+  if (!query)
+    {
+      ERROR("Unable to create query.");
+      delete conn;
+      return false;
+    }
 
   ofstream _fout;
   _fout.open (fname.c_str (), ios::out);
@@ -154,7 +116,6 @@ bool DBExporter::exportToFile (const string &fname)
       delete conn;
       return false;
     }
-
 
 
   basic_stringstream < char > strDateFilter;
@@ -212,7 +173,6 @@ bool DBExporter::exportToFile (const string &fname)
   sqlcmd << " order by s_date asc, s_time asc";
 
 
-
   char s_date[15];
   char s_time[15];
   char s_user[60];
@@ -227,56 +187,67 @@ bool DBExporter::exportToFile (const string &fname)
   if (!query->bindCol (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (3, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (4, DBQuery::T_CHAR, s_user, sizeof (s_user)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (5, DBQuery::T_LONG, &s_size, 0))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (6, DBQuery::T_LONG, &s_hit, 0))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (8, DBQuery::T_LONG, &s_period, 0))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->bindCol (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
     {
       delete query;
+      delete conn;
       return false;
     }
   if (!query->sendQueryDirect (sqlcmd.str ()) )
     {
       delete query;
+      delete conn;
       return false;
     }
 

@@ -23,6 +23,8 @@
 
 Net::Net ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _domain = false;
   _resolving = false;
   _net = "";
@@ -31,6 +33,8 @@ Net::Net ()
 
 Net::~Net ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   if (_ip)
     delete _ip;
   _ip = NULL;
@@ -127,6 +131,8 @@ string Net::asString ()
   basic_stringstream < char >s;
 
   s << _net.c_str ();
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s);
 
   return s.str ();
 }

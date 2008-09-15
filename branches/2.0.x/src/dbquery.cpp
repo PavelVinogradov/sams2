@@ -53,11 +53,13 @@ string DBQuery::toString (VarType t)
 
 DBQuery::DBQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 
 DBQuery::~DBQuery ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 

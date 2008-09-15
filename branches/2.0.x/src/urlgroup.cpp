@@ -24,29 +24,33 @@ using namespace std;
 
 UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   _id = id;
   _type = access;
 }
 
 UrlGroup::~UrlGroup ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 long UrlGroup::getId ()
 {
-  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << _id);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _id);
   return _id;
 }
 
 UrlGroup::accessType UrlGroup::getAccessType ()
 {
-  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << ((_type==UrlGroup::ACC_ALLOW)?"allow":"deny"));
+  //DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << ((_type==UrlGroup::ACC_ALLOW)?"allow":"deny"));
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _type;
 }
 
 void UrlGroup::addUrl (const string & url)
 {
-  DEBUG(DEBUG8, "[" << this << "->" << __FUNCTION__ << "] " << url);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
   _list.push_back (url);
 }
 

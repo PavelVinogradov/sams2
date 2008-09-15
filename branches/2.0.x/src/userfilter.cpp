@@ -18,22 +18,31 @@
 #include "samsuser.h"
 #include "tools.h"
 
+#include "debug.h"
+
 UserFilter::UserFilter ():Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   setUsersList ("");
 }
 
 UserFilter::UserFilter (const string & usersList):Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
   setUsersList (usersList);
 }
 
 UserFilter::~UserFilter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 bool UserFilter::setUsersList (const string & usersList)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << usersList << ")]");
+
   _validity = true;
 
   Split (usersList, ",", _tblUsers);
@@ -43,6 +52,8 @@ bool UserFilter::setUsersList (const string & usersList)
 
 bool UserFilter::setUsersList (const vector<SAMSUser *> & usersList)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(...)]");
+
   _tblUsers.clear ();
   vector<SAMSUser *>::const_iterator it;
   for (it = usersList.begin (); it != usersList.end (); it++)

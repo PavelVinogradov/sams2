@@ -24,17 +24,21 @@
 
 SquidLogLine::SquidLogLine ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _valid = false;
 }
 
 
 SquidLogLine::~SquidLogLine ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 
 bool SquidLogLine::setLine (const string & line)
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(...)]");
+
   _valid = false;
   _line = line;
   parseLine ();
@@ -43,11 +47,13 @@ bool SquidLogLine::setLine (const string & line)
 
 struct tm SquidLogLine::getTime ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _time;
 }
 
 int SquidLogLine::getBusytime ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _busytime);
   return _busytime;
 }
 
@@ -58,21 +64,25 @@ IP SquidLogLine::getIP ()
 
 string SquidLogLine::getIdent ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _ident);
   return _ident;
 }
 
 string SquidLogLine::getUrl ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _url);
   return _url;
 }
 
 string SquidLogLine::getMethod ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _method);
   return _method;
 }
 
 long SquidLogLine::getSize ()
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _size);
   return _size;
 }
 

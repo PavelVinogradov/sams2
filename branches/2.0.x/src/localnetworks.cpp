@@ -16,21 +16,8 @@
  ***************************************************************************/
 #include "config.h"
 
-#ifdef USE_UNIXODBC
-#include "odbcconn.h"
-#include "odbcquery.h"
-#endif
-
-#ifdef USE_MYSQL
-#include "mysqlconn.h"
-#include "mysqlquery.h"
-#endif
-
-#ifdef USE_PQ
-#include "pgconn.h"
-#include "pgquery.h"
-#endif
-
+#include "dbconn.h"
+#include "dbquery.h"
 #include "dbconn.h"
 #include "localnetworks.h"
 #include "debug.h"
@@ -47,12 +34,12 @@ void LocalNetworks::useConnection (DBConn * conn)
 {
   if (_conn)
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Already using " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Already using " << _conn);
       return;
     }
   if (conn)
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using external connection " << conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using external connection " << conn);
       _conn = conn;
       _connection_owner = false;
     }
@@ -70,34 +57,12 @@ bool LocalNetworks::reload ()
 {
   if (!_conn)
     {
-      DBConn::DBEngine engine = SamsConfig::getEngine();
-
-      if (engine == DBConn::DB_UODBC)
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
         {
-          #ifdef USE_UNIXODBC
-          _conn = new ODBCConn();
-          #else
+          ERROR ("Unable to create connection.");
           return false;
-          #endif
         }
-      else if (engine == DBConn::DB_MYSQL)
-        {
-          #ifdef USE_MYSQL
-          _conn = new MYSQLConn();
-          #else
-          return false;
-          #endif
-        }
-      else if (engine == DBConn::DB_PGSQL)
-        {
-          #ifdef USE_PQ
-          _conn = new PgConn();
-          #else
-          return false;
-          #endif
-        }
-      else
-        return false;
 
       if (!_conn->connect ())
         {
@@ -105,11 +70,11 @@ bool LocalNetworks::reload ()
           return false;
         }
       _connection_owner = true;
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
     }
     else
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
   char s_url[1024];
@@ -118,26 +83,12 @@ bool LocalNetworks::reload ()
 
   string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
 
-  if (_conn->getEngine() == DBConn::DB_UODBC)
+  query = _conn->newQuery ();
+  if (!query)
     {
-      #ifdef USE_UNIXODBC
-      query = new ODBCQuery ((ODBCConn*)_conn);
-      #endif
+      ERROR("Unable to create query.");
+      return false;
     }
-  else if (_conn->getEngine() == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      query = new MYSQLQuery ((MYSQLConn*)_conn);
-      #endif
-    }
-  else if (_conn->getEngine() == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      query = new PgQuery ((PgConn*)_conn);
-      #endif
-    }
-  else
-    return false;
 
   if (!query->bindCol (1, DBQuery::T_CHAR, s_url, sizeof (s_url)))
     {
@@ -169,17 +120,17 @@ void LocalNetworks::destroy()
 {
   if (_connection_owner && _conn)
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
       delete _conn;
       _conn = NULL;
     }
   else if (_conn)
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not owner for connection " << _conn);
     }
   else
     {
-      DEBUG (DEBUG_HOST, "[" << __FUNCTION__ << "] Not connected");
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
 
   vector < Net * >::iterator it;

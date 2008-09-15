@@ -24,12 +24,14 @@
 
 MYSQLConn::MYSQLConn ():DBConn (DBConn::DB_MYSQL)
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _mysql = NULL;
 }
 
 
 MYSQLConn::~MYSQLConn ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   disconnect ();
 }
 
@@ -41,7 +43,7 @@ bool MYSQLConn::connect ()
   _user = SamsConfig::getString (defDBUSER, err);
   _pass = SamsConfig::getString (defDBPASSWORD, err);
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
+  DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Connecting to " << _dbname << "@" << _host << " as " << _user);
 
   _mysql = mysql_init (NULL);
   if (!_mysql)
@@ -58,14 +60,14 @@ bool MYSQLConn::connect ()
 
   _connected = true;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");
 
   return true;
 }
 
 DBQuery * MYSQLConn::newQuery ()
 {
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "]");
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
 
   if (!_connected)
     return NULL;
@@ -74,7 +76,7 @@ DBQuery * MYSQLConn::newQuery ()
 
   if (query)
     {
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "New query " << query);
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] = " << query);
     }
   else
     {
@@ -89,13 +91,11 @@ void MYSQLConn::disconnect ()
   if (!_connected)
     return;
 
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
 
   mysql_close (_mysql);
   _mysql = NULL;
   _connected = false;
-
-  DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnected.");
 }
 
 #endif // #ifdef USE_MYSQL

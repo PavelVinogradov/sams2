@@ -22,16 +22,19 @@
 
 DateFilter::DateFilter ():Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   setDateInterval (",");
 }
 
 DateFilter::DateFilter (const string & dateSpec):Filter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   setDateInterval (dateSpec);
 }
 
 DateFilter::~DateFilter ()
 {
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
 
 bool DateFilter::setDateInterval (const string & dateSpec)
@@ -43,6 +46,8 @@ bool DateFilter::setDateInterval (const string & dateSpec)
   char str_today[15];
   time_t today;
   char *rest;
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << dateSpec << ")]");
 
   Split (dateSpec, ",", tblDates);
 
@@ -124,6 +129,8 @@ string DateFilter::getStartDateAsString () const
   strftime (strbuf, sizeof (strbuf), "%Y-%m-%d", localtime (&_date_start));
   s << strbuf;
 
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s);
+
   return s.str ();
 }
 
@@ -134,6 +141,8 @@ string DateFilter::getEndDateAsString () const
 
   strftime (strbuf, sizeof (strbuf), "%Y-%m-%d", localtime (&_date_end));
   s << strbuf;
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s);
 
   return s.str ();
 }
