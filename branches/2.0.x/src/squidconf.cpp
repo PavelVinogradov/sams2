@@ -177,14 +177,16 @@ bool SquidConf::defineACL ()
                         continue;
                       if (tr->isFullDay())
                         continue;
-                      fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
                       if (tr->hasMidnight())
                         {
+                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
                           fout << tr->getStartTimeStr () << "-23:59" << endl;
+                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
                           fout << "00:00-" << tr->getEndTimeStr () << endl;
                         }
                       else
                         {
+                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
                           fout << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
                         }
                     }
@@ -253,10 +255,23 @@ bool SquidConf::defineACL ()
                   restriction.str("");
 
                   time_ids = tpl->getTimeRangeIds ();
+                  for (j = 0; j < time_ids.size(); j++)
+                    {
+                      TimeRange * tr = TimeRanges::getTimeRange(time_ids[j]);
+                      if (!tr)
+                        continue;
+                      if (tr->isFullDay())
+                        continue;
+                      restriction << " Sams2Template" <<tpls[i] << "time";
+                      break;
+                    }
+
+/*
                   if (!time_ids.empty())
                     {
                       restriction << " Sams2Template" <<tpls[i] << "time";
                     }
+*/
                   /*
                   //Определяем временные границы для текущего шаблона
                   time_ids = tpl->getTimeRangeIds ();
