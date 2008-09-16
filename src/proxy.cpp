@@ -487,7 +487,7 @@ bool Proxy::reload ()
 
   if (strcasecmp (s_redirector, "NONE") == 0)
     _redir_type = REDIR_NONE;
-  else if (strcmp (s_realsize, "sams") == 0)
+  else if (strcmp (s_redirector, "sams") == 0)
     _redir_type = REDIR_INTERNAL;
   else
     {

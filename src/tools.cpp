@@ -132,7 +132,7 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
   uint prev = 0;
   int next = 0;
 
-  DEBUG (DEBUG9, s << ", '" << delim << "', " << removeEmpty);
+  //DEBUG (DEBUG9, s << ", '" << delim << "', " << removeEmpty);
 
   tbl.clear();
 

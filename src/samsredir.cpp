@@ -264,8 +264,9 @@ int main (int argc, char *argv[])
       // Мы незнаем что такое попалось, но на всякий случай ничего менять не будем
       if (fields.size () < 4)
         {
-          DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Invalid fields count: " << fields.size());
-          cout << line;
+          INFO ("Invalid fields count: " << fields.size());
+          INFO ("Output: " << line);
+          cout << line << flush;
           continue;
         }
 
@@ -273,7 +274,8 @@ int main (int argc, char *argv[])
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
           INFO ("Url is local");
-	  cout << line;
+          INFO ("Output: " << line);
+	  cout << line << flush;
           continue;
         }
 
@@ -282,10 +284,19 @@ int main (int argc, char *argv[])
       // Пользователь не найден, блокируем доступ
       if (!usr)
         {
+          INFO ("User not found");
           if (fields[2] != "-")
-            cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << endl;
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2];
+              cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
+            }
           else
-            cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << endl;
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0];
+              cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
+            }
           continue;
         }
 
@@ -293,7 +304,10 @@ int main (int argc, char *argv[])
 
       if ( usr->getEnabled () != SAMSUser::STAT_ACTIVE )
         {
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << endl;
+          INFO ("User not active (disabled or blocked)");
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
@@ -302,7 +316,9 @@ int main (int argc, char *argv[])
       if (!tpl)
         {
           INFO ("Nothing to do without template");
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << endl;
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
@@ -310,7 +326,8 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlWhitelisted (fields[0]) )
         {
           INFO ("In white list");
-	  cout << line;
+          INFO ("Output: " << line);
+	  cout << line << flush;
           continue;
         }
 
@@ -318,27 +335,35 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlBlacklisted (fields[0]) )
         {
           INFO ("In black list");
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
       // Если url в текущее время не разрешен, блокируем доступ
       if ( tpl->isTimeDenied (fields[0]) )
         {
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << endl;
+          INFO ("Denied due to time restrictions");
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
       if ( tpl->getAllDeny () )
         {
           INFO ("Denied to all and not whitelisted");
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << endl;
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
       INFO ("Access granted");
-      cout << line;
+      INFO ("Output: " << line);
+      cout << line << flush;
     }
 
   return 0;
