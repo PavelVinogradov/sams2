@@ -110,6 +110,14 @@ bool TimeRange::hasNow () const
       DEBUG (DEBUG4, "Current week day is not in the list");
       return false;
     }
+
+  //Если доступ ограничен только по дням недели, то время не проверяем
+  if (_time_start == _time_end)
+    {
+      DEBUG (DEBUG4, "Full day access");
+      return true;
+    }
+
   strftime (strbuf, sizeof (strbuf), "%H:%M:%S", localtime (&now));
   spec = "2000-01-01 ";
   spec += strbuf;
@@ -145,7 +153,7 @@ bool TimeRange::hasMidnight () const
 
 bool TimeRange::isFullDay () const
 {
-  return (_tstart == _tend);
+  return (_time_start == _time_end);
 }
 
 string TimeRange::getDays () const
