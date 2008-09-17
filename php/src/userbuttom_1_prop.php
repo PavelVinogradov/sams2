@@ -56,8 +56,6 @@ function UpdateUser()
 
 /* *************************************************** */
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
-  if($domain=="") 
-	$domain="workgroup";
   $a=explode("+",$usershablon);
 
   $usershablon=$a[0];

@@ -102,10 +102,14 @@ bool TimeRange::hasNow () const
       default: return false; break; // По идее такого не должно быть
     }
 
+  DEBUG (DEBUG4, "Checking if " << week_day << " is in " << _days);
+
   //текущий день недели не входит в указанный список
   if (_days.find(week_day) == string::npos)
-    return false;
-
+    {
+      DEBUG (DEBUG4, "Current week day is not in the list");
+      return false;
+    }
   strftime (strbuf, sizeof (strbuf), "%H:%M:%S", localtime (&now));
   spec = "2000-01-01 ";
   spec += strbuf;
@@ -113,10 +117,24 @@ bool TimeRange::hasNow () const
   strptime (spec.c_str (), "%Y-%m-%d %H:%M:%S", &date_time);
   now = mktime (&date_time);
 
-  if (difftime (now, _time_start) >= 0 && difftime (_time_end, now) >= 0)
-    return true;
+  time_t end = _time_end;
+  if (_hasMidnight)
+    {
+      end += 86400;
+    }
+
+  DEBUG (DEBUG4, "Checking if " << now << " between " << _time_start << " and " << end);
+
+  if (difftime (now, _time_start) >= 0 && difftime (end, now) >= 0)
+    {
+      DEBUG (DEBUG4, "Time inside range");
+      return true;
+    }
   else
-    return false;
+    {
+      DEBUG (DEBUG4, "Time outside range");
+      return false;
+    }
 }
 
 bool TimeRange::hasMidnight () const
