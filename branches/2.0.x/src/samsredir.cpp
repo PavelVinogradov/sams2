@@ -178,7 +178,7 @@ int main (int argc, char *argv[])
     }
 
 
-
+/*
   pid_t childpid=0;
 
   if ( (use_must_fork && must_fork) || (dbglevel == 0 && !use_must_fork) )
@@ -195,6 +195,7 @@ int main (int argc, char *argv[])
     {
       exit(0);
     }
+*/
 
 
   DBConn *conn = NULL;
@@ -266,7 +267,7 @@ int main (int argc, char *argv[])
         {
           INFO ("Invalid fields count: " << fields.size());
           INFO ("Output: " << line);
-          cout << line << flush;
+          cout << line << endl << flush;
           continue;
         }
 
@@ -275,7 +276,7 @@ int main (int argc, char *argv[])
         {
           INFO ("Url is local");
           INFO ("Output: " << line);
-	  cout << line << flush;
+	  cout << line << endl << flush;
           continue;
         }
 
@@ -327,7 +328,7 @@ int main (int argc, char *argv[])
         {
           INFO ("In white list");
           INFO ("Output: " << line);
-	  cout << line << flush;
+	  cout << line << endl << flush;
           continue;
         }
 
@@ -363,7 +364,7 @@ int main (int argc, char *argv[])
       // Все проверки пройдены успешно, разрешаем доступ
       INFO ("Access granted");
       INFO ("Output: " << line);
-      cout << line << flush;
+      cout << line << endl << flush;
     }
 
   return 0;
