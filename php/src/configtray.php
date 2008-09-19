@@ -134,7 +134,7 @@ function SysInfo()
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE s_date>=\"$sdate\" AND s_date<=\"$edate\" ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This month\n");
@@ -146,7 +146,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE s_date=\"$edate\" ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This day\n");
