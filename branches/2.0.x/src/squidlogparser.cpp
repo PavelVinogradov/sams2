@@ -138,7 +138,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Database version ok.");
     }
 
-  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Reading file " << fname);
+  DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Reading file " << fname);
 
   fstream in;
   in.open (fname.c_str (), ios_base::in);
@@ -160,10 +160,10 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   if (fpos > fsize)
     {
       fpos = 0;
-      DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Previous position bigger then file size. Process from offset 0");
+      DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "Previous position bigger then file size. Process from offset 0");
     }
 
-  DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "file size " << fsize << ", use offset " << fpos);
+  DEBUG (DEBUG3, "[" << this << "->" << __FUNCTION__ << "] " << "file size " << fsize << ", use offset " << fpos);
 
   if (fpos == fsize)
     {
@@ -518,12 +518,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       if (line.empty ())
         continue;
 
-      DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Incoming line: " << line);
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Incoming line: " << line);
 
       if (!from_begin) // Запомним сразу что строка уже прочитана
         {
           fpos = in.tellg ();
-          DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << "Store file position: " << fpos);
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Store file position: " << fpos);
           updProxyQuery->sendQuery ();
           Proxy::setEndValue(fpos);
         }
@@ -546,17 +546,17 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       strftime (s_time, sizeof (s_time), "%H:%M:%S", &date_time);
       if ((_date_filter != NULL) && (!_date_filter->match (date_time)))
         {
-          DEBUG (DEBUG_USER, "Filtered out: " << s_date << " " << s_time << " outside date interval");
+          DEBUG (DEBUG9, "Filtered out: " << s_date << " " << s_time << " outside date interval");
           continue;
         }
       if ((_user_filter != NULL) && (!_user_filter->match (usr)))
         {
-          DEBUG (DEBUG_USER, "Filtered out: " << *usr << " not in the filter");
+          DEBUG (DEBUG9, "Filtered out: " << *usr << " not in the filter");
           continue;
         }
       if (LocalNetworks::isLocalUrl (sll.getUrl ()))
         {
-          DEBUG (DEBUG_URL, "Consider url is local");
+          DEBUG (DEBUG9, "Consider url is local");
           continue;
         }
 
