@@ -17,6 +17,8 @@
 #include <vector>
 #include <sstream>
 #include <string.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 #include "config.h"
 
@@ -202,6 +204,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   string usrDomain;
   string usrNick;
   vector < string > identTbl;
+  int err;
+  int checkpasswd;
 
   DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] ip:" << ip << ", ident:" << ident);
 
@@ -258,8 +262,20 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
               return NULL;
             }
           else
-            usr->setNick (usrNick);
-
+            {
+              checkpasswd = SamsConfig::getInt (defCHECKPASSWDDB, err);
+              if (err == ERR_OK && checkpasswd == 1)
+                {
+                  struct passwd *pwd = getpwnam (usrNick.c_str ());
+                  if (!pwd)
+                    {
+                      DEBUG (DEBUG3, "[" << __FUNCTION__ << "] User " << usrNick << " not found in passwd database.");
+                      delete usr;
+                      return NULL;
+                    }
+                }
+              usr->setNick (usrNick);
+            }
           usr->setDomain (usrDomain);
           usr->setGroupId (_defaultgrp);
           usr->setShablonId (_defaulttpl);

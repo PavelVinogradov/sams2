@@ -38,6 +38,7 @@ using namespace std;
 #define defSQUIDCONFDIR       "SQUIDROOTDIR"
 #define defSQUIDCACHEFILE     "SQUIDCACHEFILE"
 #define defPROXYID            "CACHENUM"
+#define defCHECKPASSWDDB      "CHECKPASSWDDB"
 #define defSLEEPTIME          "s_sleep"
 #define defDAEMONSTEP         "s_parser_time"
 
