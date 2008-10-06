@@ -68,7 +68,7 @@ function TestPDC()
 function ProxyReConfig()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -172,7 +172,7 @@ function ProxyReConfigForm()
 {
   global $SAMSConf;
   global $PROXYConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
   $files=array();
   if(isset($_GET["id"])) $proxy_id=$_GET["id"];
@@ -563,20 +563,19 @@ function ProxyReConfigForm()
 
   print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B> $adminbuttom_1_prop_SamsReConfigForm_40</B>\n");
   print("<TD><SELECT NAME=\"parser\" $DISABLED_PARSER  onchange=DisableParserTime(samsreconfigform)>\n");
-//Disable discret parser (#239)
-//  if($PROXYConf->s_parser==2)
-//    {
-//	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
-//       $DISABLED_PARSER="DISABLED";
-///	}
-//  else
-//    {
-//       print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
-//	}
-//  if($PROXYConf->s_parser==1)
+  if($PROXYConf->s_parser==2)
+    {
+	   print("<OPTION VALUE=\"2\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
+       $DISABLED_PARSER="DISABLED";
+	}
+  else
+    {
+       print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
+	}
+  if($PROXYConf->s_parser==1)
      print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
-//  else
-//     print("<OPTION VALUE=\"1\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+  else
+     print("<OPTION VALUE=\"1\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
   print("</SELECT>\n");
 
   if($PROXYConf->s_parser_time>0)
@@ -695,7 +694,7 @@ function ProxyReConfigForm()
 		$USERADD="DISABLED";
 	}  
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_58</B>\n");
+  print("<TD><B>Автоматически создавать новых пользователей</B>\n");
   if($PROXYConf->s_autouser==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"autouser\" onchange=EnableUserAdd(samsreconfigform) CHECKED> \n");
   else
@@ -703,7 +702,7 @@ function ProxyReConfigForm()
 /**/
 //onchange=EnableDomainName(samsreconfigform)
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_59</B>\n");
+  print("<TD><B>Шаблон у создаваемого пользователя</B>\n");
   print("<TD><SELECT NAME=\"shablon\" ID=\"shablon\" SIZE=1 TABINDEX=30 $USERADD >\n");
   print("<OPTION VALUE=\"-1\" SELECTED> NONE");
   $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
@@ -723,7 +722,7 @@ function ProxyReConfigForm()
 
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_60 $USERADD</B>\n");
+  print("<TD><B>Группа у создаваемого пользователя $USERADD</B>\n");
   print("<TD><SELECT NAME=\"group\" ID=\"group\" SIZE=1 TABINDEX=30 $USERADD >\n");
   print("<OPTION VALUE=\"-1\" SELECTED> NONE");
   $num_rows=$DB->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup");
@@ -759,7 +758,6 @@ function proxybuttom_1_prop()
 
   if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=proxyreconfigform&filename=proxybuttom_1_prop.php&id=$id",
 	               "basefrm","config_32.jpg","config_48.jpg","$adminbuttom_1_prop_adminbuttom_1_propadmintray_1");
     }

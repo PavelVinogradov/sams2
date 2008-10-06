@@ -11,7 +11,7 @@ function UsersTrafficPeriodPDF()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   if($SAMSConf->LANG=="KOI8-R")
     $lang="./lang/lang.WIN1251";
@@ -105,7 +105,7 @@ function UsersTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -135,7 +135,7 @@ function UsersTrafficPeriod()
 {
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
@@ -143,7 +143,7 @@ function UsersTrafficPeriod()
    $size="";
    if(isset($_GET["size"])) $size=$_GET["size"];
 
-  require("reportsclass.php");
+  require("lib/reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -261,7 +261,7 @@ function UsersTrafficPeriod()
 function UsersTrafficForm()
 {
   global $SAMSConf;
-  require("reportsclass.php");
+  require("lib/reportsclass.php");
   $dateselect=new DATESELECT();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -289,7 +289,7 @@ function usersbuttom_2_traffic()
 
    if($SAMSConf->access>0)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+//       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=userstrafficform&filename=usersbuttom_2_traffic.php","basefrm","traffic_32.jpg","traffic_48.jpg","$usersbuttom_2_traffic_usersbuttom_2_traffic_1");
 	}
 

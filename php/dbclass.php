@@ -10,6 +10,7 @@ class SAMSDB
   var $link;
   var $result;            # результат выполнения запроса
   var $db_odbc;      # признак того, что используется ODBC
+  var $odbc_source;
   var $db_name;     # используемая база данных
   var $db_pdo;      # признак того, что в веб интерфейсе используется PDO
   var $pdo_link;
@@ -53,9 +54,15 @@ class SAMSDB
     			print_r($row);
   		}
 	}
-
- 
-
+  }
+  function odbcdb_query_value($query)
+  {
+	$this->result = odbc_exec($this->link,$query);
+	if($this->result!=FALSE)
+	{
+		$num_rows = odbc_num_rows($this->result);
+	}
+	return($num_rows);
   }
   function samsdb_query_value($query)
   {
@@ -74,6 +81,11 @@ class SAMSDB
          $num_rows = $this->pdodb_query_value($query);
          return($num_rows);
       }
+    if($this->db_odbc==1 && $this->db_pdo==0)
+      {
+         $num_rows = $this->odbcdb_query_value($query);
+         return($num_rows);
+      }
     return(FALSE);
   }
 /*
@@ -84,6 +96,11 @@ class SAMSDB
   $this->result - результат выполнения запроса
   $row - Возвращаемое значение - количество возвращаемых строк
 */
+  function odbcdb_fetch_array()
+  {
+	$row=odbc_fetch_array($this->result,0);
+         return($row);
+  }
   function pdodb_fetch_array()
   {
 	$row = $this->pdo_stmt->fetch(); 
@@ -115,8 +132,12 @@ class SAMSDB
       }
     if($this->db_pdo==1)
       {
-//echo "<!-- =================================== -->";
          $row = $this->pdodb_fetch_array();
+         return($row);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==0)
+      {
+         $row = $this->odbcdb_fetch_array();
          return($row);
       }
     return(FALSE);
@@ -144,6 +165,10 @@ class SAMSDB
 	$this->pdo_stmt = $this->pdo_link->prepare("$query");
 	$this->pdo_stmt->execute();
   }
+  function odbcdb_query($query)
+  {
+	$this->result = odbc_exec($this->link, $query) or die('Query failed: ' . odbc_error($this->link));
+  }
 
   function samsdb_query($query)
   {
@@ -160,6 +185,11 @@ class SAMSDB
     if($this->db_pdo==1)
       {
          $num_rows = $this->pdodb_query($query);
+         return($this->result);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==0)
+      {
+         $num_rows = $this->odbcdb_query($query);
          return($this->result);
       }
     return(FALSE);
@@ -181,6 +211,10 @@ class SAMSDB
   {
     pg_free_result($this->result);
   }
+  function free_odbcdb_query()
+  {
+    odbc_free_result($this->result);
+  }
   function free_samsdb_query()
   {
     if($this->db_name=="MySQL" && $this->db_odbc==0)
@@ -190,6 +224,10 @@ class SAMSDB
     if($this->db_name=="PostgreSQL" && $this->db_odbc==0)
       {
          $this->free_pgsqldb_query();
+      }
+    if($this->db_odbc==1 && $this->db_odbc==0)
+      {
+         $this->free_odbcdb_query();
       }
   }
 
@@ -235,24 +273,22 @@ class SAMSDB
 
   function odbcdb_connect($host,$user,$passwd,$dbname)
   {
-
-    if($this->ODBC != "0" && function_exists('odbc_connect'))
-    {
-	$this->dberror=0;
-	if($this->db_name=="PostgreSQL")
-	{
-		$link = odbc_connect("Driver={PostgreSQL};Server=$host;Port=5432;Database=$dbname", $user, $passwd) or die('Could not connect: ' . odbc_error());
-	}
-	if($this->db_name=="MySQL")
-	{
-		$PDO_MYSQL="mysql:host=localhost;port=3306;dbname=samsdb";
-	}
-	return($link);
-    }
+//	$ConnectString="sams_mysql";
+	$ConnectString="$this->odbc_source";
+//echo "ConnectString=$this->odbc_source";
+	$this->link = odbc_connect($ConnectString, $user, $passwd) or die('Could not connect: ' . odbc_error($this->link));	    
   }
 
   function pdodb_connect($host,$user,$passwd,$dbname)
   {
+
+    $phpver=explode(".",phpversion());
+    if($phpver[0]<5)
+    {
+	print "<FONT COLOR=\"RED\">Error!: php version = ". phpversion() .", php_pdo not supported!<br/></FONT>";
+	exit(0);	
+    }
+    echo "PHP version:". $phpver[0]."<BR>";    
 
     if($this->db_pdo != "0")
     {
@@ -260,17 +296,24 @@ class SAMSDB
 
 	//$this->pdo_link = new PDO($connection, $user, "$passwd");
 
-	try 
+	$connection="odbc:sams_mysql";
+	$this->pdo_link = new PDO($connection, $user, "$passwd");
+	if($this->pdo_link == NULL)
 	{
+	    print "<FONT COLOR=\"RED\">Error!: database $dbname not created!<br/> Create database $dbname manually</FONT>";
+	}
+exit(0);
+/*
+	try{
 		$connection="odbc:sams_mysql";
 		$this->pdo_link = new PDO($connection, $user, "$passwd");
 	} 
-	catch (PDOException $e) 
-	{
+	catch(PDOException $e){
 		$this->dberror=1;
 		print "<FONT COLOR=\"RED\">Error!: database $dbname not created!<br/> Create database $dbname manually</FONT>";
 		die();
 	}
+*/
     }
 
 }
@@ -288,12 +331,35 @@ class SAMSDB
   $dbname - название базы данных
 */
 
-  function SAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $pdo)
+//  function SAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $odbc_source)
+//$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+
+  function SAMSDB($samsconf)
   {
 
-//echo "SAMSDB class: $db, $odbc, $host, $user ,$passwd, $dbname, $pdo<BR>\n";
-    $this->db_odbc=$odbc;
-    $this->db_pdo=$pdo;
+$db=$samsconf->DB_ENGINE;
+$odbc=$samsconf->ODBC;
+$host=$samsconf->DB_SERVER;
+$user=$samsconf->DB_USER;
+$passwd=$samsconf->DB_PASSWORD;
+$dbname=$samsconf->SAMSDB;
+$odbc_source=$samsconf->ODBCSOURCE;
+
+//echo "$dbname: $user@$host <BR>";
+    $phpver=explode(".",phpversion());
+    if( $odbc==1 )
+    {
+        $this->db_odbc=1;
+        $this->odbc_source=$odbc_source;
+	if(function_exists('odbc_connect'))
+	{
+	    $this->db_odbc=1;
+	}
+	else
+	{
+	    $this->db_pdo=1;
+	}
+    }
     $this->db_name=$db;
 
     if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
@@ -306,28 +372,98 @@ class SAMSDB
       }
     if($this->db_odbc==1 && $this->db_pdo==0)
       {
-/*
-	if($this->ODBC != "0" && !function_exists('odbc_connect'))
-	{
-		echo "<br><center><font color=red><b>ERROR: ODBC support for PHP is not properly installed.<br>Try installing ODBC for php package </b></font></center>";
-		die();
-	}
-*/
-	$this->link=$this->odbcdb_connect($host,$user,$passwd,$dbname);
+	$this->odbcdb_connect($host,$user,$passwd,$dbname);
       }
     if($this->db_odbc==1 && $this->db_pdo==1)
       {
-//	$this->link=$this->pdodb_connect($host,$user,$passwd,$dbname);
+	$this->pdodb_connect($host,$user,$passwd,$dbname);
+      }
+  }
+/*
+  function SAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $odbc_source)
+  {
+
+    $phpver=explode(".",phpversion());
+    if( $odbc==1 )
+    {
+        $this->db_odbc=1;
+        $this->odbc_source=$odbc_source;
+	if(function_exists('odbc_connect'))
+	{
+	    $this->db_odbc=1;
+	}
+	else
+	{
+	    $this->db_pdo=1;
+	}
+    }
+    $this->db_name=$db;
+
+    if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
+      {
+	$link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
+      {
+	$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==0)
+      {
+	$this->odbcdb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==1)
+      {
 	$this->pdodb_connect($host,$user,$passwd,$dbname);
       }
   }
 
+*/
+
+}
+
+class CREATESAMSDB extends SAMSDB
+{
+  function CREATESAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $odbc_source)
+  {
+    $phpver=explode(".",phpversion());
+    if( $odbc==1 )
+    {
+        $this->db_odbc=1;
+        $this->odbc_source=$odbc_source;
+	if(function_exists('odbc_connect'))
+	{
+	    $this->db_odbc=1;
+	}
+	else
+	{
+	    $this->db_pdo=1;
+	}
+    }
+    $this->db_name=$db;
+
+    if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
+      {
+	$link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
+      {
+	$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==0)
+      {
+	$this->odbcdb_connect($host,$user,$passwd,$dbname);
+      }
+    if($this->db_odbc==1 && $this->db_pdo==1)
+      {
+	$this->pdodb_connect($host,$user,$passwd,$dbname);
+      }
+  }
 
 }
 
 function CreatePgSQLDB($filename)
 {
-$sDB=new SAMSDB("PostgreSQL", "0", "localhost", "postgres", "", "samsdb");
+$sDB=new CREATESAMSDB("PostgreSQL", "0", "localhost", "postgres", "", "samsdb");
 
 if($dbf_handle = @fopen($filename, "r")) 
     {
@@ -352,11 +488,11 @@ if($dbf_handle = @fopen($filename, "r"))
 
 
 //$db, $odbc, $host, $user ,$passwd, $dbname
-function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muser, $mpass, $pdo)
+function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muser, $mpass, $odbcsource)
 {
  $pgdb=array();
 $pgdb[0] = "CREATE TABLE websettings (	s_lang varchar(15) NOT NULL default 'EN', s_iconset varchar(25) NOT NULL default 'classic', s_useraccess smallint NOT NULL default '1', s_urlaccess smallint NOT NULL default '1', s_showutree smallint NOT NULL default '1' , s_showname varchar(5) NOT NULL default 'nick', s_showgraph smallint NOT NULL default '0', 	s_createpdf varchar(5) NOT NULL default 'NONE',	s_version char(5) NOT NULL default '1.0')"; 
-$pgdb[1] = "INSERT INTO websettings VALUES('EN','classic','1','1','1','nick','0','NONE','1.9.9')";
+$pgdb[1] = "INSERT INTO websettings VALUES('EN','classic','1','1','1','nick','0','NONE','2.0.2')";
 $pgdb[2] = "CREATE TABLE proxy (  s_proxy_id SERIAL PRIMARY KEY, s_description varchar(100) default 'Proxy server', 
 s_endvalue bigint NOT NULL default '0', s_redirect_to varchar(100) default 'http://your.ip.address/sams/icon/classic/blank.gif', s_denied_to varchar(100) default 'http://your.ip.address/sams/messages', s_redirector varchar(25) default 'NONE', s_delaypool smallint default '0', s_auth varchar(4) default 'ip', s_wbinfopath varchar(100) default '/usr/bin', s_separator varchar(15) default '+', s_usedomain smallint default '0', s_bigd smallint default '0', s_bigu smallint default '0', s_sleep int default '1', s_parser smallint default '0', s_parser_time int default '1', s_count_clean smallint default '0', s_nameencode smallint default '0', s_realsize varchar(4) default 'real', s_checkdns smallint default '0', s_debuglevel int NOT NULL default '0', s_defaultdomain varchar(25) NOT NULL default 'workgroup', s_squidbase int NOT NULL default '0', 
 s_udscript varchar(100) NOT NULL default 'NONE', 
@@ -411,16 +547,21 @@ $pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 
     $crpasswd=crypt("qwerty","00");
-
     if($db=="unixODBC")
       {
-	$sDB=new SAMSDB($db, $odbc, $host, $user, $passwd, $dbname, $pdo);
+	$sDB=new CREATESAMSDB($db, $odbc, $host, $user, $passwd, $dbname, $odbcsource);
 	
-	 for( $i=0; $i<count($pgdb); $i++)
+	echo "<TABLE WIDTH=95%>";
+	for( $i=0; $i<count($pgdb); $i++)
 	  {
-		echo "$i: $pgdb[$i] <BR>\n";
-		$sDB->samsdb_query("$pgdb[$i];");	
+		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
+		$result=$sDB->samsdb_query("$pgdb[$i];");	
+		if($result>0)
+			echo "<TD VALIGN=TOP><B>Ok</B>\n";
+		else
+			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
 	  }
+	echo "</TABLE>";
       }
 
     if($db=="MySQL" && ($odbc==0 || $odbc == "No"))
@@ -436,13 +577,19 @@ $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 	  {
 		echo "Database $dbname is created<BR>\n";
 	   }
-	$sDB=new SAMSDB($db, $odbc, $host, $user, $passwd, $dbname, $pdo);
+	$sDB=new CREATESAMSDB($db, $odbc, $host, $user, $passwd, $dbname, $odbcsource);
 	$sDB->mysqldb_connect($host,$user,$passwd,$dbname);
+	echo "<TABLE WIDTH=95%>";
 	for( $i=0; $i<count($pgdb); $i++)
 	   {
-		echo "$i: $pgdb[$i] <BR>\n";
-		$sDB->samsdb_query("$pgdb[$i];");		
+		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
+		$result=$sDB->samsdb_query("$pgdb[$i];");		
+		if($result>0)
+			echo "<TD VALIGN=TOP><B>Ok</B>\n";
+		else
+			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
 	   }
+	echo "</TABLE>";
 	$sDB->samsdb_query("UPDATE passwd SET s_pass='$crpasswd' WHERE s_user='Admin' ");		
         if($create=="on")
 		$sDB->samsdb_query("GRANT ALL ON $dbname.* TO $muser IDENTIFIED BY '$mpass' ");		
@@ -450,15 +597,20 @@ $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 
     if($db=="PostgreSQL" && $odbc==0)
       {
-	$sDB=new SAMSDB("PostgreSQL", "0", $host, $user, $passwd, $dbname);
-//echo "\n 'PostgreSQL', '0', $host, $user, $passwd, $dbname \n";
+	$sDB=new CREATESAMSDB("PostgreSQL", "0", $host, $user, $passwd, $dbname, $odbcsource);
 	$sDB->pgsqldb_connect($host,$user,$passwd,$dbname);
 
+	echo "<TABLE WIDTH=95%>";
 	 for( $i=0; $i<count($pgdb); $i++)
 	  {
-		echo "$i: $pgdb[$i] <BR>\n";
-		$sDB->samsdb_query("$pgdb[$i];");		
+		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
+		$result=$sDB->samsdb_query("$pgdb[$i];");		
+		if($result>0)
+			echo "<TD VALIGN=TOP><B>Ok</B>\n";
+		else
+			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
 	  }
+	echo "</TABLE>";
       }
 
       print("<FORM NAME=\"startsams\" ACTION=\"index.html\" TARGET=_parent>\n");

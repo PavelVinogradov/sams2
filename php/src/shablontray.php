@@ -9,7 +9,7 @@ function MoveUsersToShablon()
 {
   global $SAMSConf;
   global $SHABLONConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
 	{       exit;     }
@@ -32,7 +32,7 @@ function ShablonUsers()
 {
   global $SAMSConf;
   global $SHABLONConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -174,8 +174,8 @@ function ShablonTray()
       print("</SCRIPT> \n");
 
       print("<TABLE border=0 WIDTH=\"100%\">\n");
-      print("<TR>\n");
-      print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
+      print("<TR HEIGHT=60>\n");
+      print("<TD WIDTH=25%>");
       print("<B>$shablontray_ShablonTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">$SHABLONConf->s_name</FONT></B>\n");
 
       ExecuteFunctions("./src", "shablonbuttom","1");

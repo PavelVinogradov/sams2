@@ -8,7 +8,7 @@
 function UpdateUser()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $gauditor="";
   if(isset($_GET["id"])) $userid=$_GET["id"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
@@ -56,6 +56,8 @@ function UpdateUser()
 
 /* *************************************************** */
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
+  if($domain=="") 
+	$domain="workgroup";
   $a=explode("+",$usershablon);
 
   $usershablon=$a[0];
@@ -78,8 +80,8 @@ function UpdateUserForm()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 

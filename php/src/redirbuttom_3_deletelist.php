@@ -8,7 +8,7 @@
 function redirbuttom_3_deletelist()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -30,7 +30,7 @@ function redirbuttom_3_deletelist()
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
+       print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
        print("TITLE=\"$redirbuttom_3_deletelist_redirbuttom_3_deletelist_1\"  border=0 ");
        print("onclick=DeleteList(\"$id\") \n");

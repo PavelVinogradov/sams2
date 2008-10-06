@@ -8,18 +8,29 @@
 function AddGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  $DB=new SAMSDB(&$SAMSConf);
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
-  if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
+  if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
 
-  $num_rows=$DB->samsdb_query_value("INSERT INTO sgroup ( s_name ) VALUES('$groupname') ");
-//  if($result!=FALSE)
+//  $groupname=TempName();
+
+  $result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$groupnick'");
+//  $result=mysql_query("SELECT nick FROM groups where nick = '$groupnick';");
+  if($result == 0) 
+  {
+    $result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$groupnick') ");
+//    if($result!=FALSE)
 //      UpdateLog("$SAMSConf->adminname","Added group  $groupnick ","02");
 
-  print("<SCRIPT>\n");
-  print("  parent.lframe.location.href=\"lframe.php\"; \n");
-  print("  parent.tray.location.href=\"tray.php?show=exe&filename=newgrptray.php&function=newgrptray\";\n");
-  print("</SCRIPT> \n");
+    print("<SCRIPT>\n");
+    print("  parent.lframe.location.href=\"lframe.php\"; \n");
+    print("  parent.tray.location.href=\"tray.php?show=usergrouptray&groupname=$groupname&groupnick=$groupnick\";\n");
+    print("</SCRIPT> \n");
+  } else {
+    PageTop("usergroup_48.jpg","$newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist");
+  }
 }
 
 
@@ -32,20 +43,7 @@ function NewGroupForm()
 
   PageTop("usergroup_48.jpg","$grouptray_NewGroupForm_1");
 
-       print("<SCRIPT language=JAVASCRIPT>\n");
-       print("function TestName(formname)\n");
-       print("{\n");
-       print("  var shablonname=formname.groupnick.value; \n");
-       print("  if(shablonname.length==0) \n");
-       print("    {\n");
-       print("       alert(\"$grouptray_NewGroupForm_12\");\n");
-       print("       return false");
-       print("    }\n");
-       print("  return true");
-       print("}\n");
-       print("</SCRIPT> \n");
- 
-  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\" onsubmit=\"return TestName(NEWUSER)\">\n");
+  print("<FORM NAME=\"NEWUSER\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addgroup\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"newgrpbuttom_5_addgroup.php\">\n");
@@ -54,7 +52,7 @@ function NewGroupForm()
   print("<TD>\n");
   print("<B>$grouptray_NewGroupForm_2\n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"groupname\" SIZE=30> \n" );
+  print("<INPUT TYPE=\"TEXT\" NAME=\"groupnick\" SIZE=30> \n" );
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$denied_quickadddeniedurlform4\">\n");
   print("</FORM>\n");
@@ -70,14 +68,11 @@ function newgrpbuttom_5_addgroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
- if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=newgroupform&filename=newgrpbuttom_5_addgroup.php",
 	               "basefrm","useradd_32.jpg","useradd_48.jpg","$newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1");
     }
-
-
 }
 
 ?>

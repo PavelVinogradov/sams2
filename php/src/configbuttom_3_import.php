@@ -219,10 +219,10 @@ function IMPORTUSERS($hostname, $username, $pass)
 
  if($SAMSConf->access!=2)     {       exit;     }
 
- $this->DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+ $this->DB=new SAMSDB(&$SAMSConf);
  $this->oldDB=new SAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
 
-echo "<BR>new: $SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO<BR>";
+echo "<BR>new: &$SAMSConf<BR>";
 echo "old: MySQL, 0, $hostname, $username, $pass, squidctrl, 0<BR>";
 
 
@@ -325,7 +325,7 @@ function configbuttom_3_import()
 
   if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
+       //print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
 	               "basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
     }

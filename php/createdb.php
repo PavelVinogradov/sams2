@@ -1,18 +1,16 @@
 <?php
 
-  require('./samsclass.php');
+
   require('./dbclass.php');
 
-  $SAMSConf = new SAMSCONFIG();
 
-  $dbtype   = (isset($_GET["dbname"]))		? $_GET["dbname"]	: $SAMSConf->DB_ENGINE;
-  $hostname = (isset($_GET["hostname"]))	? $_GET["hostname"]	: $SAMSConf->DB_SERVER;
-  $username = (isset($_GET["username"]))	? $_GET["username"]	: $SAMSConf->DB_USER;
-  $pass     = (isset($_GET["pass"]))		? $_GET["pass"]		: $SAMSConf->DB_PASSWORD;
-  $samsdb   = (isset($_GET["samsdb"])) 		? $_GET["samsdb"]	: $SAMSConf->SAMSDB;
-  $odbc     = (isset($_GET["odbc"]))		? $_GET["odbc"]		: $SAMSConf->ODBC;
-  $pdo	    = (isset($_GET["pdo"])) 		? $_GET["pdo"]		: $SAMSConf->PDO;
-
+  if(isset($_GET["hostname"])) $hostname=$_GET["hostname"];
+  if(isset($_GET["username"])) $username=$_GET["username"];
+  if(isset($_GET["pass"])) $pass=$_GET["pass"];
+  if(isset($_GET["dbname"])) $dbname=$_GET["dbname"];
+  if(isset($_GET["samsdb"])) $samsdb=$_GET["samsdb"];
+  if(isset($_GET["odbc"])) $odbc=$_GET["odbc"];
+  if(isset($_GET["pdo"])) $pdo=$_GET["pdo"];
 //  if(isset($_GET["action"])) 		$action=$_GET["action"];
   if(isset($_GET["muser"])) 		$muser=$_GET["muser"];
   if(isset($_GET["mpass"])) 		$mpass=$_GET["mpass"];
@@ -48,7 +46,7 @@
 	{
 		echo "<br><center><font color=red><b>ERROR:safe_mode = off</b></font><BR> Switch php into safe_mode = on</center><BR><BR> ";
 	}
-  //print("dbtype = $dbtype, odbc = $odbc, hostname = $hostname, username = $username, pass = $pass, samsdb = $samsdb");
-  CreateSAMSdb($dbtype, $odbc, $hostname, $username ,$pass, $samsdb, $create, $muser, $mpass, $pdo);
+  //print("$dbname, $odbc, $hostname, $username ,$pass, $samsdb");
+  CreateSAMSdb($dbname, $odbc, $hostname, $username ,$pass, $samsdb, $create, $muser, $mpass, "sams_mysql");
   print("</body>");
 ?>

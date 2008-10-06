@@ -44,8 +44,8 @@ function UserAuthForm()
 function UserForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
@@ -225,7 +225,8 @@ function UserTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
-//echo "id=$id,". $SAMSConf->ToUserDataAccess($id, "WGSC") ." SAMSConf->access=$SAMSConf->access<BR>";
+//echo "id=$id, DataAccess=". $SAMSConf->ToUserDataAccess($id, "WGSC") ." SAMSConf->access=$SAMSConf->access $SAMSConf->domainusername<BR>";
+//exit(0);
 	if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
 	{
 		print("<SCRIPT>\n");
