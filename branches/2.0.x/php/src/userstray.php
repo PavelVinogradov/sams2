@@ -7,7 +7,7 @@
 function DisableSelectedUsers()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   if($SAMSConf->access!=2)
     exit(0);
 
@@ -71,7 +71,7 @@ function DisableSelectedUsers()
 function AllUsersForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -323,12 +323,16 @@ function UsersTray()
   print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
   print("</SCRIPT> \n");
 
-  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+//echo "<style type=\"text/css\"> TD.samstraytd {cursor:sw-resize; width:50px; height:50px; vertical-align:bottom; text-align: center; background-color: WHITE; } </style>\n";
+//TD.samstraytd {cursor:sw-resize;}
+
+  print("<TABLE border=0 WIDTH=95%>\n");
+  print("<TR HEIGHT=60>\n");
+  print("<TD WIDTH=25%>");
   print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$userstray_UsersTray_1</FONT></B>\n");
 
   ExecuteFunctions("./src", "usersbuttom","1");
+//  print("<TD>\n");
   print("<TD>\n");
   print("</TABLE>\n");
 

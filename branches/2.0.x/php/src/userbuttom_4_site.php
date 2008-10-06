@@ -10,8 +10,8 @@ function SiteUserList()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  require("reportsclass.php");
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  require("lib/reportsclass.php");
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -102,8 +102,8 @@ function UserSitesPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  require("reportsclass.php");
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  require("lib/reportsclass.php");
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -226,7 +226,7 @@ function UserSitesForm()
 {
   global $SAMSConf;
   global $USERConf;
-  require("reportsclass.php");
+  require("lib/reportsclass.php");
   $dateselect=new DATESELECT();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

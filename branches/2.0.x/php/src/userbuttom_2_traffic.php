@@ -12,7 +12,7 @@ function UserTrafficPeriodGB()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -63,13 +63,13 @@ function UserTrafficPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
  
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
-  require("reportsclass.php");
+  require("lib/reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -158,7 +158,7 @@ function UserTrafficForm()
 {
   global $SAMSConf;
   global $USERConf;
-  require("reportsclass.php");
+  require("lib/reportsclass.php");
   $dateselect=new DATESELECT();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

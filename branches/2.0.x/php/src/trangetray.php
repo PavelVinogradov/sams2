@@ -8,7 +8,7 @@
 function AddTRange()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -40,12 +40,7 @@ function AddTRange()
    $days="$day1$day2$day3$day4$day5$day6$day7";  
    $timestart="$shour:$smin:00";  
    $timeend="$ehour:$emin:59";  
-//  $DB->samsdb_query("INSERT INTO shablon SET s_name='$snick', s_shablonpool='$shablonpool', s_userpool='$userpool', s_quote='$defaulttraf', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_alldenied='0' ");
-//echo "INSERT INTO timerange ( s_name, s_days, s_timestart, s_timeend ) VALUES ( '$name', '$days', '$timestart', '$timeend' )";
-  $DB->samsdb_query("INSERT INTO timerange ( s_name, s_days, s_timestart, s_timeend ) VALUES ( '$name', '$days', '$timestart', '$timeend' ) ");
-// ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied )
-//( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' )
-//  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
+   $DB->samsdb_query("INSERT INTO timerange ( s_name, s_days, s_timestart, s_timeend ) VALUES ( '$name', '$days', '$timestart', '$timeend' ) ");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -161,16 +156,16 @@ function JSTRangeInfo()
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/clock_48.jpg\" align=\"RIGHT\" valign=\"middle\" >
   <TD  valign=\"middle\"><h2  align=\"CENTER\">Time Range <FONT COLR=\"BLUE\">$TRANGEConf->s_name</h2>
-  </TABLE>";
+  </TABLE><TABLE>";
   for($i=1;$i<8;$i++)
      {
 	if($TRANGEConf->s_days[$i]=="CHECKED")
-	   $code=$code."<B>".$week[$i]." <img src=\"$SAMSConf->ICONSET/galka.gif\"><BR> ";
+	   $code=$code."<TR><TD><B>".$week[$i]." <TD><img src=\"$SAMSConf->ICONSET/galka.gif\"> ";
 	else
-	   $code=$code."<B>".$week[$i]." <img src=\"$SAMSConf->ICONSET/stop2.gif\"><BR> ";
+	   $code=$code."<TR><TD><B>".$week[$i]." <TD><img src=\"$SAMSConf->ICONSET/stop2.gif\"> ";
      }  
   
-  $code=$code."<B>$TRANGEConf->s_timestart - $TRANGEConf->s_timeend</B>
+  $code=$code."</TABLE><B>$TRANGEConf->s_timestart - $TRANGEConf->s_timeend</B>
   </CENTER>
   </BODY></HTML>";
   $code=str_replace("\"","\\\"",$code);
@@ -185,6 +180,8 @@ function JSTRangeInfo()
 
 function TRangeTray()
 {
+  if(isset($_GET["id"])) $id=$_GET["id"];
+
   global $SAMSConf;
   global $TRANGEConf;
   
@@ -192,7 +189,6 @@ function TRangeTray()
   require($lang);
   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
 	{       exit;     }
-
   print("<SCRIPT>\n");
   //print(" parent.basefrm.location.href=\"main.php?show=exe&function=about\";\n");    
   //print(" parent.basefrm.document.write(\"<H1>11111</H1>\");\n");    //document.write("Hello World!");
@@ -200,8 +196,8 @@ function TRangeTray()
   print("</SCRIPT> \n");
 
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
+  print("<TR HEIGHT=60>\n");
+  print("<TD WIDTH=25%>");
   print("<B>Time Range<BR><FONT COLOR=\"BLUE\">$TRANGEConf->s_name</FONT></B>\n");
 
   ExecuteFunctions("./src", "trangebuttom","1");

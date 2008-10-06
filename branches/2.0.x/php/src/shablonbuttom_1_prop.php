@@ -9,8 +9,8 @@ function UpdateShablon()
 {
   global $SAMSConf;
 
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   $sguardgroups=array("ads","aggressive","audio-video","drugs","gambling",
    "hacking","mail","porn","proxy","violence","warez");
 
@@ -82,8 +82,8 @@ function UpdateShablonForm()
   $s_selected=array();
   $credir=0;
 
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -452,7 +452,7 @@ function UpdateShablonForm()
 function RemoveTRange2Shablon()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -477,7 +477,7 @@ function RemoveTRange2Shablon()
 function AddTRange2Shablon()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -508,7 +508,6 @@ function shablonbuttom_1_prop()
   require($lang);
    if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
    {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$SHABLONConf->s_shablon_id",
 	               "basefrm","config_32.jpg","config_48.jpg","$shablonbuttom_1_prop_shablonbuttom_1_prop_1 '$SHABLONConf->s_name'");
     }

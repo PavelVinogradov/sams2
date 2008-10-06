@@ -95,7 +95,7 @@ function FileSystemUsage()
 function SysInfo()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
    PageTop("stat_48.jpg","System Information");
 
@@ -133,8 +133,8 @@ function SysInfo()
    print("<TH width=\"33%\" >All traffic\n");
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
-   
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE s_date>=\"$sdate\" AND s_date<=\"$edate\" ");
+
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This month\n");
@@ -146,7 +146,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE s_date=\"$edate\" ");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date=\"$edate\" ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD > This day\n");
@@ -194,9 +194,9 @@ function ConfigTray()
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }
  print("</SCRIPT> \n");
 
-  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+  print("<TABLE WIDTH=\"95%\" BORDER=0>\n");
+  print("<TR HEIGHT=60>\n");
+  print("<TD WIDTH=\"25%\"\">");
   print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
 
     ExecuteFunctions("./src", "configbuttom","1");

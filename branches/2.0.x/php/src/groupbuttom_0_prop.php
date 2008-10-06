@@ -8,7 +8,7 @@
 function UpdateGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
   if($SAMSConf->access!=2)     {       exit;     }
 
@@ -29,7 +29,7 @@ function UpdateGroup()
 function UpdateGroupForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -60,7 +60,7 @@ function UpdateGroupForm()
 }
 
 
-function groupbuttom_0_prop($id)
+function groupbuttom_0_prop()
 {
   global $SAMSConf;
 
@@ -71,7 +71,6 @@ function groupbuttom_0_prop($id)
   
   if($SAMSConf->access==2)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=updategroupform&filename=groupbuttom_0_prop.php&id=$id",
 	               "basefrm","config_32.jpg","config_48.jpg","$groupbuttom_0_prop_groupbuttom_0_prop_1");
     }

@@ -8,7 +8,7 @@ function MoveUsersToGroup()
 {
   global $SAMSConf;
 echo "12345<BR>";
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
  if(isset($_GET["id"])) $id=$_GET["id"];
  if(isset($_GET["username"])) $users=$_GET["username"];
 echo "count=count($users)<BR>";
@@ -25,8 +25,8 @@ echo "count=count($users)<BR>";
 function DisableGroupUsers()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
  
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
  if(isset($_GET["id"])) $id=$_GET["id"];
@@ -59,7 +59,7 @@ function UserGroupForm()
 {
   
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   $SAMSConf->access=UserAccess();
@@ -230,11 +230,11 @@ function UserGroupForm()
 }
 
 
-function GroupTray($groupname,$groupnick)
+function GroupTray()
 {
 if(isset($_GET["id"])) $id=$_GET["id"];
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -246,8 +246,8 @@ if(isset($_GET["id"])) $id=$_GET["id"];
   $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
   $row=$DB->samsdb_fetch_array();
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+  print("<TR HEIGHT=60>\n");
+  print("<TD WIDTH=25%>");
   print("<B>$grouptray_GroupTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[s_name]</FONT></B>\n");
 
       ExecuteFunctions("./src", "groupbuttom",$id);

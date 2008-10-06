@@ -13,9 +13,8 @@
   require('./samsclass.php');
   require('./tools.php');
   //require('./str/grouptray.php');
-
   $SAMSConf=new SAMSCONFIG();
-$SAMSConf->access=2;
+  $SAMSConf->access=2;
 
  $filename="";
  $sday=0;
@@ -67,10 +66,11 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   print("<html><head>\n");
-  print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
-  print("<META HTTP-EQUIV=\"expires\" CONTENT=\"THU, 01 Jan 1970 00:00:01 GMT\">");
-  print("<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">");
-  print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
+  print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>\n");
+  print("<META HTTP-EQUIV=\"expires\" CONTENT=\"THU, 01 Jan 1970 00:00:01 GMT\">\n");
+  print("<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">\n");
+  print("<LINK rel=\"stylesheet\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
+
 
   print("</head>\n");
   print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\" >\n");
@@ -116,7 +116,8 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
     {
       require($req);
     }
-  $function();
+  if(strlen($function)>0)
+      $function();
 
 
 

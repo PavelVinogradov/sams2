@@ -23,7 +23,7 @@ function NotEmptyGroupWarning($groupnick)
 function DeleteGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -57,7 +57,7 @@ function DeleteGroup()
 function groupbuttom_9_delete()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
  if(isset($_GET["id"])) $id=$_GET["id"];
@@ -78,7 +78,7 @@ function groupbuttom_9_delete()
       print("</SCRIPT> \n");
   if($SAMSConf->access==2)
     {
-      print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+      print("<TD CLASS=\"samstraytd\">\n");
       print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
       print("TITLE=\"$groupbuttom_9_delete_groupbuttom_9_delete_2\"  border=0 ");
       print("onclick=DeleteUser(\"nick\",\"id\") \n");

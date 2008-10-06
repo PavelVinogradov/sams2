@@ -8,7 +8,7 @@
 function ClearUsersTrafficCounter()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -49,7 +49,8 @@ function usersbuttom_6_clear()
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\" HEIGHT=\"50\">\n");
+//       print("<TD  WIDTH=50 HEIGHT=50 VALIGN=CENTER ALIGN=CENTER>\n");
+       print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/erase_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_6_clear_usersbuttom_6_clear_2\"  border=0 ");
        print("onclick=ClearCounter(\"nick\",\"id\") \n");

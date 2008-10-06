@@ -80,8 +80,8 @@ function ProxyTray()
 	print("</SCRIPT> \n");
 
 	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-	print("<TR>\n");
-	print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+	print("<TR HEIGHT=60>\n");
+	print("<TD WIDTH=\"30%\"\">");
 	print("<B>Proxy<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></B>\n");
 
 	ExecuteFunctions("./src", "proxybuttom","1");

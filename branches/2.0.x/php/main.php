@@ -100,7 +100,8 @@ if($shou==0)
 $DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
 
-$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+//$DB=new SAMSDB(&$SAMSConf);
+$DB=new SAMSDB(&$SAMSConf);
 
 $lang="./lang/lang.$SAMSConf->LANG";
 require($lang);
@@ -130,14 +131,14 @@ if($function=="setcookie")
      //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
      $autherrort=$row['s_autherrort'];
-     $admname=$row['s_usere'];
+     $admname=$row['s_user'];
      $admpasswd=$row['s_pass'];
      $DB->free_samsdb_query();
      if($autherrorc==0||$time>$autherrort+60)
        {  
          if($time>$autherrort+60)
            {  
-		$newpasswd=crypt($userid,"00");
+		$newpasswd=crypt("$userid","00");
 		if( $admpasswd == $newpasswd )
 		  {
 			$SAMSConf->adminname=$username;
@@ -161,10 +162,95 @@ if($function=="setcookie")
            }
        }
   }   
+//exit(0);
 
 /*
 Авторизация пользователя
 */
+
+
+if($function=="userauth")
+  {   
+	if(isset($_POST["id"])) $id=$_POST["id"];
+	if(isset($_POST["userid"])) $password=$_POST["userid"];
+	if(isset($_POST["usernick"])) $user=$_POST["usernick"];
+	require('./authclass.php');
+
+	$USERAUTH = new SAMSAuthenticate();
+	$USERAUTH->UserIDAuthenticate($id, $password);
+//$USERAUTH->ShowVariables();
+//exit(0);
+
+	$time=time();
+	if($USERAUTH->authOk==1)
+	{
+		if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
+		{  
+			$SAMSConf->groupauditor=$USERAUTH->gauditor;
+			setcookie("domainuser",$USERAUTH->UserName);
+			setcookie("gauditor",$USERAUTH->gauditor);
+			setcookie("userid",$USERAUTH->userid);
+			setcookie("webaccess",$USERAUTH->webaccess);
+		}
+		else
+		{  
+			$user="";
+			$function="autherror";
+		}
+	}
+	else
+	{  
+		$user="";
+		$function="autherror";
+	}
+	$USERAUTH->SetUserAuthErrorVariables();
+//$USERAUTH->ShowVariables();
+//echo "1.function = $function<BR>";
+//exit(0);
+  }  
+
+if($function=="nuserauth")
+  {   
+	if(isset($_POST["id"])) $id=$_POST["id"];
+	if(isset($_POST["userid"])) $password=$_POST["userid"];
+	if(isset($_POST["user"])) $user=$_POST["user"];
+	require('./authclass.php');
+	$USERAUTH = new SAMSAuthenticate();
+	$USERAUTH->UserAuthenticate($user, $password);
+//$USERAUTH->ShowVariables();
+//exit(0);
+
+	$time=time();
+	if($USERAUTH->authOk==1)
+	{
+		if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
+		{  
+			$SAMSConf->groupauditor=$USERAUTH->gauditor;
+			setcookie("domainuser",$USERAUTH->UserName);
+			setcookie("gauditor",$USERAUTH->gauditor);
+			setcookie("userid",$USERAUTH->userid);
+			setcookie("webaccess",$USERAUTH->webaccess);
+		}
+		else
+		{  
+			$user="";
+			$function="autherror";
+		}
+	}
+	else
+	{  
+		$user="";
+		$function="autherror";
+	}
+	$USERAUTH->SetUserAuthErrorVariables();
+//$USERAUTH->ShowVariables();
+//exit(0);
+  }  
+
+
+
+/****************************************************
+
 if($function=="userauth")
   {   
      $user="";
@@ -251,6 +337,11 @@ if($function=="nuserauth")
   }  
 
 
+***************************************************************/
+
+
+
+
 
 //else
 //  {
@@ -296,7 +387,7 @@ if($gb!=1)
     print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");//     if($autherrorc==1&&$autherrort>0)
     print("<center>\n");
   }
-//echo "BD CONFIG: $SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO";
+//echo "BD CONFIG: &$SAMSConf";
 
   if(strstr($filename,"proxy"))
 	{
@@ -328,7 +419,7 @@ if($gb!=1)
 	//$PROXYConf->PrintProxyClass();
 	}
 
-if($user=="exe"&&$function!="setcookie")
+if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth")
   {
 	if(stristr($filename,".php" )==FALSE) 
   	{
@@ -343,12 +434,12 @@ if($user=="exe"&&$function!="setcookie")
        		$function();
 
  }
-
+//exit(0);
 if($function=="nuserauth"|| $function=="userauth")
   {
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
-     print("        parent.tray.location.href=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$SAMSConf->USERID\";\n");
+     print("        parent.tray.location.href=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$USERAUTH->userid\";\n");
      print("</SCRIPT> \n");
   }   
 if($function=="setcookie")
@@ -368,6 +459,7 @@ if($function=="autherror")
           print("<h2>next logon after $time2 second</h2> \n");
        }   
   }   
+//$SAMSConf->PrintSAMSSettings();
 print("</center>\n");
 print("</body></html>\n");
 

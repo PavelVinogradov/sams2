@@ -8,8 +8,8 @@
 function RecalcUsersTraffic()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
-  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -97,7 +97,8 @@ function usersbuttom_5_recalc()
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+//       print("<TD  WIDTH=50 HEIGHT=50 VALIGN=CENTER ALIGN=CENTER>\n");
+       print("<TD CLASS=\"samstraytd\" >\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/recalc_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_5_recalc_usersbuttom_5_recalc_2\"  border=0 ");
        print("onclick=RecalcCounter(\"nick\",\"id\") \n");

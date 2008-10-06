@@ -8,7 +8,7 @@
 function LoadRedirList()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -82,10 +82,8 @@ function redirbuttom_1_loadlist()
 
   if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
-
-GraphButton("main.php?show=exe&function=loadredirlistform&filename=redirbuttom_1_loadlist.php&id=$id","basefrm","import_32.jpg","import_48.jpg","$redir_redirtray2 ");
-	}
+	GraphButton("main.php?show=exe&function=loadredirlistform&filename=redirbuttom_1_loadlist.php&id=$id","basefrm","import_32.jpg","import_48.jpg","$redir_redirtray2 ");
+    }
 
 }
 

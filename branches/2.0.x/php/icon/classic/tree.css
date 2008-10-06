@@ -1,5 +1,6 @@
 TD {
     FONT: 13px sans-serif;
+    cursor:se-resize;
 }
 BODY    {
     FONT: 13px sans-serif;
@@ -47,11 +48,12 @@ IMG.icon {
 IMG.flag {
 	margin-top: 5px;
 }
+
 TABLE.samstable { background:white; width:95%;  }
 TABLE.samstable TH { background:beige; width:auto; }
 TABLE.samstable TD { background:blanchedalmond;  width:auto;  }
 
-TABLE.samstray { background:white; width:auto; }
-TABLE.samstray TD { background:white; width:48; height:50; }
+TD.samstraytd { width:50px; height:50px; vertical-align:bottom; text-align: center; background-color: WHITE; }
+
 
 IMG { border:0; }

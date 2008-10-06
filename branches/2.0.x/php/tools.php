@@ -9,7 +9,7 @@ function ReturnDate($string)
 function UserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+  $DB=new SAMSDB(&$SAMSConf);
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["id"])) $id=$_POST["id"];
@@ -81,7 +81,7 @@ function UserAuth()
 function NotUsersTreeUserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+  $DB=new SAMSDB(&$SAMSConf);
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["user"])) $userdomain=$_POST["user"];
@@ -245,7 +245,7 @@ function UserAuthenticate($user,$passwd)
   if(strlen($user)>0 && strlen($passwd)>0)
 	{
 
-	  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+	  $DB=new SAMSDB(&$SAMSConf);
 	  $num_rows=$DB->samsdb_query_value("SELECT s_user FROM passwd WHERE s_user='$user' and s_pass='$passwd' ");
 
 //echo "<h1>=$num_rows=</h1>";
@@ -444,6 +444,20 @@ function LBTableCell($data,$percent)
 function GraphButton($url,$target,$img_small,$img_big,$title)
 {
   global $SAMSConf;
+//  print("<TD WIDTH=50 HEIGHT=50 VALIGN=CENTER ALIGN=CENTER>\n");
+  print("<TD CLASS=\"samstraytd\">\n");
+  print("<A HREF=\"$url\" target=\"$target\">\n");
+  print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/$img_small\" BORDER=0 \n ");
+  print("TITLE=\"$title\" border=0\n");
+  print("onmouseover=\"this.src='$SAMSConf->ICONSET/$img_big'\" \n");
+  print("onmouseout= \"this.src='$SAMSConf->ICONSET/$img_small'\"> \n");
+  print("</A>\n");
+}
+
+/*
+function GraphButton($url,$target,$img_small,$img_big,$title)
+{
+  global $SAMSConf;
 
   print("<A HREF=\"$url\" target=\"$target\">\n");
   print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/$img_small\" BORDER=0 \n ");
@@ -453,5 +467,6 @@ function GraphButton($url,$target,$img_small,$img_big,$title)
   print("</A>\n");
 }
 
+*/
 
 ?>

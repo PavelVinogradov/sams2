@@ -91,7 +91,7 @@ function GetDomainUsersList()
 function AddUser()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -199,7 +199,7 @@ function AddUser()
 function NewUserForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -371,7 +371,7 @@ function usersbuttom_1_useradd()
 
    if($SAMSConf->access==2||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[domain]+$row[nick]"))
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+//       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=newuserform&filename=usersbuttom_1_useradd.php","basefrm","useradd_32.jpg","useradd_48.jpg","$usersbuttom_1_useradd_usersbuttom_1_useradd_1");
 	}
 

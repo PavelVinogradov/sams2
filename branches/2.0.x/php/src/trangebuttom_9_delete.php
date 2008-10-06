@@ -8,7 +8,7 @@
 function DeleteTRange()
 {
   global $SAMSConf;
-  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -27,11 +27,10 @@ function DeleteTRange()
         //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
     }
   //$result=mysql_query("UPDATE squidusers SET shablon=\"default\" WHERE shablon=\"$id\" ");
-  print("OK<BR>");
 
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
-  print("        parent.tray.location.href=\"tray.php\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&filename=trangetray.php&function=addtrangeform\";\n");
   print("</SCRIPT> \n");
 }
 
@@ -62,7 +61,7 @@ function trangebuttom_9_delete()
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
+       print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
        print("TITLE=\"Delete Time Range '$TRANGEConf->s_name'\"  border=0 ");
        print("onclick=DeleteUser() \n");
