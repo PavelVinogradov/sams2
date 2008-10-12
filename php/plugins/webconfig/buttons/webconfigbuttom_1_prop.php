@@ -205,16 +205,10 @@ function webconfigbuttom_1_prop()
 	{
 		$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
 		$result .= $SamsTools->GraphButton("main.php?module=WebConfig&function=webinterfacereconfigform",
-	               "basefrm","config_32.jpg","config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
-    }
+		"basefrm","config_32.jpg","config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
+	}
 	
 	return $result;
 }
-
-
-
-
-
-
 
 ?>
