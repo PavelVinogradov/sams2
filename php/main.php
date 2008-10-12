@@ -30,6 +30,7 @@
   require('./dbclass.php');
   require('./samsclass.php');
   require('./tools.php');
+  include('./pluginmanager.php');  
 
 /******************************/
 $sday=0;
@@ -53,6 +54,7 @@ $userid=0;
 $gb=0;
 
 if(isset($_GET["show"])) $user=$_GET["show"];
+if(isset($_GET["module"])) $module=$_GET["module"]; else $module=null;
 if(isset($_GET["function"])) $function=$_GET["function"];
 if(isset($_GET["filename"])) $filename=$_GET["filename"];
 if(isset($_GET["userid"])) $userid=$_GET["userid"];
@@ -419,8 +421,8 @@ if($gb!=1)
 	//$PROXYConf->PrintProxyClass();
 	}
 
-if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth")
-  {
+  if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth")
+     {
 	if(stristr($filename,".php" )==FALSE) 
   	{
     		$filename="";
@@ -433,8 +435,14 @@ if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuse
   	if(strlen($function)>0)
        		$function();
 
- }
+     } 
+
+  if ($module !== null) {
+	$manager = new PluginManager($DB, 1, $SAMSConf);
+	print ($manager->dispatch($module, $function));
+  }
 //exit(0);
+
 if($function=="nuserauth"|| $function=="userauth")
   {
      print("<SCRIPT>\n");
@@ -463,8 +471,4 @@ if($function=="autherror")
 print("</center>\n");
 print("</body></html>\n");
 
-
-
 ?>
-
-
