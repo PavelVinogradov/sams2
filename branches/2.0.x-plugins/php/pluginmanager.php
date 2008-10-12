@@ -70,7 +70,7 @@ class PluginManager {
 		
 		for ($i = 0; $i <= count($this->plugins); $i++) {
 			//TODO: Optimize this
-			if (strcasecmp($name, $this->plugins[$i]->name) == 0 && $this->plugins[$i]->active && $this->plugins[$i]->apiVersion == $this->apiVersion)
+			if (strcasecmp($name, $this->plugins[$i]->name) == 0 && $this->plugins[$i]->active)
 				$result =  $this->plugins[$i];
 		}
 		

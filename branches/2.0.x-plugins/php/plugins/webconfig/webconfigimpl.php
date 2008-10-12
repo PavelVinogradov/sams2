@@ -8,8 +8,8 @@
 class WebConfigImpl {
 
 	var $SamsDb;
-    var $SamsUser;
-    var $SamsConf;
+	var $SamsUser;
+	var $SamsConf;
 	var $SamsTools;
 	
 	function WebConfigImpl ($db, $user, $conf, $tools) {
