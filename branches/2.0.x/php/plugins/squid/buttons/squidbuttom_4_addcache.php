@@ -9,8 +9,8 @@
 function RemoveCache()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
+  $DB2=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
   
   $num_rows=$DB->samsdb_query_value("SELECT * FROM proxy ");
@@ -31,7 +31,7 @@ function RemoveCache()
 function AddCache()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
 
 $delaypool=0;
 $ntlmdomain=0;
@@ -103,7 +103,7 @@ $adminaddr="root@localhost";
 function CacheForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -401,10 +401,9 @@ function CacheForm()
 
 	print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B> $adminbuttom_1_prop_SamsReConfigForm_40</B>\n");
 	print("<TD><SELECT NAME=\"parser\" $DISABLED_PARSER  onchange=DisableParserTime(ADDCACHE)>\n");
-	print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
-
 	//Disable discret parser (#239)
-	//print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
+	//print("<OPTION VALUE=\"1\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+	print("<OPTION VALUE=\"2\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
 	print("</SELECT>\n");
 
 	$time=1;
@@ -500,11 +499,16 @@ function squidbuttom_4_addcache()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  $SamsTools = new SamsTools();
+//$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
+//$result .= $SamsTools->GraphButton("main.php?module=WebConfig&function=webinterfacereconfigform",
+//              "basefrm","config_32.jpg","config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
+
 
    if($SAMSConf->access==2)
     {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
-       GraphButton("main.php?show=exe&function=cacheform&filename=squidbuttom_4_addcache.php","basefrm","proxyes_32.jpg","proxyes_48.jpg","$squidbuttom_4_addcache_squidbuttom_4_addcache_1");
+       $SamsTools->GraphButton("main.php?module=Squid&function=cacheform&filename=squidbuttom_4_addcache.php","basefrm","proxyes_32.jpg","proxyes_48.jpg","$squidbuttom_4_addcache_squidbuttom_4_addcache_1");
 	}
 
 }

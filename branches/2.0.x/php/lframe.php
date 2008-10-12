@@ -5,26 +5,23 @@
  * (see the file 'main.php' for license details)
  */
 
-
-
 function loadjsfiles()
 {
-//global $ICONSET;
+    $finp=fopen("menu/ua.js","r");
+    while(feof($finp)==0)
+    {
+	$string=fgets($finp, 10000);
+	print("$string");
+    }
+    fclose($finp);
 
-$finp=fopen("menu/ua.js","r");
-while(feof($finp)==0)
-   {
-       $string=fgets($finp, 10000);
-       print("$string");
-   }
-fclose($finp);
-$finp=fopen("menu/ftiens4.js","r");
-while(feof($finp)==0)
-   {
-       $string=fgets($finp, 10000);
-       print("$string");
-   }
-fclose($finp);
+    $finp=fopen("menu/ftiens4.js","r");
+    while(feof($finp)==0)
+    {
+	$string=fgets($finp, 10000);
+        print("$string");
+    }
+    fclose($finp);
 }
 
 
@@ -32,10 +29,11 @@ fclose($finp);
   require('./dbclass.php');
   require('./samsclass.php');
   require('./tools.php');
+  include('./pluginmanager.php');
   global $SAMSConf;
 
   $SAMSConf=new SAMSCONFIG();
-//  $SAMSConf->access=2;
+  //$SAMSConf->access=2;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -47,8 +45,8 @@ fclose($finp);
  if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
  if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
-	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
-	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
+ if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
+ if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
 
  if($SAMSConf->PHPVER<5)
    {
@@ -61,8 +59,8 @@ fclose($finp);
      $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
      $SAMSConf->domainusername=$_COOKIE['domainuser'];
      $SAMSConf->groupauditor=$_COOKIE['gauditor'];
-	$SAMSConf->USERID=$_COOKIE['userid'];
-	$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
+     $SAMSConf->USERID=$_COOKIE['userid'];
+     $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
    }  
 
  $SAMSConf->access=UserAccess();
@@ -75,7 +73,7 @@ print("</head>\n");
 print("<body topmargin=16 marginheight=16 >\n");
 //$SAMSConf->PrintSAMSSettings();
 
-print("<IMG SRC=\"$SAMSConf->ICONSET/sams.gif\">");
+print("<IMG SRC=\"$SAMSConf->ICONSET/sams.gif\">\n");
 
 print("<script language=\"javascript\">\n");
 loadjsfiles();
@@ -86,13 +84,9 @@ print("ICONPATH = '$SAMSConf->ICONSET/'\n\n");
 $HOSTNAME=getenv('HOSTNAME');
 print("foldersTree = gFld(\"$HOSTNAME \", \"main.php\", \"earth.gif\")\n");
 
-//print("\n</script>\n");
-
-
-
-
-      ExecuteFunctions("./", "lframe_","1");
-
+    ExecuteFunctions("./", "lframe_","1");
+    $manager = new PluginManager(1, 1, 1);
+    print($manager->generateTree());
 print("\n</script>\n");
 
 print("<a href=http://www.treeview.net/treemenu/userhelp ></a>\n");
