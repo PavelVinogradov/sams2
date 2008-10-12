@@ -13,14 +13,13 @@ class WebConfigImpl {
 	var $SamsTools;
 	
 	function WebConfigImpl ($db, $user, $conf, $tools) {
-        $this->SamsDb = $db;
-        $this->SamsUser = $user;
-        $this->SamsConf = $conf;
+		$this->SamsDb = $db;
+		$this->SamsUser = $user;
+		$this->SamsConf = $conf;
 		$this->SamsTools = $tools;
-	}	
+	}
 
-    function SysInfo()
-    {
+	function SysInfo() {
 		$result = "";
 		$result .= $this->SamsTools->PageTop("stat_48.jpg","System Information");
 		
@@ -84,13 +83,13 @@ class WebConfigImpl {
 		$result .= "</TABLE>\n";
 		
 		return $result;
-    }
+	}
     
-    function CUserDoc() {
-        $lang="./lang/lang.".$this->SamsConf->LANG;
-        require($lang);
+	function CUserDoc() {
+		$lang="./lang/lang.".$this->SamsConf->LANG;
+		require($lang);
 		
-        $output = "";
+		$output = "";
 		
 		$output .= $this->SamsTools->PageTop("user.jpg","$admintray_UserDoc_1");
 		
@@ -103,32 +102,31 @@ class WebConfigImpl {
 		return $output;
 	}    
 
-    function tray() {
-        $lang="./lang/lang.".$this->SamsConf->LANG;
-        require($lang);
+	function tray() {
+		$lang="./lang/lang.".$this->SamsConf->LANG;
+		require($lang);
 		
-        $output = "";		
-        $output .= "<SCRIPT>\n";
-        if($this->SamsConf->access==2) {
-            $output .= "parent.basefrm.location.href=\"main.php?module=WebConfig&function=sysinfo\";\n";
-        } else {
-            $output .= "parent.basefrm.location.href=\"main.php?module=WebConfig&function=cuserdoc\";\n";
-        }
-        $output .= "</SCRIPT>\n";
+		$output = "";
+		$output .= "<SCRIPT>\n";
+		if($this->SamsConf->access==2) {
+			$output .= "parent.basefrm.location.href=\"main.php?module=WebConfig&function=sysinfo\";\n";
+		} else {
+			$output .= "parent.basefrm.location.href=\"main.php?module=WebConfig&function=cuserdoc\";\n";
+		}
+		$output .= "</SCRIPT>\n";
 		
-        $output .= "<TABLE WIDTH=\"100%\" BORDER=0>\n";
-        $output .= "<TR>\n";
-        $output .= "<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">";
+		$output .= "<TABLE WIDTH=\"100%\" BORDER=0>\n";
+		$output .= "<TR>\n";
+		$output .= "<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">";
 		
-	$output .= "<B>". $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1 ."</B>\n";
+		$output .= "<B>". $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1 ."</B>\n";
 		
-        $output .= $this->SamsTools->ExecuteFunctions("./plugins/webconfig/buttons", "webconfigbuttom","1");
+		$output .= $this->SamsTools->ExecuteFunctions("./plugins/webconfig/buttons", "webconfigbuttom","1");
 		
-        $output .= "<TD>\n";
-        $output .= "</TABLE>\n";
+		$output .= "<TD>\n";
+		$output .= "</TABLE>\n";
 		
 		return $output;
-    }
-
+	}
 }
 ?>
