@@ -1,12 +1,16 @@
 <?php
 
 class ConfigTrayDescr {
-    var $name = "configtray";
+	var $name = "configtray";
 	var $descr = "SAMS administration";
-    var $author = "Pavel Vinogradov";
-    var $path = "configtray";
-    var $content = "sysinfo";
-    var $tray = "tray";
+	var $author = "Pavel Vinogradov";
+	var $version = "1.0";
+	var $api = 2;
+	var $active = true;
+	
+	var $path = "configtray";
+	var $content = "sysinfo";
+	var $tray = "tray";
 	var $functions = array();
 	var $classFile = "configtrayimpl.php";
 	var $className = "ConfigTrayImpl";

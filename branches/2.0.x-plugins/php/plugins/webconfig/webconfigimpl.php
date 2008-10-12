@@ -120,7 +120,7 @@ class WebConfigImpl {
         $output .= "<TR>\n";
         $output .= "<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">";
 		
-		$output .= "<B>". $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1 ."</B>\n";
+	$output .= "<B>". $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1 ."</B>\n";
 		
         $output .= $this->SamsTools->ExecuteFunctions("./plugins/webconfig/buttons", "webconfigbuttom","1");
 		
