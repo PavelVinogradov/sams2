@@ -105,7 +105,7 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	//$PROXYConf->PrintProxyClass();
 	}
 
-  if(stristr($filename,".php" )==TRUE) 
+  if(stristr($filename,".php" )==FALSE) 
     {
       $filename="";
     }
