@@ -47,7 +47,7 @@ using namespace std;
 #include "squidconf.h"
 #include "dbcleaner.h"
 #include "dbexporter.h"
-
+#include "samsconfig.h"
 #include "pluginlist.h"
 
 /**
@@ -327,6 +327,15 @@ int main (int argc, char *argv[])
       return 1;
     }
 
+  static string service_proxy = "proxy";
+  static string service_squid = "squid";
+  static string service_dbase = "database";
+  static string service_daemon = "samsdaemon";
+  static string action_shutdown = "shutdown";
+  static string action_reload = "reload";
+  static string action_reconfig = "reconfig";
+  static string action_export = "export";
+
   // Программу запустили только для остановки демона
   // Поэтому заносим в БД команду остановки и выходим
   if (stop_it)
@@ -339,7 +348,7 @@ int main (int argc, char *argv[])
           return 2;
         }
       basic_stringstream < char >cmd_stop;
-      cmd_stop << "insert into reconfig set s_proxy_id=" << proxyid << ", s_service='proxy', s_action='shutdown'";
+      cmd_stop << "insert into reconfig set s_proxy_id=" << proxyid << ", s_service='" << service_daemon << "', s_action='" << action_shutdown << "'";
       bool res = q->sendQueryDirect (cmd_stop.str());
 
       delete q;
@@ -380,13 +389,6 @@ int main (int argc, char *argv[])
   SquidLogParser *parser = NULL;
   int seconds_to_parse = 0;
   int seconds_to_reconnect = reconnect_timeout;
-  static string service_proxy = "proxy";
-  static string service_squid = "squid";
-  static string service_dbase = "database";
-  static string action_shutdown = "shutdown";
-  static string action_reload = "reload";
-  static string action_reconfig = "reconfig";
-  static string action_export = "export";
 
   string reconfiguresquid = squidbindir + "/squid -k reconfigure";
 
@@ -405,6 +407,7 @@ int main (int argc, char *argv[])
   string dateStart;
   char str_prev_month[25];
   string backup_fname;
+  string shutdown_cmd;
 
   if (check_interval == 0)
     check_interval = 1;
@@ -537,6 +540,29 @@ int main (int argc, char *argv[])
               cmd_del << " and s_service='" << service_proxy << "'";
               cmd_del << " and s_action='" << action_shutdown << "'";
               query->sendQueryDirect (cmd_del.str());
+              DEBUG (DEBUG_DAEMON, "Shutdown proxy server");
+
+              shutdown_cmd = SamsConfig::getString (defSHUTDOWNCMD, err);
+              if (err != ERR_OK)
+                {
+                  ERROR (defSHUTDOWNCMD << " not found in config file.");
+                  continue;
+                }
+              int ret = system (shutdown_cmd.c_str ());
+              if (ret == -1)
+                {
+                  ERROR (" Unable to execute " << shutdown_cmd);
+                  continue;
+                }
+            }
+          //insert into reconfig set s_proxy_id=1, s_service='samsdaemon', s_action='shutdown'
+          if (s_service == service_daemon && s_action == action_shutdown)
+            {
+              cmd_del.str("");
+              cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
+              cmd_del << " and s_service='" << service_daemon << "'";
+              cmd_del << " and s_action='" << action_shutdown << "'";
+              query->sendQueryDirect (cmd_del.str());
               DEBUG (DEBUG_DAEMON, "Shutdown");
               process.stop();
               Proxy::destroy();
@@ -551,11 +577,11 @@ int main (int argc, char *argv[])
               exit(0);
             }
           //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='reload'
-          if (s_service == service_proxy && s_action == action_reload)
+          if (s_service == service_daemon && s_action == action_reload)
             {
               cmd_del.str ("");
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
-              cmd_del << " and s_service='" << service_proxy << "'";
+              cmd_del << " and s_service='" << service_daemon << "'";
               cmd_del << " and s_action='" << action_reload << "'";
               query->sendQueryDirect (cmd_del.str());
               reload (-1);

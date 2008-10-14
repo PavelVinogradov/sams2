@@ -106,26 +106,7 @@ public:
   static Net *fromString (const string & str);
 
 protected:
-
-  /*
-   * @brief Определяет параметры сети.
-   */
-//  bool parse ();
-
-  /*
-   * @brief Определяет параметры сети, считая что сеть определена IP адресом
-   *
-   * @return true если нет ошибок и false в противном случае
-   */
-//  bool parseIP();
-
-  /*
-   * @brief Определяет IP адрес по доменному имени.
-   */
-//  static bool resolve (const string &host, IP &ip);
-
-    string _net;                ///< Исходное определение сети
-  bool _resolving;              ///< Режим преобразования имен
+  string _net;                  ///< Исходное определение сети
   bool _domain;                 ///< Тип указания сети (true-доменным именем, false-IP адресом)
   IP *_ip;                      ///< Адрес сети
   struct in_addr _mask;         ///< Маска сети

@@ -39,6 +39,15 @@ DBConn *Logger::_conn = NULL;
 bool Logger::_connection_owner = false;
 pid_t Logger::_pid = 0;
 
+
+string Logger::strNow ()
+{
+  char strbuf[30];
+  time_t now = time (NULL);
+  strftime (strbuf, sizeof (strbuf), "%Y-%m-%d %H:%M:%S", localtime (&now));
+  return strbuf;
+}
+
 void Logger::sendInfo (const string & mess)
 {
   if (!_verbose)
@@ -50,7 +59,7 @@ void Logger::sendInfo (const string & mess)
       cout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
+      _fout << strNow () << " " << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_INFO, "%s", mess.c_str ());
@@ -72,7 +81,7 @@ void Logger::sendDebug (uint level, const string & mess)
       cout << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
+      _fout << strNow () << " " << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_DEBUG, "%s", mess.c_str ());
@@ -91,7 +100,7 @@ void Logger::sendWarning (const string & mess)
       cerr << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
+      _fout << strNow () << " " << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_WARNING, "%s", mess.c_str ());
@@ -110,7 +119,7 @@ void Logger::sendError (const string & mess)
       cerr << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_FILE:
-      _fout << _sender << "[" << getpid () << "]: " << mess << endl;
+      _fout << strNow () << " " << _sender << "[" << getpid () << "]: " << mess << endl;
       break;
     case OUT_SYSLOG:
       syslog (LOG_ERR, "%s", mess.c_str ());
