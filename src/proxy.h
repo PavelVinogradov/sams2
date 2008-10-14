@@ -57,6 +57,7 @@ public:
     AUTH_ADLD,                  ///< Авторизация в домене ActiveDirectory
     AUTH_LDAP,                  ///< Авторизация в OpenLDAP
     AUTH_NCSA,                  ///< Авторизация NCSA
+    AUTH_HOST,                  ///< Авторизация по сетевому имени
     AUTH_IP                     ///< Авторизация по сетевому (IP) адресу
   };
 
@@ -142,6 +143,8 @@ public:
 
   static string getRedirectAddr ();
   static string getDenyAddr ();
+
+  static bool isUseDNS ();
 
   /**
    * @brief Возвращает тип используемого редиректора

@@ -186,6 +186,11 @@ string Proxy::getDenyAddr ()
   return _deny_addr;
 }
 
+bool Proxy::isUseDNS ()
+{
+  return _needResolve;
+}
+
 Proxy::RedirType Proxy::getRedirectType ()
 {
   return _redir_type;
@@ -467,6 +472,8 @@ bool Proxy::reload ()
     _auth = AUTH_ADLD;
   else if (strcmp (s_auth, "ldap") == 0)
     _auth = AUTH_LDAP;
+  else if (strcmp (s_auth, "host") == 0)
+    _auth = AUTH_HOST;
   else
     {
       ERROR ("Unknown authentication scheme: " << s_auth);

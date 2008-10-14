@@ -19,6 +19,8 @@
 #include <sstream>
 
 #include "net.h"
+#include "dns.h"
+#include "proxy.h"
 #include "debug.h"
 
 Net::Net ()
@@ -26,7 +28,6 @@ Net::Net ()
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 
   _domain = false;
-  _resolving = false;
   _net = "";
   _ip = NULL;
 }
@@ -40,9 +41,6 @@ Net::~Net ()
   _ip = NULL;
 }
 
-/**
- *  @todo Реализовать кусок, когда сеть и хост определены разными способами
- */
 bool Net::hasHost (const string & host)
 {
   bool isname;
@@ -94,14 +92,33 @@ bool Net::hasHost (const string & host)
     {
       // Если не преобразовывать имена, то ничего сделать не можем
       // потому просто вернем false
-      if (!_resolving)
+      if (!Proxy::isUseDNS ())
         {
           DEBUG (DEBUG5, "[" << this << "] " << "different specifications, no resolving");
           return false;
         }
 
       DEBUG (DEBUG5, "[" << this << "] " << "different specifications, need resolving");
-      WARNING ("net and host have different specifications. Comparision is not implemented.");
+
+      vector<string> hosts;
+      vector<string>::iterator it;
+
+      if (isname) // Сеть определена IP адресом, а хост именем
+        {
+          if (!DNS::getAddrsByName(host, hosts))
+            return false;
+        }
+      else // Сеть определена именем, а хост адресом
+        {
+          if (!DNS::getNamesByAddr(host, hosts))
+            return false;
+        }
+
+      for (it = hosts.begin (); it != hosts.end (); it++)
+        {
+          if (this->hasHost (*it))
+            return true;
+        }
       return false;
     }
 }
@@ -115,16 +132,6 @@ bool Net::hasIP (const IP & ip)
     }
   return ((ip._ip.s_addr & _mask.s_addr) == ip._ip.s_addr);
 }
-
-/*
-void Net::setResolving (bool need_resolv)
-{
-  _resolving = need_resolv;
-  if (_resolving && _domain && !_net.empty ())
-    Net::resolve (_net, _octets, &_ip[0]);
-}
-*/
-
 
 string Net::asString ()
 {
@@ -206,28 +213,6 @@ Net *Net::fromString (const string & str)
 
   return obj;
 }
-
-/*
-bool Net::parse ()
-{
-  _domain = Net::isDomain (_net);
-  if (!_domain)
-  {
-    parseIP();
-  }
-  if (_domain && _resolving)
-  {
-    Net::resolve( _net, &_ip );
-  }
-
-  if (!_domain)
-  {
-    parseIP();
-  }
-  else if (_resolving)
-    resolve ();
-}
-*/
 
 bool Net::isDomain (const string & host)
 {
