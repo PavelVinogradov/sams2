@@ -69,7 +69,7 @@ function UserTrafficPeriod()
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
-  require("lib/reportsclass.php");
+  require("reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -93,7 +93,6 @@ function UserTrafficPeriod()
 
 //  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
-echo "SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$USERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain";  
   $count=1;
   $cache=0;
   print("<TABLE CLASS=samstable>");
@@ -158,8 +157,8 @@ function UserTrafficForm()
 {
   global $SAMSConf;
   global $USERConf;
-  require("lib/reportsclass.php");
-  $dateselect=new DATESELECT();
+  require("reportsclass.php");
+  $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -175,7 +174,7 @@ function UserTrafficForm()
 }
 
 
-function userbuttom_2_traffic($userid)
+function userbuttom_2_traffic()
 {
   global $SAMSConf;
   global $USERConf;
@@ -186,7 +185,6 @@ function userbuttom_2_traffic($userid)
 //   if($SAMSConf->access>0||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[nick]")||$SAMSConf->groupauditor==$row['group'])
 	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	{
-		print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
 		GraphButton("main.php?show=exe&function=usertrafficform&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id","basefrm","traffic_32.jpg","traffic_48.jpg","$userbuttom_2_traffic_userbuttom_2_traffic_1");
 	}
 

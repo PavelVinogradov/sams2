@@ -10,7 +10,7 @@ function logoff()
  print("<h1>LOGOFF</h1>");
 }
 
-function userbuttom_9_logoff($userid)
+function userbuttom_9_logoff()
 {
   global $SAMSConf;
   global $USERConf;
@@ -19,7 +19,6 @@ function userbuttom_9_logoff($userid)
   require($lang);
   if($SAMSConf->access==0&&$SAMSConf->domainusername==$USERConf->s_nick)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?function=logoff",	               "basefrm","logoff_32.jpg","logoff_48.jpg","$userbuttom_9_logoff_userbuttom_9_logoff_1");
     }
 }

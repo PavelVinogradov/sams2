@@ -56,7 +56,7 @@ function userbuttom_9_delete()
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+       print("<TD CLASS=\"samstraytd\" >\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
        print("TITLE=\"$user_usertray8\"  border=0 ");
        print("onclick=DeleteUser(\"$USERConf->s_user_id\") \n");
