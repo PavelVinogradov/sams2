@@ -296,7 +296,7 @@ function UpdateUserForm()
 
 
 
-function userbuttom_1_prop($userid)
+function userbuttom_1_prop()
 {
   global $SAMSConf;
   global $USERConf;
@@ -307,7 +307,6 @@ function userbuttom_1_prop($userid)
 
  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=updateuserform&filename=userbuttom_1_prop.php&id=$USERConf->s_user_id",
 	               "basefrm","config_32.jpg","config_48.jpg","$userbuttom_1_prop_userbuttom_1_prop_1 ");
     }

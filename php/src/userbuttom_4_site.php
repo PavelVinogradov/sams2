@@ -10,7 +10,7 @@ function SiteUserList()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  require("lib/reportsclass.php");
+  require("reportsclass.php");
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -102,7 +102,7 @@ function UserSitesPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
-  require("lib/reportsclass.php");
+  require("reportsclass.php");
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -154,7 +154,7 @@ if($SAMSConf->access==2)
   print("<TH>$userbuttom_4_site_UserSitesPeriod_5");
 
   $count=1;
-  //$query="select trim(leading \"http://\" from substring_index(url,'/',3)) as norm_url,sum(size) as url_size,sum(hit) as hit_size from cache where user=\"$SAMSConf->s_nick\"&&domain=\"$SAMSConf->s_domain\"&&date>=\"$sdate\"&&date<=\"$edate\" group by norm_url order by url_size desc limit 25000";
+//  $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$USERConf->s_nick'&&s_domain='$USERConf->s_domain'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
   $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$USERConf->s_nick'&&s_domain='$USERConf->s_domain'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
 
   $num_rows=$DB->samsdb_query_value("$query");
@@ -164,12 +164,24 @@ if($SAMSConf->access==2)
   while($row=$DB->samsdb_fetch_array())
        {
          print("<TR>");
-
+$row['norm_url'];
 	if($url_domain!=$row['url_domain'])
 	{
 		print("<TD>\n");
-		print("<TD  colspan=5><A HREF=\"http://$row[url_domain]\" TARGET=\"BLANK\"><B>$row[url_domain]</B></A>\n");
-		$url_domain=$row['url_domain'];
+		$a=explode(".",$row['norm_url']);
+		$acount=count($a);
+		if (ctype_alpha($a[$acount-1])) 
+		{
+			print("<TD  colspan=5><A HREF=\"http://$row[url_domain]\" TARGET=\"BLANK\"><B>$row[url_domain]</B></A>\n");
+			$url_domain=$row['url_domain'];
+		} 
+		else 
+		{
+			print("<TD  colspan=5><A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\"><B>$row[norm_url]</B></A>\n");
+			$url_domain=$row['url_domain'];
+		}
+
+
 		print("<TR>\n");
 	}
 //	else/
@@ -180,6 +192,9 @@ if($SAMSConf->access==2)
 	   
          if($SAMSConf->access==2)
            TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$USERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
+
+
+
          if($SAMSConf->access==1)
            TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A>\n");
          if($SAMSConf->access==0&&$SAMSConf->URLACCESS=="Y")
@@ -226,8 +241,8 @@ function UserSitesForm()
 {
   global $SAMSConf;
   global $USERConf;
-  require("lib/reportsclass.php");
-  $dateselect=new DATESELECT();
+  require("reportsclass.php");
+  $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -245,7 +260,7 @@ function UserSitesForm()
 
 
 
-function userbuttom_4_site($userid)
+function userbuttom_4_site()
 {
   global $SAMSConf;
   global $USERConf;
@@ -254,7 +269,6 @@ function userbuttom_4_site($userid)
 
 	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	{
-		print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
 		GraphButton("main.php?show=exe&function=usersitesform&filename=userbuttom_4_site.php&id=$USERConf->s_user_id","basefrm","straffic_32.jpg","straffic_48.jpg","$userbuttom_4_site_userbuttom_4_site_1");
 	}
 

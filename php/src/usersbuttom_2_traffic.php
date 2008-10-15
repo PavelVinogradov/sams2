@@ -143,7 +143,7 @@ function UsersTrafficPeriod()
    $size="";
    if(isset($_GET["size"])) $size=$_GET["size"];
 
-  require("lib/reportsclass.php");
+  require("reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -261,8 +261,8 @@ function UsersTrafficPeriod()
 function UsersTrafficForm()
 {
   global $SAMSConf;
-  require("lib/reportsclass.php");
-  $dateselect=new DATESELECT();
+  require("reportsclass.php");
+  $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
