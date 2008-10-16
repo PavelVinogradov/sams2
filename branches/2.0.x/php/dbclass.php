@@ -492,7 +492,7 @@ function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muse
 {
  $pgdb=array();
 $pgdb[0] = "CREATE TABLE websettings (	s_lang varchar(15) NOT NULL default 'EN', s_iconset varchar(25) NOT NULL default 'classic', s_useraccess smallint NOT NULL default '1', s_urlaccess smallint NOT NULL default '1', s_showutree smallint NOT NULL default '1' , s_showname varchar(5) NOT NULL default 'nick', s_showgraph smallint NOT NULL default '0', 	s_createpdf varchar(5) NOT NULL default 'NONE',	s_version char(5) NOT NULL default '1.0')"; 
-$pgdb[1] = "INSERT INTO websettings VALUES('EN','classic','1','1','1','nick','0','NONE','2.0.2')";
+$pgdb[1] = "INSERT INTO websettings VALUES('EN','classic','1','1','1','nick','0','NONE','2.0.0')";
 $pgdb[2] = "CREATE TABLE proxy (  s_proxy_id SERIAL PRIMARY KEY, s_description varchar(100) default 'Proxy server', 
 s_endvalue bigint NOT NULL default '0', s_redirect_to varchar(100) default 'http://your.ip.address/sams/icon/classic/blank.gif', s_denied_to varchar(100) default 'http://your.ip.address/sams/messages', s_redirector varchar(25) default 'NONE', s_delaypool smallint default '0', s_auth varchar(4) default 'ip', s_wbinfopath varchar(100) default '/usr/bin', s_separator varchar(15) default '+', s_usedomain smallint default '0', s_bigd smallint default '0', s_bigu smallint default '0', s_sleep int default '1', s_parser smallint default '0', s_parser_time int default '1', s_count_clean smallint default '0', s_nameencode smallint default '0', s_realsize varchar(4) default 'real', s_checkdns smallint default '0', s_debuglevel int NOT NULL default '0', s_defaultdomain varchar(25) NOT NULL default 'workgroup', s_squidbase int NOT NULL default '0', 
 s_udscript varchar(100) NOT NULL default 'NONE', 

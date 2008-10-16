@@ -81,19 +81,14 @@ function importgroups()
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
 		$DBNAME="samsdb.";
-echo "<BR>1 ";
 	if($SAMSConf->access!=2)     {       exit;     }
-echo "2 ";
 	$this->groupcount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM sams ");
 	$row=$this->oldDB->samsdb_fetch_array();
 	
-echo "2 $row[auth] $row[lang]";
 	$this->oldDB->samsdb_query_value("SELECT * FROM groups ");
-echo "3 ";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-echo "4 ";
 		$this->groupname[] ="$row[nick]";
 		$this->groupid[]="$row[name]";
 
@@ -220,24 +215,19 @@ function IMPORTUSERS($hostname, $username, $pass)
  if($SAMSConf->access!=2)     {       exit;     }
 
  $this->DB=new SAMSDB(&$SAMSConf);
- $this->oldDB=new SAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
-
-echo "<BR>new: &$SAMSConf<BR>";
-echo "old: MySQL, 0, $hostname, $username, $pass, squidctrl, 0<BR>";
-
+ $this->oldDB=new CREATESAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
 
  $this->oldDB->samsdb_query_value("SELECT lang FROM globalsettings");
  $row=$this->oldDB->samsdb_fetch_array();
  $this->sams1charset=$row[0];
  $this->oldDB->free_samsdb_query();
-echo "charsert = $this->sams1charset<BR>";
+
  $this->pgcharset=pg_client_encoding($this->DB->link);
 
  if($SAMSConf->DB_ENGINE=="PostgreSQL"&&$this->sams1charset!=$this->pgcharset)
  {
 	if($this->sams1charset=="KOI8-R")
 	{
-echo "<h3>ENCODING = $this->sams1charset</h3>";
 		pg_set_client_encoding("KOI8");
 	}
  }
@@ -263,7 +253,6 @@ function importdata()
  if(isset($_GET["username"])) $username=$_GET["username"];
  if(isset($_GET["pass"])) $pass=$_GET["pass"];
 
-echo "$hostname, $username, $pass<BR>";  
    $IMP=new IMPORTUSERS($hostname, $username, $pass);
   if($importusers=="on")
 	{
