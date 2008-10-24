@@ -307,10 +307,13 @@ bool PluginList::updateInfo ()
           if (!querySelect->sendQueryDirect (sysinfo_select_cmd.str ()))
             continue;
 
-          strcpy(sys_name, plug_name.c_str());
-          strcpy(sys_version, plug_version.c_str());
-          strcpy(sys_author, plug_author.c_str());
-          strcpy(sys_info, plug_data.c_str());
+          strcpy (sys_name, plug_name.c_str());
+          strcpy (sys_version, plug_version.c_str());
+          strcpy (sys_author, plug_author.c_str());
+          strncpy (sys_info, plug_data.c_str(), 1024);
+          if (plug_data.size () >= 1024)
+            sys_info[1023] = 0;
+          //strcpy (sys_info, plug_data.c_str());
 
 
           if (!querySelect->fetch ()) // такой записи еще нет, нужно добавлять

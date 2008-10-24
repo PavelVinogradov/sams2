@@ -366,3 +366,21 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
 
   return true;
 }
+
+long SAMSUsers::activeUsersInTemplate (long template_id)
+{
+  load ();
+  long cnt = 0;
+  vector < SAMSUser * >::iterator it;
+  for (it = _users.begin (); it != _users.end (); it++)
+    {
+      if ((*it)->getShablonId () == template_id)
+        {
+          if ((*it)->getEnabled () == SAMSUser::STAT_ACTIVE)
+            cnt++;
+        }
+    }
+  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "("<<template_id<<")] Active users in template: " << cnt);
+  return cnt;
+}
+

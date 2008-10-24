@@ -68,6 +68,7 @@ public:
    */
   static bool addNewUser(SAMSUser *user);
 
+  static long activeUsersInTemplate (long template_id);
 private:
   /**
    * @brief Загружает пользователей из БД

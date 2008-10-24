@@ -263,7 +263,8 @@ bool SquidConf::defineACL ()
                       //Определяем запретные типы файлов для текущего шаблона
                       //Определяем запретные регулярные выражения для текущего шаблона
                     }
-                  fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
+                  if (SAMSUsers::activeUsersInTemplate ( tpls[i]) > 0)
+                    fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
                 }
             }
           fout << nextline << endl;
