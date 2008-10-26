@@ -1958,9 +1958,17 @@ int MakeACLFiles(MYSQL *conn)
                     fprintf(fout,"%s/%s\n",row2[11],row2[12]);
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==1) 
 		  {
-                    fprintf(fout,"%s/%s\n",row2[11]&&strlen(row2[11])>4,row2[12]&&strlen(row2[12])>4);
-                    if(RREJIK==1&&atoi(row2[10])>0)
-                      fprintf(fout2,"%s\n",row2[11]);
+		    if(strlen(row2[11]) > 4 && strlen(row2[12]) > 4) {
+                      fprintf(fout,"%s/%s\n",row2[11],row2[12]);
+
+                      if(RREJIK==1&&atoi(row2[10])>0) {
+                        fprintf(fout2,"%s\n",row2[11]);
+		      }
+		    } else {
+		      if (DEBUG>0) {
+			printf("Bad user: %s/%s", row2[11], row2[12]);
+		      }
+		    }
 		  }  
 		  
 //                fprintf(fout,"\n");
