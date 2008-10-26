@@ -114,7 +114,7 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
     {
       require($req);
     }
-  if(strlen($function)>0)
+  if(strlen($function)>0&&$module==null)
       $function();
 	
   if ($module !== null) {

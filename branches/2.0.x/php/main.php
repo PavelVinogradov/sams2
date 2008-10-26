@@ -421,7 +421,7 @@ if($gb!=1)
 	//$PROXYConf->PrintProxyClass();
 	}
 
-  if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth")
+  if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth"&&$module==null)
      {
 	if(stristr($filename,".php" )==FALSE) 
   	{
