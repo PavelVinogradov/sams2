@@ -1935,11 +1935,11 @@ int MakeACLFiles(MYSQL *conn)
                      fprintf(fout3,"%s:%s\n",row2[1],row2[13]);
 		  }      
 
-                if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4) 
-                    fprintf(fout,"%s/255.255.255.255\n",row2[11]);
+                if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4&&strlen(row2[12])>4) 
+                    fprintf(fout,"%s/%s\n",row2[11],row2[12]);
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==1) 
 		  {
-                    fprintf(fout,"%s/255.255.255.255\n",row2[11]);
+                    fprintf(fout,"%s/%s\n",row2[11],row2[12]);
                     if(RREJIK==1&&atoi(row2[10])>0)
                       fprintf(fout2,"%s\n",row2[11]);
 		  }  
@@ -2027,7 +2027,7 @@ int MakeACLFiles(MYSQL *conn)
              {
                 row=mysql_fetch_row(res);
                 if(RREJIK==0) 
-                    fprintf(fout,"%s/255.255.255.255",row[11]);
+                    fprintf(fout,"%s/%s",row[11],row[12]);
                 if(RREJIK==1) 
                     fprintf(fout,"%s",row[11]);
                 fprintf(fout,"\n");
