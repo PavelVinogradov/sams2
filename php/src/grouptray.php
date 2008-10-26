@@ -166,14 +166,18 @@ function UserGroupForm()
 	 
 	 $count=$count+1;  
       }
-      print("<TR><TD><TD><TD>");
-      PrintFormattedSize($gtraffic);
-      if($gquote!=0)
-	PrintFormattedSize($gquote);
-      else
-      print("<TD ALIGN=\"CENTER\">unlimited");	
-      print("<TD>\n");
-  print("</TABLE>\n");
+      if($SAMSConf->access==2||$ga==1)
+        {
+          print("<TR><TD><TD><TD>");
+          PrintFormattedSize($gtraffic);
+          if($gquote!=0)
+            PrintFormattedSize($gquote);
+          else
+            print("<TD ALIGN=\"CENTER\">unlimited");	
+          print("<TD>\n");
+	  print("</TR>\n");
+        }
+    print("</TABLE>\n");
 
     if($SAMSConf->access==2)
     {
