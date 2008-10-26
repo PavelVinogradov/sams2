@@ -172,7 +172,7 @@ function URLTimePeriod()
          LTableCell($row['hour'],10);
          LTableCell($row['minute'],10);
          if($SAMSConf->access==2)
-           TableCell("<A TARGET=BLANK  HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$sday&SMon=$smon&EMon=$smon&SYea=$syea&EYea=$syea\" target=\"blank\"><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
+           TableCell("<A TARGET=BLANK  HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$sday&SMon=$smon&EMon=$smon&SYea=$syea&EYea=$syea&username=$username\" target=\"blank\"><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
          if($SAMSConf->access==1)
            TableCell("<A HREF=\"http://$row[norm_url]\" target=\"blank\">$row[norm_url]</A>\n");
          if($SAMSConf->access==0&&$SAMSConf->URLACCESS=="Y")
