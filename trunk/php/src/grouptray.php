@@ -109,14 +109,15 @@ function UserGroupForm()
       {
        print("<TR>\n");
 
+       if($SAMSConf->realtraffic=="real")
+ 	 $traffic=$row['size']-$row['hit'];
+       else
+         $traffic=$row['size'];
+       $gtraffic+=$traffic;
+       $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+      
        if($row['enabled']>0)
          {
-	    if($SAMSConf->realtraffic=="real")
-	        $traffic=$row['size']-$row['hit'];
-            else
-	        $traffic=$row['size'];
-	    $gtraffic+=$traffic;
-	    $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
             if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
                $gif="puser.gif";
             else
