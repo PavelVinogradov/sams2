@@ -22,9 +22,10 @@ class WebConfigDescr {
 		$this->functions[] = "cuserdoc";
 	}
 	
-	function getInstance($db, $user, $conf, $tools) {
+	function getInstance($db, $user, $conf, $tools, $function) {
 		include ($this->classFile);
-		return new $this->className($db, $user, $conf, $tools);
+		$func = new $this->className($db, $user, $conf, $tools);
+		return $func->$function();
 	}
 	
 }

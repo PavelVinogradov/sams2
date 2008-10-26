@@ -494,26 +494,21 @@ function CacheForm()
  
 function squidbuttom_4_addcache()
 {
-  global $SAMSConf;
-  
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-  $SamsTools = new SamsTools();
-//$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
-//$result .= $SamsTools->GraphButton("main.php?module=WebConfig&function=webinterfacereconfigform",
-//              "basefrm","config_32.jpg","config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
-
-
-   if($SAMSConf->access==2)
-    {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
-       $SamsTools->GraphButton("main.php?module=Squid&function=cacheform&filename=squidbuttom_4_addcache.php","basefrm","proxyes_32.jpg","proxyes_48.jpg","$squidbuttom_4_addcache_squidbuttom_4_addcache_1");
+	global $SAMSConf;
+	
+	$lang="./lang/lang.$SAMSConf->LANG";
+	 require($lang);
+	
+	$result = "";
+	
+	$SamsTools = new SamsTools();
+	
+	if($SAMSConf->access==2)
+	{
+		$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
+		$result .= $SamsTools->GraphButton("main.php?module=Squid&function=cacheform&filename=squidbuttom_4_addcache.php","basefrm","proxyes_32.jpg","proxyes_48.jpg","$squidbuttom_4_addcache_squidbuttom_4_addcache_1");
 	}
-
+	
+	return $result;
 }
-
-
-
-
 ?>

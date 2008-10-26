@@ -635,16 +635,10 @@ function configbuttom_1_prop()
 	{
 		$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
 		$result .= $SamsTools->GraphButton("main.php?show=exe&function=samsreconfigform&filename=configbuttom_1_prop.php",
-	               "basefrm","config_32.jpg","config_48.jpg","$adminbuttom_1_prop_adminbuttom_1_propadmintray_1");
-    }
+		"basefrm","config_32.jpg","config_48.jpg","$adminbuttom_1_prop_adminbuttom_1_propadmintray_1");
+	}
 	
 	return $result;
 }
-
-
-
-
-
-
 
 ?>
