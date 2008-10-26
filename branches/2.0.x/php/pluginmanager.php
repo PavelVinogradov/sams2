@@ -107,7 +107,8 @@ class PluginManager {
 		
 			if ($plugin !== null) {
 				if ($this->hasFunction($plugin, $function)) {
-					$result = $plugin->getInstance($this->SamsDb, $this->SamsUser, $this->SamsConf, $this->SamsTools)->$function();
+					//$result = $plugin->getInstance($this->SamsDb, $this->SamsUser, $this->SamsConf, $this->SamsTools)->$function();
+					$result = $plugin->getInstance($this->SamsDb, $this->SamsUser, $this->SamsConf, $this->SamsTools, $function);
 				} else {
 					$result = "Function ". $function ." not implemented in module ". $module;
 				}

@@ -326,11 +326,11 @@ function configbuttom_3_import()
 	$SamsTools = new SamsTools();
 
 	if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
-    {
+	{
 		$result .= "<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n";
 		$result .= $SamsTools->GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
-	               "basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
-    }
+		"basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
+	}
 	return $result;
 }
 
