@@ -100,14 +100,20 @@ function UsersTrafficPeriodPDF()
          $pdfFile->SetXY(80, $ycount);
          $aaa=convert_cyr_string("$row_2[family] $row_2[name]","k","w");
 	 $pdfFile->Write(0, $aaa);
-         $pdfFile->SetXY(130, $ycount);
-         $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
+	 $pdfFile->SetXY(130, $ycount);
+	 if($SAMSConf->realtraffic=="real")
+           $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
+	 else
+           $aaa=ReturnTrafficFormattedSize($row[0]);	
 	 $pdfFile->Write(0, $aaa);
 	 
 	 $count=$count+1;
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
-         $traf=$traf+$row[0]-$row[1];
+	 if($SAMSConf->realtraffic=="real")
+	   $traf=$traf+$row[0]-$row[1];
+         else
+	   $traf=$traf+$row[0];
 	 $ycount+=7;
 
 	 if ($count % 30 == 0) {
@@ -184,7 +190,10 @@ function AllUsersTrafficPDF()
                    $pdfFile->SetXY(90, $ycount);
                    $pdfFile->Write(0, $row2[4]);
                    $pdfFile->SetXY(130, $ycount);
-                   $aaa=ReturnTrafficFormattedSize($row2[0]-$row2[4]);
+	           if($SAMSConf->realtraffic=="real")
+                     $aaa=ReturnTrafficFormattedSize($row2[0]-$row2[4]);
+		   else
+                     $aaa=ReturnTrafficFormattedSize($row2[0]);
 	           $pdfFile->Write(0, " $aaa");
                
                    $count=$count+1;
@@ -297,7 +306,11 @@ function UsersTrafficPeriodPDFlib($pdfFile)
          pdf_show_xy($pdfFile, $aaa, 160, $ycount);  
          if($SAMSConf->realtraffic=="real")
 	   {
-             $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
+	     if($SAMSConf->realtraffic=="real")
+               $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
+	     else
+               $aaa=ReturnTrafficFormattedSize($row[0]);
+
              pdf_show_xy($pdfFile, $aaa, 400, $ycount);  
 	   }
 	 else
@@ -311,7 +324,10 @@ function UsersTrafficPeriodPDFlib($pdfFile)
          $count=$count+1;
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
-         $traf=$traf+$row[0]-$row[1];
+	 if($SAMSConf->realtraffic=="real")
+           $traf=$traf+$row[0]-$row[1];
+	 else
+           $traf=$traf+$row[0];
          $ycount-=20;
 	 if($ycount==40)
 	   {
