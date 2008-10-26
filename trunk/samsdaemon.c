@@ -2329,6 +2329,7 @@ void ReadSAMSFlags(MYSQL *conn2)
 
 }
 
+/* PV: Seems like deprecated function */
 void CodeSlashe(char *strin, char *strout)
 {
   int i;
@@ -2456,12 +2457,15 @@ int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
       }
     closedir (fddir);
 																				
-    if(dot_ino    == 0) 
-      printf(" :   \".\"\n");
+    if(dot_ino    == 0)
+      if(DEBUG>0)
+        printf(" :   \".\"\n");
     if(dotdot_ino == 0) 
-      printf(" :   \"..\"\n");
+      if(DEBUG>0)
+        printf(" :   \"..\"\n");
     if(dot_ino && dot_ino == dotdot_ino)  
-      printf("   \n");
+      if(DEBUG>0)
+        printf("   \n");
 			
     return 0;
 }
