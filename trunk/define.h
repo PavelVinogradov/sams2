@@ -25,7 +25,7 @@ struct samsconf {
   char *redirpath;
   char *deniedpath;
   char *lang;
-  char adminaddr[26];
+  char adminaddr[61];
   char *shutdown;
   int  createpdf;
   int  cachenum;
