@@ -26,7 +26,7 @@ Section: web
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql
 Recommends: sams-doc
-Suggests: php5-gd, php5-ldap
+Suggests: php5-gd, php5-ldap, php-fpdf
 Description: Squid Account Management System (SAMS) - Web interface
  This program basically used for administrative purposes of squid proxy.
  There are access control for users by ntlm, ncsa, basic or ip
