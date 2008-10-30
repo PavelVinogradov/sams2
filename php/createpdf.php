@@ -86,7 +86,11 @@ function UsersTrafficPeriodPDF()
 
   $ycount=50;
   $count=0;
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
+
+  if($SAMSConf->realtraffic=="real")
+    $result=mysql_query("SELECT sum(size), sum(hit), user,domain, sum(size) - sum(hit) as traff  FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by traff desc");
+  else
+    $result=mysql_query("SELECT sum(size), sum(hit), user,domain, sum(size) as traff  FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by traff desc");
   while($row=mysql_fetch_array($result))
        {
          $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
@@ -101,19 +105,14 @@ function UsersTrafficPeriodPDF()
          $aaa=convert_cyr_string("$row_2[family] $row_2[name]","k","w");
 	 $pdfFile->Write(0, $aaa);
 	 $pdfFile->SetXY(130, $ycount);
-	 if($SAMSConf->realtraffic=="real")
-           $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
-	 else
-           $aaa=ReturnTrafficFormattedSize($row[0]);	
+  
+         $aaa=ReturnTrafficFormattedSize($row[4]);
 	 $pdfFile->Write(0, $aaa);
 	 
 	 $count=$count+1;
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
-	 if($SAMSConf->realtraffic=="real")
-	   $traf=$traf+$row[0]-$row[1];
-         else
-	   $traf=$traf+$row[0];
+         $traf=$traf+$row[4];
 	 $ycount+=7;
 
 	 if ($count % 30 == 0) {
@@ -268,7 +267,10 @@ function UsersTrafficPeriodPDFlib($pdfFile)
   pdf_set_parameter($pdfFile, "FontOutline", "Nimbus=$fontdir/Nimbus.ttf");
   
   $ycount=700;
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
+  if($SAMSConf->realtraffic=="real")
+    $result=mysql_query("SELECT sum(size), sum(hit), user,domain, sum(size) - sum(hit) as traff  FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by traff desc");
+  else
+    $result=mysql_query("SELECT sum(size), sum(hit), user,domain, sum(size) as traff  FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by traff desc");
   while($row=mysql_fetch_array($result))
        {
          if($ycount==700)
@@ -304,14 +306,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
          pdf_show_xy($pdfFile, "$row[user]", 80, $ycount);  
          $aaa=convert_cyr_string("$row_2[family] $row_2[name]","k","w");
          pdf_show_xy($pdfFile, $aaa, 160, $ycount);  
-         if($SAMSConf->realtraffic=="real")
-	   {
-		$aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
-	   }
-	 else
-	   {
-		$aaa=ReturnTrafficFormattedSize($row[0]);
-	   }
+ 	 $aaa=ReturnTrafficFormattedSize($row[4]);
 	 pdf_show_xy($pdfFile, $aaa, 400, $ycount);  
          //$aaa=ReturnTrafficFormattedSize($row[1]);
          //pdf_show_xy($pdfFile, $aaa, 375, $ycount);
@@ -319,10 +314,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
          $count=$count+1;
          $size2=$size2+$row[0];
          $hitsize=$hitsize+$row[1];
-	 if($SAMSConf->realtraffic=="real")
-           $traf=$traf+$row[0]-$row[1];
-	 else
-           $traf=$traf+$row[0];
+         $traf=$traf+$row[4];
          $ycount-=20;
 	 if($ycount==40)
 	   {
