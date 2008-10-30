@@ -306,18 +306,13 @@ function UsersTrafficPeriodPDFlib($pdfFile)
          pdf_show_xy($pdfFile, $aaa, 160, $ycount);  
          if($SAMSConf->realtraffic=="real")
 	   {
-	     if($SAMSConf->realtraffic=="real")
-               $aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
-	     else
-               $aaa=ReturnTrafficFormattedSize($row[0]);
-
-             pdf_show_xy($pdfFile, $aaa, 400, $ycount);  
+		$aaa=ReturnTrafficFormattedSize($row[0]-$row[1]);
 	   }
 	 else
 	   {
-         $aaa=ReturnTrafficFormattedSize($row[0]);
-         pdf_show_xy($pdfFile, $aaa, 400, $ycount);  
-	   }  
+		$aaa=ReturnTrafficFormattedSize($row[0]);
+	   }
+	 pdf_show_xy($pdfFile, $aaa, 400, $ycount);  
          //$aaa=ReturnTrafficFormattedSize($row[1]);
          //pdf_show_xy($pdfFile, $aaa, 375, $ycount);
          
@@ -422,15 +417,13 @@ function AllUsersTrafficPDFlib()
                    //pdf_show_xy($pdfFile, $row2[4], 230, $ycount);  
                    if($SAMSConf->realtraffic=="real")
 	             {
-                       $aaa=ReturnTrafficFormattedSize($row2[0]-$row2[4]);
-                       pdf_show_xy($pdfFile, $aaa, 290, $ycount);  
+                       $aaa=ReturnTrafficFormattedSize($row2[0]-$row2[4]);  
                      }
 		   else
 		     {
-                       $aaa=ReturnTrafficFormattedSize($row2[0]);
-                       pdf_show_xy($pdfFile, $aaa, 290, $ycount);  
-		     
+                       $aaa=ReturnTrafficFormattedSize($row2[0]); 
 		     }  
+		     pdf_show_xy($pdfFile, $aaa, 290, $ycount);  
                    
 		   $size=$size+$row[0];
 	           $cache=$cache+$row[4];
