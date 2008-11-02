@@ -564,7 +564,7 @@
   $adminbuttom_1_prop_SamsReConfigForm_30="Настройка samsdaemon";
   $adminbuttom_1_prop_SamsReConfigForm_31="Проверять наличие команды на реконфигурирование squid каждые";
   $adminbuttom_1_prop_SamsReConfigForm_32="секунд";
-  $adminbuttom_1_prop_SamsReConfigForm_33="Обрабатывать логи непрерывно";
+  $adminbuttom_1_prop_SamsReConfigForm_33="Обрабатывать логи непрерывно (работает нестабильно)";
   $adminbuttom_1_prop_SamsReConfigForm_34="Запускать обработчик логов через N минут";
   $adminbuttom_1_prop_SamsReConfigForm_35="обрабатывать через";
   $adminbuttom_1_prop_SamsReConfigForm_36="минут";
