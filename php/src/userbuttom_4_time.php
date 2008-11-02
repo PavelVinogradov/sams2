@@ -5,6 +5,10 @@
  * (see the file 'main.php' for license details)
  */
 
+/* PavelVinogradov@03.11.08: 
+ * This is deprecated function. 
+ * Don't produce any results.
+ * */
 function URLTimePeriodGB()
 {
   require('lib/chart.php');
@@ -140,10 +144,11 @@ function URLTimePeriod()
 
   printf("<BR><CENTER><B>$traffic_2 $bdate $shou to $ehou</B></CENTER> ");
 
+//  User graph not implemented yet.  
   //if($SAMSConf->SHOWGRAPH=="Y")
   //  printf("<P><IMG SRC=\"main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou \"><P>");
 
-  //printf("<P>main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou<P>");  
+ // printf("<P>main.php?username=$username&userdomain=$userdomain&show=exe&function=urltimeperiodgb&filename=userbuttom_4_time.php&gb=1&sdate=$sdate&edate=$edate&SHou=$shou&EHou=$ehou<P>");  
       
   print("<TABLE CLASS=samstable>");
   print("<TH>No");
