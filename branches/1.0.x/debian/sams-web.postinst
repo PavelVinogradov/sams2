@@ -25,12 +25,7 @@ test $DEBIAN_SCRIPT_DEBUG && set -v -x
 case "$1" in
     configure)    
 	chown -R www-data:www-data /usr/share/sams/data
-	chmod 700 /usr/share/sams/data
-
-    	update-rc.d sams defaults
-    	db_version 2.0
-        db_input critical sams/manual_config || true
-        db_go
+	chmod 755 /usr/share/sams/data
 
     ;;
 
