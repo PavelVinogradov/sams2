@@ -27,7 +27,8 @@ from "false" to "true"
   /etc/init.d/sams start
 
 Full russian version of this instruction available at:
-http://sams.nixdev.net/wiki/debian4.0
+  - for Etch: http://sams.nixdev.net/wiki/debian4.0 
+  - for Lenny: http://sams.nixdev.net/wiki/SamsDebianLennyInstall
   
 Package status and information
 ------------------------------
