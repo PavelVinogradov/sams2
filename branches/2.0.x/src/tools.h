@@ -184,4 +184,11 @@ vector<string> fileList (const string & path, const string & filemask);
 
 void timeSubstractDays (struct tm & stime, int days);
 
+/*
+ * @brief Шифрует пароль с помощью функции crypt()
+ * @param pass Пароль открытым текстом
+ * @return Пароль в зашифрованном виде
+ */
+//string CryptPassword (const string &pass);
+
 #endif /* SAMS_TOOLS_H */

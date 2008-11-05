@@ -52,13 +52,14 @@ bool SAMSUsers::reload()
   long s_user_id;
   long s_group_id;
   long s_shablon_id;
-  char s_nick[50];
-  char s_domain[50];
+  char s_nick[55];
+  char s_domain[55];
   long s_quote;
   long long s_size;
   long long s_hit;
   long s_enabled;
-  char s_ip[15];
+  char s_ip[20];
+  char s_passwd[25];
   DBQuery *query = NULL;
 
   if (!_conn)
@@ -141,8 +142,13 @@ bool SAMSUsers::reload()
       delete query;
       return false;
     }
+  if (!query->bindCol (11, DBQuery::T_CHAR, s_passwd, sizeof(s_passwd)))
+    {
+      delete query;
+      return false;
+    }
 
-  string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip from squiduser";
+  string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -169,6 +175,8 @@ bool SAMSUsers::reload()
       usr->setEnabled (s_enabled);
       s_tmp = s_ip;
       usr->setIP (s_tmp);
+      s_tmp = s_passwd;
+      usr->setPassword (s_tmp);
 
       _users.push_back (usr);
     }
