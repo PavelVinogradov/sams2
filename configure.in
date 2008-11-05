@@ -36,6 +36,17 @@ AC_FUNC_MKTIME
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([inet_ntoa memset strerror])
 
+# SCO-ODT-3.0 is reported to need -lufc for crypt.
+# NetBSD needs -lcrypt for crypt.
+# Uncomment this, if function CryptPassword is used
+#sams_saved_libs="$LIBS"
+#AC_SEARCH_LIBS(crypt, [ufc crypt],
+#               [test "$ac_cv_search_crypt" = "none required" ||
+#                LIB_CRYPT="$ac_cv_search_crypt"])
+#LIBS="$sams_saved_libs"
+#AC_SUBST(LIB_CRYPT)
+
+
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
 AC_CHECK_UNIXODBC([use_unixodbc_dev])

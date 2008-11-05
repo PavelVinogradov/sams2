@@ -337,3 +337,37 @@ void timeSubstractDays(struct tm & stime, int days)
   struct tm *tmp = localtime(&t);
   memcpy (&stime, tmp, sizeof(struct tm));
 }
+
+/* Задумывалось как замена вызова htpasswd, но т.к. пароли в БД хранятся уже шифрованными
+   то и необходимость отпала, а удалять жалко, вдруг пригодится :)
+
+const char *salt_table = "aBcD0eFgH1iJkL2mNoP3qRsT4uVwX5yZAb6CdEf7GhIj8KlMn9OpQs0TuVw.XyZz/";
+string CryptPassword (const string &pass)
+{
+  long int idx1, idx2;
+  double k1, k2;
+  char *crypted;
+  char salt[2];
+
+  srandom (getpid());
+
+  idx1 = random ();
+  k1 = ((double)idx1)/RAND_MAX;
+  idx1 = (long int) (k1*strlen(salt_table));
+  salt[0] = salt_table[idx1];
+
+  idx2 = random ();
+  k2 = ((double)idx2)/RAND_MAX;
+  idx2 = (long int) (k2*strlen(salt_table));
+  salt[1] = salt_table[idx2];
+
+  crypted = crypt (pass.c_str(), salt);
+  if (!crypted)
+    {
+      ERROR ("Failed to crypt user password");
+      return "";
+    }
+  else
+    return crypted;
+}
+*/

@@ -102,7 +102,20 @@ void SAMSUser::setIP (const string & ip)
 
 IP SAMSUser::getIP () const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _ip);
   return _ip;
+}
+
+void SAMSUser::setPassword (const string & pass)
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << pass << ")]");
+  _passwd = pass;
+}
+
+string SAMSUser::getPassword () const
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _passwd);
+  return _passwd;
 }
 
 void SAMSUser::setEnabled (int enabled)

@@ -98,6 +98,10 @@ bool SquidConf::defineACL ()
   bool haveBlockedUsers = false;
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
 
+  ofstream fncsa;
+  string ncsafile = squidconfdir + "/sams2.ncsa";
+  Proxy::usrAuthType authType;
+
   while (fin.good ())
     {
       getline (fin, line);
@@ -144,10 +148,20 @@ bool SquidConf::defineACL ()
 
                   string method;
                   tpl = Templates::getTemplate(tpls[i]);
-                  if (tpl->getAuth () == Proxy::AUTH_IP)
+                  authType = tpl->getAuth ();
+                  if (authType == Proxy::AUTH_IP)
                     method = "src";
                   else
                     method = "proxy_auth";
+
+                  if ((authType == Proxy::AUTH_NCSA) && (!fncsa.is_open ()))
+                    {
+                      fncsa.open (ncsafile.c_str (), ios::out | ios::trunc);
+                      if (!fncsa.is_open ())
+                        {
+                          ERROR ("Unable to open file " << ncsafile);
+                        }
+                    }
 
                   //TODO Пользователи могут быть заблокированы из разных шаблонов с разными типами авторизации
                   vector<SAMSUser *>::iterator it;
@@ -159,7 +173,11 @@ bool SquidConf::defineACL ()
                           fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
                         }
                       else
-                        fout << "acl Sams2Template" << tpls[i] << " " << method << " " << *(*it) << endl;
+                        {
+                          if ((authType == Proxy::AUTH_NCSA) && (fncsa.is_open ()))
+                            fncsa << *(*it) << ":" << (*it)->getPassword () << endl;
+                          fout << "acl Sams2Template" << tpls[i] << " " << method << " " << *(*it) << endl;
+                        }
                     }
 
                   //Определяем временные границы для текущего шаблона
@@ -208,7 +226,19 @@ bool SquidConf::defineACL ()
                     fout << "acl Sams2Deny" << group_ids[i] << " dstdom_regex " << *grp << endl;
                 }
 
-            }
+              if (fncsa.is_open ())
+                {
+                  fncsa.close ();
+/* Смена владельца не актуальна, т.к. демоны авторизации работают под root
+                  string chown_cmd = "chown squid " + ncsafile;
+                  if (system (chown_cmd.c_str ()))
+                    {
+                      WARNING ("Unable to change owner of " << ncsafile);
+                    }
+*/
+                }
+
+            } // if (current_tag == "acl")
 
           // Если используется редиректор, то не вносим новые правила для http_access
           if (current_tag == "http_access")

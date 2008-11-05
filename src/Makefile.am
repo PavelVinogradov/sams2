@@ -39,7 +39,7 @@ noinst_HEADERS = \
 
 AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
 
-LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB)
+LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB) $(LIB_CRYPT)
 
 samsdaemon_LDADD = -ldl
 samsdaemon_LDFLAGS = -rdynamic
