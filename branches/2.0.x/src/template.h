@@ -167,6 +167,14 @@ public:
    */
   bool isUrlBlacklisted (const string & url) const;
 
+  /**
+   * @brief Возвращает признак совпадения ресурса со списком регулярных выражений
+   *
+   * @param url url адрес ресурса
+   * @return true если ресурс совпадает с одним из элементов списка регулярных выражений и false в противном случае
+   */
+  bool isUrlMatchRegex (const string & url) const;
+
 private:
   long _id;
   Proxy::usrAuthType _auth;

@@ -342,6 +342,16 @@ int main (int argc, char *argv[])
           continue;
         }
 
+      // Если url существует в списке регулярных выражений, блокируем доступ
+      if ( tpl->isUrlMatchRegex (fields[0]) )
+        {
+          INFO ("In regular expression list");
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
+          continue;
+        }
+
       // Если url в текущее время не разрешен, блокируем доступ
       if ( tpl->isTimeDenied (fields[0]) )
         {

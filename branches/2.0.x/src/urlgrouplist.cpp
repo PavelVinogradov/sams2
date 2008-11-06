@@ -124,6 +124,8 @@ bool UrlGroupList::reload()
             access_type = UrlGroup::ACC_ALLOW;
           else if (s_tmp == "denied" || s_tmp == "deny")
             access_type = UrlGroup::ACC_DENY;
+          else if (s_tmp == "regex")
+            access_type = UrlGroup::ACC_REGEXP;
           else
             {
               WARNING("Unsupported url group type: " << s_tmp);

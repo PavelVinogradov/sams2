@@ -213,3 +213,19 @@ bool Template::isUrlBlacklisted (const string &url) const
     }
   return false;
 }
+
+bool Template::isUrlMatchRegex (const string & url) const
+{
+  vector <long>::const_iterator it;
+  UrlGroup *grp = NULL;
+
+  for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
+    {
+      grp = UrlGroupList::getUrlGroup (*it);
+      if (!grp)
+        continue;
+      if (grp->getAccessType () == UrlGroup::ACC_REGEXP && grp->hasUrl (url))
+        return true;
+    }
+  return false;
+}
