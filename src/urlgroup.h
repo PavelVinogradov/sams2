@@ -21,6 +21,7 @@ using namespace std;
 
 #include <string>
 #include <vector>
+#include <pcre.h>
 
 /**
  * @brief UrlGroup Группа доступных или запрещенных ресурсов
@@ -35,7 +36,8 @@ public:
   enum accessType
   {
     ACC_DENY,                     ///< Доступ запрещен
-    ACC_ALLOW                     ///< Доступ разрешен
+    ACC_ALLOW,                    ///< Доступ разрешен
+    ACC_REGEXP                    ///< Доступ запрещен по регулярному выражению
   };
 
   /**
@@ -92,6 +94,7 @@ protected:
   long _id;                       ///< Идентификатор группы ресурсов
   UrlGroup::accessType _type;     ///< Тип доступа к группе ресурсов
   vector<string> _list;           ///< Список ресурсов
+  vector<pcre*> _patterns;        ///< Список скомпилированных регулярных выражений
 };
 
 #endif

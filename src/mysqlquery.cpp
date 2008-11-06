@@ -406,9 +406,13 @@ bool MYSQLQuery::fetch ()
           switch (_columns[i].t)
             {
               case MYSQL_TYPE_STRING:
-                res_len = strlen(row[i])+1;
+                if (row[i])
+                  res_len = strlen(row[i])+1;
+                else
+                  res_len = 0;
                 use_len = (res_len<_columns[i].len)?(res_len):(_columns[i].len);
-                strncpy((char*)_columns[i].dst, row[i], use_len);
+                if (use_len > 0)
+                  strncpy((char*)_columns[i].dst, row[i], use_len);
                 ((char*)_columns[i].dst)[use_len] = 0;
                 //sprintf((char*)_columns[i].dst, "%s", row[i]);
                 break;

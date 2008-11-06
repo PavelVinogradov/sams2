@@ -46,6 +46,7 @@ AC_CHECK_FUNCS([inet_ntoa memset strerror])
 #LIBS="$sams_saved_libs"
 #AC_SUBST(LIB_CRYPT)
 
+AC_CHECK_LIB([pcre], [pcre_compile], [], [])
 
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])

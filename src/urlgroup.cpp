@@ -24,7 +24,7 @@ using namespace std;
 
 UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
 {
-  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
 
   _id = id;
   _type = access;
@@ -51,34 +51,69 @@ UrlGroup::accessType UrlGroup::getAccessType ()
 void UrlGroup::addUrl (const string & url)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
-  _list.push_back (url);
+
+  if (_type == UrlGroup::ACC_REGEXP)
+    {
+      int erroroffset;
+      const char *error;
+      pcre *re;
+
+      re = pcre_compile(url.c_str (), 0, &error, &erroroffset, NULL);
+      if (re == NULL)
+        {
+          WARNING ("Mailformed regexp pattern " << url);
+        }
+      else
+        {
+          _patterns.push_back (re);
+          _list.push_back (url);
+        }
+    }
+  else
+    _list.push_back (url);
 }
 
 bool UrlGroup::hasUrl (const string & url) const
 {
-  vector<string>::const_iterator it;
-  Url u;
-  u.setUrl (url);
-
-  string domain = u.getAddress ();
-
-  for (it = _list.begin (); it != _list.end (); it++)
+  if (_type == UrlGroup::ACC_REGEXP)
     {
-      if (_type == UrlGroup::ACC_ALLOW || _type == UrlGroup::ACC_DENY)
+      int idx;
+      int ovector[300];
+      for (idx = 0; idx < _patterns.size (); idx++)
         {
-          // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
-          if ((*it).size () > domain.size ())
-            continue;
-
-          if (domain.compare (domain.size ()-(*it).size (), (*it).size (), (*it)) == 0)
+          if(pcre_exec(_patterns[idx], NULL, url.c_str (), url.size (), 0, 0, ovector, 300) >= 0)
             {
-              DEBUG (DEBUG4, "[" << this << "] Host " << domain << " is part of net " << *it);
+              DEBUG (DEBUG4, "[" << this << "] Found rule " << _list[idx] << " for " << url);
               return true;
             }
         }
+      return false;
     }
+  else
+    {
+      Url u;
+      u.setUrl (url);
 
-  return false;
+      string domain = u.getAddress ();
+
+      vector<string>::const_iterator it;
+      for (it = _list.begin (); it != _list.end (); it++)
+        {
+          if (_type == UrlGroup::ACC_ALLOW || _type == UrlGroup::ACC_DENY)
+            {
+              // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
+              if ((*it).size () > domain.size ())
+                continue;
+
+              if (domain.compare (domain.size ()-(*it).size (), (*it).size (), (*it)) == 0)
+                {
+                  DEBUG (DEBUG4, "[" << this << "] Host " << domain << " is part of net " << *it);
+                  return true;
+                }
+            }
+        }
+      return false;
+    }
 }
 
 string UrlGroup::asString () const
