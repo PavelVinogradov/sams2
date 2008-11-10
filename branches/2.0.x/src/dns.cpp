@@ -15,6 +15,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "dns.h"
+#include "debug.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,6 +31,7 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
   struct hostent *h;
   struct in_addr addr;
 
+  DEBUG (DEBUG5, "[" << __FUNCTION__ << "(" << address << ")]");
   ok = inet_aton(address.c_str (), &addr);
   if (!ok)
     {
@@ -42,10 +44,12 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
       return false;
     }
 
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << h->h_name);
   names.push_back (h->h_name);
   j = 0;
   while (h->h_aliases[j])
     {
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << h->h_aliases[j]);
       names.push_back (h->h_aliases[j]);
       j++;
     }
@@ -56,7 +60,10 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
 bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
 {
   int i;
-  struct hostent *h;
+  struct hostent *h = NULL;
+  char *str = NULL;
+
+  DEBUG (DEBUG5, "[" << __FUNCTION__ << "(" << name << ")]");
 
   h = gethostbyname(name.c_str ());
   if (!h)
@@ -66,7 +73,9 @@ bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
 
   for (i=0; i<h->h_length; i++)
     {
-      addrs.push_back (h->h_addr_list[i]);
+      str = inet_ntoa ( (in_addr &) h->h_addr_list[i]);
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << str);
+      addrs.push_back (str);
     }
 
   return true;

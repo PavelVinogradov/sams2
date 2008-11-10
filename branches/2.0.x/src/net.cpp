@@ -47,14 +47,14 @@ bool Net::hasHost (const string & host)
   bool res;
   int pos;
   IP *hostIP = NULL;
-  DEBUG (DEBUG5, "Check if " << _net << " contains " << host);
+  DEBUG (DEBUG8, "Check if " << _net << " contains " << host);
 
   isname = Net::isDomain (host);
 
   // Сеть и хост определены доменными именами
   if (_domain && isname)
     {
-      DEBUG (DEBUG5, "[" << this << "] " << "domain specifications");
+      DEBUG (DEBUG8, "[" << this << "] " << "domain specifications");
 
       // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
       if (_net.size () > host.size ())
@@ -75,11 +75,15 @@ bool Net::hasHost (const string & host)
   // Сеть и хост определены адресами
   else if (!isname && !_domain)
     {
-      DEBUG (DEBUG5, "[" << this << "] " << "address specifications");
+      DEBUG (DEBUG8, "[" << this << "] " << "address specifications");
       hostIP = IP::fromString (host);
       if (hostIP != NULL)
         {
           res = hasIP (*hostIP);
+          if (res)
+            {
+              DEBUG (DEBUG4, "[" << this << "] Host " << host << " is part of net " << _net);
+            }
           delete hostIP;
         }
       else
@@ -94,11 +98,11 @@ bool Net::hasHost (const string & host)
       // потому просто вернем false
       if (!Proxy::isUseDNS ())
         {
-          DEBUG (DEBUG5, "[" << this << "] " << "different specifications, no resolving");
+          DEBUG (DEBUG8, "[" << this << "] " << "different specifications, no resolving");
           return false;
         }
 
-      DEBUG (DEBUG5, "[" << this << "] " << "different specifications, need resolving");
+      DEBUG (DEBUG8, "[" << this << "] " << "different specifications, need resolving");
 
       vector<string> hosts;
       vector<string>::iterator it;
@@ -125,12 +129,14 @@ bool Net::hasHost (const string & host)
 
 bool Net::hasIP (const IP & ip)
 {
+  bool has_it = false;
   if (_ip == NULL)
     {
       WARNING ("Net does not have information about IP address");
-      return false;
+      return has_it;
     }
-  return ((ip._ip.s_addr & _mask.s_addr) == ip._ip.s_addr);
+  has_it = ((ip._ip.s_addr & _mask.s_addr) == _ip->_ip.s_addr);
+  return has_it;
 }
 
 string Net::asString ()
