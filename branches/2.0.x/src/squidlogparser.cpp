@@ -89,35 +89,15 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 {
   DEBUG (DEBUG_PARSER, "[" << this << "->" << __FUNCTION__ << "] " << fname << ", " << from_begin);
 
-  DBQuery *query = conn->newQuery ();
-  if (!query)
+  int err;
+
+  string str_db_ver = SamsConfig::getString (defDBVERSION, err);
+  if (err != ERR_OK)
     {
-      ERROR("Unable to create query.");
+      ERROR ("Unable to get database version.");
       return;
     }
 
-  char s_version[10];
-  basic_stringstream < char >sql_cmd;
-  sql_cmd << "select s_version from websettings";
-
-  if (!query->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
-    {
-      delete query;
-      return;
-    }
-  if (!query->sendQueryDirect (sql_cmd.str()) )
-    {
-      delete query;
-      return;
-    }
-  if (!query->fetch ())
-    {
-      return;
-    }
-  delete query;
-  query = NULL;
-
-  string str_db_ver = TrimSpaces(s_version);
   string str_pkg_ver = VERSION;
 
   if (str_db_ver.compare (2, 3, "9.9") == 0)

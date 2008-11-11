@@ -52,7 +52,7 @@ void UrlGroup::addUrl (const string & url)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
 
-  if (_type == UrlGroup::ACC_REGEXP)
+  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
     {
       int erroroffset;
       const char *error;
@@ -75,9 +75,9 @@ void UrlGroup::addUrl (const string & url)
 
 bool UrlGroup::hasUrl (const string & url) const
 {
-  if (_type == UrlGroup::ACC_REGEXP)
+  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
     {
-      int idx;
+      uint idx;
       int ovector[300];
       for (idx = 0; idx < _patterns.size (); idx++)
         {
@@ -114,6 +114,20 @@ bool UrlGroup::hasUrl (const string & url) const
         }
       return false;
     }
+}
+
+void UrlGroup::setReplacement (const string & dest)
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << dest << ")]");
+  _destination = dest;
+}
+
+string UrlGroup::modifyUrl (const string & url) const
+{
+  if (hasUrl (url))
+    return _destination;
+
+  return "";
 }
 
 string UrlGroup::asString () const

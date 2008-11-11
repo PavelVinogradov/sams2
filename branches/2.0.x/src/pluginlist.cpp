@@ -91,58 +91,16 @@ bool PluginList::updateInfo ()
   if (!load ())
     return false;
 
-  if (!_conn)
-    {
-      _conn = SamsConfig::newConnection ();
-      if (!_conn)
-        {
-          ERROR ("Unable to create connection.");
-          return false;
-        }
+  int err;
+  bool store_to_db;
 
-      if (!_conn->connect ())
-        {
-          delete _conn;
-          return false;
-        }
-      _connection_owner = true;
-      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
-    }
-    else
+  string str_db_ver = SamsConfig::getString (defDBVERSION, err);
+  if (err != ERR_OK)
     {
-      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
-    }
-
-  DBQuery *query = _conn->newQuery ();
-  if (!query)
-    {
-      ERROR("Unable to create query.");
+      ERROR ("Unable to get database version.");
       return false;
     }
 
-  char s_version[10];
-  basic_stringstream < char >sql_cmd;
-  sql_cmd << "select s_version from websettings";
-
-  if (!query->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
-    {
-      delete query;
-      return false;
-    }
-  if (!query->sendQueryDirect (sql_cmd.str()) )
-    {
-      delete query;
-      return false;
-    }
-  if (!query->fetch ())
-    {
-      return false;
-    }
-  delete query;
-  query = NULL;
-
-  bool store_to_db = false;
-  string str_db_ver = TrimSpaces(s_version);
   string str_pkg_ver = VERSION;
 
   if (str_db_ver.compare (0, 5, "1.9.9") == 0)
@@ -169,6 +127,29 @@ bool PluginList::updateInfo ()
     {
       DEBUG (DEBUG3, "[" << __FUNCTION__ << "] " << "Database version ok.");
       store_to_db = true;
+    }
+
+
+  if (!_conn)
+    {
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
+        {
+          ERROR ("Unable to create connection.");
+          return false;
+        }
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
   DBQuery *querySelect = NULL;

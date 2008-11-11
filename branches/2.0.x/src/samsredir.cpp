@@ -245,6 +245,7 @@ int main (int argc, char *argv[])
   char line[2048];
   vector < string > fields;
   vector < string > source;
+  string destination;
   SAMSUser *usr = NULL;
   Template *tpl = NULL;
   while (true)
@@ -367,6 +368,16 @@ int main (int argc, char *argv[])
           INFO ("Denied to all and not whitelisted");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
+          continue;
+        }
+
+      destination = tpl->modifyUrl (fields[0]);
+      if (!destination.empty ())
+        {
+          INFO ("Redirected to another location");
+          INFO ("Output: " << destination << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << destination;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }

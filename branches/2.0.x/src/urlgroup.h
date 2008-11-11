@@ -37,7 +37,8 @@ public:
   {
     ACC_DENY,                     ///< Доступ запрещен
     ACC_ALLOW,                    ///< Доступ разрешен
-    ACC_REGEXP                    ///< Доступ запрещен по регулярному выражению
+    ACC_REGEXP,                   ///< Доступ запрещен по регулярному выражению
+    ACC_REPLACE                   ///< Заменяет url на другой, определенный пользователем
   };
 
   /**
@@ -76,6 +77,15 @@ public:
   bool hasUrl (const string & url) const;
 
   /**
+   * @brief Set destination address
+   *
+   * @param dest Url адрес to be used instead of original
+   */
+  void setReplacement (const string & dest);
+
+  string modifyUrl (const string & url) const;
+
+  /**
    * @brief Формирует значения экземпляра класса в виде строки
    *
    * @return Значения экземпляра класса в виде строки
@@ -93,6 +103,7 @@ public:
 protected:
   long _id;                       ///< Идентификатор группы ресурсов
   UrlGroup::accessType _type;     ///< Тип доступа к группе ресурсов
+  string _destination;            ///< url Адрес для замены (для _type = ACC_REPLACE)
   vector<string> _list;           ///< Список ресурсов
   vector<pcre*> _patterns;        ///< Список скомпилированных регулярных выражений
 };

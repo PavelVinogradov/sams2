@@ -87,6 +87,7 @@ bool UrlGroupList::reload()
   long s_redirect_id;
   char s_type[30];
   char s_url[1024];
+  char s_dest[130];
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_redirect_id, 0))
     {
@@ -103,9 +104,14 @@ bool UrlGroupList::reload()
       delete query;
       return false;
     }
+  if (!query->bindCol (4, DBQuery::T_CHAR, s_dest, sizeof(s_dest)))
+    {
+      delete query;
+      return false;
+    }
 
   // Локальные сети анализируются в специальном классе LocalNetworks
-  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url from redirect a, url b where a.s_redirect_id=b.s_redirect_id and a.s_type!='local'";
+  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url, a.s_dest from redirect a, url b where a.s_redirect_id=b.s_redirect_id and a.s_type!='local' order by a.s_redirect_id";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -126,12 +132,15 @@ bool UrlGroupList::reload()
             access_type = UrlGroup::ACC_DENY;
           else if (s_tmp == "regex")
             access_type = UrlGroup::ACC_REGEXP;
+          else if (s_tmp == "replace")
+            access_type = UrlGroup::ACC_REPLACE;
           else
             {
               WARNING("Unsupported url group type: " << s_tmp);
               continue;
             }
           grp = new UrlGroup (s_redirect_id, access_type);
+          grp->setReplacement (s_dest);
           _groups.push_back (grp);
         }
       grp->addUrl (s_url);
