@@ -175,6 +175,8 @@ public:
    */
   bool isUrlMatchRegex (const string & url) const;
 
+  string modifyUrl (const string & url) const;
+
 private:
   long _id;
   Proxy::usrAuthType _auth;

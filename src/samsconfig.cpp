@@ -186,31 +186,12 @@ bool SamsConfig::readDB ()
       return false;
     }
 
-  DBConn::DBEngine engine = SamsConfig::getEngine();
+  DBConn *conn = SamsConfig::newConnection ();;
 
-  DBConn *conn;
-
-  if (engine == DBConn::DB_UODBC)
-    {
-      #ifdef USE_UNIXODBC
-      conn = new ODBCConn();
-      #endif
-    }
-  else if (engine == DBConn::DB_MYSQL)
-    {
-      #ifdef USE_MYSQL
-      conn = new MYSQLConn();
-      #endif
-    }
-  else if (engine == DBConn::DB_PGSQL)
-    {
-      #ifdef USE_PQ
-      conn = new PgConn();
-      #endif
-    }
-  else
+  if (!conn)
     {
       _internal = false;
+      ERROR ("Unable to create connection.");
       return false;
     }
 
@@ -277,6 +258,47 @@ bool SamsConfig::readDB ()
   setInt (defDAEMONSTEP, s_parser_time);
 
   delete query;
+
+  DBQuery *query2 = conn->newQuery ();
+  if (!query2)
+    {
+      ERROR("Unable to create query.");
+      delete conn;
+      _internal = false;
+      return false;
+    }
+
+  basic_stringstream < char >s2;
+
+  char s_version[10];
+  s2 << "select s_version from websettings";
+
+  if (!query2->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
+    {
+      delete query2;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  if (!query2->sendQueryDirect (s2.str()) )
+    {
+      delete query2;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  if (!query2->fetch ())
+    {
+      delete query2;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+
+  setString (defDBVERSION, TrimSpaces (s_version) );
+
+  delete query2;
+
   delete conn;
   _internal = false;
   _db_loaded = true;

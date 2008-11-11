@@ -33,6 +33,7 @@ using namespace std;
 #define defDBSOURCE           "ODBCSOURCE"
 #define defDBUSER             "DB_USER"
 #define defDBPASSWORD         "DB_PASSWORD"
+#define defDBVERSION          "s_version"
 #define defSQUIDBINDIR        "SQUIDPATH"
 #define defSQUIDLOGDIR        "SQUIDLOGDIR"
 #define defSQUIDCONFDIR       "SQUIDROOTDIR"
