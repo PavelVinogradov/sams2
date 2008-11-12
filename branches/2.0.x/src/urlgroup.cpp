@@ -125,7 +125,7 @@ void UrlGroup::setReplacement (const string & dest)
 string UrlGroup::modifyUrl (const string & url) const
 {
   if (hasUrl (url))
-    return _destination;
+    return "301:" + _destination;
 
   return "";
 }
