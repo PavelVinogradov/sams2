@@ -1,3 +1,4 @@
+#!/bin/sh
 
 DATE=`date`
 echo "$DATE: User $SAMSUSERNAME disabled" 
