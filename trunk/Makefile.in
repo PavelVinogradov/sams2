@@ -34,7 +34,7 @@ bindir = @bindir@
 sbindir = @sbindir@
 libexecdir = @libexecdir@
 datadir = @datadir@
-sysconfdir = @sysconfdir@
+sysconfdir = $(prefix)/@sysconfdir@
 sharedstatedir = @sharedstatedir@
 localstatedir = @localstatedir@
 libdir = @libdir@
@@ -206,7 +206,6 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	cp ./samsf $(bindir);
 	cp ./samsredir $(bindir);
 	cp ./samsdaemon $(bindir);
-	cp ./etc/sams $(RCDPATH);
 	cp ./mysql/recover_admin_passwd $(bindir);
 	-@if test ! -d $(datadir); then \
 		echo "creating $(datadir)"; \
