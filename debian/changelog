@@ -2,8 +2,9 @@ sams (1.0.4-1) unstable; urgency=low
 
   * Official 1.0.4 release
   * Fix permission for /usr/share/sams/data folder (Bug #218)
+  * Fix many lintian warnings.
 
- -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Tue, 5 Nov 2008 19:05:44 +0500
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 15 Nov 2008 19:05:44 +0500
 
 sams (1.0.3-2) unstable; urgency=low
 
