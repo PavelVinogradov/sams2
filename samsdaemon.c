@@ -2572,7 +2572,7 @@ int main (int argc, char *argv[])
      printf("Ok \n");
 
   
-  strcpy(&squiduser[0],"squid");
+  strcpy(&squiduser[0],"proxy");
   i=0;
   tt=time(NULL);
   t=localtime(&tt);
@@ -2944,7 +2944,7 @@ int main (int argc, char *argv[])
 	         {
                     sprintf(&str[0],"squidGuard -C all -c %s/squidGuard.conf",conf.sgdbpath);
                     system(&str[0]);
-                    sprintf(&str[0],"chown nobody:nobody %s/_sams_*",conf.sgdbpath);
+                    sprintf(&str[0],"chown nobody:nogroup %s/_sams_*",conf.sgdbpath);
                     system(&str[0]);
                     sprintf(&str[0],"chown -R %s %s/_sams_*", &squiduser[0], conf.sgdbpath);
 		    system(&str[0]);
