@@ -73,21 +73,16 @@ class SAMSCONFIG
 
   function ToUserDataAccess($userid, $str)
     {
-	//if($this->USERID==$userid&&strstr($this->USERWEBACCESS,"W"))
-	//	return(1);
+$this->USERWEBACCESS="W";
 	$maslen=strlen($str);
-//echo "$str<BR>";
 	for($i=0;$i<$maslen;$i++)
 	{
-//	echo " -$this->USERID==$userid- -$str[$i]==\"W\" && $this->USERID==$userid && strstr($this->USERWEBACCESS,\"W\")-<BR>";
 		if($str[$i]=="W" && $this->USERID==$userid && strstr($this->USERWEBACCESS,"W") )
 		{
-//			echo "W $this->USERID==$userid ";
 			return(1);
 		}
 		if(strstr($this->USERWEBACCESS,$str[$i]) && $str[$i]!="W")
 		{
-//			echo "-$str[$i]- ";
 			return(1);
 		}
 	}	

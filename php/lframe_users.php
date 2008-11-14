@@ -54,7 +54,8 @@ function lframe_users()
 	    $metka="users$count";
 //echo "<!-- $row[s_name] -->";
             print("     $metka = insFld(users, gFld2(\"$row[s_name]\", \"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\", \"pgroup.gif\"))\n");
-            $num_rows_=$DB2->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
+//            $num_rows_=$DB2->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
+            $num_rows_=$DB2->samsdb_query_value("SELECT squiduser.* , shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
 /**/
             while($row_=$DB2->samsdb_fetch_array())
                {
@@ -88,7 +89,7 @@ function lframe_users()
                        $name="$row_[s_nick]";
 		    
                 
-                 print("        insDoc($metka, gLnk(\"D\", \"$name\", \"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row_[s_user_id]\",\"$gif\"))\n");
+                 print("        insDoc($metka, gLnk(\"D\", \"$name\", \"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row_[s_user_id]&auth=$row_[s_auth]\",\"$gif\"))\n");
                }
 /**/
 	     $count++;  

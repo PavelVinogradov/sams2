@@ -77,12 +77,12 @@ function SquidTray()
 
   if($SAMSConf->access==2)
     {
-      print("<TABLE border=0 WIDTH=\"100%\">\n");
-      print("<TR>\n");
-      print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
-      print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
+	print("<TABLE border=0 WIDTH=95%>\n");
+	print("<TR HEIGHT=60>\n");
+	print("<TD WIDTH=25%>");
+	print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
 
-      ExecuteFunctions("./src", "squidbuttom","1");
+	ExecuteFunctions("./src", "squidbuttom","1");
 
      }
   print("<TD>\n");
