@@ -18,6 +18,7 @@ function UserAuthForm()
   require($lang);
 
   if(isset($_GET["id"])) $userid=$_GET["id"];
+  if(isset($_GET["auth"])) $auth=$_GET["auth"];
 
   PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT>");
   print("<P>\n");
@@ -26,6 +27,7 @@ function UserAuthForm()
 //  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"usertray.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"userauth\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$USERConf->s_user_id\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$auth\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
   print("<TR>\n");
   print("<TD><B>login:</B>\n");
@@ -225,12 +227,13 @@ function UserTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["auth"])) $auth=$_GET["auth"];
 //echo "id=$id, DataAccess=". $SAMSConf->ToUserDataAccess($id, "WGSC") ." SAMSConf->access=$SAMSConf->access $SAMSConf->domainusername<BR>";
 //exit(0);
 	if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
 	{
 		print("<SCRIPT>\n");
-		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id\";\n");
+		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id&auth=$auth\";\n");
 //		print(" parent.basefrm.location.href=\"main.php\";\n");
 		print("</SCRIPT> \n");
 		exit(0);

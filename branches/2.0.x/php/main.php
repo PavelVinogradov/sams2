@@ -176,23 +176,35 @@ if($function=="userauth")
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];
 	if(isset($_POST["usernick"])) $user=$_POST["usernick"];
+	if(isset($_POST["auth"])) $auth=$_POST["auth"];
 	require('./authclass.php');
 
-	$USERAUTH = new SAMSAuthenticate();
-	$USERAUTH->UserIDAuthenticate($id, $password);
 //$USERAUTH->ShowVariables();
-//exit(0);
-
-	$time=time();
-	if($USERAUTH->authOk==1)
+	if($auth=="ntlm")
+		$USERAUTH = new NTLNAuthenticate();
+	else if($auth=="adld")
+		$USERAUTH = new ADLDAuthenticate();
+	else 
+		$USERAUTH = new NCSAAuthenticate();
+	
+	if($USERAUTH->UserIDAuthenticate($id, $password)==1)
 	{
-		if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
-		{  
-			$SAMSConf->groupauditor=$USERAUTH->gauditor;
-			setcookie("domainuser",$USERAUTH->UserName);
-			setcookie("gauditor",$USERAUTH->gauditor);
-			setcookie("userid",$USERAUTH->userid);
-			setcookie("webaccess",$USERAUTH->webaccess);
+		$time=time();
+		if($USERAUTH->authOk==1)
+		{
+			if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
+			{  
+				$SAMSConf->groupauditor=$USERAUTH->gauditor;
+				setcookie("domainuser",$USERAUTH->UserName);
+				setcookie("gauditor",$USERAUTH->gauditor);
+				setcookie("userid",$USERAUTH->userid);
+				setcookie("webaccess",$USERAUTH->webaccess);
+			}
+			else
+			{  
+				$user="";
+				$function="autherror";
+			}
 		}
 		else
 		{  
@@ -200,15 +212,8 @@ if($function=="userauth")
 			$function="autherror";
 		}
 	}
-	else
-	{  
-		$user="";
-		$function="autherror";
-	}
 	$USERAUTH->SetUserAuthErrorVariables();
 //$USERAUTH->ShowVariables();
-//echo "1.function = $function<BR>";
-//exit(0);
   }  
 
 if($function=="nuserauth")
@@ -364,6 +369,7 @@ if($function=="nuserauth")
 		$SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
 		$SAMSConf->domainusername=$cookie_domainuser;
 		$SAMSConf->groupauditor=$cookie_gauditor;
+
 	  }  
 	else
 	  {
@@ -374,9 +380,7 @@ if($function=="nuserauth")
 		$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
 	  }  
 //  }
-
  $SAMSConf->access=UserAccess();
- //$SAMSConf->access=2;
 if($gb!=1)
   { 
     print("<HTML><HEAD>");
