@@ -46,7 +46,31 @@ AC_CHECK_FUNCS([inet_ntoa memset strerror])
 #LIBS="$sams_saved_libs"
 #AC_SUBST(LIB_CRYPT)
 
-AC_CHECK_LIB([pcre], [pcre_compile], [], [])
+AC_CHECK_HEADER([pcre.h],
+  [AC_CHECK_LIB([pcre], [pcre_compile], [AC_DEFINE([USE_PCRE], [1], [Define to 1 if pcre is available])], [])],
+  [])
+
+# Redefine the following variables, otherwise autoconf use gcc for C++ source code
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+AC_CHECK_HEADER([pcrecpp.h],
+  [AC_CHECK_LIB([pcrecpp], [pcre_compile], [AC_DEFINE([USE_PCRECPP], [1], [Define to 1 if pcrecpp is available])], [])],
+  [])
+
+use_pcrecpp="no"
+use_pcre="no"
+if test "$ac_cv_lib_pcrecpp_pcre_compile" = yes; then
+  LIBS="-lpcrecpp $LIBS"
+  use_pcrecpp="yes"
+else
+  if test "$ac_cv_lib_pcre_pcre_compile" = yes; then
+    LIBS="-lpcre $LIBS"
+    use_pcre="yes"
+  fi
+fi
 
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
@@ -59,6 +83,8 @@ echo ""
 echo "Use MySQL API:      $use_mysql_dev"
 echo "Use PostgreSQL API: $use_pq_dev"
 echo "Use unixODBC API:   $use_unixodbc_dev"
+echo "Use pcrecpp API:    $use_pcrecpp"
+echo "Use pcre API:       $use_pcre"
 echo ""
 
 if test "$use_mysql_dev" = "no" -a "$use_pq_dev" = "no" -a "$use_unixodbc_dev" = "no"; then

@@ -17,11 +17,20 @@
 #ifndef URLGROUP_H
 #define URLGROUP_H
 
+#include "config.h"
+
 using namespace std;
 
 #include <string>
 #include <vector>
-#include <pcre.h>
+
+#ifdef USE_PCRECPP
+#include <pcrecpp.h>
+#else
+#  ifdef USE_PCRE
+#  include <pcre.h>
+#  endif
+#endif
 
 /**
  * @brief UrlGroup Группа доступных или запрещенных ресурсов
@@ -43,6 +52,9 @@ public:
 
   /**
    * @brief Конструктор
+   *
+   * @param id Идентификатор группы в БД
+   * @param access Тип доступа
    */
   UrlGroup (const long &id, const UrlGroup::accessType &access);
 
@@ -68,12 +80,16 @@ public:
   /**
    * @brief Добавляет определение ресурса в группу
    *
-   * @param id Идентификатор адреса из БД
-   * @param access Тип доступа (разрешен/запрещен)
    * @param url Url адрес или регулярное выражение
    */
   void addUrl (const string & url);
 
+  /**
+   * @brief Проверяет присутствие ресурса в группе
+   *
+   * @param url Url адрес
+   * @return true если ресурс присутствует и false в противном случае
+   */
   bool hasUrl (const string & url) const;
 
   /**
@@ -94,8 +110,9 @@ public:
 
   /**
    * @brief Оператор вывода содержимого экземпляра класса в поток
+   *
    * @param out Поток вывода
-   * @param user Экземпляр класса
+   * @param grp Экземпляр класса
    * @return Поток вывода
    */
   friend ostream & operator<< (ostream & out, const UrlGroup & grp);
@@ -105,7 +122,14 @@ protected:
   UrlGroup::accessType _type;     ///< Тип доступа к группе ресурсов
   string _destination;            ///< url Адрес для замены (для _type = ACC_REPLACE)
   vector<string> _list;           ///< Список ресурсов
+
+#ifdef USE_PCRECPP
+  vector<pcrecpp::RE*> _patterns; ///< Список скомпилированных регулярных выражений
+#else
+#  ifdef USE_PCRE
   vector<pcre*> _patterns;        ///< Список скомпилированных регулярных выражений
+#  endif
+#endif
 };
 
 #endif

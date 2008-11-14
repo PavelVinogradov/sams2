@@ -54,6 +54,23 @@ void UrlGroup::addUrl (const string & url)
 
   if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
     {
+#ifdef USE_PCRECPP
+      pcrecpp::RE *re;
+
+      re = new pcrecpp::RE(url);
+      if (!re->error().empty ())
+        {
+          WARNING ("Mailformed regexp pattern " << url << " " << re->error ());
+          delete re;
+        }
+      else
+        {
+          _patterns.push_back (re);
+          /// @TODO Убрать использование переменной _list если _type=ACC_REGEXP, но для этого подправить asString()
+          _list.push_back (url);
+        }
+#else
+#  ifdef USE_PCRE
       int erroroffset;
       const char *error;
       pcre *re;
@@ -68,6 +85,8 @@ void UrlGroup::addUrl (const string & url)
           _patterns.push_back (re);
           _list.push_back (url);
         }
+#  endif
+#endif
     }
   else
     _list.push_back (url);
@@ -78,14 +97,28 @@ bool UrlGroup::hasUrl (const string & url) const
   if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
     {
       uint idx;
+#ifndef USE_PCRECPP
+#  ifdef USE_PCRE
       int ovector[300];
+#  endif
+#endif
       for (idx = 0; idx < _patterns.size (); idx++)
         {
-          if(pcre_exec(_patterns[idx], NULL, url.c_str (), url.size (), 0, 0, ovector, 300) >= 0)
+#ifdef USE_PCRECPP
+          if (_patterns[idx]->FullMatch (url))
+            {
+              DEBUG (DEBUG4, "[" << this << "] Found rule " << _patterns[idx]->pattern () << " for " << url);
+              return true;
+            }
+#else
+#  ifdef USE_PCRE
+          if (pcre_exec (_patterns[idx], NULL, url.c_str (), url.size (), 0, 0, ovector, 300) >= 0)
             {
               DEBUG (DEBUG4, "[" << this << "] Found rule " << _list[idx] << " for " << url);
               return true;
             }
+#  endif
+#endif
         }
       return false;
     }

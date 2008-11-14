@@ -53,9 +53,6 @@
 /* Define to 1 if you have the `odbc' library (-lodbc). */
 #undef HAVE_LIBODBC
 
-/* Define to 1 if you have the `pcre' library (-lpcre). */
-#undef HAVE_LIBPCRE
-
 /* Define to 1 if you have the `pq' library (-lpq). */
 #undef HAVE_LIBPQ
 
@@ -198,6 +195,12 @@
 
 /* use MySQL */
 #undef USE_MYSQL
+
+/* Define to 1 if pcre is available */
+#undef USE_PCRE
+
+/* Define to 1 if pcrecpp is available */
+#undef USE_PCRECPP
 
 /* use LibPQ */
 #undef USE_PQ
