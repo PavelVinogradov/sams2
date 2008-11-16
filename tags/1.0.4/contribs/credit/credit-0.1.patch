@@ -1,0 +1,515 @@
+--- mysql/sams_db.sql.old	2007-10-09 14:59:37.000000000 +0400
++++ mysql/sams_db.sql	2008-11-06 13:41:25.060181152 +0300
+@@ -36,7 +36,7 @@
+  CREATE TABLE `shablons` ( `name` varchar(25), `nick` varchar(25), `shablonpool` bigint, `userpool` bigint, `redirect_to` varchar(100),`auth` varchar(4),`traffic` int(25) ,`days` varchar(14),`shour` tinyint(2) UNSIGNED ZEROFILL,`smin` tinyint(2) UNSIGNED ZEROFILL,`ehour` tinyint(2) UNSIGNED ZEROFILL,`emin` tinyint(2) UNSIGNED ZEROFILL, `period` char(3) NOT NULL default 'M', `clrdate` date NOT NULL default '0000-00-00',`alldenied` tinyint(1) NOT NULL default '0' ) TYPE=MyISAM;
+  INSERT INTO shablons VALUES('default','Default','64000','64000','','','100','MTWHFAS','0','0','24','0','M','0000-00-00','0');
+  DROP TABLE IF EXISTS `squidusers`;
+- CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ) TYPE=MyISAM;
++ CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ,`credit` bigint(20)) TYPE=MyISAM;
+  DROP TABLE IF EXISTS `tree`;
+  CREATE TABLE `tree` ( `name` char(25), `value` tinyint(4)) TYPE=MyISAM;
+  DROP TABLE IF EXISTS `urlreplace`;
+--- daemon.c	2007-09-27 19:38:24.000000000 +0400
++++ daemon.c	2008-12-01 07:19:51.000000000 +0300
+@@ -157,7 +157,7 @@
+ 
+   /* úÁÇÒÕÖÁÅÍ ĞÏÌØÚÏ×ÁÔÅÌÅÊ SAMS × ÍÁÓÓÉ× */
+ //  sprintf(&str[0],"SELECT nick,domain,ip,ipmask,enabled,size,quotes,id,hit FROM %s.squidusers",conf.samsdb);
+-  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name",conf.samsdb,conf.samsdb);
++  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth,squidusers.credit FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name",conf.samsdb,conf.samsdb);
+   flag=send_mysql_query(conn,&str[0]);
+   res=mysql_store_result(conn);
+   for(i=0;i<samsuserscount;i++)
+@@ -185,7 +185,7 @@
+            users[i].traffic=users[i].size;
+ //        users[i].traffic=0;
+ 
+-        users[i].quote=atof(row[6])*MBSIZE;
++        users[i].quote=atof(row[6])*MBSIZE+atof(row[11])*MBSIZE;
+         strncpy(users[i].id,row[7],25);
+         strncpy(users[i].date,"0000-00-00",15);
+ 	users[i].ipauth=0;
+--- demon.c	2008-02-26 21:49:53.000000000 +0300
++++ demon.c	2008-12-02 03:25:37.000000000 +0300
+@@ -698,7 +698,7 @@
+                     exit(1);
+   if(CLEAR==1)
+      {
+-       sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'",conf.samsdb);
++       sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE enabled>='0'",conf.samsdb);
+        flag=send_mysql_query(conn2,&str[0]);
+        if(flag!=0)
+          {
+@@ -727,7 +727,7 @@
+ 	     tc++;
+ 	     if(DEBUG>0)
+ 	        printf("Perod %d: %d days. Traffic cleaned\n", i, atoi(row[0]));
+-             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
++             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+              flag=send_mysql_query(conn2,&str[0]);
+ 
+              tt2=tt+60*60*24*atoi(row[0]);
+@@ -747,7 +747,7 @@
+ 	     tc++;
+ 	     if(DEBUG>0)
+ 	        printf("Perod %d: Week. Traffic cleaned\n", i);
+-             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
++             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+              flag=send_mysql_query(conn2,&str[0]);
+ 
+              k=t->tm_wday;
+@@ -771,7 +771,7 @@
+ 	     tc++;
+ 	     if(DEBUG>0)
+ 	        printf("Perod %d: Month. Traffic cleaned\n", i);
+-             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
++             sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+              flag=send_mysql_query(conn2,&str[0]);
+ 
+              j=0;
+@@ -945,7 +945,7 @@
+ 
+   /* úÁÇÒÕÖÁÅÍ ĞÏÌØÚÏ×ÁÔÅÌÅÊ SAMS × ÍÁÓÓÉ× */
+   //sprintf(&str[0],"SELECT nick,domain,ip,ipmask,enabled,size,quotes,id,hit FROM %s.squidusers",conf.samsdb);
+-  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name",conf.samsdb,conf.samsdb);
++  sprintf(&str[0],"SELECT squidusers.nick,squidusers.domain,squidusers.ip,squidusers.ipmask,squidusers.enabled,squidusers.size,squidusers.quotes,squidusers.id,squidusers.hit,squidusers.shablon,shablons.auth,squidusers.credit FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name",conf.samsdb,conf.samsdb);
+   flag=send_mysql_query(conn,&str[0]);
+   res=mysql_store_result(conn);
+   for(i=0;i<samsuserscount;i++)
+@@ -973,7 +973,7 @@
+            users[i].traffic=users[i].size;
+ //        users[i].traffic=0;
+ 
+-        users[i].quote=atof(row[6])*MBSIZE;
++	users[i].quote=atof(row[6])*MBSIZE+atof(row[11])*MBSIZE;
+         strncpy(users[i].id,row[7],25);
+         strncpy(users[i].date,"0000-00-00",15);
+ 	users[i].updated=0;
+--- php/lang/lang.EN	2008-02-24 00:48:16.000000000 +0300
++++ php/lang/lang.EN	2008-12-02 03:16:21.000000000 +0300
+@@ -161,6 +161,7 @@
+   $usertray_UserForm_6=" Last name "; 
+   $usertray_UserForm_7=" Group "; 
+   $usertray_UserForm_8=" Download quote ";
++  $usertray_UserForm_8_1=" Credit (Mb) ";
+   $usertray_UserForm_9=" Accepted "; 
+   $usertray_UserForm_10=" Activated "; 
+   $usertray_UserForm_11=" Switch off "; 
+@@ -389,8 +390,8 @@
+   $grouptray_GroupTray_1=" Group "; 
+   $grouptray_NewGroupForm_1=" User groups.<BR> Setting up the new group "; 
+   $grouptray_NewGroupForm_2=" Name of the group:"; 
+-  $grouptray_NewGroupForm_3=" Set up new group "; 
+-  $grouptray_NewGroupForm_4=" User groups are set up for the convenience of user administrating."; 
++//  $grouptray_NewGroupForm_3=" Set up new group "; 
++//  $grouptray_NewGroupForm_4=" User groups are set up for the convenience of user administrating."; 
+ 
+   $groupbuttom_9_delete_NotEmptyGroupWarning_1=" This group contains users!"; 
+   $groupbuttom_9_delete_NotEmptyGroupWarning_2=" Delete users or place them into another group and repeat the deleting process "; 
+--- php/lang/lang.KOI8-R	2008-07-09 18:54:45.000000000 +0400
++++ php/lang/lang.KOI8-R	2008-12-02 03:03:35.000000000 +0300
+@@ -158,6 +158,7 @@
+   $usertray_UserForm_6="æÁÍÉÌÉÑ";
+   $usertray_UserForm_7="çÒÕĞĞÁ";
+   $usertray_UserForm_8="ë×ÏÔÁ ÎÁ ÓËÁŞÉ×ÁÎÉÅ";
++  $usertray_UserForm_8_1="ëÒÅÄÉÔ (íÂ)";
+   $usertray_UserForm_9="ğÏÌÕŞÅÎÏ";
+   $usertray_UserForm_10="áËÔÉ×ÅÎ";
+   $usertray_UserForm_11="ïÔËÌÀŞÅÎ";
+@@ -387,8 +388,8 @@
+   $grouptray_GroupTray_1="çÒÕĞĞÁ";
+   $grouptray_NewGroupForm_1="çÒÕĞĞÙ ĞÏÌØÚÏ×ÁÔÅÌÅÊ.<BR>óÏÚÄÁÎÉÅ ÎÏ×ÏÊ ÇÒÕĞĞÙ";
+   $grouptray_NewGroupForm_2="îÁÚ×ÁÎÉÅ ÇÒÕĞĞÙ:";
+-  $grouptray_NewGroupForm_3="óÏÚÄÁÔØ ÇÒÕĞĞÕ";
+-  $grouptray_NewGroupForm_4="çÒÕĞĞÙ ĞÏÌØÚÏ×ÁÔÅÌÅÊ ĞÒÅÄÎÁÚÎÁŞÅÎÙ ÄÌÑ ÕÄÏÂÓÔ×Á ÁÄÍÉÎÉÓÔÒÉÒÏ×ÁÎÉÑ ĞÏÌØÚÏ×ÁÔÅÌÅÊ.";
++//  $grouptray_NewGroupForm_3="óÏÚÄÁÔØ ÇÒÕĞĞÕ";
++//  $grouptray_NewGroupForm_4="çÒÕĞĞÙ ĞÏÌØÚÏ×ÁÔÅÌÅÊ ĞÒÅÄÎÁÚÎÁŞÅÎÙ ÄÌÑ ÕÄÏÂÓÔ×Á ÁÄÍÉÎÉÓÔÒÉÒÏ×ÁÎÉÑ ĞÏÌØÚÏ×ÁÔÅÌÅÊ.";
+ 
+   $groupbuttom_9_delete_NotEmptyGroupWarning_1="üÔÁ ÇÒÕĞĞÁ ÓÏÄÅÒÖÉÔ ĞÏÌØÚÏ×ÁÔÅÌÅÊ!";
+   $groupbuttom_9_delete_NotEmptyGroupWarning_2="õÄÁÌÉÔÅ ÉÌÉ ĞÅÒÅ×ÅÄÉÔÅ ĞÏÌØÚÏ×ÁÔÅÌÅÊ × ÄÒÕÇÕÀ ÇÒÕĞĞÕ É ĞÏ×ÔÏÒÉÔÅ ÕÄÁÌÅÎÉÅ";
+@@ -627,6 +628,7 @@
+   $userstray_AllUsersForm_3="çÒÕĞĞÁ";
+   $userstray_AllUsersForm_4="ôÒÁÆÉË";
+   $userstray_AllUsersForm_5="òÁÚÒÅÛÅÎÎÙÊ ÔÒÁÆÉË";
++  $userstray_AllUsersForm_5_1="ëÒÅÄÉÔ";
+   $userstray_AllUsersForm_6="éÍÑ ĞÏÌØÚÏ×ÁÔÅÌÑ";
+   $userstray_AllUsersForm_7="õÄÁÌÉÔØ ĞÏÌØÚÏ×ÁÔÅÌÑ";
+   $userstray_AllUsersForm_8="éÚÍÅÎÉÔØ";
+--- php/lang/lang.UTF8	2008-07-09 18:54:45.000000000 +0400
++++ php/lang/lang.UTF8	2008-12-02 03:14:49.000000000 +0300
+@@ -158,6 +158,7 @@
+   $usertray_UserForm_6="Ğ¤Ğ°Ğ¼Ğ¸Ğ»Ğ¸Ñ";
+   $usertray_UserForm_7="Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ°";
+   $usertray_UserForm_8="ĞšĞ²Ğ¾Ñ‚Ğ° Ğ½Ğ° ÑĞºĞ°Ñ‡Ğ¸Ğ²Ğ°Ğ½Ğ¸Ğµ";
++  $usertray_UserForm_8_1="ĞšÑ€ĞµĞ´Ğ¸Ñ‚ (ĞœĞ±)";
+   $usertray_UserForm_9="ĞŸĞ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¾";
+   $usertray_UserForm_10="ĞĞºÑ‚Ğ¸Ğ²ĞµĞ½";
+   $usertray_UserForm_11="ĞÑ‚ĞºĞ»ÑÑ‡ĞµĞ½";
+@@ -387,8 +388,8 @@
+   $grouptray_GroupTray_1="Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ°";
+   $grouptray_NewGroupForm_1="Ğ“Ñ€ÑƒĞ¿Ğ¿Ñ‹ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹.<BR>Ğ¡Ğ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ½Ğ¾Ğ²Ğ¾Ğ¹ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñ‹";
+   $grouptray_NewGroupForm_2="ĞĞ°Ğ·Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñ‹:";
+-  $grouptray_NewGroupForm_3="Ğ¡Ğ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñƒ";
+-  $grouptray_NewGroupForm_4="Ğ“Ñ€ÑƒĞ¿Ğ¿Ñ‹ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹ Ğ¿Ñ€ĞµĞ´Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ñ‹ Ğ´Ğ»Ñ ÑƒĞ´Ğ¾Ğ±ÑÑ‚Ğ²Ğ° Ğ°Ğ´Ğ¼Ğ¸Ğ½Ğ¸ÑÑ‚Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹.";
++//  $grouptray_NewGroupForm_3="Ğ¡Ğ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñƒ";
++//  $grouptray_NewGroupForm_4="Ğ“Ñ€ÑƒĞ¿Ğ¿Ñ‹ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹ Ğ¿Ñ€ĞµĞ´Ğ½Ğ°Ğ·Ğ½Ğ°Ñ‡ĞµĞ½Ñ‹ Ğ´Ğ»Ñ ÑƒĞ´Ğ¾Ğ±ÑÑ‚Ğ²Ğ° Ğ°Ğ´Ğ¼Ğ¸Ğ½Ğ¸ÑÑ‚Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹.";
+ 
+   $groupbuttom_9_delete_NotEmptyGroupWarning_1="Ğ­Ñ‚Ğ° Ğ³Ñ€ÑƒĞ¿Ğ¿Ğ° ÑĞ¾Ğ´ĞµÑ€Ğ¶Ğ¸Ñ‚ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹!";
+   $groupbuttom_9_delete_NotEmptyGroupWarning_2="Ğ£Ğ´Ğ°Ğ»Ğ¸Ñ‚Ğµ Ğ¸Ğ»Ğ¸ Ğ¿ĞµÑ€ĞµĞ²ĞµĞ´Ğ¸Ñ‚Ğµ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ĞµĞ¹ Ğ² Ğ´Ñ€ÑƒĞ³ÑƒÑ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñƒ Ğ¸ Ğ¿Ğ¾Ğ²Ñ‚Ğ¾Ñ€Ğ¸Ñ‚Ğµ ÑƒĞ´Ğ°Ğ»ĞµĞ½Ğ¸Ğµ";
+@@ -627,6 +628,7 @@
+   $userstray_AllUsersForm_3="Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ°";
+   $userstray_AllUsersForm_4="Ğ¢Ñ€Ğ°Ñ„Ğ¸Ğº";
+   $userstray_AllUsersForm_5="Ğ Ğ°Ğ·Ñ€ĞµÑˆĞµĞ½Ğ½Ñ‹Ğ¹ Ñ‚Ñ€Ğ°Ñ„Ğ¸Ğº";
++  $userstray_AllUsersForm_5_1="ĞšÑ€ĞµĞ´Ğ¸Ñ‚";
+   $userstray_AllUsersForm_6="Ğ˜Ğ¼Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ";
+   $userstray_AllUsersForm_7="Ğ£Ğ´Ğ°Ğ»Ğ¸Ñ‚ÑŒ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ";
+   $userstray_AllUsersForm_8="Ğ˜Ğ·Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ";
+--- php/lang/lang.WIN1251	2008-07-09 18:54:45.000000000 +0400
++++ php/lang/lang.WIN1251	2008-12-02 03:14:49.000000000 +0300
+@@ -158,6 +158,7 @@
+   $usertray_UserForm_6="Ôàìèëèÿ";
+   $usertray_UserForm_7="Ãğóïïà";
+   $usertray_UserForm_8="Êâîòà íà ñêà÷èâàíèå";
++  $usertray_UserForm_8_1="Êğåäèò (Ìá)";
+   $usertray_UserForm_9="Ïîëó÷åíî";
+   $usertray_UserForm_10="Àêòèâåí";
+   $usertray_UserForm_11="Îòêëş÷åí";
+@@ -387,8 +388,8 @@
+   $grouptray_GroupTray_1="Ãğóïïà";
+   $grouptray_NewGroupForm_1="Ãğóïïû ïîëüçîâàòåëåé.<BR>Ñîçäàíèå íîâîé ãğóïïû";
+   $grouptray_NewGroupForm_2="Íàçâàíèå ãğóïïû:";
+-  $grouptray_NewGroupForm_3="Ñîçäàòü ãğóïïó";
+-  $grouptray_NewGroupForm_4="Ãğóïïû ïîëüçîâàòåëåé ïğåäíàçíà÷åíû äëÿ óäîáñòâà àäìèíèñòğèğîâàíèÿ ïîëüçîâàòåëåé.";
++//  $grouptray_NewGroupForm_3="Ñîçäàòü ãğóïïó";
++//  $grouptray_NewGroupForm_4="Ãğóïïû ïîëüçîâàòåëåé ïğåäíàçíà÷åíû äëÿ óäîáñòâà àäìèíèñòğèğîâàíèÿ ïîëüçîâàòåëåé.";
+ 
+   $groupbuttom_9_delete_NotEmptyGroupWarning_1="İòà ãğóïïà ñîäåğæèò ïîëüçîâàòåëåé!";
+   $groupbuttom_9_delete_NotEmptyGroupWarning_2="Óäàëèòå èëè ïåğåâåäèòå ïîëüçîâàòåëåé â äğóãóş ãğóïïó è ïîâòîğèòå óäàëåíèå";
+@@ -627,6 +628,7 @@
+   $userstray_AllUsersForm_3="Ãğóïïà";
+   $userstray_AllUsersForm_4="Òğàôèê";
+   $userstray_AllUsersForm_5="Ğàçğåøåííûé òğàôèê";
++  $userstray_AllUsersForm_5_1="Êğåäèò";
+   $userstray_AllUsersForm_6="Èìÿ ïîëüçîâàòåëÿ";
+   $userstray_AllUsersForm_7="Óäàëèòü ïîëüçîâàòåëÿ";
+   $userstray_AllUsersForm_8="Èçìåíèòü";
+--- php/lframe_users.php	2007-05-09 11:52:55.000000000 +0400
++++ php/lframe_users.php	2008-12-01 07:19:56.000000000 +0300
+@@ -55,15 +55,19 @@
+  //echo "SAMSConf->groupauditor = $SAMSConf->groupauditor\n result_=$result_\n\n";     
+                 if($row_['enabled']>0)
+                     {
++                      $quotes=$row_['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++                      $credit=$row_['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++
+                       if($SAMSConf->realtraffic=="real")
+ 		        $traffic=$row_['size']-$row_['hit'];
+                       else
+ 		        $traffic=$row_['size'];
+-		      if($row_['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row_['quotes']<=0)
+-                         $gif="puser.gif";
+-                      else
+-                        if($row_['quotes']>0)
+-                          $gif="quote_alarm.gif";
++		      if($quotes>=$traffic || $row_['quotes']<=0)
++                        $gif="puser.gif";
++                      elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row_['quotes']<=0)
++                        $gif="credit_alarm.gif";
++                      elseif($row_['quotes'])
++                        $gif="quote_alarm.gif";
+                     }
+                  if($row_['enabled']==0)
+                     {
+--- php/src/_lffolder_6_users.php	2007-04-05 17:16:02.000000000 +0400
++++ php/src/_lffolder_6_users.php	2008-12-01 07:19:57.000000000 +0300
+@@ -23,16 +23,19 @@
+             $result_=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$row[name]\" ORDER BY nick");
+             while($row_=mysql_fetch_array($result_))
+                {
+-                 if($row_['enabled']>0)
++                if($row_['enabled']>0)
+                     {
++                     $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++                     $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+                       if($realtraffic=="real")
+ 		        $traffic=$row_['size']-$row_['hit'];
+                       else
+ 		        $traffic=$row_['size'];
+-		      if($row_['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row_['quotes']<=0)
++		      if($quotes>=$traffic||$row_['quotes']<=0)
+                          $gif="puser.gif";
+-                      else
+-                        if($row_['quotes']>0)
++                      elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row['quotes']<=0)
++                          $gif="credit_alarm.gif";
++                      elseif($row['quotes'])
+                           $gif="quote_alarm.gif";
+                     }
+                  if($row_['enabled']==0)
+@@ -61,4 +64,4 @@
+  
+  
+ 
+- ?>
+\ No newline at end of file
++ ?>
+--- php/src/grouptray.php	2008-07-14 19:51:58.000000000 +0400
++++ php/src/grouptray.php	2008-12-02 02:26:26.000000000 +0300
+@@ -98,12 +98,14 @@
+     {
+       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B>\n");
+       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B>\n");
++      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$usertray_UserForm_8_1</B>\n");
+     }  
+   print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B>\n");
+ 
+   $count=0;
+   $gtraffic=0;
+   $gquote=0;
++  $gcredit=0;
+   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\" ORDER BY nick");
+   while($row=mysql_fetch_array($result))
+       {
+@@ -111,18 +113,23 @@
+ 
+        if($row['enabled']>0)
+          {
++	    $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++            $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+ 	    if($SAMSConf->realtraffic=="real")
+ 	        $traffic=$row['size']-$row['hit'];
+             else
+ 	        $traffic=$row['size'];
+ 	    $gtraffic+=$traffic;
+-	    $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+-            if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
++	    $gquote+=$quotes;
++	    $gcredit+=$credit;
++	    if($quotes>=$traffic || $row['quotes']<=0)
+                $gif="puser.gif";
+-            else
+-               if($row['quotes']>0)
+-                  $gif="quote_alarm.gif";
+-          }
++	    elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row['quotes']<=0)
++	       $gif="credit_alarm.gif";
++	    elseif($row['quotes'])
++	       $gif="quote_alarm.gif";
++         }
++
+         if($row['enabled']==0)
+           {
+              $gif="puserd.gif";
+@@ -160,17 +167,30 @@
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
+ 	     else  
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
++	    print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[credit] Mb");
+ 	   }
+          print("<TD WIDTH=\"40%\"> $row[family] $row[name] $row[soname]");
+ 	 
+ 	 $count=$count+1;  
+       }
+-      print("<TR><TD><TD><TD>");
++////////////////////////////////////////////////////////////////////////////////////
++	print("<TR>");
++	if($SAMSConf->access==2)
++	    print("<TD><TD><TD>");
++	elseif($ga==1) 
++	    print("<TD>");
++//      print("<TR><TD><TD><TD>");
++///////////////////////////////////////////////////////////////////////////////////
+       PrintFormattedSize($gtraffic);
+       if($gquote!=0)
+ 	PrintFormattedSize($gquote);
+       else
+       print("<TD ALIGN=\"CENTER\">unlimited");	
++      if($gcredit!=0)
++	PrintFormattedSize($gcredit);
++      else
++      print("<TD ALIGN=\"CENTER\">no credit");	
++
+       print("<TD>\n");
+   print("</TABLE>\n");
+ 
+--- php/src/shablontray.php	2007-09-14 13:13:08.000000000 +0400
++++ php/src/shablontray.php	2008-12-01 07:19:57.000000000 +0300
+@@ -76,14 +76,17 @@
+        print("<TD>");
+        if($row['enabled']>0)
+          {
+-           if($SAMSConf->realtraffic=="real")
++           $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++           $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++	   if($SAMSConf->realtraffic=="real")
+ 	     $traffic=$row['size']-$row['hit'];
+            else
+ 	     $traffic=$row['size'];
+-	   if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
++	   if($quotes>=$traffic || $row['quotes']<=0)
+               $gif="puser.gif";
+-           else
+-              if($row['quotes']>0)
++           elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row['quotes']<=0)
++	      $gif="credit_alarm.gif";
++	   elseif($row['quotes'])
+                   $gif="quote_alarm.gif";
+          }
+        if($row['enabled']==0)
+--- php/src/userbuttom_1_prop.php	2007-10-22 18:17:46.000000000 +0400
++++ php/src/userbuttom_1_prop.php	2008-12-01 07:19:57.000000000 +0300
+@@ -17,6 +17,7 @@
+   if(isset($_GET["usersoname"])) $usersoname=$_GET["usersoname"];
+   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
+   if(isset($_GET["userquote"])) $userquote=$_GET["userquote"];
++  if(isset($_GET["usercredit"])) $usercredit=$_GET["usercredit"];
+   if(isset($_GET["userip"])) $userip=$_GET["userip"];
+   if(isset($_GET["useripmask"])) $useripmask=$_GET["useripmask"];
+   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
+@@ -52,7 +53,7 @@
+      if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
+    }
+ 
+-  $result=mysql_query("UPDATE squidusers SET gauditor=\"$gauditor\",domain=\"$domain\",nick=\"$usernick\",family=\"$userfamily\",name=\"$username\",squidusers.soname=\"$usersoname\",squidusers.group=\"$usergroup\",squidusers.quotes=\"$userquote\",enabled=\"$enabled\",shablon=\"$usershablon\",ip=\"$userip\",ipmask=\"$useripmask\",passwd=\"$passwd\" WHERE id=\"$userid\" ");
++  $result=mysql_query("UPDATE squidusers SET gauditor=\"$gauditor\",domain=\"$domain\",nick=\"$usernick\",family=\"$userfamily\",name=\"$username\",squidusers.soname=\"$usersoname\",squidusers.group=\"$usergroup\",squidusers.quotes=\"$userquote\",squidusers.credit=\"$usercredit\",enabled=\"$enabled\",shablon=\"$usershablon\",ip=\"$userip\",ipmask=\"$useripmask\",passwd=\"$passwd\" WHERE id=\"$userid\" ");
+ 
+   print("<SCRIPT>\n");
+   print("        parent.lframe.location.href=\"lframe.php\";\n");
+@@ -171,6 +172,12 @@
+   print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$row[quotes]\"> <B>0 - unlimited traffic \n");
+   print("<TD>\n");
+   
++  print("<TR>\n");
++  print("<TD>\n");
++  print("<B>$usertray_UserForm_8_1 \n");
++  print("<TD>\n");
++  print("<INPUT TYPE=\"TEXT\" NAME=\"usercredit\" SIZE=10 VALUE=\"$row[credit]\">\n");
++  print("<TD>\n");
+   
+   print("<INPUT TYPE=\"HIDDEN\" NAME=\"saveenabled\" value=\"$row[enabled]\">\n");
+   print("<TR>\n");
+--- php/src/usersbuttom_1_useradd.php	2007-07-31 12:20:48.000000000 +0400
++++ php/src/usersbuttom_1_useradd.php	2008-12-01 07:19:58.000000000 +0300
+@@ -102,6 +102,7 @@
+   if(isset($_GET["userfamily"])) $userfamily=$_GET["userfamily"];
+   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
+   if(isset($_GET["userquote"])) $userquote=$_GET["userquote"];
++  if(isset($_GET["usercredit"])) $usercredit=$_GET["usercredit"];
+   if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
+   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
+   if(isset($_GET["userip"])) $userip=$_GET["userip"];
+@@ -156,16 +157,16 @@
+   else
+      $enabled=-1;
+ 
+-  //$result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\" ");
++  //$result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",credit=\"$usercredit\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\" ");
+   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
+     {
+-      $result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$newusernick\",domain=\"$userdomain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\", hit=\"0\", squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
++      $result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$newusernick\",domain=\"$userdomain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",credit=\"$usercredit\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\", hit=\"0\", squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
+      if($result!=FALSE)
+          UpdateLog("$SAMSConf->adminname","Added user $newusernick ","01");
+     }
+   else
+     {
+-      $result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\", hit=\"0\", squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
++      $result=mysql_query("INSERT INTO squidusers SET id=\"$userid\",nick=\"$nick\",domain=\"$domain\",name=\"$username\",family=\"$userfamily\",shablon=\"$usershablon\" ,quotes=\"$userquote\",credit=\"$usercredit\",size=\"0\",enabled=\"$enabled\",squidusers.group=\"$usergroup\",squidusers.soname=\"$usersoname\",squidusers.ip=\"$userip\",squidusers.ipmask=\"$useripmask\",squidusers.passwd=\"$pass\", hit=\"0\", squidusers.autherrorc=\"0\", squidusers.autherrort=\"0\" ");
+      if($result!=FALSE)
+          UpdateLog("$SAMSConf->adminname","Added user $nick ","01");
+     }
+@@ -308,6 +309,7 @@
+        print("<B>$userstray_NewUserForm_13 \n");
+        print("<TD>\n");
+        print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$row[traffic]\"> \n");
++
+        print("<TR>\n");
+        print("<TD>\n");
+        print("<B>$userstray_NewUserForm_14:  \n");
+--- php/src/userstray.php	2007-10-22 18:17:46.000000000 +0400
++++ php/src/userstray.php	2008-12-01 07:19:58.000000000 +0300
+@@ -151,7 +151,8 @@
+   if($SAMSConf->access==2)
+     {
+       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_4</B>\n");
+-      print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_5</B>\n");
++      print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_5</B>\n");
++      print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_5_1</B>\n");
+       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_9</B>\n");
+     }  
+   print("<TH WIDTH=\"30%\" bgcolor=beige> <B>$userstray_AllUsersForm_6</B>\n");
+@@ -177,15 +178,18 @@
+        //if($)
+        if($row['enabled']>0)
+          {
++	    $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++	    $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+ 	    if($SAMSConf->realtraffic=="real")
+ 	        $traffic=$row['size']-$row['hit'];
+             else
+ 	        $traffic=$row['size'];
+-            if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
++            if($quotes>=$traffic || $row['quotes']<=0)
+                $gif="puser.gif";
+-            else
+-               if($row['quotes']>0)
+-                  $gif="quote_alarm.gif";
++	    elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) || 	$row['quotes']<=0)
++                $gif="credit_alarm.gif";		    
++            elseif($row['quotes'])
++    	        $gif="quote_alarm.gif";
+           }
+         if($row['enabled']==0)
+           {
+@@ -225,6 +229,8 @@
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
+ 	     else  
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
++
++	     print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[credit] Mb");
+ 	   
+ 	      if($row['period']!="M"&&$row['period']!="W")
+                 {
+--- php/src/usertray.php	2008-01-15 08:28:45.000000000 +0300
++++ php/src/usertray.php	2008-12-01 07:19:59.000000000 +0300
+@@ -327,6 +327,11 @@
+        else  
+           print(" unlimited ");
+ //       print("$row[quotes] Mb\n");
++
++       print("<TR>\n");
++       print("<TD>\n");
++       print("<B>$usertray_UserForm_8_1: \n");
++       print("<TD>\n $row[credit] Mb\n");
+        
+        print("<TR>\n");
+        print("<TD>\n");
+--- samsdaemon.c	2008-07-13 22:21:59.000000000 +0400
++++ samsdaemon.c	2008-12-01 07:19:59.000000000 +0300
+@@ -2732,7 +2732,7 @@
+                          {
+                            row=mysql_fetch_row(res);
+ //                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+-                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
++                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0'  WHERE shablon='%s' ",conf.samsdb,row[1]);
+                            flag=send_mysql_query(conn2,&str[0]);
+                            sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
+ 			   AddLog(conn2,0,"samsdaemon",&str[0]);
+@@ -2752,7 +2752,7 @@
+                          {
+                            row=mysql_fetch_row(res);
+ //                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+-                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
++                           sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE shablon='%s' ",conf.samsdb,row[1]);
+                            flag=send_mysql_query(conn2,&str[0]);
+                            sprintf(&str[0],"Traffic clean. Template %s, period %s",row[2],row[0]);
+ 			   AddLog(conn2,0,"samsdaemon",&str[0]);
+@@ -2771,7 +2771,7 @@
+ 		        if(DEBUG>0)
+ 		          printf("Perod %d: %d days. Traffic cleaned\n", i, atoi(row[0]));
+ //                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE enabled>='0'&&shablon='%s' ",conf.samsdb,row[1]);
+-                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1' WHERE shablon='%s' ",conf.samsdb,row[1]);
++                        sprintf(&str[0],"UPDATE %s.squidusers SET size='0',hit='0',enabled='1',credit='0' WHERE shablon='%s' ",conf.samsdb,row[1]);
+                         flag=send_mysql_query(conn2,&str[0]);
+ 
+ 			    tt2=tt+60*60*24*atoi(row[0]);

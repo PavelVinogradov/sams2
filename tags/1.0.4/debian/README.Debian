@@ -1,0 +1,54 @@
+SAMS for Debian
+---------------
+
+Additional configuretion steps
+------------------------------
+1. Create SAMS user in database:
+
+  mysql -u root -p
+  GRANT ALL ON squidctrl.* TO sams@localhost IDENTIFIED BY "yourpassword";
+  GRANT ALL ON squidlog.* TO sams@localhost IDENTIFIED BY "yourpassword";
+
+where "yourpassword" is password for new sams user.
+
+2. Edit /etc/sams.conf
+Enter real values for variables:
+  MYSQLUSER=sams
+  MYSQLPASSWORD=yourpasswd
+ 
+3. Create SAMS tables in database:
+  mysql -u root -p < /usr/share/sams/mysql/sams_db.sql
+  mysql -u root -p < /usr/share/sams/mysql/squid_db.sql
+
+4. Edit /etc/init.d/sams file and change SAMS_ENABLE value
+from "false" to "true"
+
+5. Start samsdaemon
+  /etc/init.d/sams start
+
+Full russian version of this instruction available at:
+  - for Etch: http://sams.nixdev.net/wiki/debian4.0 
+  - for Lenny: http://sams.nixdev.net/wiki/SamsDebianLennyInstall
+  
+Package status and information
+------------------------------
+SAMS split into three packages:
+ sams - main package, contain all daemons and log parsers. Also include 
+        database files.
+ sams-web - web interface for squid administration
+ sams-doc - documentation about install, setup and use asms.
+
+This package not finished yet. It miss some issues:
+ - Write real manpages for all binary
+ - Write pre* scripts to:
+ 	handle package updates
+	automatic create database structure on install
+	update config file
+ - Fix some other lintian errors
+
+All sql files placed in /usr/share/sams/mysql
+
+If you find some bugs in this package - fell free to submite bug to
+http://sams.nixdev.net/ on deb-package component.
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500

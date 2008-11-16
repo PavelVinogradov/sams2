@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+ <H2>Настройка SAMS для авторизации пользователей SQUID в Active Directory как LDAP сервере</H2>
+<P>
+<H3><font color="RED">ВНИМАНИЕ!!! Этот пункт необходим только если вы планируете работать с аутентификацией пользователей в Active Directory как LDAP сервере</font> </H3>
+<P>
+
+<H3>Установка ПО, необходимого для работы SAMS с Active Directory</H3>
+Как известно, Active Directory (далее - AD) является реализацией MicroSoft LDAP сервера. Для работы с AD необходимо 
+установить поддержку ldap для php (в linux это php-ldap.rpm) и собрать SQUID с хелпером авторизации пользователей SQUID squid_ldap_auth (обычно в дистрибутивах он присутствует).
+
+
+<H3>Конфигурация SAMS для работы с Active Directory</H3>
+ 
+ Для того, чтобы система могла авторизоваться в AD необходимо в файле sams.conf настроить поддержку AD:
+ 
+<P>LDAPSERVER=activedirectoryserver - имя или ip адрес сервера AD
+<BR>LDAPBASEDN=domain.name - домен, поддерживаемый AD.
+<BR>LDAPUSER=username - пользователь, входящий в группу AD администраторов домена, от имени которого SAMS 
+будет работать с AD
+<BR>LDAPUSERPASSWD=passwd - пароль
+<BR>LDAPUSERSGROUP=Users - группа, содержащая пользователей в AD (обчно это Users)
+ 
+<H3>Проверка функционирования доступа к AD</H3>
+Для настройки авторизации пользователей в AD необходимо в дереве настроек 
+WEB интерфейса SAMS выбрать пункт "Администрирование SAMS", далее в нижнем фрейме нажать кнопку 
+<IMG SRC="../img/config_32.jpg">
+<BR> В открывшемся диалоге выбираем способ авторизации пользователей "Active Directory". Далее нажимаем кнопку 
+"Тестировать ответ PDC". В открывшемся окне будет выведен список пользователей, зарегистрированных в AD.
+<P>Если список пользователей не выведен, то проверьте настройки доступа к ldap в sams.conf, 
+проверьте, является ли пользователь, от имени которого вы запрашиваете информацию в AD членом группы 
+администраторов домена.
+
+
+<P>далее запускаем хелпер и проверяем как он авторизует пользовател в AD:
+
+<P>/usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" activedirectoryserver
+<BR>далее вводим: 
+<BR>иямпользователя пароль (через пробел)
+<BR>и смотрим, что выдает хелпер:
+<BR>OK - авторизация пользователя в AD прошла успешно
+<BR>ERR - ошибка авторизации пользователя в AD
+
+<P> если вы получили ошибку авторизации - читаем <B>man squid_ldap_auth</B> и документацию по авторизации squid в AD в интернете. Есть различные способы настроить авторизацию пользователей SQUID в AD, всех их здесь я приводить небуду.
+
+<H3>Конфигурируем SQUID на работу с авторизацией в Ad</H3>
+<P>в файл /etc/squid/squid.conf добавляем строки:
+<BR> К сожалению, мне удалось осуществить при помощи хелпера squid_ldap_auth только basic авторизацию. 
+Это означает, что броузер, при первом запросе пользователя, всегда запращивает login и пароль.
+<BR> auth_param basic program /usr/lib/squid/squid_ldap_auth -u cn -b "cn=Users,dc=your,dc=domain" activedirectoryserver
+<BR> auth_param basic children 5
+<BR> auth_param basic realm Squid proxy-caching web server
+<BR> auth_param basic credentialsttl 2 hours
+
+
+</BODY>
+</HTML>
