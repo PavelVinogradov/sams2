@@ -1,2 +1,9 @@
-2008-02-13 В squid.conf в разделе http_access определяются временные границы
-для каждого шаблона.
+SAMS 2.0.0-a2 (Alpha 2) (2008-11-16)
+  First public experimental release of SAMS version 2
+  Only for testing. Don't use this version in production.
+  Please report bugs to http://sams.nixdev.net/ with version 2.0.0-alpha-2
+
+SAMS 2.0.0-a1 (Alpha 1) (2008-10-10)
+
+  demons:
+    * squid.conf in part of http_access defined time range for each template.
