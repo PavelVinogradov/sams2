@@ -8,16 +8,18 @@
  function lffolder_4_z0_filedenied()
  {
   global $SAMSConf;
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+
+ if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
-      print("   denied = insFld(sams, gFld(\"$lframe_sams_FileDenied_1\", \"main.php?show=exe&function=addfilelistform\", \"stop.gif\"))\n");
-      $result=mysql_query("SELECT * FROM redirect WHERE type=\"files\"");
-      while($row=mysql_fetch_array($result))
+      print("   denied = insFld(sams, gFld(\"$lframe_sams_FileDenied_1\", \"main.php?show=exe&filename=redirlisttray.php&function=addurllistform&type=files\", \"stop.gif\"))\n");
+      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_type='files' ");
+      while($row=$DB->samsdb_fetch_array())
          {
-           print("      insDoc(denied, gLnk(\"D\", \"$row[name]\", \"tray.php?show=exe&function=filelisttray&id=$row[filename]\",\"pfile.gif\"))\n");
+           print("      insDoc(denied, gLnk(\"D\", \"$row[s_name]\", \"tray.php?show=exe&filename=redirlisttray.php&function=redirlisttray&id=$row[s_redirect_id]\",\"pfile.gif\"))\n");
          }
     }	 
 

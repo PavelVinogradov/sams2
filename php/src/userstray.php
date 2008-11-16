@@ -7,6 +7,7 @@
 function DisableSelectedUsers()
 {
   global $SAMSConf;
+  $DB=new SAMSDB(&$SAMSConf);
   if($SAMSConf->access!=2)
     exit(0);
 
@@ -16,6 +17,7 @@ function DisableSelectedUsers()
  if(isset($_GET["delete"])) $delete=$_GET["delete"];
  if(isset($_GET["discount"])) $discount=$_GET["discount"];
  if(isset($_GET["delcount"])) $delcount=$_GET["delcount"];
+ if(isset($_GET["defcount"])) $defcount=$_GET["defcount"];
 
 
  $disable=explode(",",$disable);
@@ -25,39 +27,42 @@ function DisableSelectedUsers()
  $delete=explode(",",$delete);
  $count2=count($delete);
 
- for($i=0; $i<$count1; $i++)
+ for($i=0; $i<$discount; $i++)
     {
-       if($SAMSConf->LOGLEVEL >= 3&&strlen($disable[$i])>0)
-         {
-            $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$disable[$i]\" ");
-            $row=mysql_fetch_array($result);
-            UpdateLog("$SAMSConf->adminname","Deactivate user $row[nick]","01");
-         }
-       $result2=mysql_query("UPDATE squidusers SET enabled=\"-1\" WHERE squidusers.id=\"$disable[$i]\"");
+//       if($SAMSConf->LOGLEVEL >= 3&&strlen($disable[$i])>0)
+//         {
+//            $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$disable[$i]' ");
+//            $row=$DB->samsdb_fetch_array();
+//            UpdateLog("$SAMSConf->adminname","Deactivate user $row[nick]","01");
+//         }
+//echo "UPDATE squiduser SET s_enabled='-1' WHERE s_user_id='$disable[$i]' count1=$count1  discount=$discount<BR>";
+       $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_enabled='-1' WHERE s_user_id='$disable[$i]'");
    }
- for($i=0; $i<$count3; $i++)
+ for($i=0; $i<$defcount; $i++)
     {
-       if($SAMSConf->LOGLEVEL >= 3&&strlen($defen[$i])>0)
-         {
-             $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$defen[$i]\" ");
-             $row=mysql_fetch_array($result);
-            UpdateLog("$SAMSConf->adminname","Activate user $row[nick]","01");
-         }
-       $result2=mysql_query("UPDATE squidusers SET enabled=\"1\" WHERE squidusers.id=\"$defen[$i]\"");
+//       if($SAMSConf->LOGLEVEL >= 3&&strlen($defen[$i])>0)
+//         {
+//             $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$defen[$i]' ");
+//            $row=$DB->samsdb_fetch_array();
+//            UpdateLog("$SAMSConf->adminname","Activate user $row[nick]","01");
+//         }
+//echo "UPDATE squiduser SET s_enabled='1' WHERE s_user_id='$defen[$i]'<BR>";
+       $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_enabled='1' WHERE s_user_id='$defen[$i]'");
     }
- for($i=0; $i<$count2; $i++)
+ for($i=0; $i<$delcount; $i++)
     {
-       if($SAMSConf->LOGLEVEL >= 3&&strlen($delete[$i])>0)
-         {
-             $result=mysql_query("SELECT nick FROM $SAMSConf->SAMSDB.squidusers WHERE id=\"$delete[$i]\" ");
-             $row=mysql_fetch_array($result);
-            UpdateLog("$SAMSConf->adminname","Delete user $row[nick] ","01");
-         }
-        $result2=mysql_query("DELETE FROM squidusers WHERE id=\"$delete[$i]\" ");
+//       if($SAMSConf->LOGLEVEL >= 3&&strlen($delete[$i])>0)
+//         {
+//             $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$delete[$i]' ");
+//            $row=$DB->samsdb_fetch_array();
+//            UpdateLog("$SAMSConf->adminname","Delete user $row[nick] ","01");
+//         }
+//echo "DELETE FROM squiduser WHERE s_user_id='$delete[$i]'<BR>";
+        $num_rows=$DB->samsdb_query("DELETE FROM squiduser WHERE s_user_id='$delete[$i]' ");
     }
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
-     print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm&type=all\";\n");
+     print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
      print("</SCRIPT> \n");
 
 }
@@ -66,11 +71,12 @@ function DisableSelectedUsers()
 function AllUsersForm()
 {
   global $SAMSConf;
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   
-  TestWI();
+//  TestWI();
   $SAMSConf->access=UserAccess();
 
   $groupname="";
@@ -78,16 +84,13 @@ function AllUsersForm()
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["username"])) $username=$_GET["username"];
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB)
-       or print("Error\n");
-
   PageTop("user.jpg","$grouptray_UserGroupForm_1");
   if($SAMSConf->access==2)
     {
       print("<FORM NAME=\"searchform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"AllUsersForm\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"userstray.php\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"allusersform\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"type\" value=\"search\">\n");
       print("$userstray_AllUsersForm_13 \n");
       print("<INPUT TYPE=\"TEXT\" NAME=\"username\" >\n");
@@ -106,48 +109,63 @@ function AllUsersForm()
        print("   var discount=0; \n");
        print("   var defcount=0; \n");
        print("   var delcount=0; \n");
-       print("   if (groupform.counter.value == 1) \n");
+       print("   var dis = \" \"; \n");
+       print("   var def = \" \"; \n");
+       print("   var del = \" \"; \n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
        print("       {\n");
-       print("           if(groupform.users.checked==false && groupform.dusers.value==\"1\")\n");
+       print("           if(groupform.users[i].checked==false && groupform.dusers[i].value==\"1\")\n");
        print("             {\n");
-       print("                  disable[discount] = groupform.users.value; \n");
+       print("                  disable[discount] = groupform.users[i].value; \n");
        print("                  discount+=1; \n");
+       print("                  dis = dis + groupform.users[i].value + \" \"; \n");
        print("             }\n");
-       print("           if(groupform.users.checked==true && ( groupform.dusers.value==\"-1\" || groupform.dusers.value==\"0\" ))\n");
+       print("           if(groupform.users[i].checked==true && ( groupform.dusers[i].value==\"-1\" || groupform.dusers[i].value==\"0\" ))\n");
        print("             {\n");
-       print("                  defen[defcount] = groupform.users.value; \n");
+       print("                  defen[defcount] = groupform.users[i].value; \n");
        print("                  defcount+=1; \n");
+       print("                  def = def + groupform.users[i].value + \" \"; \n");
        print("             }\n");
-       print("           if(groupform.userdel.checked==true)\n");
+      print("           if(groupform.userdel[i].checked==true)\n");
        print("             {\n");
-       print("                  userdel[delcount] = groupform.userdel.value; \n");
+       print("                  userdel[delcount] = groupform.userdel[i].value; \n");
        print("                  delcount+=1; \n");
+       print("                  del = del + groupform.userdel[i].value + \" \"; \n");
        print("             }\n");
-       print("       }\n");
-       print("   else \n");
-       print("       {\n");
-       print("           for(var i=0; i < groupform.counter.value; i +=1 ) \n");
-       print("               {\n");
-       print("                   if(groupform.users[i].checked==false && groupform.dusers[i].value==\"1\")\n");
-       print("                     {\n");
-       print("                          disable[discount] = groupform.users[i].value; \n");
-       print("                          discount+=1; \n");
-       print("                     }\n");
-       print("                   if(groupform.users[i].checked==true && ( groupform.dusers[i].value==\"-1\" || groupform.dusers[i].value==\"0\" ))\n");
-       print("                     {\n");
-       print("                           defen[defcount] = groupform.users[i].value; \n");
-       print("                           defcount+=1; \n");
-       print("                     }\n");
-       print("                   if(groupform.userdel[i].checked==true)\n");
-       print("                     {\n");
-       print("                           userdel[delcount] = groupform.userdel[i].value; \n");
-       print("                           delcount+=1; \n");
-       print("                     }\n");
-       print("                }\n");
-       print("       }\n");
-       print("   var strr= \"main.php?show=exe&function=disableselectedusers&disable=\" + disable + \"&delete=\" + userdel + \"&defen=\" + defen + \"&delcount=\"+delcount+\"&discount=\"+discount  \n");
-//       print("   var value=window.confirm( strr );\n");
+       print("        }\n");
+       print("   var strr= \"main.php?show=exe&filename=userstray.php&function=disableselectedusers&disable=\" + disable + \"&delete=\" + userdel + \"&defen=\" + defen + \"&delcount=\"+delcount+\"&discount=\"+discount + \"&defcount=\"+defcount  \n");
+//       print("   var value=window.confirm( \"disable:\" + dis + \" delete: \" + del + \"default:\" + def );\n");
        print("   parent.basefrm.location.href=strr;\n");
+       print("}\n");
+       print("function EnableAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.users[i].checked==false )\n");
+       print("             {\n");
+       print("                  groupform.users[i].checked=true; \n");
+       print("             }\n");
+       print("        }\n");
+       print("}\n");
+       print("function DisableAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.users[i].checked==true )\n");
+       print("             {\n");
+       print("                  groupform.users[i].checked=false; \n");
+       print("             }\n");
+       print("        }\n");
+       print("}\n");
+       print("function DeleteAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.userdel[i].checked==false )\n");
+       print("             {\n");
+       print("                  groupform.userdel[i].checked=true; \n");
+       print("             }\n");
+       print("        }\n");
        print("}\n");
        print("</SCRIPT> \n");
 
@@ -155,6 +173,7 @@ function AllUsersForm()
     {
       print("<FORM NAME=\"groupform\" ACTION=\"main.php\"  METHOD=\"post\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"userstray.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"disableselectedusers\">\n");
       print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
    } 
@@ -184,35 +203,35 @@ function AllUsersForm()
   
   if($type=="search")
   {
-    $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SAMSDB.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SAMSDB.shablons ON squidusers.shablon=shablons.name WHERE squidusers.nick like \"%$username%\" ORDER BY squidusers.group,squidusers.nick");
+    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE squiduser.s_nick like '%$username%' ORDER BY squiduser.s_shablon_id,squiduser.s_nick");
   }
   else
-    $result=mysql_query("SELECT squidusers.*,groups.nick AS gnick, shablons.period, year(shablons.clrdate) as year, month(shablons.clrdate) as month, dayofmonth(shablons.clrdate) as day FROM squidusers LEFT JOIN $SAMSConf->SAMSDB.groups ON groups.name=squidusers.group LEFT JOIN $SAMSConf->SAMSDB.shablons ON squidusers.shablon=shablons.name ORDER BY squidusers.group,squidusers.nick");
+    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_group_id,squiduser.s_nick");
   
-  while($row=mysql_fetch_array($result))
+  while($row=$DB->samsdb_fetch_array())
       {
         $clrdate="";
 	$clrdays=0;
        print("<TR>\n");
 
        //if($)
-       if($row['enabled']>0)
+       if($row['s_enabled']>0)
          {
 	    if($SAMSConf->realtraffic=="real")
-	        $traffic=$row['size']-$row['hit'];
+	        $traffic=$row['s_size']-$row['s_hit'];
             else
-	        $traffic=$row['size'];
-            if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
+	        $traffic=$row['s_size'];
+            if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
                $gif="puser.gif";
             else
-               if($row['quotes']>0)
+               if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
           }
-        if($row['enabled']==0)
+        if($row['s_enabled']==0)
           {
              $gif="puserd.gif";
           }
-        if($row['enabled']<0)
+        if($row['s_enabled']<0)
           {
               $gif="duserd.gif";
            }
@@ -224,51 +243,55 @@ function AllUsersForm()
 	   }
          if($SAMSConf->access==2)
            {
-             print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[id]\" ");
-             if($row['enabled']==1)
+             print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[s_user_id]\" ");
+             if($row['s_enabled']==1)
 	       print(" CHECKED ");
 	     print("> \n ");
-             print(" <INPUT TYPE=\"HIDDEN\" NAME=\"dusers\" ID=\"$count\" VALUE=\"$row[enabled]\" >");
+             print(" <INPUT TYPE=\"HIDDEN\" NAME=\"dusers\" ID=\"$count\" VALUE=\"$row[s_enabled]\" >");
            }
 
-	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=usertray&userid=$row[id]&usergroup=$row[group]\"  TARGET=\"tray\">$row[1] </A></B>");
+	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
          if($SAMSConf->access==2)
            {
 	    if($SAMSConf->realtraffic=="real")
-	        PrintFormattedSize($row['size']-$row['hit']);
+	        PrintFormattedSize($row['s_size']-$row['s_hit']);
             else
-	        PrintFormattedSize($row['size']);
+	        PrintFormattedSize($row['s_size']);
 
              
-	     if($row['quotes']>0)
-	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
+	     if($row['s_quote']>0)
+	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[s_quote] Mb");
 	     else  
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
 	   
-	      if($row['period']!="M"&&$row['period']!="W")
+	      if($row['s_period']!="M"&&$row['s_period']!="W")
                 {
 		  $period="$row[period] $userstray_AllUsersForm_10";
 	        }
-	      if($row['period']=="M")
+	      if($row['s_period']=="M")
                 {
 		  $period="$userstray_AllUsersForm_11";
 	        }
-	      if($row['period']=="W")
+	      if($row['s_period']=="W")
                 {
 		  $period="$userstray_AllUsersForm_12";
 	        }
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $period ");
 	   }
 	   
-         print("<TD WIDTH=\"40%\"> $row[family] $row[name] $row[soname]");
+         print("<TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]");
          if($SAMSConf->access==2)
            {
-              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[id]\" > \n");
+              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" > \n");
 	   }
 	 $count=$count+1;  
       }
+      print("<TR><TD><INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=EnableAll(groupform) > \n");
+      print("<BR><INPUT TYPE=\"BUTTON\" VALUE=\"deselect all\" onclick=DisableAll(groupform) > \n");
+      print("<TD><TD><TD><TD><TD><TD><TD> \n");
+      print("<INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=DeleteAll(groupform) > \n");
   print("</TABLE>\n");
 
     if($SAMSConf->access==2)
@@ -297,15 +320,19 @@ function UsersTray()
   $SAMSConf->access=UserAccess();
 
   print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&function=AllUsersForm&type=all\";\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
   print("</SCRIPT> \n");
 
-  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR>\n");
-  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+//echo "<style type=\"text/css\"> TD.samstraytd {cursor:sw-resize; width:50px; height:50px; vertical-align:bottom; text-align: center; background-color: WHITE; } </style>\n";
+//TD.samstraytd {cursor:sw-resize;}
+
+  print("<TABLE border=0 WIDTH=95%>\n");
+  print("<TR HEIGHT=60>\n");
+  print("<TD WIDTH=25%>");
   print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$userstray_UsersTray_1</FONT></B>\n");
 
   ExecuteFunctions("./src", "usersbuttom","1");
+//  print("<TD>\n");
   print("<TD>\n");
   print("</TABLE>\n");
 

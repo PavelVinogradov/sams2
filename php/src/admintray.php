@@ -5,7 +5,7 @@
  * (see the file 'main.php' for license details)
  */
 
-
+/*
 function UserDoc()
 {
   global $SAMSConf;
@@ -26,7 +26,6 @@ function UserDoc()
     }
   else
     {
-/***/
       print("<P><B>$AdminTray_UserDoc_5</B>\n");
       print("<P>");
       print("<FORM NAME=\"NUSERPASSWORD\" ACTION=\"main.php\" METHOD=\"POST\">\n");
@@ -43,10 +42,9 @@ function UserDoc()
       print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Ok\">\n");
       print("</FORM>\n");
 
-/***/
     }  
 }
-
+*/
 
 function AdminTray()
 {
@@ -56,7 +54,7 @@ function AdminTray()
   require($lang);
   print("<SCRIPT>\n");
  if($SAMSConf->access!=2)
-    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=userdoc\";\n");    }
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&filename=admintray.php&function=userdoc\";\n");    }
   print("</SCRIPT> \n");
 
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");

@@ -7,10 +7,11 @@
 
 function UsersTrafficPeriodPDF()
 {
-  //require('chart.php');
+  require('chart.php');
   
   global $SAMSConf;
   global $DATE;
+  $DB=new SAMSDB(&$SAMSConf);
   
   if($SAMSConf->LANG=="KOI8-R")
     $lang="./lang/lang.WIN1251";
@@ -23,8 +24,6 @@ function UsersTrafficPeriodPDF()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
 
   $pdfFile=pdf_new();
   PDF_open_file($pdfFile, "");
@@ -106,6 +105,7 @@ function UsersTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
+  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -115,23 +115,15 @@ function UsersTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
-
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
-//  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain");
-
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as all_sum,sum(s_hit),s_user,s_domain FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by all_sum desc");
   $count=0;
-  while($row=mysql_fetch_array($result))
+  while($row=$DB->samsdb_fetch_array())
        {
-         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
-         $row_2=mysql_fetch_array($result_2);
-         
 	 $SIZE[$count]=floor($row[0]/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
 	 $HIT[$count]=floor($row[1]/($SAMSConf->KBSIZE*$SAMSConf->KBSIZE));
-	 $USERS[$count]=$row_2["nick"];
+	 $USERS[$count]=$row["s_user"];
 	 $count++;
-       }
+	}
 $showbar=new BAR(500, 200, 30, 20, $SIZE, $HIT, $count, $USERS);
 $showbar->CreateBars();
        
@@ -143,21 +135,20 @@ function UsersTrafficPeriod()
 {
   global $SAMSConf;
   global $DATE;
-  
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-   $size="";
-   if(isset($_GET["size"])) $size=$_GET["size"];
-
+  $DB=new SAMSDB(&$SAMSConf);
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
+   $size="";
+   if(isset($_GET["size"])) $size=$_GET["size"];
 
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
+  require("reportsclass.php");
+  $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
+//echo "main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate <BR>";
   PageTop("usergroup_48.jpg","$usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
   print("<BR>\n");
 
@@ -166,13 +157,13 @@ function UsersTrafficPeriod()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
-  NewDateSelect(0,"");
+	$dateselect->SetPeriod();
   print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-  if($SAMSConf->SHOWGRAPH=="Y")
+//  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
   
   $count=1;
@@ -198,35 +189,32 @@ function UsersTrafficPeriod()
     }
   print("<TH width=30%>$usersbuttom_2_traffic_UsersTrafficPeriod_7");
 
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
-
-  while($row=mysql_fetch_array($result))
+  $num_rows=$DB->samsdb_query_value("SELECT sum(cachesum.s_size) as all_sum,sum(cachesum.s_hit),cachesum.s_user,cachesum.s_domain,squiduser.s_nick,squiduser.s_family,squiduser.s_name,squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by all_sum desc ");
+  while($row=$DB->samsdb_fetch_array())
        {
          print("<TR>");
-         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
-         $row_2=mysql_fetch_array($result_2);
          LTableCell($count,8);
                  
 	if($SAMSConf->SHOWNAME=="fam")
-           $name="$row_2[family]";
+           $name="$row[s_family]";
         else if($SAMSConf->SHOWNAME=="famn")
-           $name="$row_2[family] $row_2[name]";
+           $name="$row[s_family] $row[s_name]";
         else if($SAMSConf->SHOWNAME=="nickd")
-           $name="$row_2[nick] / $row_2[domain]";
+           $name="$row[s_nick] / $row[s_domain]";
         else 
-           $name="$row_2[nick]";
-         $str="<A HREF=\"tray.php?show=usertray&userid=$row_2[id]&usergroup=$row_2[group]\" TARGET=\"tray\">$name</A>\n";
+           $name="$row[s_nick]";
+         $str="<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\" TARGET=\"tray\">$name</A>\n";
 	 LTableCell($str,16);
 	 
 	 //LTableCell("<A HREF=\"tray.php?show=usertray&userid=$row_2[id]&usergroup=$row_2[group]\" TARGET=\"tray\">$row[user]</A>\n",16);
          if($size=="On")
            {
-              LTableCell($row_2['family'],16);
+              LTableCell($row['s_family'],16);
            }
          else
            {
               if(($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")
-  	        TableCell($row['domain'],16);
+  	        TableCell($row['s_domain'],16);
            }
          if($SAMSConf->access==2)
            {
@@ -273,19 +261,20 @@ function UsersTrafficPeriod()
 function UsersTrafficForm()
 {
   global $SAMSConf;
-  
+  require("reportsclass.php");
+  $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  PageTop("usergroup_48.jpg","$alltraffic_1<BR>$usersbuttom_2_traffic_UsersTrafficForm_1");
+	PageTop("usergroup_48.jpg","$alltraffic_1<BR>$usersbuttom_2_traffic_UsersTrafficForm_1");
 
-  print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
-  NewDateSelect(0,"");
-  print("</FORM>\n");
+	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
+	$dateselect->SetPeriod();
+	print("</FORM>\n");
 
 
 }
@@ -298,9 +287,9 @@ function usersbuttom_2_traffic()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access>0||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[domain]+$row[nick]"))
+   if($SAMSConf->access>0)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
+//       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=userstrafficform&filename=usersbuttom_2_traffic.php","basefrm","traffic_32.jpg","traffic_48.jpg","$usersbuttom_2_traffic_usersbuttom_2_traffic_1");
 	}
 

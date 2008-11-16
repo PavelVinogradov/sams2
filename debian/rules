@@ -33,10 +33,11 @@ else
 	CFLAGS += -O2
 endif
 
-config.status: configure patch
+config.status: patch
 	dh_testdir
+	make -f Makefile.cvs
 	# Add here commands to configure the package.
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --with-pq-includes=/usr/include/postgresql --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 #Architecture 
@@ -62,7 +63,7 @@ clean: unpatch
 	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	$(MAKE) distclean
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
 endif
@@ -103,11 +104,11 @@ install-arch:
 binary-common:
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs CHANGELOG
+	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
 #	dh_installmenu
-	dh_installdebconf	
+#	dh_installdebconf	
 #	dh_installlogrotate	
 #	dh_installemacsen
 #	dh_installpam

@@ -1,6 +1,6 @@
 <html>
 <head>
-<TITLE>SAMS (SQUID Account Management System).</TITLE>
+<TITLE>SAMS 2 (SQUID Account Management System).</TITLE>
 <META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
 <META HTTP-EQUIV="expires" CONTENT="THU, 01 Jan 1970 00:00:01 GMT">
 <META HTTP-EQUIV="pragma" CONTENT="no-cache">
@@ -11,11 +11,11 @@ function op() { //This function is used with folders that do not open pages them
 </script>
 </head>
 
-<FRAMESET frameborder="0" framespacing="0" cols="30%,*,0">
-  <FRAME src="lframe.php" name="lframe" >
-  <FRAMESET frameborder="0" framespacing="0" rows="*,70">
-    <FRAME SRC="main.php?show=exe&function=userdoc" name="basefrm">
-    <FRAME SRC="tray.php?show=exe&function=admintray" name="tray" noresize scrolling=no>
+<FRAMESET frameborder="0" framespacing="0" cols="25%,*,0">
+  <FRAME src="lframe.php?value=start" name="lframe" >
+  <FRAMESET frameborder="0" framespacing="0" rows="*,75">
+    <FRAME SRC="main.php?show=exe&function=userdoc&value=start" name="basefrm">
+    <FRAME SRC="tray.php?show=exe&filename=admintray.php&function=admintray&value=start" name="tray">
     <FRAME SRC="" name="hidden" >
   </FRAMESET> 
 </FRAMESET> 

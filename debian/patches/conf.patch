@@ -1,15 +1,18 @@
---- 1.0.x/etc/sams.conf	(revision 351)
-+++ 1.0.x/etc/sams.conf	(working copy)
-@@ -10,10 +10,10 @@
+--- sams-2.0.0/etc/sams2.conf	2008-08-23 22:10:09.000000000 +0500
++++ sams-build/etc/sams2.conf	2008-08-25 23:25:30.000000000 +0500
+@@ -31,12 +31,12 @@
+ SQUIDCACHEFILE=access.log
+ SQUIDROOTDIR=/etc/squid
  SQUIDLOGDIR=/var/log/squid
- SQUIDCACHEDIR=/var/spool/squid
- SQUIDIP=127.0.0.1
--SAMSPATH=/usr
-+SAMSPATH=/usr/local
+-SQUIDCACHEDIR=/usr/local/apache2
++SQUIDCACHEDIR=/var/spool/squid
+ 
+-SAMSPATH=/usr/local
++SAMSPATH=/usr
  SQUIDPATH=/usr/sbin
  SQUIDGUARDLOGPATH=/var/log
--SQUIDGUARDDBPATH=/etc/squid
-+SQUIDGUARDDBPATH=/var/db/squidguard
+-SQUIDGUARDDBPATH=/var/db/squidguard
++SQUIDGUARDDBPATH=/etc/squid
  RECODECOMMAND=iconv -f KOI8-R -t 866 %finp > %fout
- LDAPSERVER=servername_or_ipadress
- LDAPBASEDN=your.domain
+ REJIKPATH=/usr/local/rejik
+ SHUTDOWNCOMMAND=shutdown -h now

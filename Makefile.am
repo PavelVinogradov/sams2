@@ -1,46 +1,22 @@
-#
-# Makefile.am --- automake input file for gawk
-#
-# Copyright (C) 2000-2001 the Free Software Foundation, Inc.
-#
-# Automatic de-ANSI-fication if needed
+# not a GNU package. You can remove this line, if
+# have all needed files, that a GNU package needs
+AUTOMAKE_OPTIONS = foreign
 
-# This undocumented variable insures that aclocal runs
-# correctly after changing configure.in
-ACLOCAL_AMFLAGS = -I m4
+SUBDIRS = src doc/src plugins/loadavg
 
-# This insures that make flags get passed down to child makes.
-AM_MAKEFLAGS = 'CFLAGS=$(CFLAGS)' 'LDFLAGS=$(LDFLAGS)'
+EXTRA_DIST = doc php etc spec debian redhat
 
-# Stuff to include in the dist that doesn't need it's own
-# Makefile.am files
-EXTRA_DIST = \
-	COPYING 
+dist-hook:
+	find $(distdir) -type d -name .svn | xargs rm -rf
 
-# what to make and install
-bin_PROGRAMS = sams samsf samsredir samsdaemon 
-
-# sources for both squidlog
-base_sources = \
-	demon.c \
-	redirect.c \
-	daemon.c \
-	samsdaemon.c \
-	define.h \
-	tools.c \
-	tools.h 
-
-squidlog_SOURCES = $(base_sources) 
-
-# stuff for compiling gawk/pgawk
-DEFPATH="\".:$(datadir)\""
-
-DEFS= -DDEFPATH=$(DEFPATH) -DHAVE_CONFIG_H -DLOCALEDIR="\"$(datadir)/locale\""
-
-INCLUDES = -I. $(MYSQLHEADERS) 
-
-LIBS = -I. $(MYSQLLIBS) 
-
-# We want hard links for install-exec-hook, below
-LN= ln
-
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)/$(datadir)/$(distdir)
+	(cd $(top_srcdir)/php && find . ! -wholename "*/.svn*" | cpio -pdum --no-preserve-owner $(DESTDIR)/$(datadir)/$(distdir))
+	sed -i -e 's,__VERSION,$(VERSION),g' $(DESTDIR)/$(datadir)/$(distdir)/dbclass.php
+	find $(DESTDIR)/$(datadir)/$(distdir) -type d | xargs chmod 755
+	find $(DESTDIR)/$(datadir)/$(distdir) -type f | xargs chmod 644
+	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
+	if [ ! -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
+		$(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir) ;\
+		sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php ;\
+	fi

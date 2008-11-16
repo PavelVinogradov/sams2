@@ -59,7 +59,7 @@ function adminbuttom_2_chuser()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
+//  $SAMSConf->access=UserAccess();
 //  if($SAMSConf->access==2)
 //    {
        print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");

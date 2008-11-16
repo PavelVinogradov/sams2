@@ -8,29 +8,29 @@
 function redirbuttom_3_deletelist()
 {
   global $SAMSConf;
-  
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$id\" ");
-  $row=mysql_fetch_array($result);
+  $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
+  $row=$DB->samsdb_fetch_array();
 
-  if($SAMSConf->access==2)
+  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function DeleteList(id)\n");
        print("{\n");
-       print("  value=window.confirm(\"$redirbuttom_3_deletelist_redirbuttom_3_deletelist_1 $row[name] \" );\n");
+       print("  value=window.confirm(\"$redirbuttom_3_deletelist_redirbuttom_3_deletelist_1 $row[s_name] \" );\n");
        print("  if(value==true) \n");
        print("     {\n");
-       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletelist&filename=urllistfunction.php&id=$id&execute=addredirlistform\";\n");
+       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletelist&filename=redirlisttray.php&id=$id\";\n");
        print("     }\n");
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
+       print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
        print("TITLE=\"$redirbuttom_3_deletelist_redirbuttom_3_deletelist_1\"  border=0 ");
        print("onclick=DeleteList(\"$id\") \n");
