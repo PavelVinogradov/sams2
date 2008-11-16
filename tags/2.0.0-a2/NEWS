@@ -1,0 +1,65 @@
+1) для генерации документации по исходным кодам
+   необходимо исправить 2 параметра в файле Doxyfile
+   STRIP_FROM_PATH        = /home/mclight77/
+   INPUT                  = /home/mclight77/sams/2.0.x/src
+   и запустить
+   doxygen Doxyfile
+
+2) для просмотра документации по исходным кодам
+   в любом браузере открыть страницу doc/src/html/index.html
+
+3) Краткое состояние классов
+   Все части нуждаются в тщательном тестировании,
+   поэтому ни один класс нельзя считать полностью законченным
+
+   Легенда:
+   - Не реализовано
+   + Ограниченная функциональность
+   * Полная функциональность
+
+   * DBConn
+   * DBQuery
+   * ODBCConn
+   * ODBCQuery
+   * MYSQLConn
+   * MYSQLQuery
+   * Url
+   * IP
+   * Net
+   * LocalNetworks
+   * SamsConfig
+   * SAMSUser
+   * SAMSUsers
+   * SquidLogLine
+   - Filter
+   - UserFilter
+   * DateFilter
+   * ProcessManager
+   * Logger
+
+4) Результаты тестирования
+  Файл access.log размером 4.2 ГБ был обработан без ошибок (DB_ENGINE=MySQL)
+
+5) История версий БД
+   База данных имеет свою версию, которая хранится в websettings.s_version
+   а) БД считается "актуальной" если первые 3 числа ее версии сопадают с теми-же числами версии пакета.
+      Это означает что приложения работают в полнофункциональном режиме.
+   б) БД считается "допустимой" если первое и второе число сопадают с теми-же числами версии пакета.
+      Это означает что приложения могут работать, но некоторые функции будут недоступны.
+   в) БД считается "тестовой", если второе и третье число равны 9.
+      Может быть использовано в целях разработки, тестов и т.д.
+
+   1.9.9 - первая тестовая версия
+   2.9.9 - добавлено применение модулей sysinfo
+           CREATE TABLE `sysinfo` (
+             `s_proxy_id` INT              NOT NULL ,
+             `s_name`     VARCHAR( 50 )    NOT NULL ,
+             `s_version`  VARCHAR( 10 )    NOT NULL ,
+             `s_author`   VARCHAR( 30 )        NULL DEFAULT 'anonymous',
+             `s_info`     VARCHAR( 1024 )  NOT NULL DEFAULT 'not available',
+             `s_date`     DATETIME         NOT NULL ,
+             `s_status`   INT              NOT NULL
+           ) ENGINE = MYISAM;
+           UPDATE websettings SET s_version='2.9.9';
+   3.9.9 - добавлена функция перенаправления
+           ALTER TABLE `redirect` ADD `s_dest` VARCHAR( 128 ) NULL ;
