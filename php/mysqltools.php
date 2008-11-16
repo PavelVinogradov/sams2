@@ -101,7 +101,7 @@ function about()
  
   print("<TABLE WIDTH=\"80%\" BORDER=0 BGCOLOR=\"beige\" >");
   print("<TR><TD ALIGN=CENTER><IMG SRC=\"$SAMSConf->ICONSET/proxy_big.gif\">");
-  print("<TD ALIGN=CENTER><P><H1>SAMS v. 1.1.0 </H1>");
+  print("<TD ALIGN=CENTER><P><H1>SAMS v. 1.0.4 </H1>");
   print("<H2>Squid Account Management System</H2>");
   print("Copyright (C) 2003 - 2008 Dmitry Chemerik");
   print("<BR>http://sams.perm.ru");
@@ -173,9 +173,6 @@ class SAMSCONFIG
   var $PHPVER;
   var $SEPARATOR;
   var $PROXYCOUNT;
-  var $LOGLEVEL;
-  var $CCLEAN;
-  var $SQUIDIP;
   
   function ReadSAMSConfFile($configfile)
     {
@@ -214,7 +211,6 @@ class SAMSCONFIG
          if(!strcasecmp($str2,"MYSQLVERSION" ))          $this->MYSQLVERSION=trim(strtok("="));
          if(!strcasecmp($str2,"SHUTDOWNCOMMAND" ))       $this->SHUTDOWN=trim(strtok("="));
          if(!strcasecmp($str2,"SAMSPATH" ))       $this->SAMSPATH=trim(strtok("="));
-         if(!strcasecmp($str2,"SQUIDIP" ))           $this->SQUIDIP=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPBASEDN" ))
            {
               $str2=trim(strtok($string,"="));
@@ -247,8 +243,6 @@ class SAMSCONFIG
       $this->realtraffic=$row['realsize'];
       $this->SQUIDBASE=$row['squidbase'];
       $this->SEPARATOR=$row['separator'];
-      $this->LOGLEVEL=$row['loglevel'];
-      $this->CCLEAN=$row['count_clean'];
  
       $result=mysql_query("SELECT * FROM $this->SAMSDB.globalsettings");
       $row=mysql_fetch_array($result);

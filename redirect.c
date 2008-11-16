@@ -33,7 +33,7 @@
 #include "tools.h"
 
 struct samsusers {
-  char user[26];
+  char user[25];
   char domain[25];
   int ip[6];
   int ipmask[6];
@@ -833,9 +833,10 @@ int main (int argc, char *argv[])
                       t=localtime(&tt);
 
                       TIMEDENIED=1;
+
                       if(users[USERNUMBER-1].days[t->tm_wday]==1)
 		        {
-		          if( users[USERNUMBER-1].stime >= users[USERNUMBER-1].etime)
+		          if( (users[USERNUMBER-1].stime>users[USERNUMBER-1].etime))
 		            { 
 		              if(users[USERNUMBER-1].stime <= (t->tm_hour*60+t->tm_min) || (t->tm_hour*60+t->tm_min) <= users[USERNUMBER-1].etime)
 			       {
@@ -844,7 +845,7 @@ int main (int argc, char *argv[])
 			    }   
                           if(users[USERNUMBER-1].stime<users[USERNUMBER-1].etime)
                             {
-		              if(users[USERNUMBER-1].stime <= (t->tm_hour*60+t->tm_min) && (t->tm_hour*60+t->tm_min) <= users[USERNUMBER-1].etime )
+		              if(users[USERNUMBER-1].stime < (t->tm_hour*60+t->tm_min)&& (t->tm_hour*60+t->tm_min) < users[USERNUMBER-1].etime )
 			       {
                                  TIMEDENIED=0;
 			       }
@@ -928,7 +929,7 @@ int main (int argc, char *argv[])
 					    }
 				          //if(DEBUG==1) 
 					  //   printf("        %d  %s  %d URL: %s=%s \n",k,urls[k].type,j,&str1[0],urls[k].url);
-					  if(strstr(&str1[0],urls[k].url)!=0) 
+					  if(strstr(&str1[0],urls[k].url)!=0)
 					    {
                                               if(strcmp(urls[k].type,"allow")==0)
 					        {

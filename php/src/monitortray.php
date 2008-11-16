@@ -22,7 +22,7 @@ function MonitorTray()
       print("<P>\n");
       print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
       print("<TR>\n");
-      print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
+      print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
       print("<B><FONT SIZE=\"+1\" COLOR=\"BLUE\">$monitortray_MonitorTray_1</FONT></B>\n");
 
       ExecuteFunctions("./src", "monitorbuttom","1");

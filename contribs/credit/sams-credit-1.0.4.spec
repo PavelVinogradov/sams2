@@ -1,7 +1,7 @@
 %define samsrelease credit
 Summary: SAMS (Squid Account Management System)
 Name: sams
-Version: 1.0.4
+Version: 1.0.3
 %if "%{samsrelease}" == "credit"
 Release: credit.0
 %else
@@ -9,14 +9,15 @@ Release: 0
 %endif
 Group: Applications/Internet
 License: GPL
-Source: http://nixdev.net/release/sams/%{name}-%{version}.tar.bz2
+Source: http://sams.perm.ru/downloads/%{name}-%{version}.tar.bz2
+Source1: credit_alarm.gif
+Source2: credit-change.sql
 Patch0: sams-1.0.4.rpm.patch
 %if "%{samsrelease}" == "credit"
 Patch1: credit-0.1.patch
 %endif
 Distribution: Red Hat Linux
 Vendor: Sams community
-Packager: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 URL: http://sams.perm.ru
 BuildRoot: %{_tmppath}/%{name}-buildroot
 BuildRequires: mysql-devel, pcre-devel
@@ -28,9 +29,9 @@ There are access control for users by ntlm, ncsa, basic or ip
 authorization mode.
 
 %description -l ru
-п╜я┌п╬я┌ п©п╟п╨п╣я┌ п╦я│п©п╬п╩я▄п╥я┐п╣я┌я│я▐ п╢п╩я▐ п╟п╢п╪п╦п╫п╦я│я┌я─п╦я─п╬п╡п╟п╫п╦я▐ п©я─п╬п╨я│п╦-я│п╣я─п╡п╣я─п╟ Squid.
-п║ я┐я│я┌п╟п╫п╬п╡п╬п╨п╬п╧ я█я┌п╬пЁп╬ п©п╟п╨п╣я┌п╟ п╢п╬я│я┌я┐п©п╫я▀ п╡п╬п╥п╪п╬п╤п╫п╬я│п╦ п©п╬ я┐п©я─п╟п╡п╩п╣п╫п╦я▌ я┌я─п╟я└п╦п╨п╬п╪
-п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩п╣п╧ п╦ п╟п╡я┌п╬я─п╦п╥п╟я├п╦п╣п╧ п©п╬ я│я┘п╣п╪п╟п╪ ntlm, ncsa, basic or ip.
+Этот пакет используется для администрирования прокси-сервера Squid.
+С установокой этого пакета доступны возможноси по управлению трафиком
+пользователей и авторизацией по схемам ntlm, ncsa, basic or ip.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -40,7 +41,6 @@ authorization mode.
 %endif
 %build
 %configure \
-	--prefix=/usr \
 	%ifarch x86_64
 	--with-mysql-libpath=/usr/lib64/mysql/ \
 	--with-pcre-libpath=/usr/lib64/ \
@@ -52,10 +52,9 @@ authorization mode.
 make
 
 %install
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 mkdir -p $RPM_BUILD_ROOT%{_var}/www/html
 
@@ -117,14 +116,13 @@ exit 0
 
 %changelog
 * Fri Nov 14 2008 Pavel Vinogradov <Pavel.Vinogradov@nixdev.net> 1.0.4
-Small build fixed and grammar corection
-New upstream version 1.0.4
+New version.
 
 * Sat Nov 8 2008 Denis Zagirov <foomail@yandex.ru> 1.0.3
 Credit patch  by cj_nik added.
 
 * Fri Oct 31 2008 Denis Zagirov <foomail@yandex.ru>
-Path to /usr/lib64 added for x86_64 added to configure stage.
+Path to /usr/lib64 added for x86_64 added to Configure stage.
 
 * Thu Oct 30 2008 Denis Zagirov <foomail@yandex.ru>
 Stages added: pre post preun postun 

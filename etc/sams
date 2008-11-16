@@ -46,6 +46,9 @@ case "$1" in
 	restart)
 		restart
 		;;
+	reload)
+		echo "Sams not implemented command yet"
+		;;
 	status)
 	        status "$EXE"
 		;;

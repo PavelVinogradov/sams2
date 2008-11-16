@@ -1,6 +1,6 @@
 Summary: SAMS (Squid Account Management System)
 Name: sams
-Version: 1.1.0
+Version: 1.0.3
 Release: 0
 Group: Applications/Internet
 License: GPL
@@ -60,7 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Jul 25 2008 Pavel Vinogradov <pavel.vinogradov@nixdev.net>
-New upstream version 1.1.0
+New upstream version 1.0.3
 
 * Fri Jul 25 2008 Denis Zagirov <foomail@yandex.ru>
 Fixed simlink to %{_datadir}/sams

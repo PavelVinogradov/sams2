@@ -1256,7 +1256,7 @@ int MakeACLFiles(MYSQL *conn)
   char shablonname[256];
   MYSQL_ROW row,row2;
   MYSQL_RES *res,*res2;
-  FILE *fout=NULL, *fout2=NULL, *fout3=NULL;
+  FILE *fout=NULL, *fout2=NULL;
   struct local_url host;
   struct stat s;
 
@@ -1428,8 +1428,9 @@ int MakeACLFiles(MYSQL *conn)
                AddLog(conn,8,"samsdaemon",&str[0]);
                mysql_free_result(res2);
 	     }
+           //mysql_free_result(res2);
          }  
-      mysql_free_result(res);
+
 
   /***************************************************************************************/
   /*                   Создаем списки перенаправления запросов                           */
@@ -1520,8 +1521,9 @@ int MakeACLFiles(MYSQL *conn)
                AddLog(conn,8,"samsdaemon",&str[0]);
                mysql_free_result(res2);
 	     }
+           //mysql_free_result(res2);
          }  
-      mysql_free_result(res);
+
     }
   /***************************************************************************************/
   /*                           Создаем списки запрета доступа                            */
@@ -1818,20 +1820,7 @@ int MakeACLFiles(MYSQL *conn)
   /* создаем списки пользователей      */
   ncsacount=0;
   ucount=0; 
-
-  if(NCSA==1) 
-     {
-        sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
-        if(access(&str[0],F_OK)==-1)
-           {
-              if((fout3=fopen(&str[0], "wt" ))==NULL)
-                {
-                  printf("Don't open file %s\n",&str[0]);
-                  return(0);
-                }
-            }
-     }
-
+//  sprintf(&str[0],"SELECT * FROM %s.shablons",conf.samsdb);
   sprintf(&str[0],"SELECT name,auth FROM %s.shablons",conf.samsdb);
   flag=send_mysql_query(conn,&str[0]);
   res=mysql_store_result(conn);
@@ -1924,24 +1913,62 @@ int MakeACLFiles(MYSQL *conn)
                       fprintf(fout2,"%s\n",row2[1]);
 
 		  }      
+                //if(NCSA==1) 
 		if(strcmp(row[1],"ncsa")==0)
 		  {
                      fprintf(fout,"%s\n",row2[1]);
                      if(RREJIK==1&&atoi(row2[10])>0)
                        fprintf(fout2,"%s\n",row2[1]);
 
-                     if(DEBUG==1)
-                        printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                     fprintf(fout3,"%s:%s\n",row2[1],row2[13]);
-		  }      
+                     if(ncsacount==0)
+		       {
+                          
+			  if(access("htpasswd",F_OK)==0)
+			    {
+			      if(DEBUG==1)
+			        printf(" htpasswd not found \n");
+			    }
+			    
+			  if(DEBUG==1)
+                            printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
+                          sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+                          if(flag==0)
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
+                          else
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
+                          AddLog(conn,9,"samsdaemon",&str[0]);
+		       } 
+                     else
+		       {
+                          if(DEBUG==1)
+                            printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
+                          sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+                          if(flag==0)
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
+                          else
+                            sprintf(&str[0],"Added user %s into ncsa.sams... Error",row2[1]);
+                          AddLog(conn,9,"samsdaemon",&str[0]);
+		       } 
+                     ncsacount++;
 
+		  }      
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==0&&strlen(row2[11])>4&&strlen(row2[12])>4) 
                     fprintf(fout,"%s/%s\n",row2[11],row2[12]);
                 if((strcmp(row[1],"ip")==0||strlen(row[1])==0)&&RREJIK==1) 
 		  {
-                    fprintf(fout,"%s/%s\n",row2[11],row2[12]);
-                    if(RREJIK==1&&atoi(row2[10])>0)
-                      fprintf(fout2,"%s\n",row2[11]);
+		    if(strlen(row2[11]) > 4 && strlen(row2[12]) > 4) {
+                      fprintf(fout,"%s/%s\n",row2[11],row2[12]);
+
+                      if(RREJIK==1&&atoi(row2[10])>0) {
+                        fprintf(fout2,"%s\n",row2[11]);
+		      }
+		    } else {
+		      if (DEBUG>0) {
+			printf("Bad user: %s/%s", row2[11], row2[12]);
+		      }
+		    }
 		  }  
 		  
 //                fprintf(fout,"\n");
@@ -1995,11 +2022,6 @@ int MakeACLFiles(MYSQL *conn)
            }              
      }  
   mysql_free_result(res);
-  if(NCSA==1) 
-     {
-        fclose(fout3);  
-     }
-
   /* END    создаем списки пользователей      */
 
   if(RSQUID==1||RNONE==1||RREJIK==1)
@@ -2379,7 +2401,7 @@ int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
     char filename[1024];
     char filebuf[1024];
     char url[1024];
-//    char urlcode[1024];
+    char urlcode[1024];
     char letter;
     int flag;
 
@@ -2483,15 +2505,16 @@ int main (int argc, char *argv[])
   pid_t pid,childpid,parentpid;
   time_t tt,tt2;
   struct tm *t,*t2;
-  struct stat st; 
+  struct stat st, s;
   int sams_sec;
-  int sams_cur_month;
+  int sams_clr_month;
   int sams_clr_day;
   int SD=0;
   int clearflag;
   int sleepcounter;
     char buf[1024];
     char url[1024];
+    char urlcode[1024];
     char letter;
   FILE *finp,*fout;
   unsigned char symbol[3];
@@ -2572,7 +2595,7 @@ int main (int argc, char *argv[])
      printf("Ok \n");
 
   
-  strcpy(&squiduser[0],"proxy");
+  strcpy(&squiduser[0],"squid");
   i=0;
   tt=time(NULL);
   t=localtime(&tt);
@@ -2594,7 +2617,7 @@ int main (int argc, char *argv[])
        sprintf(&str[0],"%s/bin/samsf ", conf.samspath);
        system(&str[0]);
     }
-  sams_cur_month=t->tm_mon;
+  sams_clr_month=t->tm_mon+1;
   sams_clr_day=t->tm_mday;
   sams_sec=(60*sams_step)-t->tm_sec;
 
@@ -2674,12 +2697,12 @@ int main (int argc, char *argv[])
 
                clearflag=0;
 	       //Если настал новый месяц то проверяем необходимость ротации БД
-	       if((sams_cur_month!=t->tm_mon && SQUIDBASE>0) && conf.cachenum<2)
+	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0) && conf.cachenum<2)
 		 {
                    if(DEBUG==1)
   	              printf("New month. We need purge our database.\n");
 
-                   sams_cur_month=t->tm_mon;
+                   sams_clr_month=t->tm_mon+1;
                   
 		   if(DEBUG==1)
                      printf("Save SQUID base\n");
@@ -2917,7 +2940,6 @@ int main (int argc, char *argv[])
 
 	       AddLog(conn2,0,"samsdaemon","Reading request to reconfigure SQUID");
                freeconf();
-               free(SEPARATOR);
 	       readconf();
                ReadSAMSFlags(conn2);
 
@@ -2944,7 +2966,7 @@ int main (int argc, char *argv[])
 	         {
                     sprintf(&str[0],"squidGuard -C all -c %s/squidGuard.conf",conf.sgdbpath);
                     system(&str[0]);
-                    sprintf(&str[0],"chown nobody:nogroup %s/_sams_*",conf.sgdbpath);
+                    sprintf(&str[0],"chown nobody:nobody %s/_sams_*",conf.sgdbpath);
                     system(&str[0]);
                     sprintf(&str[0],"chown -R %s %s/_sams_*", &squiduser[0], conf.sgdbpath);
 		    system(&str[0]);

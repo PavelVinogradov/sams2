@@ -19,9 +19,8 @@
 #include "logtool.c"
 
 int EMPTY;
-//long ENDVALUE;
-size_t ENDVALUE;
-size_t NEWENDVALUE;
+long ENDVALUE;
+long NEWENDVALUE;
 
 int RIPC;
 int ucount,rcount;
@@ -91,14 +90,22 @@ int ExportDB(char *date1, char *date2, MYSQL *conn)
 }
 
 
-size_t GetNewEndValue()
+long GetNewEndValue()
 {
-  struct stat st;
+  long value;
+  FILE *finp;
 
   trim(&path[0]);
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
-  lstat(&path[0],&st);
-  return(st.st_size);
+  if((finp=fopen( &path[0], "rb" ))==NULL)
+    {
+         printf("Don't open file %s/%s\n",conf.logdir,conf.logfile);
+         return(0);
+    }
+  fseek(finp,0,SEEK_END);
+  value=ftell(finp);
+  fclose(finp);
+  return(value);
 }
 
 
@@ -138,7 +145,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
   int samsuser;
   
   int userflag=0;
-  size_t ENDVALUE2;
+  double ENDVALUE2;
 
   sprintf(&path[0],"%s/%s",conf.logdir,conf.logfile);
   trim(&path[0]);
@@ -849,7 +856,7 @@ int main (int argc, char *argv[])
         NEWENDVALUE=GetNewEndValue();
       if(DEBUG>0)
         {
-          printf("Reading file: start=%lu length=%lu\n",ENDVALUE,NEWENDVALUE);
+          printf("Reading file: start=%ld length=%ld\n",ENDVALUE,NEWENDVALUE);
         }
 
       sprintf(&real[0],"%4s",row[3]);

@@ -1,15 +1,17 @@
+Index: 1.0.x/etc/sams.conf
+===================================================================
 --- 1.0.x/etc/sams.conf	(revision 351)
 +++ 1.0.x/etc/sams.conf	(working copy)
-@@ -10,10 +10,10 @@
+@@ -9,10 +9,10 @@
+ SQUIDROOTDIR=/etc/squid
  SQUIDLOGDIR=/var/log/squid
  SQUIDCACHEDIR=/var/spool/squid
- SQUIDIP=127.0.0.1
--SAMSPATH=/usr
-+SAMSPATH=/usr/local
+-SAMSPATH=/usr/local
++SAMSPATH=/usr
  SQUIDPATH=/usr/sbin
  SQUIDGUARDLOGPATH=/var/log
--SQUIDGUARDDBPATH=/etc/squid
-+SQUIDGUARDDBPATH=/var/db/squidguard
+-SQUIDGUARDDBPATH=/var/db/squidguard
++SQUIDGUARDDBPATH=/etc/squid
  RECODECOMMAND=iconv -f KOI8-R -t 866 %finp > %fout
  LDAPSERVER=servername_or_ipadress
  LDAPBASEDN=your.domain
