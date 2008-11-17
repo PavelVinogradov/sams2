@@ -233,9 +233,9 @@ bool MYSQLQuery::sendQuery ()
   if (!_bind_param && !_params.empty())
     {
       _bind_param = (MYSQL_BIND*) malloc (sizeof (MYSQL_BIND) * _params.size());
-      _param_real_len = (ulong*) malloc (sizeof (ulong) * _params.size());
+      _param_real_len = (unsigned long*) malloc (sizeof (unsigned long) * _params.size());
       memset (_bind_param, 0, sizeof (MYSQL_BIND) * _params.size());
-      memset (_param_real_len, 0, sizeof (ulong) * _params.size());
+      memset (_param_real_len, 0, sizeof (unsigned long) * _params.size());
       for (i=0; i<_params.size(); i++)
         {
           DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill marker " << i);
@@ -273,9 +273,9 @@ bool MYSQLQuery::sendQuery ()
   if (!_bind_column && !_columns.empty())
     {
       _bind_column = (MYSQL_BIND*) malloc (sizeof (MYSQL_BIND) * _columns.size());
-      _columns_real_len = (ulong*) malloc (sizeof (ulong) * _columns.size());
+      _columns_real_len = (unsigned long*) malloc (sizeof (unsigned long) * _columns.size());
       memset (_bind_column, 0, sizeof (MYSQL_BIND) * _columns.size());
-      memset (_columns_real_len, 0, sizeof (ulong) * _columns.size());
+      memset (_columns_real_len, 0, sizeof (unsigned long) * _columns.size());
       for (i=0; i<_columns.size(); i++)
         {
           DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Fill column " << i);
