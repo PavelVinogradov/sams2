@@ -642,14 +642,17 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
             used_size = 0;
             break;
         }
-      if ( (allowed_limit > 0) && (used_size > allowed_limit) && (usr->getEnabled() == SAMSUser::STAT_ACTIVE) )
+      if ( (allowed_limit > 0) && (used_size > allowed_limit) )
         {
-          usr->setEnabled( SAMSUser::STAT_INACTIVE );
-          basic_stringstream < char >mess;
-          mess << "User " << *usr << " deactivated.";
-          INFO (mess.str ());
-          Logger::addLog(Logger::LK_USER, mess.str());
-          need_reconfig = true;
+          if ((usr->getEnabled() == SAMSUser::STAT_ACTIVE) || (usr->getEnabled() == SAMSUser::STAT_LIMITED))
+            {
+              usr->deactivate( );
+              basic_stringstream < char >mess;
+              mess << "User " << *usr << " deactivated.";
+              INFO (mess.str ());
+              Logger::addLog(Logger::LK_USER, mess.str());
+              need_reconfig = true;
+            }
         }
       s_enabled = (long)usr->getEnabled();
       updUserQuery->sendQuery ();

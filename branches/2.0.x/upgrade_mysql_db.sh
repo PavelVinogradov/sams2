@@ -5,7 +5,7 @@
 # Чтобы обновить базу с версии versions[i-1] до версии versions[i], нужно выполнить команды db_cmd[i]
 # Первый элемент в массиве db_cmd должен быть пустой
 
-versions=("1.9.9" "2.9.9" "3.9.9")
+versions=("1.9.9" "2.9.9" "3.9.9" "4.9.9")
 db_cmd[0]=""
 db_cmd[1]="CREATE TABLE sysinfo (                              \
  s_proxy_id INT              NOT NULL ,                        \
@@ -16,7 +16,8 @@ db_cmd[1]="CREATE TABLE sysinfo (                              \
  s_date     DATETIME         NOT NULL ,                        \
  s_status   INT              NOT NULL                          \
 ) ENGINE = MYISAM;"
-db_cmd[2]="ALTER TABLE redirect ADD s_dest VARCHAR( 128 ) NULL ;"
+db_cmd[2]="ALTER TABLE redirect ADD s_dest VARCHAR( 128 ) NULL;"
+db_cmd[3]="ALTER TABLE shablon ADD s_shablon_id2 BIGINT( 20 ) UNSIGNED NULL;"
 
 
 

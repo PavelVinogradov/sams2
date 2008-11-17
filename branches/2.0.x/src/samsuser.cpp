@@ -50,6 +50,10 @@ SAMSUser::SAMSUser ()
   _id = -1;
   _size = 0;
   _hit = 0;
+  _quote = -1;
+  _tpl_id = -1;
+  _tpl_id_2 = -1;
+  _enabled = STAT_ACTIVE;
 }
 
 SAMSUser::~SAMSUser ()
@@ -136,6 +140,23 @@ SAMSUser::usrStatus SAMSUser::getEnabled () const
   return _enabled;
 }
 
+void SAMSUser::deactivate ()
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "()]");
+
+  if (_enabled == STAT_ACTIVE)
+    {
+      if (_tpl_id_2 != -1)
+        _enabled = STAT_LIMITED;
+      else
+        _enabled = STAT_INACTIVE;
+    }
+  else if (_enabled == STAT_LIMITED)
+    {
+      _enabled = STAT_INACTIVE;
+    }
+}
+
 void SAMSUser::setSize (long long size)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << size << ")]");
@@ -182,22 +203,65 @@ void SAMSUser::setQuote (long quote)
   _quote = quote;
 }
 
-long SAMSUser::getQuote () const
+long SAMSUser::getRealQuote () const
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _quote);
   return _quote;
 }
 
-void SAMSUser::setShablonId (long id)
+long SAMSUser::getQuote () const
+{
+  long quote = _quote;
+  if (quote == -1)
+    {
+      Template *tpl = Templates::getTemplate (this->getCurrentTemplateId ());
+      if (!tpl) // Потерялся шаблон? Ограничим по максимуму
+        {
+          WARNING ("Template " << this->getCurrentTemplateId () << " is lost.");
+          quote = 1;
+        }
+      else
+        quote = tpl->getQuote ();
+    }
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << quote);
+  return quote;
+}
+
+void SAMSUser::setActiveTemplateId (long id)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
   _tpl_id = id;
 }
 
-long SAMSUser::getShablonId() const
+void SAMSUser::setLimitedTemplateId (long id)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _tpl_id);
-  return _tpl_id;
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
+  _tpl_id_2 = id;
+}
+
+long SAMSUser::getCurrentTemplateId () const
+{
+  long id = -1;
+  switch (_enabled)
+    {
+      case STAT_OFF:
+        id = _tpl_id;
+        break;
+      case STAT_INACTIVE:
+        id = _tpl_id;
+        break;
+      case STAT_ACTIVE:
+        id = _tpl_id;
+        break;
+      case STAT_LIMITED:
+        if (_tpl_id_2 != -1) // Такого вроде не должно быть, но на всякий случай...
+          id = _tpl_id_2;
+        else
+          id = _tpl_id;
+        break;
+    }
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << id);
+  return id;
 }
 
 void SAMSUser::setGroupId (long id)
@@ -215,7 +279,7 @@ long SAMSUser::getGroupId() const
 string SAMSUser::asString () const
 {
   string res = "";
-  Template *tpl = Templates::getTemplate (getShablonId());
+  Template *tpl = Templates::getTemplate (getCurrentTemplateId());
   if (!tpl)
     {
       WARNING ("User with id " << _id << " lost template");

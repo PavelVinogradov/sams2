@@ -42,6 +42,8 @@ public:
   static vector<long> getDenyGroupIds ();
 
   static UrlGroup* getUrlGroup (long id);
+
+  //static string modifyUrl (const string &url);
 private:
   /**
    * @brief Загружает группы из БД

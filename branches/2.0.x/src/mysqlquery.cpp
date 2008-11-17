@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "mysqlquery.h"
 
@@ -414,15 +415,24 @@ bool MYSQLQuery::fetch ()
                 if (use_len > 0)
                   strncpy((char*)_columns[i].dst, row[i], use_len);
                 ((char*)_columns[i].dst)[use_len] = 0;
-                //sprintf((char*)_columns[i].dst, "%s", row[i]);
                 break;
               case MYSQL_TYPE_LONG:
-                if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
-                  ok = false;
+                if (row[i])
+                  {
+                    if (sscanf(row[i], "%ld", (long*)_columns[i].dst) != 1)
+                      ok = false;
+                  }
+                else
+                  *((long*)_columns[i].dst) = LONG_MAX;
                 break;
               case MYSQL_TYPE_LONGLONG:
-                if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
-                  ok = false;
+                if (row[i])
+                  {
+                    if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
+                      ok = false;
+                  }
+                else
+                  *(long long*)_columns[i].dst = LLONG_MAX;
                 break;
               default:
                 ok = false;

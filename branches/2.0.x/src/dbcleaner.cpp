@@ -139,7 +139,7 @@ void DBCleaner::clearCounters ()
 
   // Составляем sql команду
   basic_stringstream < char > sqlcmd;
-  sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled=0 or s_enabled=1";
+  sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled>=0";
 
   if (_tpl_id != -1)
     sqlcmd << " and (s_shablon_id=" << _tpl_id << ")";

@@ -88,6 +88,8 @@ bool SamsConfig::readFile ()
 
   DEBUG (DEBUG4, "[" << __FUNCTION__ << "] ");
 
+  INFO ("Reading config file " << _config_file);
+
   in.open (_config_file.c_str (), ios_base::in);
   if (!in.is_open ())
     {

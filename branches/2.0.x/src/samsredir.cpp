@@ -304,7 +304,7 @@ int main (int argc, char *argv[])
 
       DEBUG(DEBUG_REDIR, "[" << __FUNCTION__ << "] Found user: " << *usr);
 
-      if ( usr->getEnabled () != SAMSUser::STAT_ACTIVE )
+      if ( (usr->getEnabled () != SAMSUser::STAT_ACTIVE) && (usr->getEnabled () != SAMSUser::STAT_LIMITED) )
         {
           INFO ("User not active (disabled or blocked)");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
@@ -314,7 +314,7 @@ int main (int argc, char *argv[])
         }
 
       // нарушена целостность БД (отсутствует шаблон пользователя), блокируем доступ
-      tpl = Templates::getTemplate (usr->getShablonId ());
+      tpl = Templates::getTemplate (usr->getCurrentTemplateId ());
       if (!tpl)
         {
           INFO ("Nothing to do without template");

@@ -82,6 +82,14 @@ void PluginList::destroy ()
     {
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
+
+  vector<Plugin*>::iterator it;
+  for (it = _plugins.begin (); it != _plugins.end (); it++)
+    {
+      dlclose ((*it)->handle);
+      free (*it);
+    }
+  _plugins.clear();
 }
 
 bool PluginList::updateInfo ()
