@@ -132,6 +132,8 @@ bool UrlGroupList::reload()
             access_type = UrlGroup::ACC_DENY;
           else if (s_tmp == "regex")
             access_type = UrlGroup::ACC_REGEXP;
+          else if (s_tmp == "redir")
+            access_type = UrlGroup::ACC_REDIR;
           else if (s_tmp == "replace")
             access_type = UrlGroup::ACC_REPLACE;
           else
@@ -208,11 +210,11 @@ vector<long> UrlGroupList::getDenyGroupIds ()
 
 UrlGroup* UrlGroupList::getUrlGroup (long id)
 {
-  DEBUG(DEBUG8, "[" << __FUNCTION__ << "] " << id);
+  DEBUG(DEBUG8, "[" << __FUNCTION__ << "(" << id << ")]");
   load();
 
   UrlGroup *grp = NULL;
-  vector < UrlGroup * >::iterator it;
+  vector < UrlGroup * >::const_iterator it;
   for (it = _groups.begin (); it != _groups.end (); it++)
     {
       if ( (*it)->getId () == id)
@@ -223,6 +225,21 @@ UrlGroup* UrlGroupList::getUrlGroup (long id)
     }
   return grp;
 }
+
+/*
+string UrlGroupList::modifyUrl (const string &url)
+{
+  DEBUG(DEBUG8, "[" << __FUNCTION__ << "(" << url << ")]");
+
+  string res = "";
+  vector < UrlGroup * >::const_iterator it = _groups.begin ();
+
+  while ( (it != _groups.end ()) && res.empty () )
+    res = (*it++)->modifyUrl (url);
+
+  return res;
+}
+*/
 
 bool UrlGroupList::load ()
 {

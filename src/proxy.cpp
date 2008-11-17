@@ -46,6 +46,7 @@ string Proxy::_defaultdomain;
 Proxy::ParserType Proxy::_parser_type;
 Proxy::RedirType Proxy::_redir_type;
 string Proxy::_deny_addr;
+string Proxy::_redir_addr;
 long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
@@ -178,7 +179,7 @@ Proxy::TrafficType Proxy::getTrafficType ()
 
 string Proxy::getRedirectAddr ()
 {
-  return "http://redirect.addr.here";
+  return _redir_addr;
 }
 
 string Proxy::getDenyAddr ()
@@ -283,9 +284,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
             }
           usr->setDomain (usrDomain);
           usr->setGroupId (_defaultgrp);
-          usr->setShablonId (_defaulttpl);
-          usr->setQuote (tpl->getQuote());
-          usr->setEnabled (SAMSUser::STAT_ACTIVE);
+          usr->setActiveTemplateId (_defaulttpl);
+          usr->setLimitedTemplateId (tpl->getLimitedId ());
           if (!SAMSUsers::addNewUser (usr))
             {
               DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Failed to create new user.");
@@ -353,10 +353,11 @@ bool Proxy::reload ()
   long s_usedomain;
   char s_defaultdomain[25];
   char s_redirector[25];
-  char s_denied_to[100];
+  char s_denied_to[105];
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
+  char s_redirect_to[105];
 
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
@@ -443,12 +444,17 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (16, DBQuery::T_CHAR, s_redirect_to, sizeof(s_redirect_to)))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << ", s_squidbase, s_redirector";
-  sqlcmd << ", s_denied_to";
+  sqlcmd << ", s_denied_to, s_redirect_to";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -518,6 +524,7 @@ bool Proxy::reload ()
     }
 
   _deny_addr = s_denied_to;
+  _redir_addr = s_redirect_to;
 
   DEBUG (DEBUG3, "Authentication: " << toString (_auth));
   DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));

@@ -204,6 +204,7 @@ protected:
   static ParserType _parser_type;      ///< Тип обработки лог файла squid
   static RedirType _redir_type;        ///< Тип используемого редиректора
   static string _deny_addr;            ///< Адрес перенаправления при блокировке доступа
+  static string _redir_addr;           ///< Адрес перенаправления для баннеров
   static long _parser_time;            ///< Интервал времени, через который обрабатывать лог файл squid
   static bool _autouser;               ///< Создавать или нет пользователя, если он не существует
   static long _defaulttpl;             ///< Идентификатор шаблона, используемого при автоматическом создании пользователя

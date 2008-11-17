@@ -24,6 +24,8 @@ using namespace std;
 
 #include "proxy.h"
 
+class UrlGroup;
+
 class Template
 {
 public:
@@ -35,10 +37,11 @@ public:
   {
     PERIOD_MONTH,   ///< Месяц
     PERIOD_WEEK,    ///< Неделя
+    PERIOD_DAY,     ///< День
     PERIOD_CUSTOM   ///< Указанное количество дней
   };
 
-  Template (long id);
+  Template (long id, long id2);
 
   ~Template ();
 
@@ -48,6 +51,13 @@ public:
    * @return Идентификатор шаблона
    */
   long getId () const;
+
+  /**
+   * @brief Возвращает идентификатор вторичного шаблона
+   *
+   * @return Идентификатор вторичного шаблона
+   */
+  long getLimitedId () const;
 
   void setAuth (const string & auth);
 
@@ -72,8 +82,9 @@ public:
   /**
    * @brief Устанавливает период ограничения трафика
    *
-   * Если тип периода месяц или неделя, то количество дней игнорируется.
+   * Если тип периода стандартный (месяц, неделя, день), то количество дней игнорируется.
    * При нестандартном периоде необходимо установить день очистки счетчиков.
+   *
    * @sa setClearDay
    * @param ptype Тип периода
    * @param days Количество дней
@@ -82,6 +93,7 @@ public:
 
   /**
    * @brief Возвращает тип периода ограничения трафика
+   *
    * @return Тип периода ограничения трафика
    */
   Template::PeriodType getPeriodType () const;
@@ -91,6 +103,7 @@ public:
    *
    * Эта функция должна использоваться только при нестандартном периоде ограничения трафика.
    * В противном случае она будет проигнорирована.
+   *
    * @param dateSpec Дата очистки счетчиков в формате YYYY-MM-DD
    */
   void setClearDate (const string & dateSpec);
@@ -100,6 +113,7 @@ public:
    *
    * Если функция возвращает false, значит установлен стандартный период ограничения трафика
    * или дата не была установлена или установлена неверная дата.
+   *
    * @return false при ошибке и true при успешном выполнении
    */
   bool getClearDate (struct tm & clear_date) const;
@@ -178,7 +192,8 @@ public:
   string modifyUrl (const string & url) const;
 
 private:
-  long _id;
+  long _id; ///< Идентификатор шаблона
+  long _id2; ///< Идентификатор вторичного шаблона
   Proxy::usrAuthType _auth;
   long _quote;
   Template::PeriodType _period_type;
@@ -186,7 +201,8 @@ private:
   string _clear_date;
   bool _alldeny;
   vector <long> _times;
-  vector <long> _urlgroups;
+  //vector <long> _urlgroups;
+  vector <UrlGroup *> _urlgroups;
 };
 
 #endif

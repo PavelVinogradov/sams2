@@ -111,6 +111,7 @@ void version ()
 int check_interval; //Интервал в секунах, через который нужно проверять наличие команд для демона
 long steptime;      //Интервал в минутах, через который нужно обрабатывать лог squid
 Proxy::ParserType parserType; // Тип обработки лог файла squid
+string cmdreconfiguresquid; // Команда для реконфигурирования squid
 
 void reload (int signal_number)
 {
@@ -138,6 +139,30 @@ void reload (int signal_number)
   Proxy::getParserType (parserType, steptime);
 }
 
+void reconfigureSQUID ()
+{
+  int err;
+  basic_stringstream < char >msg;
+
+  // Если получили запрос на реконфигурирование, то скорей всего в БД что-то изменилось
+  // значит нужно получить эти изменения
+  reload (-1);
+
+  // Изменить squid.conf и если ошибок нет, то перезапустить squid
+  msg.str ("");
+  if (SquidConf::defineAccessRules ())
+    {
+      err = system (cmdreconfiguresquid.c_str ());
+      if (err)
+        msg << "Failed to restart SQUID: " << err;
+      else
+        msg << "Reconfigure & restart SQUID: ok";
+    }
+  else
+    msg << "Failed to change squid.conf";
+
+  Logger::addLog (Logger::LK_DAEMON, msg.str ());
+}
 
 /** @todo Выбирать путь к pid файлу из опций configure
 */
@@ -390,7 +415,7 @@ int main (int argc, char *argv[])
   int seconds_to_parse = 0;
   int seconds_to_reconnect = reconnect_timeout;
 
-  string reconfiguresquid = squidbindir + "/squid -k reconfigure";
+  cmdreconfiguresquid = squidbindir + "/squid -k reconfigure";
 
   time_t loop_start = time (NULL);
   time_t loop_end = time (NULL);
@@ -418,7 +443,7 @@ int main (int argc, char *argv[])
       sleeptime = check_interval - looptime;
 
       if (sleeptime < 0)
-        sleeptime = -sleeptime;
+        sleeptime = 0;
       if (sleeptime > 0)
         sleep (sleeptime);
 
@@ -479,7 +504,7 @@ int main (int argc, char *argv[])
         {
           DBCleaner *cleaner = NULL;
           DBExporter *exporter = NULL;
-          //vector<SAMSUser *> lstUsers;
+          bool need_reconfig = false;
           tpl_ids = Templates::getIds ();
           for (i = 0; i < tpl_ids.size (); i++)
             {
@@ -497,8 +522,13 @@ int main (int argc, char *argv[])
                     cleaner = new DBCleaner ();
                   cleaner->setTemplateFilter (tpl_ids[i]);
                   cleaner->clearCounters ();
+                  need_reconfig = true;
                 }
             }
+
+          if (need_reconfig)
+            reconfigureSQUID ();
+
           // Если начался новый месяц, то сбрасываем логи в файл и очищаем старый кеш
           if (time_now->tm_mday == 1)
             {
@@ -532,7 +562,6 @@ int main (int argc, char *argv[])
       // обрабатываем команды, поступившие извне (если они есть)
       while (query->fetch ())
         {
-          //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='shutdown'
           if (s_service == service_proxy && s_action == action_shutdown)
             {
               cmd_del.str("");
@@ -555,7 +584,6 @@ int main (int argc, char *argv[])
                   continue;
                 }
             }
-          //insert into reconfig set s_proxy_id=1, s_service='samsdaemon', s_action='shutdown'
           if (s_service == service_daemon && s_action == action_shutdown)
             {
               cmd_del.str("");
@@ -576,7 +604,6 @@ int main (int argc, char *argv[])
               delete conn;
               exit(0);
             }
-          //insert into reconfig set s_proxy_id=1, s_service='proxy', s_action='reload'
           if (s_service == service_daemon && s_action == action_reload)
             {
               cmd_del.str ("");
@@ -586,7 +613,6 @@ int main (int argc, char *argv[])
               query->sendQueryDirect (cmd_del.str());
               reload (-1);
             }
-          //insert into reconfig set s_proxy_id=1, s_service='squid', s_action='reconfig'
           if (s_service == service_squid && s_action == action_reconfig)
             {
               cmd_del.str ("");
@@ -597,32 +623,8 @@ int main (int argc, char *argv[])
 
               Logger::addLog (Logger::LK_DAEMON, "Got request to reconfigure SQUID");
 
-              // Если получили запрос на реконфигурирование, то скорей всего в БД что-то изменилось
-              // значит нужно получить эти изменения
-              reload (-1);
-
-              // Изменить squid.conf и если ошибок нет, то перезапустить squid
-              msg.str ("");
-
-              // Даже если используется редиректор, необходимо вызывать функцию defineAccessRules
-              // Возможна ситуация когда изменили настройки прокси и поставили использование редиректора
-              // тогда необходимо удалить старые правила.
-              // Возможна оптимизация: если раньше использовали редиректор, и  сейчас его используем
-              // тогда ничего менять не надо
-              if (SquidConf::defineAccessRules ())
-                {
-                  err = system (reconfiguresquid.c_str ());
-                  if (err)
-                    msg << "Failed to restart SQUID: " << err;
-                  else
-                    msg << "Reconfigure & restart SQUID: ok";
-                }
-              else
-                msg << "Failed to change squid.conf";
-
-              Logger::addLog (Logger::LK_DAEMON, msg.str ());
+              reconfigureSQUID ();
             }
-          //insert into reconfig set s_proxy_id=1, s_service='database', s_action='export'
           if (s_service == service_dbase && s_action == action_export)
             {
               cmd_del.str ("");

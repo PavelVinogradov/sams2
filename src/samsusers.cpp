@@ -52,6 +52,7 @@ bool SAMSUsers::reload()
   long s_user_id;
   long s_group_id;
   long s_shablon_id;
+  long s_shablon_id2;
   char s_nick[55];
   char s_domain[55];
   long s_quote;
@@ -147,8 +148,15 @@ bool SAMSUsers::reload()
       delete query;
       return false;
     }
+  if (!query->bindCol (12, DBQuery::T_LONG, &s_shablon_id2, 0))
+    {
+      delete query;
+      return false;
+    }
 
-  string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
+  //string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
+  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2 \
+                   from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -164,7 +172,11 @@ bool SAMSUsers::reload()
       usr = new SAMSUser ();
       usr->setId (s_user_id);
       usr->setGroupId (s_group_id);
-      usr->setShablonId (s_shablon_id);
+      usr->setActiveTemplateId (s_shablon_id);
+      if (s_shablon_id2 == LONG_MAX)
+        usr->setLimitedTemplateId (-1);
+      else
+        usr->setLimitedTemplateId (s_shablon_id2);
       s_tmp = s_nick;
       usr->setNick (s_tmp);
       s_tmp = s_domain;
@@ -230,7 +242,7 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
   if (!load())
     return NULL;
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] domain=" << domain << ", nick=" << nick);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")]");
 
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
@@ -242,7 +254,7 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
           break;
         }
     }
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] found " << usr);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = " << *usr);
   return usr;
 }
 
@@ -251,7 +263,7 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
   if (!load ())
     return NULL;
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << ip);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")]");
 
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
@@ -263,7 +275,7 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
           break;
         }
     }
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] found " << usr);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = " << *usr);
   return usr;
 }
 
@@ -271,17 +283,19 @@ void SAMSUsers::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
 {
   load ();
 
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << id << ")]");
+
   lst.clear();
   vector < SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      if ((*it)->getShablonId () == id)
+      if ((*it)->getCurrentTemplateId () == id)
         {
-          DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << *(*it));
+          DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << *(*it));
           lst.push_back ( (*it) );
         }
     }
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "("<<id<<")] Qty users in template: " << lst.size ());
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << id << ")] Qty users in template: " << lst.size ());
 //  sort(lst.begin(), lst.end());
 }
 
@@ -293,11 +307,11 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   if (!load())
     return false;
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << user);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << user << ")]");
 
   if (user->getId() > 0)
     {
-      DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "User must have id < 0");
+      WARNING ("User must have id < 0, but it is " << user->getId());
       return false;
     }
 
@@ -315,10 +329,10 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   sql_cmd << "insert into squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip)";
   sql_cmd << " VALUES (";
   sql_cmd << user->getGroupId();
-  sql_cmd << "," << user->getShablonId();
+  sql_cmd << "," << user->getCurrentTemplateId();
   sql_cmd << ",'" << user->getNick() << "'";
   sql_cmd << ",'" << user->getDomain()<< "'";
-  sql_cmd << "," << user->getQuote();
+  sql_cmd << "," << user->getRealQuote();
   sql_cmd << "," << user->getSize();
   sql_cmd << "," << user->getHit();
   sql_cmd << "," << (int)user->getEnabled();
@@ -331,7 +345,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
       return false;
     }
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "User inserted into db");
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "] " << "User " << *user << " inserted into db");
 
   long s_user_id;
   if (!query->bindCol(1, DBQuery::T_LONG, &s_user_id, 0))
@@ -357,7 +371,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
       return false;
     }
 
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] " << "Got id " << s_user_id);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "] " << "User " << *user << " got id " << s_user_id);
 
   user->setId (s_user_id);
 
@@ -365,7 +379,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
 
   basic_stringstream < char >mess;
 
-  mess << "User " << user->getNick() << " created.";
+  mess << "User " << *user << " created.";
 
   INFO (mess.str ());
   Logger::addLog(Logger::LK_USER, mess.str());
@@ -382,13 +396,13 @@ long SAMSUsers::activeUsersInTemplate (long template_id)
   vector < SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      if ((*it)->getShablonId () == template_id)
+      if ((*it)->getCurrentTemplateId () == template_id)
         {
-          if ((*it)->getEnabled () == SAMSUser::STAT_ACTIVE)
+          if ((*it)->getEnabled () == SAMSUser::STAT_ACTIVE || (*it)->getEnabled () == SAMSUser::STAT_LIMITED)
             cnt++;
         }
     }
-  DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "("<<template_id<<")] Active users in template: " << cnt);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "("<<template_id<<")] Active users in template: " << cnt);
   return cnt;
 }
 

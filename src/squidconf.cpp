@@ -167,7 +167,7 @@ bool SquidConf::defineACL ()
                   vector<SAMSUser *>::iterator it;
                   for (it = users.begin(); it != users.end(); it++)
                     {
-                      if ((*it)->getEnabled() != SAMSUser::STAT_ACTIVE)
+                      if (((*it)->getEnabled() != SAMSUser::STAT_ACTIVE) && ((*it)->getEnabled() != SAMSUser::STAT_LIMITED))
                         {
                           haveBlockedUsers = true;
                           fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;

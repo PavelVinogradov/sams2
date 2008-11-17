@@ -28,7 +28,7 @@ map<long, Template*> Templates::_list;
 DBConn *Templates::_conn;                ///< Соединение с БД
 bool Templates::_connection_owner;
 
-bool Templates::load()
+bool Templates::load ()
 {
   if (_loaded)
     return true;
@@ -36,7 +36,7 @@ bool Templates::load()
   return reload();
 }
 
-bool Templates::reload()
+bool Templates::reload ()
 {
   DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
 
@@ -95,6 +95,7 @@ bool Templates::reload()
   char s_period[5];
   char s_clrdate[15];
   long s_redirect_id;
+  long s_tpl_id2;
 
   if (!query->bindCol (1, DBQuery::T_LONG,  &s_tpl_id, 0))
     {
@@ -138,6 +139,13 @@ bool Templates::reload()
       delete query3;
       return false;
     }
+  if (!query->bindCol (7, DBQuery::T_LONG,  &s_tpl_id2, 0))
+    {
+      delete query;
+      delete query2;
+      delete query3;
+      return false;
+    }
 
   if (!query2->bindCol (1, DBQuery::T_LONG,  &s_trange_id, 0))
     {
@@ -155,7 +163,7 @@ bool Templates::reload()
       return false;
     }
 
-  if (!query->sendQueryDirect ("select s_shablon_id, s_auth, s_quote, s_alldenied, s_period, s_clrdate from shablon"))
+  if (!query->sendQueryDirect ("select s_shablon_id, s_auth, s_quote, s_alldenied, s_period, s_clrdate, s_shablon_id2 from shablon"))
     {
       delete query;
       delete query2;
@@ -171,7 +179,10 @@ bool Templates::reload()
   long period_days;
   while (query->fetch())
     {
-      tpl = new Template(s_tpl_id);
+      if (s_tpl_id2 == LONG_MAX)
+        s_tpl_id2 = -1;
+
+      tpl = new Template(s_tpl_id, s_tpl_id2);
       tpl->setAuth (s_auth);
       tpl->setQuote (s_quote);
       tpl->setAllDeny ( ((s_alldenied==0)?false:true) );
@@ -193,7 +204,7 @@ bool Templates::reload()
       sqlcmd << "select s_trange_id from sconfig_time where s_shablon_id=" << s_tpl_id;
       if (query2->sendQueryDirect (sqlcmd.str ()))
         {
-          while (query2->fetch())
+          while (query2->fetch ())
             {
               tpl->addTimeRange (s_trange_id);
             }
@@ -203,7 +214,7 @@ bool Templates::reload()
       sqlcmd << "select a.s_redirect_id from sconfig a, shablon b where a.s_shablon_id=b.s_shablon_id and b.s_shablon_id=" << s_tpl_id;
       if (query3->sendQueryDirect (sqlcmd.str ()))
         {
-          while (query3->fetch())
+          while (query3->fetch ())
             {
               tpl->addUrlGroup (s_redirect_id);
             }
@@ -232,7 +243,7 @@ void Templates::useConnection (DBConn * conn)
     }
 }
 
-void Templates::destroy()
+void Templates::destroy ()
 {
   if (_connection_owner && _conn)
     {
@@ -256,7 +267,7 @@ void Templates::destroy()
   _list.clear ();
 }
 
-Template * Templates::getTemplate(long id)
+Template * Templates::getTemplate (long id)
 {
   load();
 
@@ -269,7 +280,7 @@ Template * Templates::getTemplate(long id)
   return (*it).second;
 }
 
-vector<long> Templates::getIds()
+vector<long> Templates::getIds ()
 {
   load();
 

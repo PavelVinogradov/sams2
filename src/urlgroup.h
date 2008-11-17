@@ -47,6 +47,7 @@ public:
     ACC_DENY,                     ///< Доступ запрещен
     ACC_ALLOW,                    ///< Доступ разрешен
     ACC_REGEXP,                   ///< Доступ запрещен по регулярному выражению
+    ACC_REDIR,                    ///< Перенаправление баннеров и т.п.
     ACC_REPLACE                   ///< Заменяет url на другой, определенный пользователем
   };
 
@@ -93,12 +94,24 @@ public:
   bool hasUrl (const string & url) const;
 
   /**
-   * @brief Set destination address
+   * @brief Устанавливает адрес подмены
    *
-   * @param dest Url адрес to be used instead of original
+   * @param dest Url адрес, возвращаемый вместо исходного
    */
   void setReplacement (const string & dest);
 
+  /**
+   * @brief Заменяет Url адрес на другой
+   *
+   * В случае, когда группа адресов имеет тип ACC_REDIR или ACC_REPLACE
+   * и @a url подпадает в список этой группы, то возвращается модифицированный Url.
+   * Для ACC_REPLACE возвращается значение, устанавливаемое функцией setReplacement,
+   * а для ACC_REDIR значение, возвращаемое функцией Proxy::getRedirectAddr
+   *
+   * @sa setReplacement() Proxy::getRedirectAddr()
+   * @param url Исходный Url адрес
+   * @return Url адрес если необходима замена или пустую строку в противном случае.
+   */
   string modifyUrl (const string & url) const;
 
   /**

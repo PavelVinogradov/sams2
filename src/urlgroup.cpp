@@ -19,6 +19,7 @@ using namespace std;
 
 #include "urlgroup.h"
 #include "url.h"
+#include "proxy.h"
 
 #include "debug.h"
 
@@ -33,6 +34,20 @@ UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
 UrlGroup::~UrlGroup ()
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+  _list.clear ();
+
+#ifdef USE_PCRECPP
+  vector<pcrecpp::RE*>::iterator it;
+  for (it = _patterns.begin (); it != _patterns.end (); it++)
+    {
+      delete (*it);
+    }
+  _patterns.clear ();
+#else
+#  ifdef USE_PCRE
+  _patterns.clear ();
+#  endif
+#endif
 }
 
 long UrlGroup::getId ()
@@ -43,8 +58,7 @@ long UrlGroup::getId ()
 
 UrlGroup::accessType UrlGroup::getAccessType ()
 {
-  //DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << ((_type==UrlGroup::ACC_ALLOW)?"allow":"deny"));
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
+//  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _type;
 }
 
@@ -52,7 +66,7 @@ void UrlGroup::addUrl (const string & url)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
 
-  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
+  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
     {
 #ifdef USE_PCRECPP
       pcrecpp::RE *re;
@@ -94,7 +108,7 @@ void UrlGroup::addUrl (const string & url)
 
 bool UrlGroup::hasUrl (const string & url) const
 {
-  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE)
+  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
     {
       uint idx;
 #ifndef USE_PCRECPP
@@ -157,10 +171,26 @@ void UrlGroup::setReplacement (const string & dest)
 
 string UrlGroup::modifyUrl (const string & url) const
 {
-  if (hasUrl (url))
-    return "301:" + _destination;
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
 
-  return "";
+  string res = "";
+  if (hasUrl (url))
+    {
+      switch (_type)
+        {
+          case ACC_DENY:
+          case ACC_ALLOW:
+          case ACC_REGEXP:
+            break;
+          case ACC_REDIR:
+            res = Proxy::getRedirectAddr ();
+            break;
+          case ACC_REPLACE:
+            res = "301:" + _destination;
+            break;
+        }
+    }
+  return res;
 }
 
 string UrlGroup::asString () const
