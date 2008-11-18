@@ -393,6 +393,7 @@ int main (int argc, char *argv[])
   TimeRanges::useConnection (conn);
   Logger::useConnection (conn);
   UrlGroupList::useConnection (conn);
+  PluginList::useConnection (conn);
 
   ProcessManager process;
 

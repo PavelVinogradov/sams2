@@ -232,6 +232,10 @@ bool MYSQLQuery::sendQuery ()
   // Маркеры определены, массив для привязки не определен
   if (!_bind_param && !_params.empty())
     {
+      if (_bind_param)
+        free (_bind_param);
+      if (_param_real_len)
+        free (_param_real_len);
       _bind_param = (MYSQL_BIND*) malloc (sizeof (MYSQL_BIND) * _params.size());
       _param_real_len = (unsigned long*) malloc (sizeof (unsigned long) * _params.size());
       memset (_bind_param, 0, sizeof (MYSQL_BIND) * _params.size());
@@ -492,6 +496,9 @@ void MYSQLQuery::destroy ()
     free (_param_real_len);
   if (_columns_real_len)
     free (_columns_real_len);
+
+  _columns.clear ();
+  _params.clear ();
 
   _statement = NULL;
   _bind_param = NULL;

@@ -302,7 +302,10 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
 SAMSUser *Proxy::findUser (const string & ip, const string & ident)
 {
   IP _ip;
-  _ip.parseString (ip);
+  if (!_ip.parseString (ip))
+    {
+      return NULL;
+    }
 
   return findUser (_ip, ident);
 }

@@ -24,6 +24,7 @@
 #include "samsuser.h"
 #include "urlgrouplist.h"
 #include "urlgroup.h"
+#include "url.h"
 #include "proxy.h"
 #include "templates.h"
 #include "template.h"
@@ -132,6 +133,11 @@ bool SquidConf::defineACL ()
             {
               current_tag = "http_access";
               DEBUG (DEBUG2, "Found TAG: http_access");
+            }
+          else if ((v[2] == "url_rewrite_access") || (v[2] == "redirector_access"))
+            {
+              current_tag = v[2];
+              DEBUG (DEBUG2, "Found TAG: " << current_tag);
             }
 
           if (current_tag == "acl")
@@ -296,6 +302,15 @@ bool SquidConf::defineACL ()
                   if (SAMSUsers::activeUsersInTemplate ( tpls[i]) > 0)
                     fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
                 }
+            } //if (current_tag == "http_access")
+
+          if (current_tag == "url_rewrite_access" || current_tag == "redirector_access")
+            {
+              Url proxy_url;
+              proxy_url.setUrl (Proxy::getDenyAddr ());
+              string proxy_addr = proxy_url.getAddress ();
+              fout << "acl Sams2Proxy dst " << proxy_addr << endl;
+              fout << current_tag << " deny Sams2Proxy" << endl;
             }
           fout << nextline << endl;
         }
