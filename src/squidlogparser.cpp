@@ -586,7 +586,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         }
       sprintf (s_user, "%s", usr->getNick ().c_str ());
       sprintf (s_domain, "%s", usr->getDomain ().c_str ());
-      sprintf (s_ipaddr, "%s", sll.getIP ().asString ().c_str ());
+      sprintf (s_ipaddr, "%s", sll.getIP ().c_str ());
       s_period = sll.getBusytime ();
       strncpy (s_url, sll.getUrl ().c_str (), 1024);
       if (sll.getUrl ().length () >= 1024)

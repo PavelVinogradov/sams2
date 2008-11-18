@@ -87,6 +87,7 @@ public:
   friend ostream & operator<< (ostream & out, const IP & ip);
 
 protected:
+  string _str;
   struct in_addr _ip;           ///< ip адрес
 };
 

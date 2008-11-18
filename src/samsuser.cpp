@@ -106,8 +106,14 @@ void SAMSUser::setIP (const string & ip)
 
 IP SAMSUser::getIP () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _ip);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _ip.asString ());
   return _ip;
+}
+
+string SAMSUser::getIPasString () const
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _ip.asString ());
+  return _ip.asString ();
 }
 
 void SAMSUser::setPassword (const string & pass)
@@ -279,7 +285,7 @@ long SAMSUser::getGroupId() const
 string SAMSUser::asString () const
 {
   string res = "";
-  Template *tpl = Templates::getTemplate (getCurrentTemplateId());
+  Template *tpl = Templates::getTemplate (this->getCurrentTemplateId());
   if (!tpl)
     {
       WARNING ("User with id " << _id << " lost template");

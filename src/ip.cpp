@@ -24,6 +24,7 @@ IP::IP ()
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
   _ip.s_addr = htonl (IP_ANY);
+  _str = "";
 }
 
 
@@ -31,31 +32,6 @@ IP::~IP ()
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 }
-
-/*
-bool IP::parseString(const string &ip)
-{
-  int ok;
-
-  if (!ip.empty())
-  {
-    ok = inet_aton (ip.c_str(), &_ip);
-    if (ok == 0)
-    {
-        WARNING ("Incorrect IP: " << ip);
-        return false;
-    }
-  }
-  else
-  {
-    _ip.s_addr = htonl (IP_ANY);
-  }
-
-
-
-  return true;
-}
-*/
 
 IP *IP::fromString (const string & str)
 {
@@ -84,6 +60,7 @@ bool IP::parseString (const string & str)
           WARNING ("Incorrect IP: " << str);
           return false;
         }
+      _str = str;
     }
   else
     {
@@ -99,13 +76,17 @@ bool IP::equal (const IP & ip)
 
 string IP::asString () const
 {
+/*
   basic_stringstream < char >s;
 
   s << inet_ntoa (_ip);
 
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << s.str ());
 
   return s.str ();
+*/
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _str);
+  return _str;
 }
 
 ostream & operator<< (ostream & out, const IP & ip)

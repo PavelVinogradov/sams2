@@ -77,7 +77,7 @@ bool UserFilter::match (SAMSUser * user)
   if (!_validity)
     return true;
 
-  strUserIP = user->getIP ().asString ();
+  strUserIP = user->getIPasString ();
 
   for (it = _tblUsers.begin (); it != _tblUsers.end (); it++)
     {

@@ -37,7 +37,7 @@ SquidLogLine::~SquidLogLine ()
 
 bool SquidLogLine::setLine (const string & line)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(...)]");
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << line << ")]");
 
   _valid = false;
   _line = line;
@@ -57,7 +57,7 @@ int SquidLogLine::getBusytime ()
   return _busytime;
 }
 
-IP SquidLogLine::getIP ()
+string SquidLogLine::getIP ()
 {
   return _ip;
 }
@@ -235,7 +235,7 @@ void SquidLogLine::parseLine ()
 
   _busytime = atoi (fields[1].c_str ());
 
-  _ip.parseString (fields[2]);
+  _ip = fields[2];
 
   Split (fields[3], "/", cacheResVal);
   _cacheResult = parseCacheResult (cacheResVal[0]);

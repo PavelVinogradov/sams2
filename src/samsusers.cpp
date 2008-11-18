@@ -254,7 +254,14 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
           break;
         }
     }
-  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = " << *usr);
+  if (usr)
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = " << *usr);
+    }
+  else
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = NULL");
+    }
   return usr;
 }
 
@@ -275,7 +282,14 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
           break;
         }
     }
-  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = " << *usr);
+  if (usr)
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = " << *usr);
+    }
+  else
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = NULL");
+    }
   return usr;
 }
 
