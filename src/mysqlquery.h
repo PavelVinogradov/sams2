@@ -71,8 +71,8 @@ private:
   vector<struct Param> _params;
   MYSQL_BIND *_bind_param;
   MYSQL_BIND *_bind_column;
-  ulong *_param_real_len;
-  ulong *_columns_real_len;
+  unsigned long *_param_real_len;
+  unsigned long *_columns_real_len;
   bool _param_binded;
   bool _col_binded;
   MYSQL_RES *_res;
