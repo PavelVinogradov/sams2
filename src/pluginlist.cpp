@@ -338,7 +338,7 @@ bool PluginList::loadPlugin (const string &path)
 {
   Plugin *pl = NULL;
 
-  char *error;
+  const char *error;
 
   pl = (Plugin*)malloc (sizeof(Plugin));
   pl->handle = dlopen (path.c_str (), RTLD_LAZY);
