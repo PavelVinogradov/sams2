@@ -1,96 +1,70 @@
 
-AC_DEFUN([AC_FIND_PQ_INC],
-[
-#
-# Looking for LibPQ include path and libpq-fe.h usability
-#
-AC_ARG_WITH(pq-includes,
-            [  --with-pq-includes=DIR Find LibPQ headers in DIR],
-            pq_includes="$withval",
-            pq_includes="")
-
-if test "x$pq_includes" = "x"; then
-  pq_includes="/usr/local/include /usr/include /usr/include/pgsql"
-fi
-
-AC_MSG_CHECKING(for LibPQ headers)
-AC_FIND_FILE([libpq-fe.h], $pq_includes, pq_inc_path)
-case "$pq_inc_path" in
-  no)
-    AC_MSG_RESULT(no)
-    pq_inc_path=""
-    ;;
-  *)
-    AC_MSG_RESULT($pq_inc_path)
-    saveCPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -I$pq_inc_path"
-    AC_CHECK_HEADER([libpq-fe.h], [], [pq_inc_path=""])
-    CPPFLAGS="$saveCPPFLAGS"
-    ;;
-esac
-
-if test "x$pq_inc_path" != "x"; then
-  PQ_INC="-I$pq_inc_path"
-  AC_SUBST(PQ_INC)
-  $1="yes"
-else
-  $1="no"
-fi
-])
-
-
-AC_DEFUN([AC_FIND_PQ_LIB],
-[
-#
-# Looking for LibPQ library path and libpq usability
-#
-AC_ARG_WITH(pq-libs,
-            [  --with-pq-libs=DIR Find LibPQ libraries in DIR],
-            pq_libs="$withval",
-            pq_libs="")
-
-if test "x$pq_libs" = "x"; then
-  pq_libs="/usr/local/lib /usr/lib64 /usr/lib"
-fi
-
-AC_MSG_CHECKING(for LibPQ libraries)
-AC_FIND_FILE([libpq.so], $pq_libs, pq_lib_path)
-case "$pq_lib_path" in
-  no)
-    AC_MSG_RESULT(no)
-    pq_lib_path=""
-    ;;
-  *)
-    AC_MSG_RESULT($pq_lib_path)
-    saveLDFLAGS="$LDFLAGS"
-    saveLIBS="$LIBS"
-    LDFLAGS="$LDFLAGS -L$pq_lib_path"
-    AC_CHECK_LIB([pq], [PQconnectdb], [], [pq_lib_path=""])
-    LDFLAGS="$saveLDFLAGS"
-    LIBS="$saveLIBS"
-    ;;
-esac
-
-if test "x$pq_lib_path" != "x"; then
-  PQ_LIB="-L$pq_lib_path -lpq"
-  AC_SUBST(PQ_LIB)
-  $1="yes"
-else
-  $1="no"
-fi
-])
-
 AC_DEFUN([AC_CHECK_PQ],
 [
 $1="no"
-AC_FIND_PQ_INC([pq_inc_found])
+AC_ARG_WITH(pq,
+    AC_HELP_STRING([--without-pq], [build without PostgreSQL API @<:@default=no@:>@]),
+    [ac_use_pq=$withval],
+    [ac_use_pq=yes]
+)
 
-if test "$pq_inc_found" = "yes"; then
-  AC_FIND_PQ_LIB([pq_lib_found])
+AC_ARG_WITH(pq-includes,
+    AC_HELP_STRING([--with-pq-includes=DIR], [where the LibPQ includes are.]),
+    [ac_pq_includes="$withval"])
 
-  if test "$pq_lib_found" = "yes"; then
-    $1="yes"
-    AC_DEFINE([USE_PQ], [1], [use LibPQ])
-  fi
+AC_ARG_WITH(pq-libraries,
+    AC_HELP_STRING([--with-pq-libraries=DIR], [where the LibPQ libraries are.]),
+    [ac_pq_libraries="$withval"])
+
+if test "x$ac_pq_includes" = "x"; then
+  ac_pq_includes="/usr/local/include /usr/include /usr/include/pgsql"
 fi
+
+if test "x$ac_pq_libraries" = "x"; then
+  ac_pq_libraries="/usr/local/lib /usr/lib64 /usr/lib"
+fi
+
+if test "$ac_use_pq" = "no"; then
+    AC_DEFINE([WITHOUT_PQ], [1], [Defined if compiling without PostgreSQL API])
+else
+    pq_incdir=""
+    pq_libdir=""
+    pq_ac_cppflags_save="$CPPFLAGS"
+    pq_ac_ldflags_save="$LDFLAGS"
+    pq_ac_libs_save="$LIBS"
+
+    if test ! x"$ac_pq_includes" = "x"; then
+        AC_FIND_FILE([libpq-fe.h], $ac_pq_includes, pq_incdir)
+        if test ! x"$pq_incdir" = "x" ; then
+            CPPFLAGS="$pq_ac_cppflags_save -I$pq_incdir"
+        fi
+    fi
+
+    if test ! x"$ac_pq_libraries" = "x"; then
+        AC_FIND_FILE([libpq.so], $ac_pq_libraries, pq_libdir)
+        if test ! x"$pq_libdir" = "x" ; then
+            LDFLAGS="$pq_ac_ldflags_save -L$pq_libdir"
+        fi
+    fi
+
+    AC_CHECK_HEADER([libpq-fe.h],
+        [AC_CHECK_LIB([pq], [PQconnectdb], [AC_DEFINE([USE_PQ], [1], [Define to 1 if compile with PostgreSQL API])], [])],
+        [])
+
+    CPPFLAGS="$pq_ac_cppflags_save"
+    LDFLAGS="$pq_ac_ldflags_save"
+    LIBS="$pq_ac_libs_save"
+    if test "$ac_cv_lib_pq_PQconnectdb" = yes; then
+        $1="yes"
+        if test ! x"$pq_incdir" = "x"; then
+            CPPFLAGS="$CPPFLAGS -I$pq_incdir"
+        fi
+        if test ! x"$pq_libdir" = "x"; then
+            LDFLAGS="$LDFLAGS -L$pq_libdir"
+        fi
+        LIBS="$LIBS -lpq"
+    fi
+
+fi
+
 ])

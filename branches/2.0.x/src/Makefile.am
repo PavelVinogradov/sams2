@@ -37,9 +37,7 @@ noinst_HEADERS = \
 	squidconf.h timerange.h timeranges.h pgconn.h pgquery.h dbexporter.h \
 	urlgrouplist.h urlgroup.h pluginlist.h dns.h
 
-AM_CXXFLAGS = -Wall $(MYSQL_INC) $(UNIXODBC_INC) $(PQ_INC)
-
-LIBS += $(PQ_LIB) $(MYSQL_LIB) $(UNIXODBC_LIB) $(LIB_CRYPT)
+AM_CXXFLAGS = -Wall
 
 samsdaemon_LDADD = -ldl
 samsdaemon_LDFLAGS = -rdynamic
