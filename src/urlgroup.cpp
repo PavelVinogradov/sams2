@@ -43,10 +43,10 @@ UrlGroup::~UrlGroup ()
       delete (*it);
     }
   _patterns.clear ();
-#else
-#  ifdef USE_PCRE
+#endif
+
+#ifdef USE_PCRE
   _patterns.clear ();
-#  endif
 #endif
 }
 
@@ -83,8 +83,8 @@ void UrlGroup::addUrl (const string & url)
           /// @TODO Убрать использование переменной _list если _type=ACC_REGEXP, но для этого подправить asString()
           _list.push_back (url);
         }
-#else
-#  ifdef USE_PCRE
+#endif
+#ifdef USE_PCRE
       int erroroffset;
       const char *error;
       pcre *re;
@@ -99,7 +99,6 @@ void UrlGroup::addUrl (const string & url)
           _patterns.push_back (re);
           _list.push_back (url);
         }
-#  endif
 #endif
     }
   else
@@ -110,12 +109,13 @@ bool UrlGroup::hasUrl (const string & url) const
 {
   if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
     {
+#ifndef WITHOUT_PCRE
+
       uint idx;
-#ifndef USE_PCRECPP
-#  ifdef USE_PCRE
+#ifdef USE_PCRE
       int ovector[300];
-#  endif
 #endif
+
       for (idx = 0; idx < _patterns.size (); idx++)
         {
 #ifdef USE_PCRECPP
@@ -124,16 +124,16 @@ bool UrlGroup::hasUrl (const string & url) const
               DEBUG (DEBUG4, "[" << this << "] Found rule " << _patterns[idx]->pattern () << " for " << url);
               return true;
             }
-#else
-#  ifdef USE_PCRE
+#endif
+#ifdef USE_PCRE
           if (pcre_exec (_patterns[idx], NULL, url.c_str (), url.size (), 0, 0, ovector, 300) >= 0)
             {
               DEBUG (DEBUG4, "[" << this << "] Found rule " << _list[idx] << " for " << url);
               return true;
             }
-#  endif
 #endif
         }
+#endif // #ifndef WITHOUT_PCRE
       return false;
     }
   else

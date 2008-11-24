@@ -1,94 +1,70 @@
 
-AC_DEFUN([AC_FIND_UNIXODBC_INC],
-[
-#
-# Looking for unixODBC include path and headers usability
-#
-AC_ARG_WITH(unixODBC-incs,
-            [  --with-unixODBC-includes=DIR Find unixODBC headers in DIR],
-            unixODBC_includes="$withval",
-            unixODBC_includes="")
-
-if test "x$unixODBC_includes" = "x"; then
-  unixODBC_includes="/usr/local/include /usr/include"
-fi
-
-AC_MSG_CHECKING(for unixODBC headers)
-AC_FIND_FILE([sqlext.h], $unixODBC_includes, unixODBC_inc_path)
-case "$unixODBC_inc_path" in
-  no)
-    AC_MSG_RESULT(no)
-    unixODBC_inc_path=""
-    ;;
-  *)
-    AC_MSG_RESULT($unixODBC_inc_path)
-    saveCPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -I$unixODBC_inc_path"
-    AC_CHECK_HEADERS([sql.h sqlext.h sqltypes.h], [], [unixODBC_inc_path=""])
-    CPPFLAGS="$saveCPPFLAGS"
-    ;;
-esac
-
-if test "x$unixODBC_inc_path" != "x"; then
-  UNIXODBC_INC="-I$unixODBC_inc_path"
-  AC_SUBST(UNIXODBC_INC)
-  $1="yes"
-else
-  $1="no"
-fi
-])
-
-AC_DEFUN([AC_FIND_UNIXODBC_LIB],
-[
-AC_ARG_WITH(unixODBC-libs,
-            [  --with-unixODBC-libs=DIR Find unixODBC libraries in DIR],
-            unixODBC_libs="$withval",
-            unixODBC_libs="")
-
-if test "x$unixODBC_libs" = "x"; then
-  unixODBC_libs="/usr/local/lib /usr/lib64 /usr/lib"
-fi
-
-AC_MSG_CHECKING(for unixODBC libraries)
-AC_FIND_FILE([libodbc.so], $unixODBC_libs, unixODBC_lib_path)
-case "$unixODBC_lib_path" in
-  no)
-    AC_MSG_RESULT(no)
-    unixODBC_lib_path=""
-    ;;
-  *)
-    AC_MSG_RESULT($unixODBC_lib_path)
-    saveLDFLAGS="$LDFLAGS"
-    saveLIBS="$LIBS"
-    LDFLAGS="$LDFLAGS -L$unixODBC_lib_path"
-    AC_CHECK_LIB([odbc], [SQLConnect], [], [unixODBC_lib_path=""])
-    LDFLAGS="$saveLDFLAGS"
-    LIBS="$saveLIBS"
-    ;;
-esac
-
-if test "x$unixODBC_lib_path" != "x"; then
-  UNIXODBC_LIB="-L$unixODBC_lib_path -lodbc"
-  AC_SUBST(UNIXODBC_LIB)
-  $1="yes"
-else
-  $1="no"
-fi
-])
-
-
 AC_DEFUN([AC_CHECK_UNIXODBC],
 [
 $1="no"
-AC_FIND_UNIXODBC_INC([unixODBC_inc_found])
+AC_ARG_WITH(unixodbc,
+    AC_HELP_STRING([--without-unixodbc], [build without unixODBC API @<:@default=no@:>@]),
+    [ac_use_unixodbc=$withval],
+    [ac_use_unixodbc=yes]
+)
 
-if test "$unixODBC_inc_found" = "yes"; then
-  AC_FIND_UNIXODBC_LIB([unixODBC_lib_found])
+AC_ARG_WITH(unixodbc-includes,
+    AC_HELP_STRING([--with-unixodbc-includes=DIR], [where the unixODBC includes are.]),
+    [ac_unixodbc_includes="$withval"])
 
-  if test "$unixODBC_lib_found" = "yes"; then
-    $1="yes"
-    AC_DEFINE([USE_UNIXODBC], [1], [use unixODBC])
-  fi
+AC_ARG_WITH(unixodbc-libraries,
+    AC_HELP_STRING([--with-unixodbc-libraries=DIR], [where the unixODBC libraries are.]),
+    [ac_unixodbc_libraries="$withval"])
+
+if test x"$ac_unixodbc_includes" = "x"; then
+  ac_unixodbc_includes="/usr/local/include /usr/include"
 fi
+
+if test x"$ac_unixodbc_libraries" = "x"; then
+  ac_unixodbc_libraries="/usr/lib64 /usr/local/lib /usr/lib"
+fi
+
+if test "$ac_use_unixodbc" = "no"; then
+    AC_DEFINE([WITHOUT_UNIXODBC], [1], [Defined if compiling without unixODBC API])
+else
+    unixodbc_incdir=""
+    unixodbc_libdir=""
+    unixodbc_ac_cppflags_save="$CPPFLAGS"
+    unixodbc_ac_ldflags_save="$LDFLAGS"
+    unixodbc_ac_libs_save="$LIBS"
+
+    if test ! x"$ac_unixodbc_includes" = "x"; then
+        AC_FIND_FILE([sqlext.h], $ac_unixodbc_includes, unixodbc_incdir)
+        if test ! x"$unixodbc_incdir" = "x"; then
+            CPPFLAGS="$unixodbc_ac_cppflags_save -I$unixodbc_incdir"
+        fi
+    fi
+
+    if test ! x"$ac_unixodbc_libraries" = "x"; then
+        AC_FIND_FILE([libodbc.so], $ac_unixodbc_libraries, unixodbc_libdir)
+        if test ! x"$unixodbc_libdir" = "x"; then
+            LDFLAGS="$unixodbc_ac_ldflags_save -L$unixodbc_libdir"
+        fi
+    fi
+
+    AC_CHECK_HEADERS([sql.h sqlext.h sqltypes.h],
+        [AC_CHECK_LIB([odbc], [SQLConnect], [AC_DEFINE([USE_UNIXODBC], [1], [Define to 1 if compile with unixODBC API])], [])],
+        [])
+
+    CPPFLAGS="$unixodbc_ac_cppflags_save"
+    LDFLAGS="$unixodbc_ac_ldflags_save"
+    LIBS="$unixodbc_ac_libs_save"
+    if test "$ac_cv_lib_odbc_SQLConnect" = yes; then
+        $1="yes"
+        if test ! x"$unixodbc_incdir" = "x"; then
+            CPPFLAGS="$CPPFLAGS -I$unixodbc_incdir"
+        fi
+        if test ! x"$unixodbc_libdir" = "x"; then
+            LDFLAGS="$LDFLAGS -L$unixodbc_libdir"
+        fi
+        LIBS="$LIBS -lodbc"
+    fi
+fi
+
 ])
 

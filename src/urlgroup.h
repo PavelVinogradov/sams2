@@ -26,10 +26,10 @@ using namespace std;
 
 #ifdef USE_PCRECPP
 #include <pcrecpp.h>
-#else
-#  ifdef USE_PCRE
-#  include <pcre.h>
-#  endif
+#endif
+
+#ifdef USE_PCRE
+#include <pcre.h>
 #endif
 
 /**
@@ -138,10 +138,9 @@ protected:
 
 #ifdef USE_PCRECPP
   vector<pcrecpp::RE*> _patterns; ///< Список скомпилированных регулярных выражений
-#else
-#  ifdef USE_PCRE
+#endif
+#ifdef USE_PCRE
   vector<pcre*> _patterns;        ///< Список скомпилированных регулярных выражений
-#  endif
 #endif
 };
 
