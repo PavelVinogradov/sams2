@@ -5,7 +5,6 @@ all:
 	echo "" >> aclocal.m4
 	echo "m4_include([m4/acinclude.m4])" >> aclocal.m4
 	autoheader
+	libtoolize --copy --force
 	automake -a -c --foreign
 	autoconf
-	libtoolize --copy --force
-

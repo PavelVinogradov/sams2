@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "configmake.h"
+#include "config.h"
 
+#if HAVE_DLFCN_H
 #include <dlfcn.h>
+#endif
 
 #include "pluginlist.h"
 #include "samsconfig.h"
@@ -28,12 +31,13 @@
 #include "debug.h"
 
 bool PluginList::_loaded = false;
-DBConn *PluginList::_conn;
-bool PluginList::_connection_owner;
+DBConn *PluginList::_conn = NULL;
+bool PluginList::_connection_owner = false;
 vector < Plugin * > PluginList::_plugins;
 
 bool PluginList::reload ()
 {
+#if USE_DL
   vector<string> liblist;
   vector<string>::iterator it;
 
@@ -47,12 +51,14 @@ bool PluginList::reload ()
     }
 
   _loaded = true;
+#endif
 
   return true;
 }
 
 void PluginList::useConnection (DBConn * conn)
 {
+#if USE_DL
   if (_conn)
     {
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Already using " << _conn);
@@ -64,10 +70,12 @@ void PluginList::useConnection (DBConn * conn)
       _conn = conn;
       _connection_owner = false;
     }
+#endif
 }
 
 void PluginList::destroy ()
 {
+#if USE_DL
   if (_connection_owner && _conn)
     {
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Destroy connection " << _conn);
@@ -90,10 +98,12 @@ void PluginList::destroy ()
       free (*it);
     }
   _plugins.clear();
+#endif
 }
 
 bool PluginList::updateInfo ()
 {
+#if USE_DL
   DEBUG (DEBUG6, "[" << __FUNCTION__ << "] ");
 
   if (!load ())
@@ -262,9 +272,6 @@ bool PluginList::updateInfo ()
         {
           return false;
         }
-
-
-
     }
 
   string plug_name;
@@ -322,6 +329,7 @@ bool PluginList::updateInfo ()
           INFO (plug_name << " " << plug_version << " reports at " << sys_date << " the following: " << plug_data);
         }
     }
+#endif // #if USE_DL
 
   return true;
 }
@@ -336,6 +344,7 @@ bool PluginList::load ()
 
 bool PluginList::loadPlugin (const string &path)
 {
+#if USE_DL
   Plugin *pl = NULL;
 
   const char *error;
@@ -381,5 +390,7 @@ bool PluginList::loadPlugin (const string &path)
     }
 
   _plugins.push_back (pl);
+#endif // #if USE_DL
+
   return true;
 }
