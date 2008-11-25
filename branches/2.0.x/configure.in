@@ -10,7 +10,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROGS(DOXYGEN, doxygen, no)
@@ -51,6 +51,27 @@ AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
 AC_CHECK_UNIXODBC([use_unixodbc_dev])
 
+use_dl_dev="no"
+if test "$lt_cv_dlopen" = "dlopen"; then
+    if test ! x"$lt_cv_dlopen_libs" = "x"; then
+        dl_libname=`echo $lt_cv_dlopen_libs | sed -s 's|^-l||g'`
+        AC_CHECK_LIB([$dl_libname], [dlopen],  [have_dlopen=yes],  [])
+        AC_CHECK_LIB([$dl_libname], [dlclose], [have_dlclose=yes], [])
+        AC_CHECK_LIB([$dl_libname], [dlerror], [have_dlerror=yes], [])
+        AC_CHECK_LIB([$dl_libname], [dlsym],   [have_dlsym=yes],   [])
+    else
+        AC_CHECK_FUNC([dlopen],  [have_dlopen=yes],  [])
+        AC_CHECK_FUNC([dlclose], [have_dlclose=yes], [])
+        AC_CHECK_FUNC([dlerror], [have_dlerror=yes], [])
+        AC_CHECK_FUNC([dlsym],   [have_dlsym=yes],   [])
+    fi
+    if test "$have_dlopen" = "yes" -a "$have_dlclose" = "yes" -a "$have_dlerror" = "yes" -a "$have_dlsym" = "yes"; then
+        AC_DEFINE([USE_DL], [1], [Define to 1 if compile with dynamic plugin support])
+        LIBS="$LIBS $lt_cv_dlopen_libs"
+        use_dl_dev="yes"
+    fi
+fi
+
 AC_CONFIG_FILES([Makefile src/Makefile doc/src/Makefile plugins/loadavg/Makefile])
 AC_OUTPUT
 
@@ -59,6 +80,7 @@ echo "Use MySQL API:      $use_mysql_dev"
 echo "Use PostgreSQL API: $use_pq_dev"
 echo "Use unixODBC API:   $use_unixodbc_dev"
 echo "Using pcre:         $which_pcre"
+echo "Use dynamic plugin: $use_dl_dev"
 echo ""
 
 if test "$which_pcre" = "none"; then
