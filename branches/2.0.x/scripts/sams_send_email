@@ -1,0 +1,13 @@
+#!/bin/sh
+
+adminaddr=$1
+samsuser=$2
+mess=$3
+
+[ -z "$adminaddr" ] && exit 1
+[ -z "$samsuser"  ] && exit 2
+
+echo "$mess" | mail -s "User $samsuser deactivated" $adminaddr
+
+#cat > mail -s "User $samsuser deactivated" $adminaddr <<EOF
+#EOF

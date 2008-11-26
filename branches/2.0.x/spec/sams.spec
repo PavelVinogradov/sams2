@@ -109,6 +109,7 @@ fi
 %{_prefix}/bin/samsparser
 %{_prefix}/bin/samsdaemon
 %{_prefix}/bin/samsredir
+%{_prefix}/bin/send_email_message
 %{_initrddir}/sams2
 %attr(640,apache,apache) %config(noreplace) %{_prefix}/etc/sams2.conf
 

@@ -47,6 +47,7 @@ Proxy::ParserType Proxy::_parser_type;
 Proxy::RedirType Proxy::_redir_type;
 string Proxy::_deny_addr;
 string Proxy::_redir_addr;
+string Proxy::_admin_addr;
 long Proxy::_parser_time = 1;
 bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
@@ -185,6 +186,11 @@ string Proxy::getRedirectAddr ()
 string Proxy::getDenyAddr ()
 {
   return _deny_addr;
+}
+
+string Proxy::getAdminAddr ()
+{
+  return _admin_addr;
 }
 
 bool Proxy::isUseDNS ()
@@ -357,6 +363,7 @@ bool Proxy::reload ()
   char s_defaultdomain[25];
   char s_redirector[25];
   char s_denied_to[105];
+  char s_admin_addr[65];
   long s_autouser;
   long s_autotpl;
   long s_autogrp;
@@ -452,12 +459,17 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (17, DBQuery::T_CHAR, s_admin_addr, sizeof(s_admin_addr)))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << ", s_squidbase, s_redirector";
-  sqlcmd << ", s_denied_to, s_redirect_to";
+  sqlcmd << ", s_denied_to, s_redirect_to, s_adminaddr";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -528,6 +540,7 @@ bool Proxy::reload ()
 
   _deny_addr = s_denied_to;
   _redir_addr = s_redirect_to;
+  _admin_addr = s_admin_addr;
 
   DEBUG (DEBUG3, "Authentication: " << toString (_auth));
   DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));

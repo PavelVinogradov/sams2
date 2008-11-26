@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "config.h"
+#include "configmake.h"
 #include <string.h>
 
 #include "dbconn.h"
@@ -644,13 +645,37 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         }
       if ( (allowed_limit > 0) && (used_size > allowed_limit) )
         {
-          if ((usr->getEnabled() == SAMSUser::STAT_ACTIVE) || (usr->getEnabled() == SAMSUser::STAT_LIMITED))
+          if ((usr->getEnabled () == SAMSUser::STAT_ACTIVE) || (usr->getEnabled () == SAMSUser::STAT_LIMITED))
             {
-              usr->deactivate( );
+              usr->deactivate ();
               basic_stringstream < char >mess;
-              mess << "User " << *usr << " deactivated.";
+              switch (usr->getEnabled ())
+                {
+                  case SAMSUser::STAT_OFF:
+                  case SAMSUser::STAT_ACTIVE:
+                    // Этого не может быть
+                    break;
+                  case SAMSUser::STAT_INACTIVE:
+                    mess << "User " << *usr << " deactivated.";
+                    break;
+                  case SAMSUser::STAT_LIMITED:
+                    mess << "User " << *usr << " moved to temporary template.";
+                    break;
+                }
               INFO (mess.str ());
               Logger::addLog(Logger::LK_USER, mess.str());
+              string adminaddr = Proxy::getAdminAddr ();
+              if (!adminaddr.empty ())
+                {
+                  int err;
+                  string cmd = BINDIR;
+                  cmd += "/sams_send_email " + adminaddr;
+                  cmd += " " + usr->asString ();
+                  cmd += " '" + mess.str () + "'";
+                  DEBUG (DEBUG5, "[" << this << "->" << __FUNCTION__ << "] " << "Executing " << cmd);
+                  err = system (cmd.c_str ());
+                  ERROR ("Failed to send e-mail: " << err);
+                }
               need_reconfig = true;
             }
         }

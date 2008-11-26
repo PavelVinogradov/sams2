@@ -3,8 +3,9 @@
 AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = src doc/src plugins/loadavg
+bin_SCRIPTS = scripts/sams_send_email
 
-EXTRA_DIST = doc php etc spec debian redhat
+EXTRA_DIST = doc php etc spec debian redhat scripts
 
 dist-hook:
 	find $(distdir) -type d -name .svn | xargs rm -rf
