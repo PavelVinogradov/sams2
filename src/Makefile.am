@@ -39,9 +39,6 @@ noinst_HEADERS = \
 
 AM_CXXFLAGS = -Wall
 
-#samsdaemon_LDADD = -ldl
-#samsdaemon_LDFLAGS = -rdynamic
-
 configmake.h: Makefile
 	rm -f $@-t $@
 	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
