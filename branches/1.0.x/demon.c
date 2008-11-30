@@ -955,6 +955,15 @@ int main (int argc, char *argv[])
         strncpy(users[i].user,str2lower(row[0]),25);
         strncpy(users[i].domain,str2lower(row[1]),25);
 
+	if(row[10] == NULL) 
+	  {
+	     printf("Error: User %s has wrong shablon! Please fix it before using SAMS!\n", users[i].user);
+	     if(DEBUG==1)
+	       {
+		  printf("Error: Shablon %s not exist on not configured!", row[9]);
+	       }
+             exit(1);
+	  }
         sprintf(&str[0],"%s/%s\n",row[2],row[3]);
 	LocalIPAddr(&str[0],&users[i].ip[0],&users[i].mask[0]);
         users[i].enabled=atoi(row[4]);
