@@ -518,7 +518,7 @@ $pgdb[6] = "INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1','0','' )";
 $pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(25),
 s_shablonpool bigint default '0', s_userpool bigint default '0', s_auth varchar(4) default 'ip', 
 s_quote int default '100',s_period varchar(3) NOT NULL default 'M', s_clrdate date NOT NULL default '1980-01-01',
-s_alldenied smallint NOT NULL default '0' )";
+s_alldenied smallint NOT NULL default '0', s_shablon_id2 int NULL)";
 $pgdb[8] = "INSERT INTO shablon VALUES('0','Default','64000','64000','ip','100','M','1980-01-01','0')";
 $pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varchar(25), 
 s_days varchar(14), 
@@ -528,7 +528,7 @@ s_timeend time default '23:59:59')";
 $pgdb[10] = "INSERT INTO timerange VALUES('0','Full day','MTWHFAS','00:00:00','00:00:00')";
 $pgdb[11] = "CREATE TABLE sconfig_time ( s_shablon_id int, s_trange_id int )";
 $pgdb[12] = "CREATE TABLE sconfig ( s_shablon_id int, s_redirect_id int )";
-$pgdb[13] = "CREATE TABLE redirect ( s_redirect_id SERIAL PRIMARY KEY, s_name varchar(25), s_type varchar(25) )";
+$pgdb[13] = "CREATE TABLE redirect ( s_redirect_id SERIAL PRIMARY KEY, s_name varchar(25), s_type varchar(25), s_dest varchar(128) NULL )";
 $pgdb[14] = "CREATE TABLE samslog ( s_log_id SERIAL PRIMARY KEY, s_issuer varchar(50) NOT NULL , s_date date NOT NULL, s_time time NOT NULL, s_value varchar(60) NOT NULL, s_code char(2) )";
 $pgdb[15] = "CREATE TABLE sgroup ( s_group_id SERIAL PRIMARY KEY, s_name varchar(50) )";
 $pgdb[16] = "INSERT INTO sgroup ( s_name ) VALUES( 'Administrators' )";
@@ -537,11 +537,11 @@ $pgdb[18] = "CREATE TABLE reconfig ( s_proxy_id int, s_service varchar(15), s_ac
 $pgdb[19] = "CREATE TABLE squiduser ( s_user_id SERIAL PRIMARY KEY, s_group_id int, s_shablon_id int, s_nick varchar(50), s_family varchar(50), s_name varchar(50), s_soname varchar(50), s_domain varchar(50), s_quote int NOT NULL default '0', s_size bigint NOT NULL default '0', s_hit bigint NOT NULL default '0', s_enabled smallint, s_ip char (15), s_passwd varchar(20), s_gauditor smallint, s_autherrorc smallint default '0', s_autherrort varchar(16) default '0', s_webaccess varchar(16) default 'W')";
 $pgdb[20] = "CREATE TABLE url (  s_url_id SERIAL PRIMARY KEY, s_redirect_id int, s_url varchar(132) )";
 $pgdb[21] = "CREATE TABLE squidcache (  s_cache_id SERIAL PRIMARY KEY, s_proxy_id int, s_date  date NOT NULL default '1980-01-01', s_time time NOT NULL default '00:00:00', s_user varchar(50), s_domain varchar(50), s_size int NOT NULL default '0', s_hit int NOT NULL default '0', s_ipaddr varchar(15), s_period int NOT NULL default '0', s_method varchar(15), s_url varchar(1024) )";
-$pgdb[22] = "CREATE TABLE cachesum (  s_proxy_id int, s_date  date NOT NULL default '1980-01-01', s_user varchar(50), s_domain varchar(50), 
+$pgdb[22] = "CREATE TABLE cachesum (  s_proxy_id int NOT NULL, s_date date NOT NULL default '1980-01-01', s_user varchar(50) NOT NULL, s_domain varchar(50), 
 s_size bigint NOT NULL default '0', 
 s_hit bigint NOT NULL default '0') ";
 $pgdb[23] = "CREATE INDEX idx_squidcache on squidcache ( s_user, s_proxy_id )";
-$pgdb[24] = "CREATE INDEX idx_cachesum on cachesum ( s_user, s_proxy_id )";
+$pgdb[24] = "CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_proxy_id, s_date, s_user, s_domain )";
 $pgdb[25] = "CREATE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
 $pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";

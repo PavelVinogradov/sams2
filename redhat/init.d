@@ -27,7 +27,7 @@ SHUTDOWN_TIMEOUT=${SHUTDOWN_TIMEOUT:-60}
 
 DAEMON=__PREFIX/samsdaemon
 
-prog=sams
+prog=sams2
 
 start () {
 	echo -n $"Starting $prog: "

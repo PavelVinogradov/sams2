@@ -53,6 +53,8 @@ bool Proxy::_autouser = false;
 long Proxy::_defaulttpl;
 long Proxy::_defaultgrp;
 long Proxy::_squidbase;
+Proxy::CharCase Proxy::_domain_case = Proxy::CASE_ORIGINAL;
+Proxy::CharCase Proxy::_username_case = Proxy::CASE_ORIGINAL;
 DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
 
@@ -198,6 +200,16 @@ bool Proxy::isUseDNS ()
   return _needResolve;
 }
 
+Proxy::CharCase Proxy::getDomainCase ()
+{
+  return _domain_case;
+}
+
+Proxy::CharCase Proxy::getUsernameCase ()
+{
+  return _username_case;
+}
+
 Proxy::RedirType Proxy::getRedirectType ()
 {
   return _redir_type;
@@ -231,6 +243,30 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
     {
       usrDomain = "";
       usrNick = identTbl[0];
+    }
+
+  switch (_domain_case)
+    {
+      case CASE_UPPER:
+        usrDomain = ToUpper (usrDomain);
+        break;
+      case CASE_LOWER:
+        usrDomain = ToLower (usrDomain);
+        break;
+      default:
+        break;
+    }
+
+  switch (_username_case)
+    {
+      case CASE_UPPER:
+        usrNick = ToUpper (usrNick);
+        break;
+      case CASE_LOWER:
+        usrNick = ToLower (usrNick);
+        break;
+      default:
+        break;
     }
 
   if (_auth == AUTH_IP || usrNick == "-")
@@ -464,12 +500,23 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (18, DBQuery::T_LONG, &_domain_case, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (19, DBQuery::T_LONG, &_username_case, 0))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
   sqlcmd << ", s_autouser, s_autotpl, s_autogrp";
   sqlcmd << ", s_squidbase, s_redirector";
   sqlcmd << ", s_denied_to, s_redirect_to, s_adminaddr";
+  sqlcmd << ", s_bigd, s_bigu";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))

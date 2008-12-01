@@ -137,6 +137,22 @@ string TrimSpaces (const string & str);
 string StripSpaces (const string & str);
 
 /**
+ * @brief Переводит все символы в нижний регистр
+ *
+ * @param str Исходная строка
+ * @return Строку с символами в нижнем регистре
+ */
+string ToLower (const string & str);
+
+/**
+ * @brief Переводит все символы в верхний регистр
+ *
+ * @param str Исходная строка
+ * @return Строку с символами в верхнем регистре
+ */
+string ToUpper (const string & str);
+
+/**
  * @brief Разбивает одну строку на несколько, используя разделители @a delim
  *
  * @param s Исходная строка
