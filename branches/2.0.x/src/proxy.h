@@ -99,6 +99,16 @@ public:
     PARSE_IMMEDIATE             ///< Обрабатывать непрерывно
   };
 
+  /**
+   * @brief Регистр букв
+   */
+  enum CharCase
+  {
+    CASE_UPPER,                 ///< Заглавные буквы
+    CASE_LOWER,                 ///< Строчные буквы
+    CASE_ORIGINAL               ///< Без изменения регистра
+  };
+
   static void useConnection (DBConn * conn);
 
   static bool reload ();
@@ -148,6 +158,10 @@ public:
   static string getAdminAddr ();
 
   static bool isUseDNS ();
+
+  static CharCase getDomainCase ();
+
+  static CharCase getUsernameCase ();
 
   /**
    * @brief Возвращает тип используемого редиректора
@@ -214,6 +228,8 @@ protected:
   static long _defaulttpl;             ///< Идентификатор шаблона, используемого при автоматическом создании пользователя
   static long _defaultgrp;             ///< Идентификатор группы, используемой при автоматическом создании пользователя
   static long _squidbase;              ///< Хранить данные о трафике за последние @a _squidbase месяцев
+  static CharCase _domain_case;        ///< Регистр букв в названии домена
+  static CharCase _username_case;      ///< Регистр букв в имени пользователя
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;       ///< Флаг, показывающий нужно ли закрывать соединение в методе @a destroy
 };

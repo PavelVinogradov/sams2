@@ -4,7 +4,7 @@
 
 Name:          sams2
 Version:       2.0.0
-Release:       a1
+Release:       a3
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
@@ -34,7 +34,6 @@ Summary:       SAMS2 web administration tool
 Group:         Applications/System
 Requires:      httpd
 Provides:      sams2-web = %{version}
-#BuildArch:     noarch
 
 %description web
 The sams2-web package provides web administration tool
@@ -46,7 +45,6 @@ Web browser.
 Summary:       SAMS2 Documentation
 Group:         Documentation/Other
 Provides:      sams2-doc = %{version}
-#BuildArch:     noarch
 BuildRequires: doxygen
 Prereq:        /usr/bin/find /bin/rm /usr/bin/xargs
 
@@ -61,6 +59,7 @@ The sams2-doc package includes the HTML versions of the "Using SAMS2".
 %setup -q -n %{name}-%{version}
 
 %build
+make -f Makefile.cvs
 ./configure \
 	--prefix=%{_prefix}
 
@@ -109,7 +108,7 @@ fi
 %{_prefix}/bin/samsparser
 %{_prefix}/bin/samsdaemon
 %{_prefix}/bin/samsredir
-%{_prefix}/bin/send_email_message
+%{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2
 %attr(640,apache,apache) %config(noreplace) %{_prefix}/etc/sams2.conf
 
@@ -117,7 +116,7 @@ fi
 %files doc
 %defattr(-,root,root)
 %doc ChangeLog INSTALL* README*
-%doc doc/*
+%{_docdir}/%{name}-%{version}
 
 ##########
 %files web

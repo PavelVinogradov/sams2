@@ -127,6 +127,26 @@ string TrimSpaces (const string & str)
   return TrimCharacters (str, SPACECHARS);
 }
 
+string ToLower (const string & str)
+{
+  string res;
+  for (unsigned int i=0; i<str.size (); i++)
+    {
+      res += tolower (str[i]);
+    }
+  return res;
+}
+
+string ToUpper (const string & str)
+{
+  string res;
+  for (unsigned int i=0; i<str.size (); i++)
+    {
+      res += toupper (str[i]);
+    }
+  return res;
+}
+
 void Split (const string & s, const string & delim, vector < string > &tbl, bool removeEmpty)
 {
   uint prev = 0;
