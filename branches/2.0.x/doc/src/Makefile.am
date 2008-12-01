@@ -1,5 +1,6 @@
 build_docs = html
 
+docdir = @docdir@
 doc_DATA = $(build_docs)
 
 EXTRA_DIST = $(build_docs)
