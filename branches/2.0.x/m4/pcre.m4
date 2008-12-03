@@ -87,20 +87,20 @@ fi
 case $$1 in
     pcre)
         AC_DEFINE([USE_PCRE], [1], [Define to 1 if use pcre for regular expressions])
-        if test ! x"$pcre_incdir" = "x"; then
+        if test ! x"$pcre_incdir" = "x" -a ! x"$pcre_incdir" = "xno"; then
             CXXFLAGS="$CXXFLAGS -I$pcre_incdir"
         fi
-        if test ! x"$pcre_incdir" = "x"; then
+        if test ! x"$pcre_libdir" = "x" -a ! x"$pcre_libdir" = "xno"; then
             LDFLAGS="$LDFLAGS -L$pcre_libdir"
         fi
         LIBS="$LIBS -lpcre"
         ;;
     pcrecpp)
         AC_DEFINE([USE_PCRECPP], [1], [Define to 1 if use pcrecpp for regular expressions])
-        if test ! x"$pcre_incdir" = "x"; then
+        if test ! x"$pcre_incdir" = "x" -a ! x"$pcre_incdir" = "xno"; then
             CXXFLAGS="$CXXFLAGS -I$pcre_incdir"
         fi
-        if test ! x"$pcre_incdir" = "x"; then
+        if test ! x"$pcre_libdir" = "x" -a ! x"$pcre_libdir" = "xno"; then
             LDFLAGS="$LDFLAGS -L$pcre_libdir"
         fi
         LIBS="$LIBS -lpcrecpp"
