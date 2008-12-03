@@ -46,14 +46,14 @@ if test ! "$ac_use_pcre" = "no"; then
 
     if test ! x"$ac_pcre_includes" = "x"; then
         AC_FIND_FILE([pcre.h], $ac_pcre_includes, pcre_incdir)
-        if test ! x"$pcre_incdir" = "x" ; then
+        if test ! "$pcre_incdir" = "no" ; then
             CXXFLAGS="$pcre_ac_cxxflags_save -I$pcre_incdir"
         fi
     fi
 
     if test ! x"$ac_pcre_libraries" = "x"; then
         AC_FIND_FILE([libpcre.so], $ac_pcre_libraries, pcre_libdir)
-        if test ! x"$pcre_libdir" = "x" ; then
+        if test ! "$pcre_libdir" = "no" ; then
             LDFLAGS="$pcre_ac_ldflags_save -L$pcre_libdir"
             LIBS="$pcre_ac_libs_save -lpcre"
         fi

@@ -1,5 +1,6 @@
 BUILT_SOURCES =
 CLEANFILES =
+DISTCLEANFILES = Makefile.in config.h.in
 
 bin_PROGRAMS = samsparser samsdaemon samsredir
 

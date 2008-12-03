@@ -13,8 +13,6 @@ AC_PROG_MAKE_SET
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
-AC_CHECK_PROGS(DOXYGEN, doxygen, no)
-
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS([arpa/inet.h netdb.h syslog.h unistd.h])
@@ -46,6 +44,7 @@ AC_CHECK_FUNCS([inet_ntoa memset strerror])
 #LIBS="$sams_saved_libs"
 #AC_SUBST(LIB_CRYPT)
 
+AC_CHECK_SRC_DOCS
 AC_CHECK_PCRE([which_pcre])
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
@@ -72,7 +71,7 @@ if test "$lt_cv_dlopen" = "dlopen"; then
     fi
 fi
 
-AC_CONFIG_FILES([Makefile src/Makefile doc/src/Makefile plugins/loadavg/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile php/Makefile doc/Makefile plugins/loadavg/Makefile])
 AC_OUTPUT
 
 echo ""

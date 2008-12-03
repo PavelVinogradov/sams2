@@ -35,14 +35,14 @@ else
 
     if test ! x"$ac_pq_includes" = "x"; then
         AC_FIND_FILE([libpq-fe.h], $ac_pq_includes, pq_incdir)
-        if test ! x"$pq_incdir" = "x" ; then
+        if test ! "$pq_incdir" = "no" ; then
             CPPFLAGS="$pq_ac_cppflags_save -I$pq_incdir"
         fi
     fi
 
     if test ! x"$ac_pq_libraries" = "x"; then
         AC_FIND_FILE([libpq.so], $ac_pq_libraries, pq_libdir)
-        if test ! x"$pq_libdir" = "x" ; then
+        if test ! "$pq_libdir" = "no" ; then
             LDFLAGS="$pq_ac_ldflags_save -L$pq_libdir"
         fi
     fi
