@@ -88,7 +88,7 @@ void usage ()
   cout << "                For more information about possible LEVEL values refer to a developer." << endl;
   cout << "    -l, --logger=LOGGER" << endl;
   cout << "                Set engine for messages output. Possible values for LOGGER are: console, syslog, file." << endl;
-  cout << "                In case of file you can set filename for output (DEFAULT: samsparser.log)." << endl;
+  cout << "                In case of file you can set filename for output (DEFAULT: samsdaemon.log)." << endl;
   cout << "                E.g. -l syslog" << endl;
   cout << "                E.g. -l file:/path/to/file" << endl;
   cout << "    -C, --config=FILE" << endl;

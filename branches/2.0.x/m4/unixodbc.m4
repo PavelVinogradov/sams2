@@ -35,14 +35,14 @@ else
 
     if test ! x"$ac_unixodbc_includes" = "x"; then
         AC_FIND_FILE([sqlext.h], $ac_unixodbc_includes, unixodbc_incdir)
-        if test ! x"$unixodbc_incdir" = "x"; then
+        if test ! "$unixodbc_incdir" = "no"; then
             CPPFLAGS="$unixodbc_ac_cppflags_save -I$unixodbc_incdir"
         fi
     fi
 
     if test ! x"$ac_unixodbc_libraries" = "x"; then
         AC_FIND_FILE([libodbc.so], $ac_unixodbc_libraries, unixodbc_libdir)
-        if test ! x"$unixodbc_libdir" = "x"; then
+        if test ! "$unixodbc_libdir" = "no"; then
             LDFLAGS="$unixodbc_ac_ldflags_save -L$unixodbc_libdir"
         fi
     fi

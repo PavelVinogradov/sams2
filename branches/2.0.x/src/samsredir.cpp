@@ -55,10 +55,6 @@ void usage ()
   cout << "The following options are available:" << endl;
   cout << endl;
   cout << "OPTIONS" << endl;
-  cout << "        --fork" << endl;
-  cout << "                Force to start in background mode." << endl;
-  cout << "        --no-fork" << endl;
-  cout << "                Force to start in foreground mode." << endl;
   cout << "    -v, --verbose" << endl;
   cout << "                Produce more output." << endl;
   cout << "    -d, --debug=LEVEL" << endl;
@@ -93,8 +89,6 @@ int main (int argc, char *argv[])
   int c;
   uint dbglevel = 0;
   string optname = "";
-  bool must_fork = true;
-  bool use_must_fork = false;
   bool verbose = false;
   string log_engine = "";
   string config_file = SYSCONFDIR;
@@ -105,8 +99,6 @@ int main (int argc, char *argv[])
     {"version",  0, 0, 'V'},     // Показывает версию программы и завершает работу
     {"verbose",  0, 0, 'v'},     // Устанавливает режим многословности
     {"debug",    1, 0, 'd'},     // Устанавливает уровень отладки
-    {"fork",     0, 0, 'f'},     // Запускать в фоновом режиме
-    {"no-fork",  0, 0, 'F'},     // Не запускать в фоновом режиме
     {"logger",   1, 0, 'l'},     // Устанавливает движок вывода сообщений
     {"config",   1, 0, 'C'},     // Использовать альтернативный конфигурационный файл
     {0, 0, 0, 0}
@@ -116,7 +108,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVvd:fFt:l:C:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVvd:t:l:C:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -138,14 +130,6 @@ int main (int argc, char *argv[])
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel) != 1)
             dbglevel = 0;
-          break;
-        case 'f':
-          must_fork = true;
-          use_must_fork = true;
-          break;
-        case 'F':
-          must_fork = false;
-          use_must_fork = true;
           break;
         case 'l':
           log_engine = optarg;
@@ -176,26 +160,6 @@ int main (int argc, char *argv[])
       usage ();
       exit (parse_errors);
     }
-
-
-/*
-  pid_t childpid=0;
-
-  if ( (use_must_fork && must_fork) || (dbglevel == 0 && !use_must_fork) )
-    {
-      childpid = fork ();
-    }
-
-  if (childpid == -1)
-    {
-      exit(3);
-    }
-
-  if (childpid > 0)
-    {
-      exit(0);
-    }
-*/
 
 
   DBConn *conn = NULL;

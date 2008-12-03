@@ -35,14 +35,14 @@ else
 
     if test ! x"$ac_mysql_includes" = "x"; then
         AC_FIND_FILE([mysql.h], $ac_mysql_includes, mysql_incdir)
-        if test ! x"$mysql_incdir" = "x" ; then
+        if test ! "$mysql_incdir" = "no" ; then
             CPPFLAGS="$mysql_ac_cppflags_save -I$mysql_incdir"
         fi
     fi
 
     if test ! x"$ac_mysql_libraries" = "x"; then
         AC_FIND_FILE([libmysqlclient.so], $ac_mysql_libraries, mysql_libdir)
-        if test ! x"$mysql_libdir" = "x" ; then
+        if test ! "$mysql_libdir" = "no" ; then
             LDFLAGS="$mysql_ac_ldflags_save -L$mysql_libdir"
             LIBS="$mysql_ac_libs_save -lmysqlclient"
         fi
