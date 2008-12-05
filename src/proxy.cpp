@@ -200,6 +200,11 @@ bool Proxy::isUseDNS ()
   return _needResolve;
 }
 
+bool Proxy::useDomain ()
+{
+  return _usedomain;
+}
+
 Proxy::CharCase Proxy::getDomainCase ()
 {
   return _domain_case;
@@ -324,7 +329,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
                 }
               usr->setNick (usrNick);
             }
-          usr->setDomain (usrDomain);
+          if (_usedomain)
+            usr->setDomain (usrDomain);
           usr->setGroupId (_defaultgrp);
           usr->setActiveTemplateId (_defaulttpl);
           usr->setLimitedTemplateId (tpl->getLimitedId ());

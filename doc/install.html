@@ -17,7 +17,7 @@
   <TR>
     <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
     <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
-    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="configure.html">Настройка</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
   </TR>
 </TABLE>
 <HR ALIGN="LEFT" WIDTH="100%">
@@ -96,7 +96,7 @@
 </OL>
 
 
-<H2><A NAME="makeinstall">3.3 Установка</A></H2>
+<H2><A NAME="makeinstall">3.3 Установка из исходных текстов</A></H2>
 
 <P>Для установки необходимо обладать привилегиями root, для этого, находясь в директории,
 где происходила компиляция, выполните команды</P>
@@ -104,16 +104,66 @@
 <PRE>$ su</PRE>
 <P>Password: &lt;тут самый секретный пароль&gt;</P>
 <PRE># make install</PRE>
-<P>После этого все модули будут установлены и можно приступать к базовой настройке.</P>
+<P>После этого все модули будут установлены и можно приступать к <A HREF="#systemconfig">системным настройкам</A>.</P>
 
-<P><span style='color:red'>Надо написать как поставить отдельный модуль (web, daemons, doc)</span></P>
+<P><SPAN STYLE='color:red'>Надо написать как поставить отдельный модуль (web, daemons, doc)</SPAN></P>
+
+<H2><A NAME="systemconfig">3.4 Системная настройка</A></H2>
+
+<P>
+<OL>
+  <LI>
+    Измените владельца файлов web интерфейса на пользователя и группу http сервера. Их можно узнать
+    в файле httpd.conf, параметры User и Group соответственно. Например,
+    <PRE>chown -R apache:apache /usr/local/share/sams2-2.0.0</PRE>
+  </LI>
+  <LI>
+    Измените владельца конфигурационного файла sams2.conf на пользователя и группу http сервера. Например,
+    <PRE>chown apache:apache /usr/local/etc/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Скопируйте файл redhat/httpd_conf из директории дистрибутива в директорию конфигурационных файлов
+    http сервера, переименовав его в sams2.conf. Например,
+    <PRE>cp redhat/httpd_conf /etc/httpd/conf.d/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Замените в файле, скопированном в предыдущем пункте, ключевое слово __WEBPREFIX на директорию,
+    где находятся файлы web интерфейса.
+    Воспользуйтесь предпочитаемым редактором или возьмите за основу следующую команду:
+    <PRE>sed -i -e 's|__WEBPREFIX|/usr/local/share/sams2-2.0.0|' /etc/httpd/conf.d/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Перезапустите http сервер для того чтобы изменения вступили в силу. Например,
+    <PRE>/etc/init.d/httpd restart</PRE>
+  </LI>
+  <LI> Установите скрипт запуска демона.
+    <TABLE BORDER=1 CELLSPACING=0 CELLPADDING=10>
+      <TR>
+        <TD><IMG SRC="images/redhat.png"></TD>
+        <TD>
+          <PRE>cp redhat/init.d /etc/init.d/sams2</PRE>
+          Замените в файле ключевое слово __PREFIX на директорию, где находится исполняемый файл демона,
+          а ключевое слово __CONFDIR на директорию, где находится конфигурационный файл SAMS.
+          Воспользуйтесь предпочитаемым редактором или возьмите за основу следующую команду:
+          <PRE>sed -i -e 's|__CONFDIR|/usr/local/etc|' -e 's|__PREFIX|/usr/local/bin|' /etc/init.d/sams2</PRE>
+          Добавьте скрипт в базу данных chkconfig.
+          <PRE>chkconfig --add sams2</PRE>
+          Включите его выполнение на уровнях по умолчанию.
+          <PRE>chkconfig sams2 on</PRE>
+        </TD>
+      </TR>
+    </TABLE>
+  </LI>
+  <LI>Теперь можно приступить к этапу <A HREF="setup.html">настройки</A>.</LI>
+</OL>
+</P>
 
 <HR ALIGN="LEFT" WIDTH="100%">
 <TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
   <TR>
     <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
     <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
-    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="configure.html">Настройка</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
   </TR>
 </TABLE>
 

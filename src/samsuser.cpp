@@ -298,7 +298,7 @@ string SAMSUser::asString () const
     }
   else
     {
-      if (!_domain.empty ())
+      if (!_domain.empty () && Proxy::useDomain ())
         {
           res = _domain + "\\";
         }

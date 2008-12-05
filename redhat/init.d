@@ -13,7 +13,7 @@ PATH="/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin"
 . /etc/init.d/functions
 
 # check if the sams conf file is present
-[ -f /etc/sams2.conf ] || exit 0
+[ -f __CONFDIR/sams2.conf ] || exit 0
 
 if [ -f /etc/sysconfig/sams2 ]; then
   . /etc/sysconfig/sams2

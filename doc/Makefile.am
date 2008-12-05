@@ -1,13 +1,16 @@
 
 build_docs = src/html
 
-static_docs = commands.html \
-	configure.html \
+static_docs = \
 	index.html \
-	install.html \
 	overview.html \
 	requirements.html \
-	tables.html
+	install.html \
+	setup.html \
+	configure.html \
+	commands.html \
+	tables.html \
+	sams2_conf.html
 
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
