@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Установка</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Настройка</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="install.html">Установка</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="configure.html">Администрирование</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1><A NAME="setup">4 Настройка</A></H1>
+
+<P>
+Здесь должно быть рассказано как настраивать пакеты, независимо от способа установки
+(из пакета или исходных текстов), зато в зависимости от типа операционной системы.
+</P>
+
+<OL>
+  <LI>
+    Отредактируйте конфигурационный файл <A HREF="sams2_conf.html">sams2.conf</A>, согласно
+    вашей конфигурации, но параметры <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> и
+    <A HREF="sams2_conf.html#sams2.conf.db_password">DB_PASSWORD</A> оставьте пустыми.
+  </LI>
+  <LI>
+    В любом web браузере откройте страницу http://yourservername/sams2. Введите имя и пароль
+    администратора базы данных, установите флаг "Create SAMS DB user" и введите имя и пароль пользователя SAMS2 для
+    последующего подключения к БД. На данном этапе этого пользователя не должно существовать в БД.
+    (<SPAN STYLE='color:red'>Не удаляйте @localhost в имени пользователя!</SPAN>)
+  </LI>
+  <LI>
+    Перед тем как нажать кнопку "Starting SAMS webinterface", отредактируйте вновь конфигурационный файл
+    <A HREF="sams2_conf.html">sams2.conf</A>, заполнив параметры
+    <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> и
+    <A HREF="sams2_conf.html#sams2.conf.db_password">DB_PASSWORD</A>
+  </LI>
+  <LI>
+    После нажатия кнопки "Starting SAMS webinterface", можно переходить к этапу
+    <A HREF="configure.html">администрирования</A>.
+  </LI>
+</OL>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="install.html">Установка</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="configure.html">Администрирование</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

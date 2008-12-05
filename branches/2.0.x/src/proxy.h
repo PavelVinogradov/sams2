@@ -159,6 +159,8 @@ public:
 
   static bool isUseDNS ();
 
+  static bool useDomain ();
+
   static CharCase getDomainCase ();
 
   static CharCase getUsernameCase ();

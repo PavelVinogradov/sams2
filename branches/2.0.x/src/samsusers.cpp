@@ -23,6 +23,7 @@
 #include "samsusers.h"
 #include "samsuser.h"
 #include "samsconfig.h"
+#include "proxy.h"
 #include "debug.h"
 
 bool SAMSUsers::_loaded = false;
@@ -166,7 +167,7 @@ bool SAMSUsers::reload()
 
   // Используется только для предотвращения утечки памяти
   string s_tmp;
-
+  bool usedomain = Proxy::useDomain ();
   while (query->fetch ())
     {
       usr = new SAMSUser ();
@@ -179,8 +180,11 @@ bool SAMSUsers::reload()
         usr->setLimitedTemplateId (s_shablon_id2);
       s_tmp = s_nick;
       usr->setNick (s_tmp);
-      s_tmp = s_domain;
-      usr->setDomain (s_tmp);
+      if (usedomain)
+        {
+          s_tmp = s_domain;
+          usr->setDomain (s_tmp);
+        }
       usr->setQuote (s_quote);
       usr->setSize (s_size);
       usr->setHit (s_hit);
@@ -244,12 +248,15 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
 
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")]");
 
+  bool usedomain = Proxy::useDomain ();
   SAMSUser *usr = NULL;
   vector < SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      if (((*it)->getNick () == nick) && ((*it)->getDomain () == domain))
+      if ((*it)->getNick () == nick)
         {
+          if (usedomain && ((*it)->getDomain () != domain))
+            continue;
           usr = (*it);
           break;
         }
