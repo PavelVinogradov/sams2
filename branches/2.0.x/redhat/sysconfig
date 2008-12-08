@@ -1,1 +1,1 @@
-OPTIONS="-v -d8 --fork -l file:/var/log/sams2/samsdaemon"
+OPTIONS="-v --fork -l syslog"

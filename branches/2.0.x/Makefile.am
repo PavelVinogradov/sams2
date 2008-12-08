@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src php doc plugins/loadavg
 bin_SCRIPTS = scripts/sams_send_email
 
-EXTRA_DIST = doc php etc spec debian redhat scripts
+EXTRA_DIST = Makefile.cvs doc php etc spec debian redhat scripts
 DISTCLEANFILES = Makefile.in configure aclocal.m4 config.guess config.sub depcomp install-sh ltmain.sh missing
 
 dist-hook:
