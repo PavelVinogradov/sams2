@@ -120,10 +120,11 @@ function NewShablonForm()
   print("$shablonnew_NewShablonForm_17</A>!\n");
   print("<TD>\n");
   print("<SELECT NAME=\"auth\"> \n");
-     print("<OPTION value=ip SELECTED>IP\n");
-     print("<OPTION value=ntlm>NTLM\n");
-     print("<OPTION value=adld>ADLD\n");
-     print("<OPTION value=ncsa>NCSA\n");
+  $DB->samsdb_query_value("SELECT s_auth FROM auth_param WHERE s_param='enabled' AND s_value='1' ");
+  while($row=$DB->samsdb_fetch_array())
+  {
+     print("<OPTION value=".$row['s_auth'].">".$row['s_auth']."\n");
+  }
   print("</SELECT>\n");
 
            print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");

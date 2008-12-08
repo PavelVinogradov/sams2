@@ -280,6 +280,16 @@ function UpdateShablonForm()
   print("<TD>\n");
   print("<SELECT NAME=\"auth\"> \n");
   
+
+  $DB->samsdb_query_value("SELECT s_auth,s_value FROM auth_param WHERE s_param='enabled' AND s_value='1' ");
+  while($row=$DB->samsdb_fetch_array())
+  {
+     $SELECTED="";
+     if($row['s_auth']==$SHABLONConf->s_auth)
+	$SELECTED="SELECTED";
+     print("<OPTION value=".$row['s_auth']." $SELECTED>".$row['s_auth']." \n");
+  }
+/*
   if($SHABLONConf->s_auth=="ip")   
      $IPSELECTED="SELECTED";
      print("<OPTION value=ip $IPSELECTED> IP\n");
@@ -295,7 +305,7 @@ function UpdateShablonForm()
   if($SHABLONConf->s_auth=="ncsa")   
      $NCSASELECTED="SELECTED";
      print("<OPTION value=ncsa $NCSASELECTED> NCSA\n");
-  
+*/  
   print("</SELECT>\n");
   
 

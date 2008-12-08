@@ -19,6 +19,15 @@ db_cmd[1]="CREATE TABLE sysinfo (                              \
 db_cmd[2]="ALTER TABLE redirect ADD s_dest VARCHAR( 128 ) NULL;"
 db_cmd[3]="ALTER TABLE shablon ADD s_shablon_id2 BIGINT( 20 ) UNSIGNED NULL;"
 
+db_cmd[28] = "create table auth_param (	\
+ s_auth varchar(4) default '', 		\
+ s_param varchar(50) default '', 	\
+ s_value varchar(50) default '')";
+db_cmd[29] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
+db_cmd[30] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
+db_cmd[31] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
+db_cmd[32] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
+db_cmd[33] = "INSERT INTO auth_param VALUES('ip', 'enabled', '1')";
 
 
 

@@ -9,7 +9,7 @@ function DeleteUser()
 {
 
   global $SAMSConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -19,9 +19,8 @@ function DeleteUser()
 	}
   
   if(isset($_GET["id"])) $userid=$_GET["id"];
- 
-  $num_rows=$DB->samsdb_query("DELETE FROM squiduser WHERE s_user_id='$userid' ");
-
+  $query="DELETE FROM squiduser WHERE s_user_id='$userid'";
+  $num_rows=$DB->samsdb_query_value($query);
   print("<SCRIPT>\n");
   print("        parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");

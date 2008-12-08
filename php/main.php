@@ -184,6 +184,8 @@ if($function=="userauth")
 		$USERAUTH = new NTLNAuthenticate();
 	else if($auth=="adld")
 		$USERAUTH = new ADLDAuthenticate();
+	else if($auth=="ldap")
+		$USERAUTH = new LDAPAuthenticate();
 	else 
 		$USERAUTH = new NCSAAuthenticate();
 	

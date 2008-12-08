@@ -85,6 +85,55 @@ echo "userid=$this->userid<BR>";
 
 }
 
+
+class LDAPAuthenticate extends SAMSAuthenticate {
+function UserAuthenticate($user, $password)
+{
+	$this->UserName=$user;
+	$request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick=\"$user\" ";
+	if($this->LoadUserVariables($request)>0)
+	{
+		$adldserver=GetAuthParameter("ldap","ldapserver");
+		$basedn=GetAuthParameter("ldap","basedn");
+		$adadmin=GetAuthParameter("ldap","adadmin");
+		$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
+		$usergroup=GetAuthParameter("ldap","usergroup");
+
+		include('src/ldap.php');
+		$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+
+		if ($samsldap->Authenticate($this->UserName,$password))
+		{
+			$this->authOk=1;
+		} 
+	}
+	return($this->authOk);
+}
+function UserIDAuthenticate($userid, $password)
+{
+        $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
+	if($this->LoadUserVariables($request)>0)
+	{
+		$adldserver=GetAuthParameter("ldap","ldapserver");
+		$basedn=GetAuthParameter("ldap","basedn");
+		$adadmin=GetAuthParameter("ldap","adadmin");
+		$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
+		$usergroup=GetAuthParameter("ldap","usergroup");
+
+		include('src/ldap.php');
+		$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+
+		if ($samsldap->Authenticate($this->UserName,$password))
+		{
+			$this->authOk=1;
+		} 
+	}
+	return($this->authOk);
+}
+
+}
+
+
 class ADLDAuthenticate extends SAMSAuthenticate {
 function UserAuthenticate($user, $password)
 {
@@ -93,10 +142,28 @@ function UserAuthenticate($user, $password)
 	if($this->LoadUserVariables($request)>0)
 	{
 		require_once("src/adldap.php");
-		$pdc=array($this->SAMSConf->LDAPSERVER);
-		$options=array(account_suffix=>"@".$this->SAMSConf->LDAPDOMAIN, base_dn=>$this->SAMSConf->LDAPBASEDN,domain_controllers=>$pdc, 
-			ad_username=>$this->SAMSConf->LDAPUSER,ad_password=>$this->SAMSConf->LDAPUSERPASSWD,"","","");
+
+		$adldserver=GetAuthParameter("adld","adldserver");
+		$basedn=GetAuthParameter("adld","basedn");
+		$adadmin=GetAuthParameter("adld","adadmin");
+		$adadminpasswd=GetAuthParameter("adld","adadminpasswd");
+		$adldusergroup=GetAuthParameter("adld","usergroup");
+
+		$LDAPBASEDN2=strtok($basedn,".");
+		$LDAPBASEDN="DC=$LDAPBASEDN2";
+		while(strlen($LDAPBASEDN2)>0)
+		{
+			$LDAPBASEDN2=strtok(".");
+			if(strlen($LDAPBASEDN2)>0)
+				$LDAPBASEDN="$LDAPBASEDN,DC=$LDAPBASEDN2";
+		}
+
+ 		$pdc=array("$adldserver");
+		$options=array(account_suffix=>"@$basedn", base_dn=>"$LDAPBASEDN",domain_controllers=>$pdc, 
+		ad_username=>"$adadmin",ad_password=>"$adadminpasswd","","","");
+
 		$ldap=new adLDAP($options);
+
 		if ($ldap->authenticate($this->UserName,$password))
 		{
 			$this->authOk=1;
@@ -112,10 +179,34 @@ echo "UserIDAuthenticate: $userid $password<BR>";
 	if($this->LoadUserVariables($request)>0)
 	{
 		require_once("src/adldap.php");
+/*
 		$pdc=array($this->SAMSConf->LDAPSERVER);
 		$options=array(account_suffix=>"@".$this->SAMSConf->LDAPDOMAIN, base_dn=>$this->SAMSConf->LDAPBASEDN,domain_controllers=>$pdc, 
 			ad_username=>$this->SAMSConf->LDAPUSER,ad_password=>$this->SAMSConf->LDAPUSERPASSWD,"","","");
 		$ldap=new adLDAP($options);
+*/
+
+		$adldserver=GetAuthParameter("adld","adldserver");
+		$basedn=GetAuthParameter("adld","basedn");
+		$adadmin=GetAuthParameter("adld","adadmin");
+		$adadminpasswd=GetAuthParameter("adld","adadminpasswd");
+		$adldusergroup=GetAuthParameter("adld","usergroup");
+
+		$LDAPBASEDN2=strtok($basedn,".");
+		$LDAPBASEDN="DC=$LDAPBASEDN2";
+		while(strlen($LDAPBASEDN2)>0)
+		{
+			$LDAPBASEDN2=strtok(".");
+			if(strlen($LDAPBASEDN2)>0)
+				$LDAPBASEDN="$LDAPBASEDN,DC=$LDAPBASEDN2";
+		}
+
+ 		$pdc=array("$adldserver");
+		$options=array(account_suffix=>"@$basedn", base_dn=>"$LDAPBASEDN",domain_controllers=>$pdc, 
+		ad_username=>"$adadmin",ad_password=>"$adadminpasswd","","","");
+
+		$ldap=new adLDAP($options);
+
 		if ($ldap->authenticate($this->UserName,$password))
 		{
 			$this->authOk=1;
@@ -237,6 +328,8 @@ function UserIDAuthenticate($userid, $password)
 
 
 }
+
+
 
 
 /*
