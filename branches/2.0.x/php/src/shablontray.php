@@ -25,6 +25,7 @@ function MoveUsersToShablon()
     }
   print("<SCRIPT>\n");
   print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$id&sid=ALL\";\n");
+  print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
 }
 

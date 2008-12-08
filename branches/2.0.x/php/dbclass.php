@@ -549,6 +549,15 @@ $pgdb[28] = "CREATE TABLE sysinfo ( s_proxy_id INT NOT NULL , s_name VARCHAR( 50
 s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date DATETIME NOT NULL ,
 s_status INT NOT NULL)";
 
+$pgdb[29] = "create table auth_param (s_auth varchar(4) default '', s_param varchar(50) default '', s_value varchar(50) default '')";
+$pgdb[30] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
+$pgdb[31] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
+$pgdb[32] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
+$pgdb[33] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
+$pgdb[34] = "INSERT INTO auth_param VALUES('ip', 'enabled', '1')";
+
+
+
     $crpasswd=crypt("qwerty","00");
     if($db=="unixODBC")
       {

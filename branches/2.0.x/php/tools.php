@@ -1,5 +1,47 @@
 <?php
 
+function UpdateAuthParameter($auth,$parameter)
+{
+  global $SAMSConf;
+  if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
+  if($value!="")
+  {
+	$DB=new SAMSDB(&$SAMSConf);
+	$num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
+	if($num_rows>0)
+	{
+		$row=$DB->samsdb_fetch_array();
+		if($row['s_value']!=$value)
+			$query="UPDATE auth_param SET s_value='$value' WHERE s_auth='$auth' AND s_param='$parameter'";
+		else
+			return(0);
+	}
+	else
+	{
+		$query="INSERT INTO auth_param VALUES('$auth','$parameter','$value')";
+	}
+	$DB->samsdb_query($query);
+  }
+
+}
+
+
+function GetAuthParameter($auth,$parameter)
+{
+  global $SAMSConf;
+  $value="";
+  $DB=new SAMSDB(&$SAMSConf);
+  $num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
+  if($num_rows>0)
+  {
+	$row=$DB->samsdb_fetch_array();
+	return($row['s_value']);
+  }
+  return("");
+}
+
+
+
 function ReturnDate($string)
 {
   $newstring=sprintf("%s.%s.%s",substr($string,8,2),substr($string,5,2),substr($string,0,4));
