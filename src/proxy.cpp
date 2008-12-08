@@ -341,6 +341,21 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
               return NULL;
             }
           DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] User created.");
+
+          // Пользователя создали в автоматическом режиме, проинформируем об этом Squid.
+          DBQuery *query = _conn->newQuery ();
+          basic_stringstream < char >sqlcmd;
+          if (!query)
+            {
+              ERROR("Unable to create query.");
+            }
+          else
+            {
+              sqlcmd << "insert into reconfig (s_proxy_id, s_service, s_action)";
+              sqlcmd << " values (" << _id << ", squid, reconfig)";
+              query->sendQueryDirect (sqlcmd.str ());
+              delete query;
+            }
         }
     }
 

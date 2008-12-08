@@ -2,12 +2,16 @@
 build_docs = src/html
 
 static_docs = \
+	images \
+	sams2.css \
 	index.html \
 	overview.html \
 	requirements.html \
 	install.html \
 	setup.html \
 	configure.html \
+	license.html \
+	faq.html \
 	commands.html \
 	tables.html \
 	sams2_conf.html

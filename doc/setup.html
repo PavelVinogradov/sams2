@@ -1,11 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
+<HTML LANG="ru-RU">
 
 <HEAD>
   <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-  <TITLE>SAMS2 - Установка</TITLE>
+  <TITLE>SAMS2 - Настройка</TITLE>
   <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
   <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
 </HEAD>
 
 <BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
@@ -24,11 +25,6 @@
 
 <H1><A NAME="setup">4 Настройка</A></H1>
 
-<P>
-Здесь должно быть рассказано как настраивать пакеты, независимо от способа установки
-(из пакета или исходных текстов), зато в зависимости от типа операционной системы.
-</P>
-
 <OL>
   <LI>
     Отредактируйте конфигурационный файл <A HREF="sams2_conf.html">sams2.conf</A>, согласно
@@ -44,8 +40,36 @@
   <LI>
     Перед тем как нажать кнопку "Starting SAMS webinterface", отредактируйте вновь конфигурационный файл
     <A HREF="sams2_conf.html">sams2.conf</A>, заполнив параметры
-    <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> и
+    <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> (уже без @localhost) и
     <A HREF="sams2_conf.html#sams2.conf.db_password">DB_PASSWORD</A>
+  </LI>
+  <LI> Запустите демон.
+    <TABLE BORDER=1 CELLSPACING=0 CELLPADDING=10>
+      <TR>
+        <TD><IMG SRC="images/redhat-logo.png"></TD>
+        <TD>
+          <PRE>service sams2 start</PRE>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/freebsd-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/suse-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/ubuntu-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+    </TABLE>
   </LI>
   <LI>
     После нажатия кнопки "Starting SAMS webinterface", можно переходить к этапу
