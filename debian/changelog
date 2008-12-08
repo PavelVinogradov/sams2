@@ -1,3 +1,9 @@
+sams (1.0.5-1) unstable; urgency=low
+
+  * Official 1.0.5 release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 26 Dec 2008 19:05:44 +0500
+
 sams (1.0.4-1) unstable; urgency=low
 
   * Official 1.0.4 release
