@@ -8,7 +8,6 @@ distdir = $(PACKAGE)-$(VERSION)
 dist-hook:
 	find $(distdir) -type d -name .svn | xargs rm -rf
 
-# TODO: Не копировать wbinfo, вообще нужно как-то избавлятся от этой команды внутри дистрибутива
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)/$(datadir)/$(distdir)
 	for f in `find .` ; do \

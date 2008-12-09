@@ -105,8 +105,8 @@ $group="NONE";
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   if(isset($_GET["wbinfopath"])) $wbinfopath=$_GET["wbinfopath"];
   if(isset($_GET["ntlmdomain"])) $ntlmdomain=SetCheckBoxValue($_GET["ntlmdomain"]);
-  if(isset($_GET["bigdomain"])) $bigdomain=SetCheckBoxValue($_GET["bigdomain"]);
-  if(isset($_GET["bigusername"])) $bigusername=SetCheckBoxValue($_GET["bigusername"]);
+  if(isset($_GET["bigdomain"])) $bigdomain=$_GET["bigdomain"];
+  if(isset($_GET["bigusername"])) $bigusername=$_GET["bigusername"];
   if(isset($_GET["parser_on"])) $parser_on=SetCheckBoxValue($_GET["parser_on"]);
   if(isset($_GET["parser"])) $parser=$_GET["parser"];
   if(isset($_GET["parser_time"])) $parser_time=$_GET["parser_time"];
@@ -120,7 +120,7 @@ $group="NONE";
   if(isset($_GET["slashe"])) $slashe=SetCheckBoxValue($_GET["slashe"]);
   if(isset($_GET["plus"])) $plus=SetCheckBoxValue($_GET["plus"]);
   if(isset($_GET["defaultdomain"])) $defaultdomain=$_GET["defaultdomain"];
-  if(isset($_GET["squidbase"])) $squidbase=SetCheckBoxValue($_GET["squidbase"]);
+  if(isset($_GET["squidbase"])) $squidbase=$_GET["squidbase"];
   if(isset($_GET["udscript"])) $udscript=$_GET["udscript"];
   if(isset($_GET["adminaddr"])) $adminaddr=$_GET["adminaddr"];
   if(isset($_GET["kbsize"])) $kbsize=$_GET["kbsize"];
@@ -360,13 +360,13 @@ function ProxyReConfigForm()
   $suser="";
   if($PROXYConf->s_usedomain==1)
     {
-      if($PROXYConf->s_bigd=="Y")            $sdomain="DOMAIN +";
-      if($PROXYConf->s_bigd=="S")            $sdomain="domain +";
-      if($PROXYConf->s_bigd=="N")            $sdomain="Domain +";
+      if($PROXYConf->s_bigd==0)            $sdomain="DOMAIN +";
+      if($PROXYConf->s_bigd==1)            $sdomain="domain +";
+      if($PROXYConf->s_bigd==2)            $sdomain="Domain +";
     }
-  if($PROXYConf->s_bigu=="Y")            $suser="USER";
-  if($PROXYConf->s_bigu=="S")            $suser="user";
-  if($PROXYConf->s_bigu=="N")            $suser="User";
+  if($PROXYConf->s_bigu==0)            $suser="USER";
+  if($PROXYConf->s_bigu==1)            $suser="user";
+  if($PROXYConf->s_bigu==2)            $suser="User";
   
   print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
   print("  </B>\n<B>)</B>\n");
@@ -382,23 +382,23 @@ function ProxyReConfigForm()
 //  print("<BR>$adminbuttom_1_prop_SamsReConfigForm_20\n");
   print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
   print("<SELECT NAME=\"bigdomain\" onchange=EnableDomainName(samsreconfigform)>\n");
-  if($PROXYConf->s_bigd==1)
-            print("<OPTION VALUE=\"Y\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+  if($PROXYConf->s_bigd==0)
+            print("<OPTION VALUE=0 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
   else
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+            print("<OPTION VALUE=0>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
      
-  if($PROXYConf->s_bigd=="S")
-            print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  if($PROXYConf->s_bigd==1)
+            print("<OPTION VALUE=1 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-  if($PROXYConf->s_bigd!="Y"&&$PROXYConf->s_bigd!="S")
-            print("<OPTION VALUE=\"N\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+            print("<OPTION VALUE=1 >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  if($PROXYConf->s_bigd==2)
+            print("<OPTION VALUE=2 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   else
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-  if($PROXYConf->s_bigd=="A")
-            print("<OPTION VALUE=\"A\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+            print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+  if($PROXYConf->s_bigd==3)
+            print("<OPTION VALUE=3 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+            print("<OPTION VALUE=3 >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   
   
   
@@ -406,19 +406,19 @@ function ProxyReConfigForm()
 
   print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
   print("<SELECT NAME=\"bigusername\" onchange=EnableDomainName(samsreconfigform)>\n");
-  if($PROXYConf->s_bigu==1)
-            print("<OPTION VALUE=\"Y\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+  if($PROXYConf->s_bigu==0)
+            print("<OPTION VALUE=0 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
   else
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+            print("<OPTION VALUE=0>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
      
-  if($PROXYConf->s_bigu=="S")
-            print("<OPTION VALUE=\"S\" SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  if($PROXYConf->s_bigu==1)
+            print("<OPTION VALUE=1 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
   else
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-  if($PROXYConf->s_bigu!="Y"&&$PROXYConf->s_bigu!="S")
-            print("<OPTION VALUE=\"N\" SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+            print("<OPTION VALUE=1 >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  if($PROXYConf->s_bigu==2)
+            print("<OPTION VALUE=2 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   else
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+            print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
   
   print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
@@ -482,19 +482,19 @@ function ProxyReConfigForm()
        print("  var enabled=formname.ntlmdomain.checked; \n");
        print("  var bigdomain=formname.bigdomain.value; \n");
        print("  var bigusername=formname.bigusername.value; \n");
-       print("  if(bigdomain=='Y') \n");
+       print("  if(bigdomain==0) \n");
        print("    {\n");
        print("       domain='DOMAIN'; \n");
        print("    }\n");
-       print("  if(bigdomain=='N') \n");
+       print("  if(bigdomain==2) \n");
        print("    {\n");
        print("       domain='Domain'; \n");
        print("    }\n");
-       print("  if(bigusername=='Y') \n");
+       print("  if(bigusername==0) \n");
        print("    {\n");
        print("       user='USER'; \n");
        print("    }\n");
-       print("  if(bigusername=='N') \n");
+       print("  if(bigusername==2) \n");
        print("    {\n");
        print("       user='User'; \n");
        print("    }\n");
