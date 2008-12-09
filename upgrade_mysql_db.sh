@@ -5,7 +5,7 @@
 # Чтобы обновить базу с версии versions[i-1] до версии versions[i], нужно выполнить команды db_cmd[i]
 # Первый элемент в массиве db_cmd должен быть пустой
 
-versions=("1.9.9" "2.9.9" "3.9.9" "4.9.9")
+versions=("1.9.9" "2.9.9" "3.9.9" "4.9.9" "5.9.9")
 db_cmd[0]=""
 db_cmd[1]="CREATE TABLE sysinfo (                              \
  s_proxy_id INT              NOT NULL ,                        \
@@ -15,19 +15,20 @@ db_cmd[1]="CREATE TABLE sysinfo (                              \
  s_info     VARCHAR( 1024 )  NOT NULL DEFAULT 'not available', \
  s_date     DATETIME         NOT NULL ,                        \
  s_status   INT              NOT NULL                          \
-) ENGINE = MYISAM;"
+);"
 db_cmd[2]="ALTER TABLE redirect ADD s_dest VARCHAR( 128 ) NULL;"
 db_cmd[3]="ALTER TABLE shablon ADD s_shablon_id2 BIGINT( 20 ) UNSIGNED NULL;"
 
-db_cmd[28] = "create table auth_param (	\
+db_cmd[4]="CREATE TABLE auth_param (	\
  s_auth varchar(4) default '', 		\
  s_param varchar(50) default '', 	\
- s_value varchar(50) default '')";
-db_cmd[29] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
-db_cmd[30] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
-db_cmd[31] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
-db_cmd[32] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
-db_cmd[33] = "INSERT INTO auth_param VALUES('ip', 'enabled', '1')";
+ s_value varchar(50) default ''		\
+);					\
+INSERT INTO auth_param VALUES('ncsa', 'enabled', '0');	\
+INSERT INTO auth_param VALUES('ldap', 'enabled', '0');	\
+INSERT INTO auth_param VALUES('adld', 'enabled', '0');	\
+INSERT INTO auth_param VALUES('ncsa', 'enabled', '0');	\
+INSERT INTO auth_param VALUES('ip', 'enabled', '1');"
 
 
 
