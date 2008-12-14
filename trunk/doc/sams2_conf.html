@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Конфигурационный файл</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Приложения</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><BR></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1 ALIGN=center>Приложение 3. Конфигурационный файл sams2.conf</H1>
+
+<TABLE WIDTH="100%" BORDER="1" CELLPADDING="3" CELLSPACING="0">
+  <TR>
+    <TH WIDTH="15%">Параметр</TH>
+    <TH WIDTH="85%">Описание</TH>
+  </TR>
+  <TR>
+    <TD>DB_ENGINE</TD>
+    <TD>
+      Тип СУБД, используемой во время работы SAMS2. Возможные значения:
+      <LU>
+        <LI>MySQL</LI>
+        <LI>PostgreSQL</LI>
+        <LI>unixODBC</LI>
+      </LU>
+    </TD>
+  </TR>
+  <TR>
+    <TD>DB_SERVER</TD>
+    <TD>Имя хоста или IP адрес, где находится СУБД.</TD>
+  </TR>
+  <TR>
+    <TD>SAMS_DB</TD>
+    <TD>Имя базы данных, используемое для <A HREF="tables.html">таблиц</A> SAMS2.</TD>
+  </TR>
+  <TR>
+    <TD>ODBC</TD>
+    <TD>Поставить 1 если DB_ENGINE=unixODBC и 0 в других случаях.</TD>
+  </TR>
+  <TR>
+    <TD>ODBCSOURCE</TD>
+    <TD>Источник, как прописано в odbc.ini. Не используется если DB_ENGINE != unixODBC</TD>
+  </TR>
+  <TR>
+    <TD><A NAME="sams2.conf.db_user">DB_USER</A></TD>
+    <TD>Имя пользователя, используемое для подключения к СУБД.</TD>
+  </TR>
+  <TR>
+    <TD><A NAME="sams2.conf.db_password">DB_PASSWORD</A></TD>
+    <TD>Пароль (в открытом виде), используемый для подключения к СУБД.</TD>
+  </TR>
+  <TR>
+    <TD>SQUIDCACHEFILE</TD>
+    <TD>Имя файла логов SQUID. <SPAN STYLE='color:red'>Будет заменен на SQUIDCONF.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUIDROOTDIR</TD>
+    <TD>Путь к директории, где лежит конфиг SQUID. <SPAN STYLE='color:red'>Будет заменен на SQUIDCONF.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUIDLOGDIR</TD>
+    <TD>Путь к директории, где лежит файл логов SQUID. <SPAN STYLE='color:red'>Будет заменен на SQUIDCONF.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUIDCACHEDIR</TD>
+    <TD>Путь к кэшу SQUID. Необходимо для работы функции восстановления файлов из кэша SQUID. <SPAN STYLE='color:red'>Будет заменен на SQUIDCONF.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUIDCONF</TD>
+    <TD>Полный путь к конфигурационному файлу SQUID. <SPAN STYLE='color:green'>Еще не используется.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUID</TD>
+    <TD>Полный путь к исполняемому файлу SQUID. <SPAN STYLE='color:green'>Еще не используется.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SAMSPATH</TD>
+    <TD>Путь, куда установлен SAMS. <SPAN STYLE='color:red'>Не используется.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>SQUIDPATH</TD>
+    <TD>Путь к директории, где лежит исполняемый файл SQUID. <SPAN STYLE='color:red'>Будет заменен на SQUID.</SPAN></TD>
+  </TR>
+  <TR>
+    <TD>RECODECOMMAND</TD>
+    <TD>
+      Команда перекодирования имен пользователей. Если вы хотите использовать NTLM или AD авторизацию
+      и у вас есть имена пользователей на руссокм языке, измените этот параметр в соответствии с остальными
+      настройками кодировок.
+    </TD>
+  </TR>
+  <TR>
+    <TD><A NAME="sams2.conf.shutdowncommand">SHUTDOWNCOMMAND</A></TD>
+    <TD>Команда, выполняемая при нажатии на кнопку <IMG SRC="images/shutdown_32.jpg"> ("Shutdown proxy server")</TD>
+  </TR>
+  <TR>
+    <TD>CHECKPASSWDDB</TD>
+    <TD>
+      Проверять или нет наличие пользователя в системе, если используется автоматическое
+      создание пользователей.
+      <LU>
+        <LI>0 или отсутствие параметра - не проверять</LI>
+        <LI>1 - проверять</LI>
+      </LU>
+    </TD>
+  </TR>
+  <TR>
+    <TD>CACHENUM</TD>
+    <TD>Число. Идентификатор прокси сервера. Для каждого прокси должен быть уникальным.</TD>
+  </TR>
+</TABLE>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><BR></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

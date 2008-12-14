@@ -1,0 +1,2 @@
+FS=`df -P -h | grep "/" | grep -v devfs`
+echo $FS

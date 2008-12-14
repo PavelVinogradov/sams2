@@ -1,0 +1,22 @@
+SAMS for Debian
+---------------
+
+SAMS split into two packages:
+ sams - main package, contain all daemons and log parsers. Also include 
+        database files.
+ sams-web - web interface for squid administration
+
+This package not finished yet. It miss some issues:
+ - Write real manpages for all binary
+ - Write pre* scripts to:
+ 	handle package updates
+	automatic create database structure on install
+	update config file
+ - Fix some other lintian errors
+
+All sql files placed in /usr/share/sams/mysql
+
+If you find some bugs in this package - fell free to submite bug to
+http://sams.nixdev.net/ on debpackage component.
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
