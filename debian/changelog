@@ -1,0 +1,20 @@
+sams (2.0.0-a2) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 16 Nov 2008 10:57:04 +0500
+
+
+sams (2.0.0-a1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 29 Aug 2008 10:57:04 +0500
+
+sams (1.0.0-1) unstable; urgency=low
+
+  * Initial release 
+  * Fix some problems with Makefile
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
+

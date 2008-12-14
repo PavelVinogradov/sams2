@@ -1,0 +1,194 @@
+<html>
+ <head>
+  <title>уПТФЙТПЧЛБ ФБВМЙГЩ УТЕДУФЧБНЙ JavaScript</title>
+  <meta http-equiv="Content-type" content="text/html; charset=Windows-1251">
+  <script language="JavaScript" type="text/javascript">   
+   var txt = [];
+   var flag;
+   var sorted;
+   
+   function upCs( str, param ) {    
+    var tmpStr = str.substring( 0, 1 ).toUpperCase() + str.substring( 1 );
+    if( !param )
+     return tmpStr;
+    var separator = tmpStr.indexOf( param );
+    var retStr = tmpStr;
+    if( separator != -1 )
+     retStr = tmpStr.substring( 0, separator );
+
+    while( separator != -1 ) {	 
+     tmpStr = tmpStr.substr( separator + 1, 1 ).toUpperCase() + tmpStr.substring( separator + 2 );
+     separator = tmpStr.indexOf( param );
+     if( separator != -1 )
+      retStr += param + tmpStr.substring( 0, separator );
+     else
+      retStr += param + tmpStr;
+    }
+
+    return retStr;	
+   }
+
+   function weight( str ) {
+    var retArray = [];
+	 
+    for( var i = 0; i < str.length; i++ ) {
+     var tmp = str.charCodeAt( i );
+     if( tmp >= 1046 && tmp < 1078 )
+      tmp++;
+     else if( tmp == 1025 )
+      tmp = 1046;
+     else if( tmp >= 1078 )
+      tmp++;
+     else if( tmp == 1105 )
+      tmp = 1078;
+     retArray[ i ] = tmp;
+    }
+
+    return retArray;
+   }
+
+   function fillArray( years, books, authors ) {		
+    authors = upCs( authors, " " );
+    authors = upCs( authors, "-" );
+    books = upCs( books, "" );
+
+    this.years = years;
+    this.yweight = weight( years );
+    this.books = books;
+    this.bweight = weight( books );
+    this.authors = authors;
+    this.aweight = weight( authors );
+   }
+   
+   function isLow( low, high, type ) {
+    var len1 = low[ type ].length;
+    var len2 = high[ type ].length;
+    var length = len1 < len2 ? len1 : len2;
+	
+    for( var i = 0; i < length; i++ ) {
+     var str1 = low[ type ][ i ];
+     var str2 = high[ type ][ i ];
+     if( str1 < str2 )
+      return true;
+     if( str1 > str2 )
+      return false;
+    }
+	
+    if( len1 < len2 )
+     return true;
+    return false;
+   }
+   
+   function quickSort( l, h, type ) {
+    var low = l;
+    var high = h;	
+    var rt = eval( "txt[ " + Math.round( ( l + h ) / 2 ) + " ]" );
+    var middle = new fillArray( rt.years, rt.books, rt.authors );
+	
+    do {
+	
+     while( isLow( eval( "txt[ " + low + " ]" ), middle, type ) )
+      low++;
+
+     while( isLow( middle, eval( "txt[ " + high + " ]" ), type ) )
+      high--;
+
+     if( low <= high ) {
+      var temp = txt[ low ];
+      txt[ low++ ] = txt[ high ]
+      txt[ high-- ] = temp;
+     }
+    } while( low <= high );
+
+    if( l < high )
+     quickSort( l, high, type );
+    if( low < h )
+     quickSort( low, h, type );
+   }
+
+
+   txt[ 0 ] = new fillArray( "1959", "ЖТЕКД", "УБТФТ ЦБО-РПМШ" );
+   txt[ 1 ] = new fillArray( "1940", "РПДТПУФЛЙ", "УЬМЙОДЦЕТ ДЦЕТПН" );
+   txt[ 2 ] = new fillArray( "1946", "РЕОБ ДОЕК", "ЧЙБО ВПТЙУ" );
+   txt[ 3 ] = new fillArray( "1948", "ПУБДОПЕ РПМПЦЕОЙЕ", "ЛБНА БМШВЕТ" );
+   txt[ 4 ] = new fillArray( "1899", "ПВ ЙОПЮЕУЛПК ЦЙЪОЙ", "ТЙМШЛЕ ТБКОЕТ НБТЙС" );
+   txt[ 5 ] = new fillArray( "1849", "БООБВЕМШ мЙ", "РП ЬДЗБТ" );
+   txt[ 6 ] = new fillArray( "1917", "ДБЗПО", "МБЧЛТБЖФ ЗПЧБТД" );
+   txt[ 7 ] = new fillArray( "1915", "РТПГЕУУ", "ЛБЖЛБ ЖТБОГ" );
+   txt[ 8 ] = new fillArray( "1989", "ЕЗЙРЕФ тБНУЕУПЧ", "НПОФЬ РШЕТ" );
+   txt[ 9 ] = new fillArray( "1932", "НБУФЕТ Й нБТЗБТЙФБ", "ВХМЗБЛПЧ НЙИБЙМ" );  
+
+
+  function createTable( cStart, cType, cSize, cChange ) {
+   var tabbd = document.getElementById( "tablebody" );
+
+   if( !tabbd ) {
+    var table = document.getElementById( "table" );
+    var tbody = document.createElement( "tbody" );
+    tbody.id = "tablebody";
+    table.appendChild( tbody );
+    tabbd = document.getElementById( "tablebody" );
+   }
+   
+   while( tabbd.hasChildNodes() ) {
+    var tmp = tabbd.childNodes[ 0 ];
+    tabbd.removeChild( tmp );
+   }
+      
+      
+   for( var counter = cStart; eval( counter + cType + cSize ); eval( "counter" + cChange ) ) {
+    var tr = document.createElement( "tr" );
+	
+    var td = document.createElement( "td" );
+    var tdtxt = document.createTextNode( txt[ counter ].years );
+    td.appendChild( tdtxt );
+    tr.appendChild( td );
+    td = document.createElement( "td" );
+    tdtxt = document.createTextNode( txt[ counter ].books );
+    td.appendChild( tdtxt );
+    tr.appendChild( td );
+    td = document.createElement( "td" );
+    tdtxt = document.createTextNode( txt[ counter ].authors );
+    td.appendChild( tdtxt );
+    tr.appendChild( td );
+    tabbd.appendChild( tr );	
+   }
+  }
+  
+  function allocator( arg ) {
+  
+    if( flag == arg ) {
+     if( sorted == "up" ) {
+      createTable( 0, "<", txt.length, "++" );
+      sorted = "down";
+     } else {
+      createTable( txt.length - 1, ">=", 0, "--" );
+      sorted = "up";
+     }	 
+     return;
+    }
+		
+    quickSort( 0, txt.length - 1, arg );	
+    createTable( 0, "<", txt.length, "++" );	
+    flag = arg;   
+  }
+
+  </script>
+ </head>
+ <body>
+ 
+  <table border="1" id="table">
+   <tr>
+    <td><a href="javascript:allocator( 'yweight' )">зПД</a></td>
+    <td><a href="javascript:allocator( 'bweight' )">лОЙЗБ</a></td>
+    <td><a href="javascript:allocator( 'aweight' )">бЧФПТ</a></td>
+   </tr>
+   <tbody id="tablebody"></tbody>
+  </table>
+
+ <script language="JavaScript" type="text/javascript">
+  createTable( 0, "<", txt.length, "++" );
+ </script>
+  
+ </body>
+</html>
