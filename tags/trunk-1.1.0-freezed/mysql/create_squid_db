@@ -1,0 +1,5 @@
+#!/bin/sh
+
+USER=`cat /etc/sams.conf | grep MYSQLUSER | tr "MYSQLUSER=" "\0"`
+echo "Create SQUID MySQL database"
+mysql -u $USER -p < squid_db.sql
