@@ -1,7 +1,0 @@
-#!/bin/sh
-
-STR=`df`
-
-for i in $STR; do
-  echo "$i"
-done 
