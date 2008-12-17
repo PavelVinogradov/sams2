@@ -56,12 +56,12 @@ function AuthLDAPReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"basedn\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP administrator</B>\n");
+  print("<TD><B>Bind DN</B>\n");
   $value=GetAuthParameter("ldap","adadmin");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adadmin\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP administrator password</B>\n");
+  print("<TD><B>Bind password</B>\n");
   $value=GetAuthParameter("ldap","adadminpasswd");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adadminpasswd\" VALUE=\"$value\">\n");
 

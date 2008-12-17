@@ -31,16 +31,17 @@ class sams_ldap {
 
     function Authenticate($user, $passwd)
     {
-	$ldbind=$this->ld->bind("UID=$user,$this->group","$passwd");
+	$ldbind=$this->ld->bind("UID=$user,$this->group,$this->base_dn","$passwd");
 	return($ldbind);
     }	
 
     function GetUsersData()
     {
 	$userdata = array();
-	$filter="$this->group";
-	$array=array('cn','userid','dn');
-        if($sr = $this->ld->searchSubtree($filter,"cn=*",$array))
+	$basedn="$this->group,$this->base_dn";
+
+	$array=array('cn','uid');
+        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
 	{
 	    if ($entry = $sr->firstEntry()) 
 	    {
@@ -50,7 +51,6 @@ class sams_ldap {
 	        {
 		    $attrs = $entry->getAttributes();
 		    $userdata['cn'][$i]=$attrs['cn'][0];
-		    $userdata['userid'][$i]=$attrs['userid'][0];
 		    $userdata['uid'][$i]=$attrs['uid'][0];
 		    $i++;
 	        }
@@ -62,9 +62,9 @@ class sams_ldap {
     function GetUsersFromGroupID($gid)
     {
 	$userdata = array();
-	$filter="$this->group";
-	$array=array('cn','userid','dn','gidNumber');
-        if($sr = $this->ld->searchSubtree($filter,"cn=*",$array))
+	$basedn="$this->group,$this->base_dn";
+	$array=array('cn','uid','gidNumber');
+        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
 	{
 	    if ($entry = $sr->firstEntry()) 
 	    {
@@ -76,24 +76,21 @@ class sams_ldap {
 		    if($attrs['gidNumber'][0]==$gid)
 		    {
 			$userdata['cn'][$i]=$attrs['cn'][0];
-			$userdata['userid'][$i]=$attrs['userid'][0];
 			$userdata['uid'][$i]=$attrs['uid'][0];
-echo $userdata['cn'][$i]." - ".$userdata['userid'][$i]." - ".$userdata['uid'][$i]."<BR>";
-		    $i++;
+			$i++;
 		    }
 	        }
 	    } 
 	    $userdata['userscount']=$i;
 	}
-echo "count=$i<BR>";
 	return($userdata); 
     }
     function GetGroupsData()
     {
 	$groupdata = array();
-	$filter="ou=Group,$this->base_dn";
+	$basedn="ou=Group,$this->base_dn";
 	$array=array('cn','dn','gidNumber');
-        if($sr = $this->ld->searchSubtree($filter,"cn=*",$array))
+        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
 	{
 	    if ($entry = $sr->firstEntry()) 
 	    {

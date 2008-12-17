@@ -33,17 +33,15 @@ function AddUsersFromLDAP()
        $domain=$domainname;    
 
   $i=0;
-echo "AddUsersFromLDAP";
 
   while(strlen($userlist[$i])>0)
      {
-       print("userlist=$userlist[$i] enabled=$enabled  '$usergroup', '$usershablon', '$domain'<BR>");
 
-       $string=$userlist[$i];
-       $i++;
-       $user="$string";
-
-	$num_rows=$DB->samsdb_query("INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')");
+	$string=$userlist[$i];
+	$i++;
+	$user="$string";
+	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')";
+	$num_rows=$DB->samsdb_query($query);
 
 
      }
@@ -189,7 +187,7 @@ function AddUsersFromLDAPForm()
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
 			{
-				print("<OPTION VALUE=\"$user\"> <B>$username</B> ($user) \n");
+				print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
 			}
 			$DB->free_samsdb_query();
 		}

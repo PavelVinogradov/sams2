@@ -81,12 +81,12 @@ function AuthLDAPValues()
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Root DN</B>\n");
+  print("<TD><B>Bind DN</B>\n");
   $value=GetAuthParameter("ldap","adadmin");
   print("<TD>$value\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP administrator password</B>\n");
+  print("<TD><B>Bind password</B>\n");
   $value=GetAuthParameter("ldap","adadminpasswd");
   print("<TD>$value\n");
 
