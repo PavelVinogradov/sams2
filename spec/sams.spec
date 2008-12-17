@@ -5,11 +5,11 @@
 Name:          sams2
 Version:       2.0.0
 Release:       a2
-Epoch:         569
+Epoch:         579
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
-Source:        %{name}-%{version}-%{epoch}.tar.gz
+Source:        %{name}-%{version}-%{epoch}.tar.bz2
 URL:           http://sams.perm.ru
 Packager:      SAMS Development Group
 Requires:      mysql, pcre, squid, samba

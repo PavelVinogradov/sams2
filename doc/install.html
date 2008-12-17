@@ -84,6 +84,12 @@
       и добавить опцию --with-srcdocs.
     </P>
     <P><PRE>$ sh ./configure --with-srcdocs</PRE></P>
+    <P>
+    <SPAN STYLE='color:red'>
+      Запомните пути, которые выводятся в самом конце, они вам понадобятся в дальнейшем,
+      на этапе <A HREF="#systemconfig">системных настроек</A>.
+    </SPAN>
+    </P>
   </LI>
 
   <LI>
@@ -148,9 +154,9 @@
           Воспользуйтесь предпочитаемым редактором или возьмите за основу следующую команду:
           <PRE>sed -i -e 's|__CONFDIR|/usr/local/etc|' -e 's|__PREFIX|/usr/local/bin|' /etc/init.d/sams2</PRE>
           Добавьте скрипт в базу данных chkconfig.
-          <PRE>chkconfig --add sams2</PRE>
+          <PRE>/sbin/chkconfig --add sams2</PRE>
           Включите его выполнение на уровнях по умолчанию.
-          <PRE>chkconfig sams2 on</PRE>
+          <PRE>/sbin/chkconfig sams2 on</PRE>
         </TD>
       </TR>
       <TR>

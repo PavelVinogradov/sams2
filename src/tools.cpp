@@ -38,12 +38,17 @@ string StripComments (const string & str)
   if (str.empty ())
     return "";
 
+  res = TrimSpaces(str);
+  if (res[0] == '#' || res[0] == ';')
+    res = "";
+/*
   res = str;
   hash_pos = res.find_first_of ("#;");
   if (hash_pos >= 0)
     {
       res = res.substr (0, hash_pos);
     }
+*/
   return res;
 }
 

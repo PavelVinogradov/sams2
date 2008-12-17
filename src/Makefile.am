@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = foreign 1.4
 BUILT_SOURCES =
 CLEANFILES =
 DISTCLEANFILES = Makefile.in config.h.in

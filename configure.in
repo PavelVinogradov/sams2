@@ -74,12 +74,29 @@ fi
 AC_CONFIG_FILES([Makefile src/Makefile php/Makefile doc/Makefile plugins/loadavg/Makefile])
 AC_OUTPUT
 
+eval path_sysconfdir=$sysconfdir
+eval path_bindir=$bindir
+eval path_bindir=$path_bindir
+eval path_datadir=$datadir
+eval path_datadir=$path_datadir
+
 echo ""
 echo "Use MySQL API:      $use_mysql_dev"
 echo "Use PostgreSQL API: $use_pq_dev"
 echo "Use unixODBC API:   $use_unixodbc_dev"
 echo "Using pcre:         $which_pcre"
 echo "Use dynamic plugin: $use_dl_dev"
+echo ""
+echo "Locations:"
+echo "config file:        $path_sysconfdir/sams2.conf"
+echo "daemons:            $path_bindir"
+echo "web interface:      $path_datadir/${PACKAGE}-${VERSION}"
+echo "documentation:      $path_datadir/doc/${PACKAGE}-${VERSION}"
+echo ""
+echo "Note: If later on, you will use"
+echo "      make install exec_prefix=/foo"
+echo "   or make install DESTDIR=/tmp/package"
+echo "      the locations above would be incorrect"
 echo ""
 
 if test "$which_pcre" = "none"; then

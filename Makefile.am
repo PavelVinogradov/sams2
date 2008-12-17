@@ -1,6 +1,6 @@
 # not a GNU package. You can remove this line, if
 # have all needed files, that a GNU package needs
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src php doc plugins/loadavg
 bin_SCRIPTS = scripts/sams_send_email
@@ -16,4 +16,9 @@ install-data-local:
 	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
 	if [ ! -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
 		$(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir) ;\
+	fi
+
+uninstall-local:
+	if [ -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
+		mv $(DESTDIR)/$(sysconfdir)/sams2.conf $(DESTDIR)/$(sysconfdir)/sams2.conf.save ;\
 	fi
