@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = foreign 1.4
 pkglib_LTLIBRARIES = libloadavg.la
 
 libloadavg_la_SOURCES = loadavg.cpp

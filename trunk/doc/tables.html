@@ -87,6 +87,10 @@
 		<TD><A HREF="#cachesum">cachesum</A></TD>
 		<TD>Суммарная информация о трафике пользователей за однодневный период.</TD>
 	</TR>
+        <TR>
+                <TD><A HREF="#auth_param">auth_param</A></TD>
+                <TD>Параметры различных способов авторизации.</TD>
+        </TR>
 </TABLE>
 
 <BR>
@@ -1280,6 +1284,49 @@
 <BR>
 <BR>
 
+<A NAME="auth_param"><B>Таблица auth_param</B></A> – Параметры различных способов авторизации.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+        <TR>
+                <TH WIDTH="10%"> <B>Имя поля</B> </TH>
+                <TH WIDTH="10%"> <B>Тип поля</B> </TH>
+                <TH WIDTH="15%"> <B>Параметры</B> </TH>
+                <TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+                <TH WIDTH="55%"> <B>Описание</B> </TH>
+        </TR>
+        <TR>
+                <TD> s_auth </TD>
+                <TD> varchar(4) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD>
+                    Тип авторизации. Возможные значения:
+                    <LU>
+                      <LI>ip – по IP адресу</LI>
+                      <LI>ncsa – по имени/паролю</LI>
+                      <LI>ntlm – в домене Windows</LI>
+                      <LI>adld – в ActiveDirectory</LI>
+                      <LI>ldap – в OpenLDAP</LI>
+                    </LU>
+                </TD>
+        </TR>
+        <TR>
+                <TD> s_param </TD>
+                <TD> varchar(50) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+        </TR>
+        <TR>
+                <TD> s_value </TD>
+                <TD> varchar(50) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+        </TR>
+</TABLE>
+
+<BR>
+<BR>
 
 Дополнительно создаются индексы:<BR>
 CREATE UNIQUE INDEX idx_squidcache on squidcache ( s_user, s_proxy_id );<BR>

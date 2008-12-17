@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = foreign 1.4
 
 build_docs = src/html
 
@@ -24,7 +25,7 @@ else
 doc_list = $(static_docs)
 endif
 
-doc_DATA = $(doc_list)
+#doc_DATA = $(doc_list)
 
 EXTRA_DIST = $(doc_list)
 
@@ -42,7 +43,7 @@ src/html: src/Doxyfile
 	cd src && doxygen Doxyfile
 endif
 
-install-data-am: $(doc_list)
+install-data-local: $(doc_list)
 	$(mkinstalldirs) $(DESTDIR)/$(docdir)
 	for f in $(doc_list) ; do \
 		if [ -d "$$f" ] ; then \
@@ -53,8 +54,8 @@ install-data-am: $(doc_list)
 		fi \
 	done
 
-uninstall-data:
-	test -d $(DESTDIR)/$(docdir)/src/html && rm -rf $(DESTDIR)/$(docdir)/src/html
+uninstall-local:
+	rm -fr $(DESTDIR)/$(docdir)
 
 if BUILD_SRC_DOCS
 distclean-am: clean-am distclean-generic

@@ -1,6 +1,6 @@
 # not a GNU package. You can remove this line, if
 # have all needed files, that a GNU package needs
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign 1.4
 
 DISTCLEANFILES = Makefile.in
 distdir = $(PACKAGE)-$(VERSION)
@@ -24,3 +24,6 @@ install-data-local:
 	done
 	sed -i -e 's,__VERSION,$(VERSION),g' $(DESTDIR)/$(datadir)/$(distdir)/dbclass.php
 	sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php
+
+uninstall-local:
+	rm -fr $(DESTDIR)/$(datadir)/$(distdir)
