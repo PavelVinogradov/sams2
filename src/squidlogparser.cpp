@@ -20,6 +20,7 @@
 #include "config.h"
 #include "configmake.h"
 #include <string.h>
+#include <stdlib.h>
 
 #include "dbconn.h"
 #include "dbquery.h"
