@@ -22,6 +22,8 @@
 #include <dlfcn.h>
 #endif
 
+#include <stdlib.h>
+#include <string.h>
 #include "pluginlist.h"
 #include "samsconfig.h"
 #include "proxy.h"
