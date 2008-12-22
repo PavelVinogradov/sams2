@@ -13,7 +13,10 @@ function AuthLDAPReConfig()
   UpdateAuthParameter("ldap","basedn");
   UpdateAuthParameter("ldap","adadmin");
   UpdateAuthParameter("ldap","adadminpasswd");
-  UpdateAuthParameter("ldap","usergroup");
+  UpdateAuthParameter("ldap","usersrdn");
+  UpdateAuthParameter("ldap","usersfilter");
+  UpdateAuthParameter("ldap","groupsrdn");
+  UpdateAuthParameter("ldap","groupsfilter");
 
 }
 
@@ -46,7 +49,7 @@ function AuthLDAPReConfigForm()
 
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP server</B>\n");
+  print("<TD><B>Server</B>\n");
   $value=GetAuthParameter("ldap","ldapserver");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ldapserver\" VALUE=\"$value\" >\n");
 
@@ -66,9 +69,24 @@ function AuthLDAPReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adadminpasswd\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP user group</B>\n");
-  $value=GetAuthParameter("ldap","usergroup");
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"usergroup\" VALUE=\"$value\">\n");
+  print("<TD><B>Users RDN</B>\n");
+  $value=GetAuthParameter("ldap","usersrdn");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"usersrdn\" VALUE=\"$value\">\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Users filter</B>\n");
+  $value=GetAuthParameter("ldap","usersfilter");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"usersfilter\" VALUE=\"$value\">\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Groups RDN</B>\n");
+  $value=GetAuthParameter("ldap","groupsrdn");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"groupsrdn\" VALUE=\"$value\">\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Groups filter</B>\n");
+  $value=GetAuthParameter("ldap","groupsfilter");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"groupsfilter\" VALUE=\"$value\">\n");
 
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");

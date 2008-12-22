@@ -2,17 +2,23 @@
 class sams_ldap {
     var $base_dn;
     var $host;
-    var $group;
+    var $usersrdn;
+    var $usersfilter;
+    var $groupsrdn;
+    var $groupsfilter;
     var $user;
     var $password;
     var $connection;
     var $ld;
     
-    function sams_ldap($host, $basedn, $group, $user, $passwd)
+    function sams_ldap($host, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $user, $passwd)
     {
 	$this->host=$host;
 	$this->base_dn=$basedn;
-	$this->group=$group;
+	$this->usersrdn=$usersrdn;
+	$this->usersfilter=$usersfilter;
+	$this->groupsrdn=$groupsrdn;
+	$this->groupsfilter=$groupsfilter;
 	$this->user=$user;
 	$this->password=$passwd;
 	$this->ld = new ldap($this->host);
@@ -31,84 +37,108 @@ class sams_ldap {
 
     function Authenticate($user, $passwd)
     {
-	$ldbind=$this->ld->bind("UID=$user,$this->group,$this->base_dn","$passwd");
+	$ldbind=$this->ld->bind("uid=$user,$this->usersrdn,$this->base_dn","$passwd");
 	return($ldbind);
     }	
 
     function GetUsersData()
     {
 	$userdata = array();
-	$basedn="$this->group,$this->base_dn";
+	$basedn="$this->usersrdn,$this->base_dn";
+	$filter="$this->usersfilter";
+	if (is_null($filter) || empty($filter)) {
+		$filter = "(cn=*)";
+	}
 
 	$array=array('cn','uid');
-        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
+        if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
 	{
+	    $i=0;
 	    if ($entry = $sr->firstEntry()) 
 	    {
 		$attrs = $entry->getAttributes();
-		$i=0;
+		$userdata['cn'][$i]=$attrs['cn'][0];
+		$userdata['uid'][$i]=$attrs['uid'][0];
 	        while ($entry->nextEntry()) 
 	        {
+		    $i++;
 		    $attrs = $entry->getAttributes();
 		    $userdata['cn'][$i]=$attrs['cn'][0];
 		    $userdata['uid'][$i]=$attrs['uid'][0];
-		    $i++;
 	        }
+		$i++;
 	    } 
 	    $userdata['userscount']=$i;
 	}
 	return($userdata); 
     }
-    function GetUsersFromGroupID($gid)
+    function GetUsersWithPrimaryGroupID($gid)
     {
 	$userdata = array();
-	$basedn="$this->group,$this->base_dn";
+	$basedn="$this->usersrdn,$this->base_dn";
 	$array=array('cn','uid','gidNumber');
-        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
+
+        if($sr = $this->ld->searchSubtree($basedn,"(gidNumber=$gid)",$array))
 	{
+	    $i=0;
 	    if ($entry = $sr->firstEntry()) 
 	    {
 		$attrs = $entry->getAttributes();
-		$i=0;
+		$userdata['cn'][$i]=$attrs['cn'][0];
+		$userdata['uid'][$i]=$attrs['uid'][0];
 	        while ($entry->nextEntry()) 
 	        {
-		    $attrs = $entry->getAttributes();
-		    if($attrs['gidNumber'][0]==$gid)
-		    {
+			$i++;
+			$attrs = $entry->getAttributes();
 			$userdata['cn'][$i]=$attrs['cn'][0];
 			$userdata['uid'][$i]=$attrs['uid'][0];
-			$i++;
-		    }
 	        }
+		$i++;
 	    } 
 	    $userdata['userscount']=$i;
 	}
+	return($userdata); 
+    }
+    function GetUsersWithSecondaryGroupID($gid)
+    {
+	$userdata = array();
+	$basedn="$this->usersrdn,$this->base_dn";
+	$array=array('cn','uid','gidNumber');
+
 	return($userdata); 
     }
     function GetGroupsData()
     {
 	$groupdata = array();
-	$basedn="ou=Group,$this->base_dn";
-	$array=array('cn','dn','gidNumber');
-        if($sr = $this->ld->searchSubtree($basedn,"cn=*",$array))
+	$basedn="$this->groupsrdn,$this->base_dn";
+        $filter="$this->groupsfilter";
+	if (is_null($filter) || empty($filter)) {
+		$filter = "(cn=*)";
+	}
+
+	$array=array('cn','description','gidNumber');
+        if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
 	{
+	    $i=0;
 	    if ($entry = $sr->firstEntry()) 
 	    {
 		$attrs = $entry->getAttributes();
-		$i=0;
+		$groupdata['cn'][$i]=$attrs['cn'][0];
+		$groupdata['description'][$i]=$attrs['description'][0];
+		$groupdata['gidNumber'][$i]=$attrs['gidNumber'][0];
 	        while ($entry->nextEntry()) 
 	        {
+		    $i++;
 		    $attrs = $entry->getAttributes();
 		    $groupdata['cn'][$i]=$attrs['cn'][0];
-		    $groupdata['dn'][$i]=$attrs['dn'][0];
+		    $groupdata['description'][$i]=$attrs['description'][0];
 		    $groupdata['gidNumber'][$i]=$attrs['gidNumber'][0];
-		    $i++;
 	        }
+		$i++;
 	    } 
 	    $groupdata['groupscount']=$i;
 	}
-																					return($groupdata); 
-					    
+        return($groupdata); 
     }
 }
 
