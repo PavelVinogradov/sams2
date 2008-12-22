@@ -32,7 +32,7 @@ using namespace std;
 
 string StripComments (const string & str)
 {
-  int hash_pos;
+//  int hash_pos;
   string res;
 
   if (str.empty ())

@@ -18,19 +18,15 @@ function AddUsersFromLDAP()
    $SAMSConf->access=UserAccess();
    if($SAMSConf->access!=2)     {       exit;     }
  
-  if(isset($_GET["domainname"])) $domainname=$_GET["domainname"];
   if(isset($_GET["username"])) $userlist=$_GET["username"];
   if(isset($_GET["groupname"])) $usergroup=$_GET["groupname"];
   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
   if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
-  if(isset($_GET["domain"])) $domain=$_GET["domain"];
 
   if($enabled=="on")
      $enabled=1;
   else
      $enabled=-1;      
-  if(strlen($domainname)>1)
-       $domain=$domainname;    
 
   $i=0;
 
@@ -69,7 +65,7 @@ function AddUsersFromLDAPForm()
   if($SAMSConf->access!=2)     {       exit;     }
   
 
-  PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP $addgroupname");
+  PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
   
 
 	$DB=new SAMSDB(&$SAMSConf);
@@ -78,76 +74,54 @@ function AddUsersFromLDAPForm()
 	$basedn=GetAuthParameter("ldap","basedn");
 	$adadmin=GetAuthParameter("ldap","adadmin");
 	$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
-	$usergroup=GetAuthParameter("ldap","usergroup");
+	$usersrdn=GetAuthParameter("ldap","usersrdn");
+	$usersfilter=GetAuthParameter("ldap","usersfilter");
+	$groupsrdn=GetAuthParameter("ldap","groupsrdn");
+	$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
 	include('ldap.php');
-	$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
 
 
 	if($samsldap != NULL)
 	{
-
-
-/*
-		if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
-		{
-			$a=$samsldap->GetGroupsData();
-//			$a=$ldap->group_users($ldapgroup);
-			$acount=count($a);
-		}
-		else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
-		{
-			$a=$samsldap->GetGroupsData();
-//			$a=$ldap->group_users($ldapgroup);
-			$acount=count($a);
-		}
-		else
-		{
-			$a=$samsldap->GetUsersData();
-//			$a=$ldap->group_users($ldapgroup);
-			$acount=count($a);
-		}
-*/
-
-/*
-		$userdata=$samsldap->GetUsersData();
-		for($j=0;$j<$userdata['userscount'];$j++)
-		{
-			echo "$j: - ".$userdata['userid'][$j]." - ".$userdata['cn'][$j]." - ".$userdata['uid'][$j]."<BR>";
-		}
-*/
-/*
-		$userdata=$samsldap->GetUsersFromGroupID(500);
-		for($j=0;$j<$userdata['userscount'];$j++)
-		{
-			echo "$j: - ".$userdata['userid'][$j]." - ".$userdata['cn'][$j]." - ".$userdata['uid'][$j]."<BR>";
-		}
-*/
-
-
-/*
-		$groupdata=$samsldap->GetGroupsData();
-		for($j=0;$j<$groupdata['groupscount'];$j++)
-		{
-			echo "$j: - ".$groupdata['dn'][$j]." - ".$groupdata['cn'][$j]." - ".$groupdata['gidNumber'][$j]."<BR>";
-		}
-		echo "</TABLE>";
-*/
-
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
 			$a=$samsldap->GetUsersData();
 		else
-			$a=$samsldap->GetUsersFromGroupID(500);
+		{
+			$a=$samsldap->GetUsersWithPrimaryGroupID($addgroupname);
+			$b=$samsldap->GetUsersWithSecondaryGroupID($addgroupname);
+		}
 		$groupinfo=$samsldap->GetGroupsData();
 
 		print("<FORM NAME=\"SelectUsersGroup\" ACTION=\"main.php\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addusersfromldapform\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authldapbuttom_2_usersadd.php\">\n");
-	        print("<TABLE CLASS=samstable>");
-        	print("<TH width=5%>No");
-        	print("<TH >LDAP users");
-        	print("<TH >");
+
+// Uncomment the following block to show users either from selected group or entire list
+/*
+                print("<H2>LDAP users</H2>");
+                print("<TABLE CLASS=samstable>");
+                print("<TH width=5%>No");
+                print("<TH >Name");
+                print("<TH >Common name");
+                for($j=0;$j<$a['userscount'];$j++)
+                {
+                        echo "<TR><TD>$j<TD> ".$a['uid'][$j];
+                        echo "<TD> ".$a['cn'][$j];
+                }
+                for($j=0;$j<$b['userscount'];$j++)
+                {
+                        echo "<TR><TD>$j<TD> ".$b['uid'][$j];
+                        echo "<TD> ".$b['cn'][$j];
+                }
+                echo "</TABLE>";
+*/
+
+		$SELECTED="";
+		if($addgroupname=="_allgroups_" || $addgroupname=="")
+			$SELECTED="SELECTED";
 		print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1\n");
 		print("<TD><SELECT NAME=\"addgroupname\">\n");
 		print("<OPTION VALUE=\"_allgroups_\"> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5 \n");
@@ -155,7 +129,10 @@ function AddUsersFromLDAPForm()
 		{
 			$groupname=$groupinfo['cn'][$i];
 			$gid=$groupinfo['gidNumber'][$i];
-			print("<OPTION VALUE=\"$gid\"> $groupname \n");
+			$SELECTED="";
+			if ($gid==$addgroupname)
+				$SELECTED="SELECTED";
+			print("<OPTION VALUE=\"$gid\" $SELECTED> $groupname \n");
 		}
 		print("</SELECT>\n");
 		print("</TABLE>\n");
@@ -177,12 +154,25 @@ function AddUsersFromLDAPForm()
 			printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $getgroup</B><BR>");
 		else
 			print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
+
 		print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
-    
 		for($i=0;$i<$a['userscount'];$i++)
 		{
 			$user=$a['uid'][$i];
 			$username=$a['cn'][$i];
+
+			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
+			if($num_rows==0)  
+			{
+				print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
+			}
+			$DB->free_samsdb_query();
+		}
+
+		for($i=0;$i<$b['userscount'];$i++)
+		{
+			$user=$b['uid'][$i];
+			$username=$b['cn'][$i];
 
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
@@ -199,9 +189,6 @@ function AddUsersFromLDAPForm()
   
 		print("<TR><TD><P>\n");
 		print("<TR><TD>\n");
-		print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_7\n");
-		print("<TD>\n");
-		print("<INPUT TYPE=\"TEXT\" NAME=\"domainname\" id=Show VALUE=\"$basedn\">\n");
 
 		print("<TR><TD>\n");
 		print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");

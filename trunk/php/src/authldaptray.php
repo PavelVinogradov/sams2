@@ -19,38 +19,44 @@ $info=array();
 	$basedn=GetAuthParameter("ldap","basedn");
 	$adadmin=GetAuthParameter("ldap","adadmin");
 	$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
-	$usergroup=GetAuthParameter("ldap","usergroup");
+	$usersrdn=GetAuthParameter("ldap","usersrdn");
+	$usersfilter=GetAuthParameter("ldap","usersfilter");
+	$groupsrdn=GetAuthParameter("ldap","groupsrdn");
+	$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
-/*
-	$LDAPBASEDN2=strtok($basedn,".");
-	$LDAPBASEDN="DC=$LDAPBASEDN2";
-	while(strlen($LDAPBASEDN2)>0)
-	{
-		$LDAPBASEDN2=strtok(".");
-		if(strlen($LDAPBASEDN2)>0)
-			$LDAPBASEDN="$LDAPBASEDN,DC=$LDAPBASEDN2";
-	}
-*/
 	print("<H1>Test LDAP connection</H1>");
 	include('ldap.php');
-	$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
 	if($samsldap != NULL)
 	{
 
-		$userdata=$samsldap->GetUsersData();
+		$groupdata=$samsldap->GetGroupsData();
+		print("<H2>LDAP groups</H2>");
 	        print("<TABLE CLASS=samstable>");
         	print("<TH width=5%>No");
-        	print("<TH >LDAP users");
-        	print("<TH >");
-		for($j=0;$j<$userdata['userscount'];$j++)
+        	print("<TH >Name");
+        	print("<TH >gid");
+        	print("<TH >Description");
+		for($j=0;$j<$groupdata['groupscount'];$j++)
 		{
-			echo "<TR><TD>$j:<TD> ".$userdata['uid'][$j];
-			echo "<TD> ".$userdata['cn'][$j];
-			echo "<TD>$aaa ";
-        		//echo "CN=".$userdata['cn'][$j]."   userid=".$userdata['uid'][$j]."   homeDirectory=".$userdata['homeDirectory'][$j]." \n";
+			echo "<TR><TD>$j<TD> ".$groupdata['cn'][$j];
+			echo "<TD> ".$groupdata['gidNumber'][$j];
+			echo "<TD> ".$groupdata['description'][$j];
 		}
 		echo "</TABLE>";
 
+		$userdata=$samsldap->GetUsersData();
+		print("<H2>LDAP users</H2>");
+	        print("<TABLE CLASS=samstable>");
+        	print("<TH width=5%>No");
+        	print("<TH >Name");
+        	print("<TH >Common name");
+		for($j=0;$j<$userdata['userscount'];$j++)
+		{
+			echo "<TR><TD>$j<TD> ".$userdata['uid'][$j];
+			echo "<TD> ".$userdata['cn'][$j];
+		}
+		echo "</TABLE>";
 
 	}    
   
@@ -69,9 +75,8 @@ function AuthLDAPValues()
 
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
 
-
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP server</B>\n");
+  print("<TD><B>Server</B>\n");
   $value=GetAuthParameter("ldap","ldapserver");
   print("<TD>$value \n");
 
@@ -91,8 +96,23 @@ function AuthLDAPValues()
   print("<TD>$value\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>LDAP user group</B>\n");
-  $value=GetAuthParameter("ldap","usergroup");
+  print("<TD><B>Users RDN</B>\n");
+  $value=GetAuthParameter("ldap","usersrdn");
+  print("<TD>$value\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Users filter</B>\n");
+  $value=GetAuthParameter("ldap","usersfilter");
+  print("<TD>$value\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Groups RDN</B>\n");
+  $value=GetAuthParameter("ldap","groupsrdn");
+  print("<TD>$value\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>Groups filter</B>\n");
+  $value=GetAuthParameter("ldap","groupsfilter");
   print("<TD>$value\n");
 
   print("</TABLE>\n");
