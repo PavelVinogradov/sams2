@@ -165,7 +165,9 @@ function JSUserInfo()
 
   if($USERConf->s_quote>0)
 	$quote=" $USERConf->s_quote Mb";
-  else  
+  else  if($USERConf->s_quote==-1)
+	$quote=" $USERConf->s_defquote Mb";
+  else
 	$quote=" unlimited ";
   if($USERConf->s_enabled>0)
 		$enabled="$usertray_UserForm_13";
@@ -188,7 +190,7 @@ function JSUserInfo()
   <TR><TD><B>$usertray_UserForm_6:<TD>$USERConf->s_family
   <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_group_name
   <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
-	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote
+	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote 
 	<TR><TD><B>$usertray_UserForm_9:<TD>$USERConf->s_size";
   if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
 	{

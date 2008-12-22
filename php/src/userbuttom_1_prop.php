@@ -26,6 +26,7 @@ function UpdateUser()
   if(isset($_GET["saveenabled"])) $saveenabled=$_GET["saveenabled"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   if(isset($_GET["defstatus"])) $defstatus=$_GET["defstatus"];
+  if(isset($_GET["individuallimit"])) $individuallimit=$_GET["individuallimit"];
 
   if(isset($_GET["W_access"])) $W_access=$_GET["W_access"];
   if(isset($_GET["G_access"])) $G_access=$_GET["G_access"];
@@ -58,12 +59,12 @@ function UpdateUser()
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
   if($domain=="") 
 	$domain="workgroup";
-  $a=explode("+",$usershablon);
-
-  $usershablon=$a[0];
-  if($userquote==$a[2])
-	$userquote=$a[1];  
-
+  if($individuallimit!="on")
+	$userquote=-1;
+//echo "USERSHABLON=$usershablon <BR>";
+//echo "INDIVIDUALLIMIT=$individuallimit<BR>";
+//echo "USERQUOTE=$userquote<BR>";
+//exit(0);
   $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip' WHERE s_user_id='$userid' ");
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
@@ -174,12 +175,45 @@ function UpdateUserForm()
   print("<B>$userbuttom_1_prop_UpdateUserForm_9 \n");
   print("<TD>\n");
   print(" \n");
+
+  print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+  print("function EnableIndividualQuote(formname)\n");
+  print("{\n");
+  print("  if(formname.individuallimit.checked==true)\n");
+  print("  {\n");
+  print("    formname.userquote.disabled=false\n");
+  print("  }\n");
+  print("  if(formname.individuallimit.checked==false)\n");
+  print("  {\n");
+  print("    formname.userquote.disabled=true\n");
+  print("  }\n");
+  print("}\n");
+  print("</SCRIPT>\n");
+  
+  print("<TR>\n");
+  print("<TD>\n");
+  print("<B>Individual linit \n");
+  print("<TD>\n");
+  if($USERConf->s_quote!=-1)
+  {
+	print("<INPUT TYPE=\"CHECKBOX\" NAME=\"individuallimit\" CHECKED onclick=EnableIndividualQuote(UPDATEUSER)> \n");
+  }
+  else
+  {
+     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"individuallimit\" onclick=EnableIndividualQuote(UPDATEUSER) > \n");
+	$QDISABLED="DISABLED";
+  }
+  print("<TD>\n");
   
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_10 \n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$USERConf->s_quote\"> <B>0 - unlimited traffic \n");
+  if($USERConf->s_quote==-1)
+	$uquote=$USERConf->s_defquote;
+  else
+	$uquote=$USERConf->s_quote;
+  print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$uquote\" $QDISABLED> <B>0 - unlimited traffic \n");
   print("<TD>\n");
   
   
@@ -219,11 +253,13 @@ function UpdateUserForm()
       {
        if($row2['s_shablon_id']==$USERConf->s_shablon_id)
          {
-            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\" SELECTED> $row2[s_name]");
+//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\" SELECTED> $row2[s_name]");
+            print("<OPTION VALUE=\"$row2[s_shablon_id]\" SELECTED> $row2[s_name]");
          }
        else
          {
-            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\"> $row2[s_name]");
+//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\"> $row2[s_name]");
+            print("<OPTION VALUE=\"$row2[s_shablon_id]\"> $row2[s_name]");
          }
       }
   print("</SELECT>\n");
