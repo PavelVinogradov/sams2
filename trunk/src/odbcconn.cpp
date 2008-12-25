@@ -20,6 +20,7 @@
 #ifdef USE_UNIXODBC
 
 #include <sstream>
+#include <string.h>
 
 #include "samsconfig.h"
 #include "odbcquery.h"
