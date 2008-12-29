@@ -48,7 +48,7 @@ else
     fi
 
     AC_CHECK_HEADER([libpq-fe.h],
-        [AC_CHECK_LIB([pq], [PQconnectdb], [AC_DEFINE([USE_PQ], [1], [Define to 1 if compile with PostgreSQL API])], [])],
+        [AC_CHECK_LIB([pq], [PQprepare], [AC_DEFINE([USE_PQ], [1], [Define to 1 if compile with PostgreSQL API])], [])],
         [])
 
     CPPFLAGS="$pq_ac_cppflags_save"
