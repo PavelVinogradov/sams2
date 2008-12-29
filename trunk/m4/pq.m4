@@ -54,7 +54,7 @@ else
     CPPFLAGS="$pq_ac_cppflags_save"
     LDFLAGS="$pq_ac_ldflags_save"
     LIBS="$pq_ac_libs_save"
-    if test "$ac_cv_lib_pq_PQconnectdb" = yes; then
+    if test "$ac_cv_lib_pq_PQprepare" = yes; then
         $1="yes"
         if test ! x"$pq_incdir" = "x"; then
             CPPFLAGS="$CPPFLAGS -I$pq_incdir"
