@@ -4,6 +4,7 @@
 #
 
 # PROVIDE: samsd
+# REQUIRE: mysql
 # KEYWORD: nojail
 
 . /etc/rc.subr
