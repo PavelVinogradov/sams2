@@ -5,10 +5,11 @@
  * (see the file 'main.php' for license details)
  */
 
+
 function ADLDtest()
 {
   global $SAMSConf;
-$info=array();
+  $info=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -38,13 +39,18 @@ $info=array();
 
 	$ldap=new adLDAP($options);
 
+	$charset=explode(",",$_SERVER['HTTP_ACCEPT_CHARSET']);
+
 	$groups=$ldap->all_groups($include_desc = false, $search = "*", $sorted = true);
 	$gcount=count($groups);
         print("<TABLE CLASS=samstable>");
         print("<TH width=5%>No");
         print("<TH >AD domain $basedn groups");
 	for($i=0;$i<$gcount;$i++)
-		echo "<TR><TD>$i:<TD>$groups[$i]<BR>";
+	{
+		$groupname = UTF8ToSAMSLang($groups[$i]);
+		echo "<TR><TD>$i:<TD>$groupname<BR>";
+	}
 	echo "</TABLE><P>";
 
 	$users=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
@@ -55,10 +61,12 @@ $info=array();
         print("<TH > ");
 	for($i=0;$i<$count;$i++)
    	{
+		$username = UTF8ToSAMSLang($users[$i]);
+        	echo "<TR><TD>$i:<TD> $username ";
+
 		$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
-        	echo "<TR><TD>$i:<TD> $users[$i] ";
-		$aaa = $userinfo[0]["displayname"][0];
-		echo "<TD>$aaa ";
+		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
+		echo "<TD>$displayname";
     	}
 	echo "</TABLE>";
 

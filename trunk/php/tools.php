@@ -1,5 +1,21 @@
 <?php
 
+function UTF8ToSAMSLang($inp)
+{
+  global $SAMSConf;
+  $charset=explode(",",$_SERVER['HTTP_ACCEPT_CHARSET']);
+	$out=$inp;
+	if($SAMSConf->LANG!="UTF8" && $SAMSConf->LANG!="EN")
+	{
+		$out=iconv("UTF-8", $SAMSConf->CHARSET, $inp);
+	}
+	if($SAMSConf->LANG=="EN")
+	{
+		$out=iconv("UTF-8", $charset[0], $inp);
+	}
+  return($out);
+}
+
 function UpdateAuthParameter($auth,$parameter)
 {
   global $SAMSConf;

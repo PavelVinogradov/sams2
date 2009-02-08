@@ -5,6 +5,7 @@
  * (see the file 'main.php' for license details)
  */
 
+
 function AddUsersFromAdLDAP()
 {
   require_once("adldap.php");
@@ -184,19 +185,19 @@ function AddUsersFromADLDForm()
     print("     }\n");
     print("}\n");
     print("</SCRIPT> \n");
-    print("<TABLE>\n");
-    print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1\n");
-    print("<TD><SELECT NAME=\"addgroupname\" onChange=EnableTxtInput(AddDomainUsers)>\n");
+    print("<TABLE WIDTH=90%>\n");
+    print("<TR><TD WIDTH=40%>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1</TD>\n");
+    print("<TD WIDTH=60%><SELECT NAME=\"addgroupname\" onChange=EnableTxtInput(AddDomainUsers)>\n");
     print("<OPTION VALUE=\"_allgroups_\" SELECT  onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5");
     print("<OPTION VALUE=\"_gettxtinput_\" onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6");
     for($i=0;$i<$gcount;$i++)
       {
-	$groupname=$groupinfo[$i];
+	$groupname = UTF8ToSAMSLang($groupinfo[$i]);
         print("<OPTION VALUE=\"$groupname\"  onselect=EnableTxtInput(AddDomainUsers)> $groupname");
       }
     print("</SELECT>\n");
-    print("<TR><TD>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7\n");
-    print("<TD><INPUT TYPE=\"TEST\" NAME=\"getgroup\" SIZE=\"20\" DISABLED>\n");
+    print("<TR><TD WIDTH=40%>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7\n");
+    print("<TD WIDTH=60%><INPUT TYPE=\"TEST\" NAME=\"getgroup\" SIZE=\"20\" DISABLED>\n");
     print("</TABLE>\n");
     print("<INPUT TYPE=\"BUTTON\" value=\"$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2\" onclick=SelectADGroup(AddDomainUsers)>\n");
     print("<P>\n");
@@ -220,9 +221,9 @@ function AddUsersFromADLDForm()
         if($num_rows==0)  
 	  {
 		$userinfo=$ldap->user_info( $user, $fields=NULL);
-		$aaa = $userinfo[0]["displayname"][0];
-		//echo "<TD>$aaa ";
-		print("<OPTION VALUE=\"$user\"> <B>$user</B> ($aaa)");
+		$username = UTF8ToSAMSLang($user);
+		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
+		print("<OPTION VALUE=\"$user\"> <B>$username</B> ($displayname)");
           }
 	$DB->free_samsdb_query();
       }

@@ -289,23 +289,6 @@ function UpdateShablonForm()
 	$SELECTED="SELECTED";
      print("<OPTION value=".$row['s_auth']." $SELECTED>".$row['s_auth']." \n");
   }
-/*
-  if($SHABLONConf->s_auth=="ip")   
-     $IPSELECTED="SELECTED";
-     print("<OPTION value=ip $IPSELECTED> IP\n");
-     
-  if($SHABLONConf->s_auth=="ntlm")   
-     $NTLMSELECTED="SELECTED";
-     print("<OPTION value=ntlm $NTLMSELECTED> NTLM\n");
-     
-  if($SHABLONConf->s_auth=="adld")
-     $ADSELECTED="SELECTED";
-     print("<OPTION value=adld $ADSELECTED> ADLD\n");
-     
-  if($SHABLONConf->s_auth=="ncsa")   
-     $NCSASELECTED="SELECTED";
-     print("<OPTION value=ncsa $NCSASELECTED> NCSA\n");
-*/  
   print("</SELECT>\n");
   
 
@@ -356,15 +339,15 @@ function UpdateShablonForm()
   if($SHABLONConf->s_period=="W")   
      $WSELECTED="SELECTED";
   print("<OPTION value=\"W\" $WSELECTED>$shablonbuttom_1_prop_UpdateShablonForm_25 \n");
-  
+
   if($SHABLONConf->s_period!="M"&&$SHABLONConf->s_period!="W")
     {   
       $ASELECTED="SELECTED";
       $ADISABLED="";
       $AVALUE=$SHABLONConf->s_period;
-      $YCLRVALUE=substr($row['clrdate'],0,4);
-      $MCLRVALUE=substr($row['clrdate'],5,2);
-      $DCLRVALUE=substr($row['clrdate'],8,2);
+      $YCLRVALUE=substr($SHABLONConf->s_clrdate,0,4);
+      $MCLRVALUE=substr($SHABLONConf->s_clrdate,5,2);
+      $DCLRVALUE=substr($SHABLONConf->s_clrdate,8,2);
     }
   else
     {
@@ -420,7 +403,7 @@ function UpdateShablonForm()
   print("<P><B>Shablon Time Range: </B>\n");
   print("<TABLE>\n");
   print("<FORM NAME=\"REMOVETRANGE2shablon\" ACTION=\"main.php\">\n");
-  $num_rows=$DB2->samsdb_query_value("SELECT sconfig_time.*,timerange.s_name,timerange.s_timestart,s_timeend FROM sconfig_time LEFT JOIN timerange ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$id' ");
+  $num_rows=$DB2->samsdb_query_value("SELECT sconfig_time.*, timerange.s_name, timerange.s_timestart, s_timeend FROM sconfig_time LEFT JOIN timerange ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$id' ");
   if($num_rows>0)
 	{
   	while($row2=$DB2->samsdb_fetch_array())
