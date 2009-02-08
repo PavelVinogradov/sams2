@@ -29,6 +29,7 @@ INSERT INTO auth_param VALUES('ldap', 'enabled', '0');	\
 INSERT INTO auth_param VALUES('adld', 'enabled', '0');	\
 INSERT INTO auth_param VALUES('ncsa', 'enabled', '0');	\
 INSERT INTO auth_param VALUES('ip', 'enabled', '1');"
+db_cmd[5]="ALTER TABLE squiduser ADD s_ulimit VARCHAR(1);"
 
 
 

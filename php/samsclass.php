@@ -33,6 +33,7 @@ class SAMSCONFIG
   var $EXINT;
   var $EXIP;
   var $LANG;
+  var $CHARSET;
   var $NTLMDOMAIN;
   var $ICONSET;
   var $SHOWUTREE;  
@@ -232,6 +233,11 @@ $this->USERWEBACCESS="W";
 //echo "samsclass.php: ".$row['s_lang']."<BR>";
 //exit(0);
       $this->LANG=$row['s_lang'];
+      if ($this->LANG == "WIN1251")
+	$this->CHARSET = "windows-1251";
+      else
+	$this->CHARSET = $this->LANG;
+
       if ($this->LANG=="EN") 
         $this->LANGCODE = "EN"; 
       else
