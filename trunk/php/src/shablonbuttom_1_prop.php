@@ -68,6 +68,10 @@ for($i=0;$i<$tc;$i++)
 //echo "UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate'  WHERE s_shablon_id='$sname'";
   $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate'  WHERE s_shablon_id='$sname' ");
 
+  print("<SCRIPT>\n");
+  print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$sname\"; \n");
+  print("</SCRIPT> \n");
+
 }
 
 
@@ -430,9 +434,6 @@ function UpdateShablonForm()
   while($row=$DB->samsdb_fetch_array())
 	{
            print("<OPTION VALUE=$row[s_trange_id]> $row[s_name] ($row[s_timestart] - $row[s_timeend] )");
-  	//print("<TR><TD ALIGN=\"RIGHT\"><B>$row[s_name]: </B><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"trange[$row[s_trange_id]]\" >\n");
-  	//print("( $row[s_timestart] - $row[s_timeend] )\n");
-	
 	}
   print("</SELECT>\n");
   $DB->free_samsdb_query();

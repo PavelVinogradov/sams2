@@ -530,7 +530,7 @@ $admintray_AdminTray_1=" Administrator ";
   $adminbuttom_3_addadm_AddAdminForm_6=" Entered passwords do not coincide "; 
   $adminbuttom_3_addadm_adminbuttom_3_addadm_1=" Add user with administrating rights "; 
 
-  $adminbuttom_2_chuser_ChangeUser_1=" Change user "; 
+  $adminbuttom_2_chuser_ChangeUser_1=" SAMS management interface "; 
   $adminbuttom_2_chuser_ChangeUser_2=" Enter password of the user \" Administrator \""; 
   $adminbuttom_2_chuser_ChangeUser_3=" User name has not been entered "; 
   $adminbuttom_2_chuser_adminbuttom_2_chuser_1=" Access under the name of another superuser "; 
