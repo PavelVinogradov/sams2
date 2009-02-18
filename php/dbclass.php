@@ -16,6 +16,8 @@ class SAMSDB
   var $pdo_link;
   var $pdo_stmt;
   var $dberror;
+  var $dberrortext;
+
 /*
   samsdb_query_value - Функция посылает запрос базе данных  возвращает количество строк в ответе
   mysqldb_query_value - функция для работы с MySQL
@@ -172,26 +174,29 @@ class SAMSDB
 
   function samsdb_query($query)
   {
-   if($this->db_name=="MySQL" && $this->db_odbc==0)
-      {
-         $this->mysqldb_query($query);
-         return($this->result);
-      }
-    if($this->db_name=="PostgreSQL" && $this->db_odbc==0)
-      {
-         $num_rows = $this->pgsqldb_query($query);
-         return($this->result);
-      }
-    if($this->db_pdo==1)
-      {
-         $num_rows = $this->pdodb_query($query);
-         return($this->result);
-      }
-    if($this->db_odbc==1 && $this->db_pdo==0)
-      {
-         $num_rows = $this->odbcdb_query($query);
-         return($this->result);
-      }
+   //if($this->dberror==0)
+   //{
+	if($this->db_name=="MySQL" && $this->db_odbc==0)
+	{
+	    $this->mysqldb_query($query);
+	    return($this->result);
+	    }
+	if($this->db_name=="PostgreSQL" && $this->db_odbc==0)
+	{
+	     $num_rows = $this->pgsqldb_query($query);
+	    return($this->result);
+	}
+	if($this->db_pdo==1)
+	{
+	    $num_rows = $this->pdodb_query($query);
+	    return($this->result);
+	}
+	if($this->db_odbc==1 && $this->db_pdo==0)
+	{
+	    $num_rows = $this->odbcdb_query($query);
+	    return($this->result);
+	}
+    //}
     return(FALSE);
   }
 
@@ -251,17 +256,19 @@ class SAMSDB
 */
   function mysqldb_connect($host,$user,$passwd,$dbname)
   {
-//	$this=0;
-	$link=@mysql_connect($host,$user,$passwd) || die (mysql_error());
+//	$link=@mysql_connect($host,$user,$passwd) || die (mysql_error());
+//	$link=@mysql_connect($host,$user,$passwd) || die (mysql_error());
+	if(($link=@mysql_connect($host,$user,$passwd))==FALSE)
+	{
+		$this->dberrortext=mysql_error();
+	}
 
 	if($link && mysql_select_db($dbname)==FALSE)
 	  {
-		echo "Error connection to database $dbname@$host<BR>";
+		$this->dberrortext="Error connection to database $dbname@$host<BR>";
 		$this->dberror=1;
-//		return("Error");
 	  }
 	return(0);
-//	mysql_select_db($dbname);
   }
   function pgsqldb_connect($host,$user,$passwd,$dbname)
   {

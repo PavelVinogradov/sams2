@@ -216,26 +216,25 @@ function UserDoc()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-
-  print("<H2>$admintray_UserDoc_2 </H2>\n");
-  
-  if($SAMSConf->SHOWUTREE=="Y")
+  if($SAMSConf->SHOWUTREE=="1")
     {
       PageTop("user.jpg","$admintray_UserDoc_1");
-      print("</CENTER>");
-      print("<IMG SRC=\" $SAMSConf->ICONSET/lframe.jpg \" ALIGN=LEFT>\n");
-      print("$admintray_UserDoc_3");
-      print("$admintray_UserDoc_4");
+      print("<TABLE WIDTH=\"90%\" BORDER=0>\n");
+      print("<TR><TD><IMG SRC=\" $SAMSConf->ICONSET/lframe.jpg \" ALIGN=LEFT>\n");
+      print("<TD>$admintray_UserDoc_3 ");
+      print("$admintray_UserDoc_4 ");
+      print("</TABLE>\n");
     }
   else
     {
 /***/
-      print("<P><B>$AdminTray_UserDoc_5</B>\n");
       print("<P>");
       print("<FORM NAME=\"NUSERPASSWORD\" ACTION=\"main.php\" METHOD=\"POST\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"nuserauth\">\n");
       print("<TABLE WIDTH=\"90%\">\n");
+      print("<TR>\n");
+      print("<TD COLSPAN=2><H2>$admintray_UserDoc_2</H2>\n");
       print("<TR>\n");
       print("<TD><B>login:</B>\n");
       print("<TD><INPUT TYPE=\"TEXT\" NAME=\"user\" SIZE=30> \n");
@@ -284,7 +283,7 @@ function ExecuteFunctions($path, $mask, $id)
 	if(strstr($files[$i],"~")==NULL)
 	{ 	
 	    $funcname=str_replace(".php","",$files[$i]);		
-//echo "// ===============================-$path/$files[$i]- ===========\n";
+//echo "// =$path/$files[$i]=<BR>\n";
 	    require("$path/$files[$i]");
 	    if($id!=1)
 		$funcname($id);
@@ -506,10 +505,10 @@ function GraphButton($url,$target,$img_small,$img_big,$title)
   print("<TD CLASS=\"samstraytd\">\n");
   print("<A HREF=\"$url\" target=\"$target\">\n");
   print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/$img_small\" BORDER=0 \n ");
-  print("TITLE=\"$title\" border=0\n");
+  print("TITLE=\"$title\" \n");
   print("onmouseover=\"this.src='$SAMSConf->ICONSET/$img_big'\" \n");
   print("onmouseout= \"this.src='$SAMSConf->ICONSET/$img_small'\"> \n");
-  print("</A>\n");
+  print("</A></TD>\n");
 }
 
 /*

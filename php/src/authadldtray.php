@@ -135,17 +135,29 @@ function AuthADLDTray()
 
   if($SAMSConf->access==2)
     {
-	print("<TABLE border=0 WIDTH=95%>\n");
+	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
 	print("<TR HEIGHT=60>\n");
-	print("<TD WIDTH=25%>");
-	print("<B><FONT SIZE=\"+1\">ADLD</FONT></B>\n");
+	print("<TD WIDTH=30%>");
+	print("<B>ADLD</B>\n");
 
 	ExecuteFunctions("./src", "authadldbuttom","1");
+	print("<TD> </TD>\n");
+	print("</TABLE>\n");
 
      }
-  print("<TD>\n");
-  print("</TABLE>\n");
 
+/*
+	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
+	print("<TR HEIGHT=60>\n");
+	print("<TD WIDTH=\"30%\"\">");
+	print("<B>Proxy<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></B>\n");
+
+	ExecuteFunctions("./src", "proxybuttom","1");
+  
+	print("<TD>\n");
+	print("</TABLE>\n");
+
+*/
 
 
 }

@@ -15,7 +15,7 @@
         print("   auth = insFld(sams, gFld2(\"Authorisation\", \"tray.php?show=exe&filename=authtray.php&function=authtray\", \"auth.gif\"))\n");
 
 	if(GetAuthParameter("adld","enabled")>0)
-		print("      insDoc(auth, gLnk(\"D\", \"ADLD\", \"tray.php?show=exe&function=authadldtray&filename=authadldtray.php\",\"auth.gif\"))\n");
+		print("      insDoc(auth, gLnk(\"D\", \"ActiveDirectory\", \"tray.php?show=exe&function=authadldtray&filename=authadldtray.php\",\"auth.gif\"))\n");
 	if(GetAuthParameter("ntlm","enabled")>0)
 		print("      insDoc(auth, gLnk(\"D\", \"NTLM\", \"tray.php?show=exe&function=authntlmtray&filename=authntlmtray.php\",\"auth.gif\"))\n");
 	if(GetAuthParameter("ldap","enabled")>0)

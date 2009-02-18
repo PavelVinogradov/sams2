@@ -113,24 +113,22 @@ $this->USERWEBACCESS="W";
 	{
 		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB,  $this->ODBCSOURCE);
 		if($DB->dberror != '1')
+		{
+			$num_rows=$DB->samsdb_query_value("select s_lang from websettings");         
+
+			$row=$DB->samsdb_fetch_array();
+			if($row['s_lang'] != "EN" )
 			{
-				$num_rows=$DB->samsdb_query_value("select s_lang from websettings");         
-
-				$row=$DB->samsdb_fetch_array();
-				if($row['s_lang'] != "EN" )
-				  {
-					$dbadmin="";
-					echo "table is NOT created<BR>";
-					$DB->dberror=1;
+				$dbadmin="";
+				echo "table is NOT created<BR>";
+				$DB->dberror=1;
 					//CreateSAMSdbPgSQL($this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB);
-				  }
-			}
-
+			  }
+		}
 	}
 
 	if($this->DB_ENGINE == "MySQL" && $this->ODBC == "0" )
 	{
-//		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->ODBC_DRIVER);
 		$DB=new SAMSDB(&$this);
 	}
 	if($this->DB_ENGINE == "PostgreSQL" && $this->ODBC == "0" )
@@ -149,8 +147,11 @@ $this->USERWEBACCESS="W";
 				  }
 			}
 	}
-	if($DB->dberror=="1")
+	if($DB->dberror=="1"&&strstr($_SERVER['SCRIPT_FILENAME'],"main.php"))
 	{
+		echo "SAMS ERROR:<BR>";
+		echo "$DB->dberrortext<BR>";
+
 		echo "<FONT COLOR=\"RED\">Access denied for user $this->DB_USER@$this->DB_SERVER to database $this->DB_ENGINE</FONT><BR>";
 		if(isset($_GET["function"])) $function=$_GET["function"];
 		if($function=="userdoc")
@@ -211,27 +212,12 @@ $this->USERWEBACCESS="W";
 		  }
 	  exit(0);
 	}
-/*
-//      $DB->samsdb_query("SELECT * FROM $this->SAMSDB.sams");
-      $DB->samsdb_query("SELECT * FROM sams");
-
-      $row=$DB->samsdb_fetch_array();
-      $this->REDIRECTOR=$row['s_redirector'];
-      $this->DELAYPOOL=$row['s_delaypool'];
-      $this->AUTH=$row['s_auth'];
-      $this->WBINFOPATH=$row['s_wbinfopath'];
-      $this->NTLMDOMAIN=$row['s_ntlmdomain'];
-      $this->DEFAULTDOMAIN=$row['s_defaultdomain'];
-      $this->realtraffic=$row['s_realsize'];
-      $this->SQUIDBASE=$row['s_squidbase'];
-      $this->SEPARATOR=$row['s_separator'];
-      $this->LOGLEVEL=$row['s_loglevel'];
-      $this->CCLEAN=$row['s_count_clean'];
-*/
+	if($DB->dberror=="1")
+	{
+		exit(0);
+	}
       $DB->samsdb_query("SELECT * FROM websettings");
       $row=$DB->samsdb_fetch_array();
-//echo "samsclass.php: ".$row['s_lang']."<BR>";
-//exit(0);
       $this->LANG=$row['s_lang'];
       if ($this->LANG == "WIN1251")
 	$this->CHARSET = "windows-1251";
@@ -247,9 +233,7 @@ $this->USERWEBACCESS="W";
       $this->URLACCESS=$row['s_urlaccess'];
       $this->SHOWUTREE=$row['s_showutree'];
       $this->SHOWNAME=$row['s_showname'];
-//      $this->KBSIZE=$row['s_kbsize'];
 	if($this->KBSIZE==0) $this->KBSIZE=1024;
-//      $this->MBSIZE=$row['s_mbsize'];
 	if($this->MBSIZE==0) $this->MBSIZE=$this->KBSIZE*$this->KBSIZE;
       $this->SHOWGRAPH=$row['s_showgraph'];
       $this->PDFLIB=$row['s_createpdf'];

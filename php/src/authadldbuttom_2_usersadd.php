@@ -62,7 +62,7 @@ function AddUsersFromAdLDAP()
 
   while(strlen($userlist[$i])>0)
      {
-       print("userlist=$userlist[$i] enabled=$enabled<BR>");
+//       print("userlist=$userlist[$i] enabled=$enabled<BR>");
 
        $string=$userlist[$i];
        $i++;
