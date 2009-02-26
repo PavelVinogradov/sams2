@@ -14,7 +14,7 @@
 
  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
-      print("   denied = insFld(sams, gFld(\"$lframe_sams_FolderDenied_1 1\", \"main.php?show=exe&&filename=redirlisttray.php&function=addurllistform&type=denied\", \"stop.gif\"))\n");
+      print("   denied = insFld(sams, gFld(\"$lframe_sams_FolderDenied_1\", \"main.php?show=exe&&filename=redirlisttray.php&function=addurllistform&type=denied\", \"stop.gif\"))\n");
       $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_type='denied' ");
       while($row=$DB->samsdb_fetch_array())
          {

@@ -77,7 +77,7 @@ function UserTrafficPeriod()
   if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
     exit(0);
 
-  PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
+  PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
@@ -162,7 +162,7 @@ function UserTrafficForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficForm_1");
+	PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficForm_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=UserName value=\"$USERConf->s_user_id\">\n");
@@ -185,7 +185,7 @@ function userbuttom_2_traffic()
 //   if($SAMSConf->access>0||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[nick]")||$SAMSConf->groupauditor==$row['group'])
 	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	{
-		GraphButton("main.php?show=exe&function=usertrafficform&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id","basefrm","traffic_32.jpg","traffic_48.jpg","$userbuttom_2_traffic_userbuttom_2_traffic_1");
+		GraphButton("main.php?show=exe&function=usertrafficform&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id","basefrm","usertraffic_32.jpg","usertraffic_48.jpg","$userbuttom_2_traffic_userbuttom_2_traffic_1");
 	}
 
 }
