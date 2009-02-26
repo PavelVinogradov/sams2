@@ -355,7 +355,7 @@ function ProxyReConfigForm()
 				 $DOMAINDISABLE="ENABLED";
 	}
   print("<TR bgcolor=blanchedalmond><TD VALIGN=TOP >");
-  print("<INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ntlm\" $NTLMCHECKED  onclick=EnableCheckBox(samsreconfigform),DisableLDAP(samsreconfigform) onchange=EnableDomainName(samsreconfigform)>\n");
+  print("<INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ntlm\" $NTLMCHECKED  onclick=EnableCheckBox(samsreconfigform), DisableLDAP(samsreconfigform) onchange=EnableDomainName(samsreconfigform)>\n");
   $sdomain="";
   $suser="";
   if($PROXYConf->s_usedomain==1)

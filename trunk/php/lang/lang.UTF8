@@ -897,6 +897,10 @@
   $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
   $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
 
+  $usersbuttom_2_traffic_UsersTrafficForm_3="Сортировать по:";
+  $usersbuttom_2_traffic_UsersTrafficForm_4="размеру полученного трафика";
+  $usersbuttom_2_traffic_UsersTrafficForm_5="именам пользователей";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

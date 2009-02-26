@@ -129,7 +129,7 @@ function UserSitesPeriod()
   $eyea=$DATE->eyea;
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
 
-  PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
+  PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
@@ -246,7 +246,7 @@ function UserSitesForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  PageTop("user.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
+  PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");

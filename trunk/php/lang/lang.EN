@@ -882,6 +882,9 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
   $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
 
+  $usersbuttom_2_traffic_UsersTrafficForm_3="select sorting method";
+  $usersbuttom_2_traffic_UsersTrafficForm_4="The size of the received traffic";
+  $usersbuttom_2_traffic_UsersTrafficForm_5="Names of users";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

@@ -1,4 +1,4 @@
-<?php
+z<?php
 
 class DATESELECT
 {
@@ -14,6 +14,32 @@ function SetPeriod()
 	print("<TABLE>\n");
 	$this->StartDate();
 	$this->EndDate();
+	print("</TABLE>\n");
+
+}
+
+function SetPeriod2($head, $select)
+{
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"desc\" id='desc' value=\"desc\" onclick=SetDescMode(descvalue)>\n");
+print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+print("function SetDescMode(descvalue) \n");
+print("{\n");
+print("  document.getElementById('desc').value = descvalue; \n");
+//print("  var descv = document.getElementById('desc').value; \n");
+//print("  window.confirm( descvalue + ' + ' + descv );\n");
+print("}\n");
+print("</SCRIPT>\n");
+
+	print("<TABLE>\n");
+	$this->StartDate();
+	$this->EndDate();
+	print("  <TR><TD><FONT COLOR=\"BLUE\"><B>$head</B>\n");
+	for($i=0; $i<count($select); $i++)
+	{
+		print("  <TR>\n");
+		print("  <TD><B>".$select[$i][0].":</B>\n");
+		print("  <TD><INPUT TYPE=\"RADIO\" NAME=\"sort\" VALUE=\"".$select[$i][1]."\"   onclick=SetDescMode(\"".$select[$i][2]."\") ".$select[$i][3]."> \n");
+	}
 	print("</TABLE>\n");
 
 }
