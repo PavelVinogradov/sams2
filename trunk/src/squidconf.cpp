@@ -309,8 +309,15 @@ bool SquidConf::defineACL ()
               Url proxy_url;
               proxy_url.setUrl (Proxy::getDenyAddr ());
               string proxy_addr = proxy_url.getAddress ();
-              fout << "acl Sams2Proxy dst " << proxy_addr << endl;
-              fout << current_tag << " deny Sams2Proxy" << endl;
+              if (!proxy_addr.empty ())
+                {
+                  fout << "acl Sams2Proxy dst " << proxy_addr << endl;
+                  fout << current_tag << " deny Sams2Proxy" << endl;
+                }
+              else
+                {
+                  WARNING ("Unable to identify proxy address");
+                }
             }
           fout << nextline << endl;
         }
