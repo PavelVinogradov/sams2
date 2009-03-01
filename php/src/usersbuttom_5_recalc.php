@@ -97,15 +97,17 @@ function usersbuttom_5_recalc()
        print("}\n");
        print("</SCRIPT> \n");
 
-//       print("<TD  WIDTH=50 HEIGHT=50 VALIGN=CENTER ALIGN=CENTER>\n");
        print("<TD CLASS=\"samstraytd\" >\n");
-       print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/recalc_32.jpg\" \n ");
+       print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/recalc_32.jpg\" BORDER=0 \n ");
        print("TITLE=\"$usersbuttom_5_recalc_usersbuttom_5_recalc_2\"  border=0 ");
        print("onclick=RecalcCounter(\"nick\",\"id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/recalc_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/recalc_32.jpg'\" >\n");
+       print("</TD>\n");
     }
 
 }
+
+
 
 ?>
