@@ -14,29 +14,40 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef GROUPS_H
-#define GROUPS_H
+#ifndef TEMPLATELIST_H
+#define TEMPLATELIST_H
 
 using namespace std;
 
 #include <map>
+#include <vector>
 #include <string>
 
-class Groups{
+class Template;
+class DBConn;
+
+class TemplateList
+{
 public:
-  static void useConnection (DBConn * conn);
   static bool reload();
+
+  static void useConnection(DBConn *conn);
+
   static void destroy();
 
-  static int getGroupId(const string & name);
+  static Template * getTemplate(const string & name);
+
+  static Template * getTemplate(long id);
+
+  static vector<long> getIds();
 
 private:
   static bool load();
 
   static bool _loaded;
-  static DBConn * _conn;                     ///< Используемое соединение с БД
+  static map<long, Template*> _list;
+  static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;
-  static map<string, int> _list;
 };
 
 #endif

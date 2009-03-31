@@ -61,7 +61,7 @@ public:
    */
   bool connect ();
 
-  DBQuery * newQuery ();
+  void newQuery (DBQuery *& query);
 
   void disconnect ();
 
@@ -78,19 +78,14 @@ public:
   static string getErrorMessage (SQLSMALLINT handleType, SQLHANDLE handle);
 
 protected:
-  void registerQuery (ODBCQuery * query);
-  void unregisterQuery (ODBCQuery * query);
 
 private:
   SQLHDBC _hdbc;               ///< Handle for a connection
-  map < string, ODBCQuery * >_queries;  ///< Список подключенных запросов
   string _source;             ///< Источник данных ODBC
   string _user;                 ///< Логин
   string _pass;                 ///< Пароль
   SQLHENV _env;                 ///< Handle for environment
   bool _connected;
-
-  void unregisterAllQueries ();
 
 };
 

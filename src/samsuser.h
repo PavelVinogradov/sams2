@@ -29,7 +29,7 @@ using namespace std;
  */
 class SAMSUser
 {
-friend class SAMSUsers;
+friend class SAMSUserList;
 public:
   /**
   * @brief Статус пользователя

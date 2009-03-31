@@ -187,20 +187,20 @@ bool PluginList::updateInfo ()
 
   if (store_to_db)
     {
-      querySelect = _conn->newQuery ();
+      _conn->newQuery (querySelect);
       if (!querySelect)
         {
           ERROR("Unable to create query.");
           return false;
         }
-      queryUpdate = _conn->newQuery ();
+      _conn->newQuery (queryUpdate);
       if (!queryUpdate)
         {
           ERROR("Unable to create query.");
           delete querySelect;
           return false;
         }
-      queryInsert = _conn->newQuery ();
+      _conn->newQuery (queryInsert);
       if (!queryInsert)
         {
           ERROR("Unable to create query.");

@@ -64,7 +64,7 @@ public:
    *
    * @return Экземпляр объекта DBQuery или NULL при какой либо ошибке
    */
-  virtual DBQuery * newQuery ();
+  virtual void newQuery (DBQuery *& query);
 
   /**
    * @brief Возвращает состояние соединения
@@ -87,6 +87,20 @@ public:
    */
   virtual void disconnect ();
 
+  /**
+   * @brief Регистрирует запрос
+   *
+   */
+  virtual void registerQuery(DBQuery * query);
+
+  /**
+   * @brief Разрегистрирует запрос
+   *
+   */
+  virtual void unregisterQuery(DBQuery * query);
+
+  virtual void unregisterAllQueries ();
+
 private:
 
 protected:
@@ -99,7 +113,7 @@ protected:
 
   bool _connected;            ///< Guess yourself
   DBEngine _engine;           ///< Используемый API
-//  map < string, DBQuery * >_queries;  ///< Список подключенных запросов
+  map < string, DBQuery * >_queries;  ///< Список подключенных запросов
 };
 
 #endif

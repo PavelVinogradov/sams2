@@ -83,7 +83,7 @@ bool LocalNetworks::reload ()
 
   string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
 
-  query = _conn->newQuery ();
+  _conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");

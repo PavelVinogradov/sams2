@@ -268,7 +268,8 @@ void Logger::addLog(LogKind code, const string &mess)
       _connection_owner = true;
     }
 
-  DBQuery *query = _conn->newQuery ();
+  DBQuery *query = NULL;
+  _conn->newQuery (query);
 
   if (!query)
     {

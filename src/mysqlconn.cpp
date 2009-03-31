@@ -65,14 +65,16 @@ bool MYSQLConn::connect ()
   return true;
 }
 
-DBQuery * MYSQLConn::newQuery ()
+void MYSQLConn::newQuery (DBQuery *& query)
 {
   DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
 
-  if (!_connected)
-    return NULL;
+  query = NULL;
 
-  DBQuery * query = new MYSQLQuery( this );
+  if (!_connected)
+    return;
+
+  query = new MYSQLQuery( this );
 
   if (query)
     {
@@ -82,8 +84,6 @@ DBQuery * MYSQLConn::newQuery ()
     {
       ERROR ("Unable to create new query.");
     }
-
-  return query;
 }
 
 void MYSQLConn::disconnect ()
@@ -92,6 +92,8 @@ void MYSQLConn::disconnect ()
     return;
 
   DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Disconnecting from " << _dbname << "@" << _host);
+
+  unregisterAllQueries ();
 
   mysql_close (_mysql);
   _mysql = NULL;

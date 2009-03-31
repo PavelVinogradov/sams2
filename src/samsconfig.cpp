@@ -206,7 +206,8 @@ bool SamsConfig::readDB ()
       return false;
     }
 
-  DBQuery *query = conn->newQuery ();
+  DBQuery *query = NULL;
+  conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");
@@ -261,7 +262,8 @@ bool SamsConfig::readDB ()
 
   delete query;
 
-  DBQuery *query2 = conn->newQuery ();
+  DBQuery *query2 = NULL;
+  conn->newQuery (query2);
   if (!query2)
     {
       ERROR("Unable to create query.");

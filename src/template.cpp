@@ -15,7 +15,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "template.h"
-#include "timeranges.h"
+#include "timerangelist.h"
 #include "timerange.h"
 #include "urlgrouplist.h"
 #include "urlgroup.h"
@@ -195,7 +195,7 @@ bool Template::isTimeDenied (const string & url) const
 
   for (it = _times.begin (); it != _times.end(); it++)
     {
-      tr = TimeRanges::getTimeRange (*it);
+      tr = TimeRangeList::getTimeRange (*it);
       if (!tr)
         continue;
       if (tr->hasNow ())

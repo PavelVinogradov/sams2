@@ -18,7 +18,7 @@
 
 #include "samsuser.h"
 #include "debug.h"
-#include "templates.h"
+#include "templatelist.h"
 #include "template.h"
 #include "proxy.h"
 
@@ -220,7 +220,7 @@ long SAMSUser::getQuote () const
   long quote = _quote;
   if (quote == -1)
     {
-      Template *tpl = Templates::getTemplate (this->getCurrentTemplateId ());
+      Template *tpl = TemplateList::getTemplate (this->getCurrentTemplateId ());
       if (!tpl) // Потерялся шаблон? Ограничим по максимуму
         {
           WARNING ("Template " << this->getCurrentTemplateId () << " is lost.");
@@ -285,7 +285,7 @@ long SAMSUser::getGroupId() const
 string SAMSUser::asString () const
 {
   string res = "";
-  Template *tpl = Templates::getTemplate (this->getCurrentTemplateId());
+  Template *tpl = TemplateList::getTemplate (this->getCurrentTemplateId());
   if (!tpl)
     {
       WARNING ("User with id " << _id << " lost template");

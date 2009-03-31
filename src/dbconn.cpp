@@ -44,9 +44,10 @@ bool DBConn::connect ()
 }
 
 
-DBQuery * DBConn::newQuery ()
+void DBConn::newQuery (DBQuery *& query)
 {
-  return NULL;
+  query = NULL;
+  return;
 }
 
 
@@ -66,3 +67,66 @@ void DBConn::disconnect ()
 {
 }
 
+void DBConn::registerQuery(DBQuery * query)
+{
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
+  if (query == NULL)
+    return;
+
+  basic_stringstream < char >key;
+  map < string, DBQuery * >::iterator it;
+
+  key << query;
+
+  it = _queries.find (key.str ());
+  if (it != _queries.end ())
+    {
+      WARNING ("[" << this << "->" << __FUNCTION__ << "] " << "Query " << key.str () << " already registered.");
+      return;
+    }
+
+  _queries[key.str ()] = query;
+
+//  query->_conn = this;
+
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key.str () << " registered.");
+}
+
+void DBConn::unregisterQuery(DBQuery * query)
+{
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
+  if (query == NULL)
+    return;
+
+  basic_stringstream < char >key;
+  map < string, DBQuery * >::iterator it;
+
+  key << query;
+
+  it = _queries.find (key.str ());
+  if (it == _queries.end ())
+    {
+      WARNING ("[" << this << "->" << __FUNCTION__ << "] " << "Query " << key.str () << " is not registered.");
+      return;
+    }
+  _queries.erase (it);
+//  query->destroy ();
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key.str () << " unregistered.");
+}
+
+void DBConn::unregisterAllQueries ()
+{
+  DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
+
+  map < string, DBQuery * > tmp = _queries;
+  map < string, DBQuery * >::iterator it;
+
+  for (it = tmp.begin (); it != tmp.end (); it++)
+    {
+      delete (*it).second;
+    }
+  _queries.clear ();
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "All queries unregistered.");
+}

@@ -21,18 +21,18 @@
 
 #include "dbconn.h"
 #include "dbquery.h"
-#include "samsusers.h"
+#include "samsuserlist.h"
 #include "samsuser.h"
 #include "samsconfig.h"
 #include "proxy.h"
 #include "debug.h"
 
-bool SAMSUsers::_loaded = false;
-vector < SAMSUser * > SAMSUsers::_users;
-DBConn * SAMSUsers::_conn;
-bool SAMSUsers::_connection_owner = false;
+bool SAMSUserList::_loaded = false;
+vector < SAMSUser * > SAMSUserList::_users;
+DBConn * SAMSUserList::_conn;
+bool SAMSUserList::_connection_owner = false;
 
-void SAMSUsers::useConnection (DBConn * conn)
+void SAMSUserList::useConnection (DBConn * conn)
 {
   if (_conn)
     {
@@ -47,7 +47,7 @@ void SAMSUsers::useConnection (DBConn * conn)
     }
 }
 
-bool SAMSUsers::reload()
+bool SAMSUserList::reload()
 {
   SAMSUser *usr;
 
@@ -87,7 +87,7 @@ bool SAMSUsers::reload()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
-  query =_conn->newQuery ();
+  _conn->newQuery (query);
 
   if (query == NULL)
     {
@@ -205,7 +205,7 @@ bool SAMSUsers::reload()
   return true;
 }
 
-void SAMSUsers::destroy()
+void SAMSUserList::destroy()
 {
   if (_connection_owner && _conn)
     {
@@ -230,7 +230,7 @@ void SAMSUsers::destroy()
   _users.clear();
 }
 
-bool SAMSUsers::load ()
+bool SAMSUserList::load ()
 {
   if (_loaded)
     return true;
@@ -239,7 +239,7 @@ bool SAMSUsers::load ()
 }
 
 
-SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
+SAMSUser *SAMSUserList::findUserByNick (const string & domain, const string & nick)
 {
   if (nick == "-")
     return NULL;
@@ -273,7 +273,7 @@ SAMSUser *SAMSUsers::findUserByNick (const string & domain, const string & nick)
   return usr;
 }
 
-SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
+SAMSUser *SAMSUserList::findUserByIP (const IP & ip)
 {
   if (!load ())
     return NULL;
@@ -301,7 +301,7 @@ SAMSUser *SAMSUsers::findUserByIP (const IP & ip)
   return usr;
 }
 
-void SAMSUsers::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
+void SAMSUserList::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
 {
   load ();
 
@@ -321,7 +321,7 @@ void SAMSUsers::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
 //  sort(lst.begin(), lst.end());
 }
 
-bool SAMSUsers::addNewUser(SAMSUser *user)
+bool SAMSUserList::addNewUser(SAMSUser *user)
 {
   if (!user)
     return false;
@@ -338,8 +338,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
     }
 
   DBQuery *query = NULL;
-
-  query =_conn->newQuery();
+  _conn->newQuery(query);
 
   if (query == NULL)
     {
@@ -411,7 +410,7 @@ bool SAMSUsers::addNewUser(SAMSUser *user)
   return true;
 }
 
-long SAMSUsers::activeUsersInTemplate (long template_id)
+long SAMSUserList::activeUsersInTemplate (long template_id)
 {
   load ();
   long cnt = 0;
