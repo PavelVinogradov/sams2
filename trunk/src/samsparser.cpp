@@ -29,8 +29,8 @@
 #include "userfilter.h"
 #include "processmanager.h"
 #include "localnetworks.h"
-#include "samsusers.h"
-#include "templates.h"
+#include "samsuserlist.h"
+#include "templatelist.h"
 #include "proxy.h"
 
 /**
@@ -333,8 +333,8 @@ int main (int argc, char *argv[])
   process.stop ();
 
   LocalNetworks::destroy ();
-  Templates::destroy ();
-  SAMSUsers::destroy ();
+  TemplateList::destroy ();
+  SAMSUserList::destroy ();
   Proxy::destroy ();
   Logger::destroy ();
   SamsConfig::destroy ();

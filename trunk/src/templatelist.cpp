@@ -20,17 +20,17 @@
 
 #include "dbconn.h"
 #include "dbquery.h"
-#include "templates.h"
+#include "templatelist.h"
 #include "template.h"
 #include "debug.h"
 #include "samsconfig.h"
 
-bool Templates::_loaded = false;
-map<long, Template*> Templates::_list;
-DBConn *Templates::_conn;                ///< Соединение с БД
-bool Templates::_connection_owner;
+bool TemplateList::_loaded = false;
+map<long, Template*> TemplateList::_list;
+DBConn *TemplateList::_conn;                ///< Соединение с БД
+bool TemplateList::_connection_owner;
 
-bool Templates::load ()
+bool TemplateList::load ()
 {
   if (_loaded)
     return true;
@@ -38,7 +38,7 @@ bool Templates::load ()
   return reload();
 }
 
-bool Templates::reload ()
+bool TemplateList::reload ()
 {
   DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
 
@@ -65,14 +65,16 @@ bool Templates::reload ()
     }
 
 
-  DBQuery *query = _conn->newQuery ();
+  DBQuery *query = NULL;
+  _conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");
       return false;
     }
 
-  DBQuery *query2 = _conn->newQuery ();
+  DBQuery *query2 = NULL;
+  _conn->newQuery (query2);
   if (!query2)
     {
       ERROR("Unable to create query.");
@@ -80,7 +82,8 @@ bool Templates::reload ()
       return false;
     }
 
-  DBQuery *query3 = _conn->newQuery ();
+  DBQuery *query3 = NULL;
+  _conn->newQuery (query3);
   if (!query3)
     {
       ERROR("Unable to create query.");
@@ -230,7 +233,7 @@ bool Templates::reload ()
   return true;
 }
 
-void Templates::useConnection (DBConn * conn)
+void TemplateList::useConnection (DBConn * conn)
 {
   if (_conn)
     {
@@ -245,7 +248,7 @@ void Templates::useConnection (DBConn * conn)
     }
 }
 
-void Templates::destroy ()
+void TemplateList::destroy ()
 {
   if (_connection_owner && _conn)
     {
@@ -269,7 +272,7 @@ void Templates::destroy ()
   _list.clear ();
 }
 
-Template * Templates::getTemplate (long id)
+Template * TemplateList::getTemplate (long id)
 {
   load();
 
@@ -282,7 +285,7 @@ Template * Templates::getTemplate (long id)
   return (*it).second;
 }
 
-vector<long> Templates::getIds ()
+vector<long> TemplateList::getIds ()
 {
   load();
 

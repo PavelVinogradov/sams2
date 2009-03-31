@@ -98,7 +98,7 @@ void DBCleaner::clearCounters ()
       return;
     }
 
-  query = conn->newQuery ();
+  conn->newQuery (query);
   if (!query)
     {
       ERROR ("Unable to create query.");
@@ -181,7 +181,7 @@ void DBCleaner::clearCache ()
       return;
     }
 
-  query = conn->newQuery ();
+  conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");
@@ -287,7 +287,7 @@ void DBCleaner::clearOldCache (int nmonth)
       return;
     }
 
-  query = conn->newQuery ();
+  conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");

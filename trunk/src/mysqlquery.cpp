@@ -39,16 +39,12 @@ MYSQLQuery::MYSQLQuery(MYSQLConn *conn):DBQuery ()
   _col_binded = false;
   _res = NULL;
   _prepeared_statement = false;
-/*
+
   if (conn)
     {
       conn->registerQuery (this);
       _conn = conn;
     }
-
-  _statement = NULL;
-  _bind = NULL;
-*/
 }
 
 MYSQLQuery::~MYSQLQuery()
@@ -56,9 +52,6 @@ MYSQLQuery::~MYSQLQuery()
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 
   destroy ();
-
-//  if (_conn)
-//    ((MYSQLConn *) _conn)->unregisterQuery (this);
 }
 
 bool MYSQLQuery::sendQueryDirect (const string & query)
@@ -505,6 +498,9 @@ void MYSQLQuery::destroy ()
   _param_real_len = NULL;
   _bind_column = NULL;
   _columns_real_len = NULL;
+
+  if (_conn)
+    _conn->unregisterQuery (this);
 }
 
 #endif // #ifdef USE_MYSQL

@@ -68,14 +68,16 @@ bool PgConn::connect ()
   return true;
 }
 
-DBQuery * PgConn::newQuery ()
+void PgConn::newQuery (DBQuery *& query)
 {
   DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
 
-  if (!_connected)
-    return NULL;
+  query = NULL;
 
-  DBQuery * query = new PgQuery( this );
+  if (!_connected)
+    return;
+
+  query = new PgQuery( this );
 
   if (query)
     {
@@ -85,8 +87,6 @@ DBQuery * PgConn::newQuery ()
     {
       ERROR ("Unable to create new query.");
     }
-
-  return query;
 }
 
 void PgConn::disconnect ()

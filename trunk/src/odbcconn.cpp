@@ -110,14 +110,16 @@ bool ODBCConn::connect ()
 }
 
 
-DBQuery * ODBCConn::newQuery ()
+void ODBCConn::newQuery (DBQuery *& query)
 {
   DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
 
-  if (!_connected)
-    return NULL;
+  query = NULL;
 
-  DBQuery * query = new ODBCQuery( this );
+  if (!_connected)
+    return;
+
+  query = new ODBCQuery( this );
 
   if (query)
     {
@@ -127,8 +129,6 @@ DBQuery * ODBCConn::newQuery ()
     {
       ERROR ("Unable to create new query.");
     }
-
-  return query;
 }
 
 
@@ -178,68 +178,6 @@ string ODBCConn::getErrorMessage (SQLSMALLINT handleType, SQLHANDLE handle)
   ptr = (const char *) &ODBC_msg[0];
   mess = ptr;
   return mess;
-}
-
-
-void ODBCConn::registerQuery (ODBCQuery * query)
-{
-  if (query == NULL)
-    return;
-
-  basic_stringstream < char >key;
-  map < string, ODBCQuery * >::iterator it;
-
-  key << query;
-
-  it = _queries.find (key.str ());
-  if (it != _queries.end ())
-    {
-      WARNING ("[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " already registered.");
-      return;
-    }
-
-  _queries[key.str ()] = query;
-
-  query->_conn = this;
-
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " registered.");
-}
-
-
-void ODBCConn::unregisterQuery (ODBCQuery * query)
-{
-  if (query == NULL)
-    return;
-
-  basic_stringstream < char >key;
-  map < string, ODBCQuery * >::iterator it;
-
-  key << query;
-
-  it = _queries.find (key.str ());
-  if (it == _queries.end ())
-    {
-      WARNING ("[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " is not registered.");
-      return;
-    }
-  _queries.erase (it);
-  query->destroy ();
-  query->_conn = NULL;
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Query " << key << " unregistered.");
-}
-
-
-void ODBCConn::unregisterAllQueries ()
-{
-  map < string, ODBCQuery * >::iterator it;
-
-  for (it = _queries.begin (); it != _queries.end (); it++)
-    {
-      (*it).second->destroy ();
-      (*it).second->_conn = NULL;
-    }
-  _queries.clear ();
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "All queries unregistered.");
 }
 
 #endif // #ifdef USE_UNIXODBC

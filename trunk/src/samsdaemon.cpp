@@ -35,14 +35,14 @@ using namespace std;
 #include "samsconfig.h"
 #include "processmanager.h"
 #include "squidlogparser.h"
-#include "samsusers.h"
+#include "samsuserlist.h"
 #include "urlgrouplist.h"
 #include "proxy.h"
 #include "localnetworks.h"
-#include "groups.h"
-#include "templates.h"
+#include "grouplist.h"
+#include "templatelist.h"
 #include "template.h"
-#include "timeranges.h"
+#include "timerangelist.h"
 #include "tools.h"
 #include "squidconf.h"
 #include "dbcleaner.h"
@@ -118,12 +118,12 @@ void reload (int signal_number)
   DEBUG (DEBUG2, "Reloading");
 
   SamsConfig::reload ();
-  TimeRanges::reload ();
-  Templates::reload ();
+  TimeRangeList::reload ();
+  TemplateList::reload ();
   Proxy::reload ();
   LocalNetworks::reload();
-  Groups::reload ();
-  SAMSUsers::reload ();
+  GroupList::reload ();
+  SAMSUserList::reload ();
   UrlGroupList::reload();
   PluginList::reload ();
 
@@ -365,7 +365,8 @@ int main (int argc, char *argv[])
   // Поэтому заносим в БД команду остановки и выходим
   if (stop_it)
     {
-      DBQuery *q = conn->newQuery ();
+      DBQuery *q = NULL;
+      conn->newQuery (q);
       if (!q)
         {
           ERROR("Unable to create query.");
@@ -385,12 +386,12 @@ int main (int argc, char *argv[])
       return 2;
     }
 
-  SAMSUsers::useConnection (conn);
+  SAMSUserList::useConnection (conn);
   LocalNetworks::useConnection (conn);
-  Groups::useConnection (conn);
+  GroupList::useConnection (conn);
   Proxy::useConnection (conn);
-  Templates::useConnection (conn);
-  TimeRanges::useConnection (conn);
+  TemplateList::useConnection (conn);
+  TimeRangeList::useConnection (conn);
   Logger::useConnection (conn);
   UrlGroupList::useConnection (conn);
   PluginList::useConnection (conn);
@@ -470,7 +471,10 @@ int main (int argc, char *argv[])
 
       if (!query)
         {
-          query = conn->newQuery ();
+          conn->newQuery (query);
+
+          if (!query)
+            continue;
 
           if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
             {
@@ -501,15 +505,15 @@ int main (int argc, char *argv[])
       time_now = localtime (&loop_start);
 
       // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
-      if ((time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
+      if (Proxy::needClearCounters() && (time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
         {
           DBCleaner *cleaner = NULL;
           DBExporter *exporter = NULL;
           bool need_reconfig = false;
-          tpl_ids = Templates::getIds ();
+          tpl_ids = TemplateList::getIds ();
           for (i = 0; i < tpl_ids.size (); i++)
             {
-              tpl = Templates::getTemplate (tpl_ids[i]);
+              tpl = TemplateList::getTemplate (tpl_ids[i]);
               // У шаблона месячный период и начался новый месяц
               // или у шаблона недельный период и начался понедельник
               // или шаблон имеет нестандартный период, и настал день очистки счетчиков
@@ -596,8 +600,8 @@ int main (int argc, char *argv[])
               process.stop();
               Proxy::destroy();
               LocalNetworks::destroy ();
-              SAMSUsers::destroy ();
-              Templates::destroy ();
+              SAMSUserList::destroy ();
+              TemplateList::destroy ();
               UrlGroupList::destroy ();
               PluginList::destroy ();
               Logger::destroy (); // всегда уничтожаем его последним

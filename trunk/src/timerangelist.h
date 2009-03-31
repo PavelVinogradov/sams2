@@ -14,8 +14,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TIMERANGES_H
-#define TIMERANGES_H
+#ifndef TIMERANGELIST_H
+#define TIMERANGELIST_H
 
 using namespace std;
 
@@ -26,7 +26,7 @@ using namespace std;
 class DBConn;
 class TimeRange;
 
-class TimeRanges
+class TimeRangeList
 {
 public:
   static bool reload ();

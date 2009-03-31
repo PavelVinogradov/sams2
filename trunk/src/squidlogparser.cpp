@@ -27,7 +27,6 @@
 #include "squidlogparser.h"
 #include "squidlogline.h"
 #include "localnetworks.h"
-#include "samsusers.h"
 #include "samsuser.h"
 #include "proxy.h"
 #include "samsconfig.h"
@@ -173,7 +172,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   long s_user_id;
 
 
-  DBQuery *updUserQuery = conn->newQuery ();
+  DBQuery *updUserQuery = NULL;
+  conn->newQuery (updUserQuery);
   if (!updUserQuery)
     {
       ERROR("Unable to create query.");
@@ -183,36 +183,31 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   user_update_cmd << "update squiduser set s_size=?, s_hit=?, s_enabled=? where s_user_id=?";
   if (!updUserQuery->prepareQuery (user_update_cmd.str ()))
     {
-      delete updUserQuery;
       return;
     }
   if (!updUserQuery->bindParam (1, DBQuery::T_LONGLONG, &s_size, 0))
     {
-      delete updUserQuery;
       return;
     }
   if (!updUserQuery->bindParam (2, DBQuery::T_LONGLONG, &s_hit, 0))
     {
-      delete updUserQuery;
       return;
     }
   if (!updUserQuery->bindParam (3, DBQuery::T_LONG, &s_enabled, 0))
     {
-      delete updUserQuery;
       return;
     }
   if (!updUserQuery->bindParam (4, DBQuery::T_LONG, &s_user_id, 0))
     {
-      delete updUserQuery;
       return;
     }
 
 
-  DBQuery *updCacheQuery = conn->newQuery ();
+  DBQuery *updCacheQuery = NULL;
+  conn->newQuery (updCacheQuery);
   if (!updCacheQuery)
     {
       ERROR("Unable to create query.");
-      delete updUserQuery;
       return;
     }
   basic_stringstream < char > cache_update_cmd;
@@ -220,134 +215,92 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   cache_update_cmd << " VALUES ("<<_proxyid<<", ?,?,?,?,?,?,?,?,?,?)";
   if (!updCacheQuery->prepareQuery (cache_update_cmd.str ()))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (2, DBQuery::T_CHAR, s_time, sizeof (s_time)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (5, DBQuery::T_LONGLONG, &s_size, 0))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (6, DBQuery::T_LONGLONG, &s_hit, 0))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (7, DBQuery::T_CHAR, s_ipaddr, sizeof (s_ipaddr)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (8, DBQuery::T_LONG, &s_period, 0))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (9, DBQuery::T_CHAR, s_method, sizeof (s_method)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCacheQuery->bindParam (10, DBQuery::T_CHAR, s_url, sizeof (s_url)))
     {
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
 
 
-  DBQuery *updProxyQuery = conn->newQuery ();
+  DBQuery *updProxyQuery = NULL;
+  conn->newQuery (updProxyQuery);
   if (!from_begin)
   {
     if (!updProxyQuery)
       {
         ERROR("Unable to create query.");
-        delete updCacheQuery;
-        delete updUserQuery;
         return;
       }
     basic_stringstream < char > proxy_update_cmd;
     proxy_update_cmd << "update proxy set s_endvalue=? where s_proxy_id=" << _proxyid;
     if (!updProxyQuery->prepareQuery (proxy_update_cmd.str ()))
       {
-        delete updProxyQuery;
-        delete updCacheQuery;
-        delete updUserQuery;
         return;
       }
     if (!updProxyQuery->bindParam (1, DBQuery::T_LONG, &fpos, 0))
       {
-        delete updProxyQuery;
-        delete updCacheQuery;
-        delete updUserQuery;
         return;
       }
   }
 
-  DBQuery *selCachesumQuery = conn->newQuery ();
+  DBQuery *selCachesumQuery = NULL;
+  conn->newQuery (selCachesumQuery);
   if (!selCachesumQuery)
     {
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   basic_stringstream < char > cachesum_select_cmd;
 
   if (!selCachesumQuery->bindCol (1, DBQuery::T_LONGLONG, &cachesum_size, 0))
     {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!selCachesumQuery->bindCol (2, DBQuery::T_LONGLONG, &cachesum_hit, 0))
     {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
 
-  DBQuery *insCachesumQuery = conn->newQuery ();
+  DBQuery *insCachesumQuery = NULL;
+  conn->newQuery (insCachesumQuery);
   if (!insCachesumQuery)
     {
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   basic_stringstream < char > cachesum_insert_cmd;
@@ -355,131 +308,61 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   cachesum_insert_cmd << " values (" << _proxyid << ", ?, ?, ?, ?, ?)";
   if (!insCachesumQuery->prepareQuery (cachesum_insert_cmd.str ()))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!insCachesumQuery->bindParam (1, DBQuery::T_CHAR, s_date, sizeof (s_date)))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!insCachesumQuery->bindParam (2, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!insCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_user, sizeof (s_user)))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!insCachesumQuery->bindParam (4, DBQuery::T_LONGLONG, &cachesum_size, 0))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!insCachesumQuery->bindParam (5, DBQuery::T_LONGLONG, &cachesum_hit, 0))
     {
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
 
 
-  DBQuery *updCachesumQuery = conn->newQuery ();
+  DBQuery *updCachesumQuery = NULL;
+  conn->newQuery (updCachesumQuery);
   if (!updCachesumQuery)
     {
       ERROR("Unable to create query.");
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   basic_stringstream < char > cachesum_update_cmd;
   cachesum_update_cmd << "update cachesum set s_size=?, s_hit=? where s_date=? and s_domain=? and s_user=? and s_proxy_id=" << _proxyid;
   if (!updCachesumQuery->prepareQuery (cachesum_update_cmd.str ()))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCachesumQuery->bindParam (1, DBQuery::T_LONGLONG, &cachesum_size, 0))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCachesumQuery->bindParam (2, DBQuery::T_LONGLONG, &cachesum_hit, 0))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCachesumQuery->bindParam (3, DBQuery::T_CHAR, s_date, sizeof (s_date)))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCachesumQuery->bindParam (4, DBQuery::T_CHAR, s_domain, sizeof (s_domain)))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
   if (!updCachesumQuery->bindParam (5, DBQuery::T_CHAR, s_user, sizeof (s_user)))
     {
-      delete updCachesumQuery;
-      delete insCachesumQuery;
-      delete selCachesumQuery;
-      delete updProxyQuery;
-      delete updCacheQuery;
-      delete updUserQuery;
       return;
     }
 
@@ -685,18 +568,10 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
     }
   in.close ();
 
-
-  delete selCachesumQuery;
-  delete insCachesumQuery;
-  delete updCachesumQuery;
-  delete updProxyQuery;
-  delete updCacheQuery;
-  delete updUserQuery;
-
-
   if (need_reconfig)
     {
-      DBQuery *reconfigQuery = conn->newQuery ();
+      DBQuery *reconfigQuery = NULL;
+      conn->newQuery (reconfigQuery);
       if (!reconfigQuery)
         {
           ERROR("Unable to create query.");

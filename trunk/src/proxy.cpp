@@ -27,12 +27,11 @@
 #include "proxy.h"
 #include "debug.h"
 #include "tools.h"
-#include "samsusers.h"
+#include "samsuserlist.h"
 #include "samsuser.h"
 #include "samsconfig.h"
-#include "templates.h"
+#include "templatelist.h"
 #include "template.h"
-#include "groups.h"
 
 bool Proxy::_loaded = false;
 Proxy::usrAuthType Proxy::_auth;
@@ -57,6 +56,7 @@ Proxy::CharCase Proxy::_domain_case = Proxy::CASE_ORIGINAL;
 Proxy::CharCase Proxy::_username_case = Proxy::CASE_ORIGINAL;
 DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
+bool Proxy::_auto_clean_counters = true;
 
 string Proxy::toString (TrafficType t)
 {
@@ -275,16 +275,16 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
     }
 
   if (_auth == AUTH_IP || usrNick == "-")
-    usr = SAMSUsers::findUserByIP (ip);
+    usr = SAMSUserList::findUserByIP (ip);
   else
-    usr = SAMSUsers::findUserByNick (usrDomain, usrNick);
+    usr = SAMSUserList::findUserByNick (usrDomain, usrNick);
 
   if (usr == NULL && usrNick != "-")
     {
       if (_auth == AUTH_IP)
-        usr = SAMSUsers::findUserByNick (usrDomain, usrNick);
+        usr = SAMSUserList::findUserByNick (usrDomain, usrNick);
       else
-        usr = SAMSUsers::findUserByIP (ip);
+        usr = SAMSUserList::findUserByIP (ip);
     }
 
   if (usr == NULL)
@@ -294,7 +294,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
       if (_autouser)
         {
           Template *tpl = NULL;
-          tpl = Templates::getTemplate (_defaulttpl);
+          tpl = TemplateList::getTemplate (_defaulttpl);
 
           if (!tpl)
             {
@@ -334,7 +334,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr->setGroupId (_defaultgrp);
           usr->setActiveTemplateId (_defaulttpl);
           usr->setLimitedTemplateId (tpl->getLimitedId ());
-          if (!SAMSUsers::addNewUser (usr))
+          if (!SAMSUserList::addNewUser (usr))
             {
               DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Failed to create new user.");
               delete usr;
@@ -343,7 +343,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] User created.");
 
           // Пользователя создали в автоматическом режиме, проинформируем об этом Squid.
-          DBQuery *query = _conn->newQuery ();
+          DBQuery *query = NULL;
+          _conn->newQuery (query);
           basic_stringstream < char >sqlcmd;
           if (!query)
             {
@@ -371,6 +372,11 @@ SAMSUser *Proxy::findUser (const string & ip, const string & ident)
     }
 
   return findUser (_ip, ident);
+}
+
+bool Proxy::needClearCounters ()
+{
+  return _auto_clean_counters;
 }
 
 bool Proxy::load ()
@@ -425,11 +431,12 @@ bool Proxy::reload ()
   long s_autotpl;
   long s_autogrp;
   char s_redirect_to[105];
+  long s_count_clean;
 
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
 
-  query = _conn->newQuery ();
+  _conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");
@@ -531,6 +538,11 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (20, DBQuery::T_LONG, &s_count_clean, 0))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
@@ -538,6 +550,7 @@ bool Proxy::reload ()
   sqlcmd << ", s_squidbase, s_redirector";
   sqlcmd << ", s_denied_to, s_redirect_to, s_adminaddr";
   sqlcmd << ", s_bigd, s_bigu";
+  sqlcmd << ", s_count_clean";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -609,6 +622,11 @@ bool Proxy::reload ()
   _deny_addr = s_denied_to;
   _redir_addr = s_redirect_to;
   _admin_addr = s_admin_addr;
+
+  if (s_count_clean > 0)
+    _auto_clean_counters = true;
+  else
+    _auto_clean_counters = false;
 
   DEBUG (DEBUG3, "Authentication: " << toString (_auth));
   DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));

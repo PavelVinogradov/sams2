@@ -43,7 +43,7 @@ public:
 
   bool connect ();
 
-  DBQuery * newQuery ();
+  void newQuery (DBQuery *& query);
 
   void disconnect ();
 

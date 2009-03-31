@@ -18,17 +18,17 @@
 
 #include "dbconn.h"
 #include "dbquery.h"
-#include "timeranges.h"
+#include "timerangelist.h"
 #include "timerange.h"
 #include "debug.h"
 #include "samsconfig.h"
 
-bool TimeRanges::_loaded = false;
-DBConn *TimeRanges::_conn;                ///< Соединение с БД
-bool TimeRanges::_connection_owner;
-map<string, TimeRange*> TimeRanges::_list;
+bool TimeRangeList::_loaded = false;
+DBConn *TimeRangeList::_conn;                ///< Соединение с БД
+bool TimeRangeList::_connection_owner;
+map<string, TimeRange*> TimeRangeList::_list;
 
-bool TimeRanges::load()
+bool TimeRangeList::load()
 {
   if (_loaded)
     return true;
@@ -36,7 +36,7 @@ bool TimeRanges::load()
   return reload();
 }
 
-bool TimeRanges::reload()
+bool TimeRangeList::reload()
 {
   DEBUG (DEBUG2, "[" << __FUNCTION__ << "] ");
 
@@ -64,7 +64,8 @@ bool TimeRanges::reload()
 
 
   basic_stringstream < char >sqlcmd;
-  DBQuery *query = _conn->newQuery ();
+  DBQuery *query = NULL;
+  _conn->newQuery (query);
 
   if (!query)
     {
@@ -127,7 +128,7 @@ bool TimeRanges::reload()
   return true;
 }
 
-void TimeRanges::useConnection (DBConn * conn)
+void TimeRangeList::useConnection (DBConn * conn)
 {
   if (_conn)
     {
@@ -142,7 +143,7 @@ void TimeRanges::useConnection (DBConn * conn)
     }
 }
 
-void TimeRanges::destroy()
+void TimeRangeList::destroy()
 {
   if (_connection_owner && _conn)
     {
@@ -160,7 +161,7 @@ void TimeRanges::destroy()
     }
 }
 
-vector<long> TimeRanges::getIds()
+vector<long> TimeRangeList::getIds()
 {
   load();
 
@@ -173,7 +174,7 @@ vector<long> TimeRanges::getIds()
   return lst;
 }
 
-TimeRange * TimeRanges::getTimeRange (long id)
+TimeRange * TimeRangeList::getTimeRange (long id)
 {
   load();
 

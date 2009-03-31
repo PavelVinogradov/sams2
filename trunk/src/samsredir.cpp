@@ -23,12 +23,12 @@
 #include "dbconn.h"
 #include "samsconfig.h"
 #include "debug.h"
-#include "samsusers.h"
+#include "samsuserlist.h"
 #include "samsuser.h"
 #include "proxy.h"
 #include "localnetworks.h"
-#include "groups.h"
-#include "templates.h"
+#include "grouplist.h"
+#include "templatelist.h"
 #include "template.h"
 #include "urlgrouplist.h"
 #include "tools.h"
@@ -177,18 +177,18 @@ int main (int argc, char *argv[])
       return 1;
     }
 
-  SAMSUsers::useConnection (conn);
+  SAMSUserList::useConnection (conn);
   LocalNetworks::useConnection (conn);
-  Groups::useConnection (conn);
+  GroupList::useConnection (conn);
   Proxy::useConnection (conn);
-  Templates::useConnection (conn);
+  TemplateList::useConnection (conn);
   UrlGroupList::useConnection (conn);
 
-  SAMSUsers::reload ();
+  SAMSUserList::reload ();
   LocalNetworks::reload ();
-  Groups::reload ();
+  GroupList::reload ();
   Proxy::reload ();
-  Templates::reload ();
+  TemplateList::reload ();
   UrlGroupList::reload();
 
   // select t.s_shablon_id, r.s_type, u.s_url
@@ -278,7 +278,7 @@ int main (int argc, char *argv[])
         }
 
       // нарушена целостность БД (отсутствует шаблон пользователя), блокируем доступ
-      tpl = Templates::getTemplate (usr->getCurrentTemplateId ());
+      tpl = TemplateList::getTemplate (usr->getCurrentTemplateId ());
       if (!tpl)
         {
           INFO ("Nothing to do without template");

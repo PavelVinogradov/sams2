@@ -18,17 +18,17 @@
 
 #include "dbconn.h"
 #include "dbquery.h"
-#include "groups.h"
+#include "grouplist.h"
 #include "samsconfig.h"
 #include "debug.h"
 
-bool Groups::_loaded = false;
-DBConn * Groups::_conn;
-bool Groups::_connection_owner = false;
-map<string, int> Groups::_list;
+bool GroupList::_loaded = false;
+DBConn * GroupList::_conn;
+bool GroupList::_connection_owner = false;
+map<string, int> GroupList::_list;
 
 
-void Groups::useConnection (DBConn * conn)
+void GroupList::useConnection (DBConn * conn)
 {
   if (_conn)
     {
@@ -43,7 +43,7 @@ void Groups::useConnection (DBConn * conn)
     }
 }
 
-bool Groups::reload()
+bool GroupList::reload()
 {
   DEBUG (DEBUG_GROUP, "[" << __FUNCTION__ << "] ");
 
@@ -72,7 +72,7 @@ bool Groups::reload()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
-  query = _conn->newQuery ();
+  _conn->newQuery (query);
 
   if (!query)
     {
@@ -111,7 +111,7 @@ bool Groups::reload()
   return true;
 }
 
-void Groups::destroy()
+void GroupList::destroy()
 {
   if (_connection_owner && _conn)
     {
@@ -125,7 +125,7 @@ void Groups::destroy()
     }
 }
 
-int Groups::getGroupId(const string & name)
+int GroupList::getGroupId(const string & name)
 {
   load();
 
@@ -139,7 +139,7 @@ int Groups::getGroupId(const string & name)
   return (*it).second;
 }
 
-bool Groups::load ()
+bool GroupList::load ()
 {
   if (_loaded)
     return true;

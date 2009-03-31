@@ -20,15 +20,15 @@
 
 #include "debug.h"
 #include "samsconfig.h"
-#include "samsusers.h"
+#include "samsuserlist.h"
 #include "samsuser.h"
 #include "urlgrouplist.h"
 #include "urlgroup.h"
 #include "url.h"
 #include "proxy.h"
-#include "templates.h"
+#include "templatelist.h"
 #include "template.h"
-#include "timeranges.h"
+#include "timerangelist.h"
 #include "timerange.h"
 #include "tools.h"
 
@@ -91,7 +91,7 @@ bool SquidConf::defineACL ()
   string current_tag = "unknown";
   vector <string> v;
 
-  vector<long> tpls = Templates::getIds();
+  vector<long> tpls = TemplateList::getIds();
   vector<long> time_ids;
   vector<long> group_ids;
   Template * tpl;
@@ -146,14 +146,14 @@ bool SquidConf::defineACL ()
               vector<SAMSUser *> users;
               for (i = 0; i < tpls.size (); i++)
                 {
-                  SAMSUsers::getUsersByTemplate (tpls[i], users);
+                  SAMSUserList::getUsersByTemplate (tpls[i], users);
                   if (users.empty ())
                     continue;
 
                   DEBUG(DEBUG2, "Processing "<<users.size()<<" user[s] in template " << tpls[i]);
 
                   string method;
-                  tpl = Templates::getTemplate(tpls[i]);
+                  tpl = TemplateList::getTemplate(tpls[i]);
                   authType = tpl->getAuth ();
                   if (authType == Proxy::AUTH_IP)
                     method = "src";
@@ -190,7 +190,7 @@ bool SquidConf::defineACL ()
                   time_ids = tpl->getTimeRangeIds ();
                   for (j = 0; j < time_ids.size(); j++)
                     {
-                      TimeRange * tr = TimeRanges::getTimeRange(time_ids[j]);
+                      TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
                       if (!tr)
                         continue;
                       if (tr->isFullDay())
@@ -259,13 +259,13 @@ bool SquidConf::defineACL ()
               vector<SAMSUser *> users;
               for (i = 0; i < tpls.size (); i++)
                 {
-                  SAMSUsers::getUsersByTemplate (tpls[i], users);
+                  SAMSUserList::getUsersByTemplate (tpls[i], users);
                   if (users.empty ())
                     continue;
 
                   DEBUG(DEBUG_DAEMON, "Processing template " << tpls[i]);
 
-                  tpl = Templates::getTemplate(tpls[i]);
+                  tpl = TemplateList::getTemplate(tpls[i]);
 
                   restriction.str("");
 
@@ -274,7 +274,7 @@ bool SquidConf::defineACL ()
                       time_ids = tpl->getTimeRangeIds ();
                       for (j = 0; j < time_ids.size(); j++)
                         {
-                          TimeRange * tr = TimeRanges::getTimeRange(time_ids[j]);
+                          TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
                           if (!tr)
                             continue;
                           if (tr->isFullDay())
@@ -299,7 +299,7 @@ bool SquidConf::defineACL ()
                       //Определяем запретные типы файлов для текущего шаблона
                       //Определяем запретные регулярные выражения для текущего шаблона
                     }
-                  if (SAMSUsers::activeUsersInTemplate ( tpls[i]) > 0)
+                  if (SAMSUserList::activeUsersInTemplate ( tpls[i]) > 0)
                     fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
                 }
             } //if (current_tag == "http_access")

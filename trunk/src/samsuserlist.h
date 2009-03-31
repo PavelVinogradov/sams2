@@ -14,8 +14,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SAMSUSERS_H
-#define SAMSUSERS_H
+#ifndef SAMSUSERLIST_H
+#define SAMSUSERLIST_H
 
 using namespace std;
 
@@ -29,7 +29,7 @@ class SAMSUser;
 /**
  * @brief Список пользователей SAMS
  */
-class SAMSUsers
+class SAMSUserList
 {
   friend class Proxy;
 public:

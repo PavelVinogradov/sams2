@@ -24,7 +24,6 @@ using namespace std;
 #include "ip.h"
 
 class DBConn;
-class SAMSUsers;
 class SAMSUser;
 
 
@@ -205,6 +204,13 @@ public:
    */
   static SAMSUser *findUser (const string & ip, const string & ident);
 
+  /**
+   * @brief Необходимость очищения счетчиков пользователей
+   *
+   * @return true, если необходимо очищать счетчики и false в противном случае
+   */
+  static bool needClearCounters ();
+
 protected:
   /**
    * @brief Загружает настройки
@@ -234,6 +240,7 @@ protected:
   static CharCase _username_case;      ///< Регистр букв в имени пользователя
   static DBConn *_conn;                ///< Соединение с БД
   static bool _connection_owner;       ///< Флаг, показывающий нужно ли закрывать соединение в методе @a destroy
+  static bool _auto_clean_counters;    ///< Очищать или нет счетчики пользователей после окончания периода ограничения
 };
 
 #endif

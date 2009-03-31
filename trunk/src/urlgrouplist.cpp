@@ -73,7 +73,7 @@ bool UrlGroupList::reload()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
-  query =_conn->newQuery();
+  _conn->newQuery(query);
 
   if (query == NULL)
     {

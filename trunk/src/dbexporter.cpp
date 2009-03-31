@@ -99,7 +99,7 @@ bool DBExporter::exportToFile (const string &fname)
       return false;
     }
 
-  query = conn->newQuery ();
+  conn->newQuery (query);
   if (!query)
     {
       ERROR("Unable to create query.");
