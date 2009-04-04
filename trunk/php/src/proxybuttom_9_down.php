@@ -36,12 +36,13 @@ function DownSquid()
 function shutdown_proxy()
 {
   global $SAMSConf;
+  global $USERConf;
   if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 ||  $SAMSConf->ToUserDataAccess($id, "UC")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
       $DB=new SAMSDB(&$SAMSConf);
       PageTop("reconfig_48.jpg","Send command '$SAMSConf->SHUTDOWN' to proxy server");
@@ -58,7 +59,7 @@ function proxybuttom_9_down()
   if(isset($_GET["id"])) $id=$_GET["id"];
 
 
-  if($SAMSConf->access==2 ||  $SAMSConf->ToUserDataAccess($id, "UC")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

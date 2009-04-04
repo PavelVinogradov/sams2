@@ -8,6 +8,7 @@
 function AddTRange()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -27,8 +28,8 @@ function AddTRange()
   if(isset($_GET["day6"])) $day6=$_GET["day6"];
   if(isset($_GET["day7"])) $day7=$_GET["day7"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
    if($day1=="on")   $day1="M"; else $day1=""; 
    if($day2=="on")   $day2="T"; else $day2="";  
@@ -51,6 +52,7 @@ function AddTRange()
 function AddTRangeForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -60,8 +62,8 @@ function AddTRangeForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
   PageTop("clock_48.jpg","Time Range ");
   print("<BR>\n");
@@ -146,11 +148,13 @@ function AddTRangeForm()
 function JSTRangeInfo()
 {
   global $SAMSConf;
+  global $USERConf;
   global $TRANGEConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
   $code="<HTML><BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
@@ -184,14 +188,15 @@ function TRangeTray()
 
   global $SAMSConf;
   global $TRANGEConf;
-  
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
+
   print("<SCRIPT>\n");
-  //print(" parent.basefrm.location.href=\"main.php?show=exe&function=about\";\n");    
-  //print(" parent.basefrm.document.write(\"<H1>11111</H1>\");\n");    //document.write("Hello World!");
   JSTRangeInfo();
   print("</SCRIPT> \n");
 

@@ -8,6 +8,7 @@
 function UpdateTRange()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -28,7 +29,7 @@ function UpdateTRange()
   if(isset($_GET["day6"])) $day6=$_GET["day6"];
   if(isset($_GET["day7"])) $day7=$_GET["day7"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
    if($day1=="on")   $day1="M"; else $day1=""; 
@@ -50,6 +51,7 @@ function UpdateTRange()
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
+  print("  parent.tray.location.href=\"tray.php?show=exe&filename=trangetray.php&function=trangetray&id=$id\"; \n");
   print("</SCRIPT> \n");
 }
 
@@ -60,12 +62,13 @@ function UpdateTRangeForm()
 {
   global $SAMSConf;
   global $TRANGEConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["type"])) $type=$_GET["type"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
   PageTop("clock_48.jpg","Time Range ");
@@ -162,10 +165,11 @@ function trangebuttom_1_prop()
 {
   global $SAMSConf;
   global $TRANGEConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=updatetrangeform&filename=trangebuttom_1_prop.php&id=$TRANGEConf->s_trange_id",
 	               "basefrm","config_32.jpg","config_48.jpg","$shablonbuttom_1_prop_shablonbuttom_1_prop_1");

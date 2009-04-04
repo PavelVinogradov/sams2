@@ -9,6 +9,10 @@
 
 function AuthLDAPReConfig()
 {
+  global $USERConf;
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
   UpdateAuthParameter("ldap","ldapserver");
   UpdateAuthParameter("ldap","basedn");
   UpdateAuthParameter("ldap","adadmin");
@@ -24,6 +28,7 @@ function AuthLDAPReConfigForm()
 {
   global $SAMSConf;
   global $PROXYConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
 
   $files=array();
@@ -31,8 +36,8 @@ function AuthLDAPReConfigForm()
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
 
   PageTop("config_48.jpg","LDAP Configuration ");
@@ -98,12 +103,13 @@ function AuthLDAPReConfigForm()
 function authldapbuttom_1_prop()
 {
   global $SAMSConf;
+  global $USERConf;
  if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=authldapreconfigform&filename=authldapbuttom_1_prop.php",
 	               "basefrm","config_32.jpg","config_48.jpg","LDAP authorisation configure");

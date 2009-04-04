@@ -8,13 +8,21 @@
  function lffolder_1_config()
  {
   global $SAMSConf;
+  global $USERConf;
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  {
+	$item=array("classname"=> "samsconfig",
+		"icon" => "config_20.jpg",
+		"target"=> "tray",
+		"url"=> "tray.php?show=exe&function=configtray&filename=configtray.php",
+		"text"=> "$lframe_sams_lframe_sams_2");
+	treeItem($item);
 
- if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
-    print("   licenses = insDoc(sams,gLnk(\"D\",\"$lframe_sams_lframe_sams_2\",\"tray.php?show=exe&function=configtray&filename=configtray.php\",\"config_20.jpg\"))\n");
-
+  }
  }
  
  

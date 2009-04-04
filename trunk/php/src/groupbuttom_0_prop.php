@@ -63,14 +63,15 @@ function UpdateGroupForm()
 function groupbuttom_0_prop()
 {
   global $SAMSConf;
+  global $USERConf;
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   
-  if($SAMSConf->access==2)
-    {
+  if($USERConf->ToWebInterfaceAccess("C")==1)
+  {
        GraphButton("main.php?show=exe&function=updategroupform&filename=groupbuttom_0_prop.php&id=$id",
 	               "basefrm","config_32.jpg","config_48.jpg","$groupbuttom_0_prop_groupbuttom_0_prop_1");
     }

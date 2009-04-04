@@ -8,14 +8,15 @@
 function UpdateShablon()
 {
   global $SAMSConf;
+  global $USERConf;
 
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
   $sguardgroups=array("ads","aggressive","audio-video","drugs","gambling",
    "hacking","mail","porn","proxy","violence","warez");
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
    $period="M";
  if(isset($_GET["id"])) $sname=$_GET["id"];
@@ -80,6 +81,7 @@ function UpdateShablonForm()
 {
   global $SAMSConf;
   global $SHABLONConf;
+  global $USERConf;
   $s_name=array();
   $s_type=array();
   $s_id=array();
@@ -94,8 +96,8 @@ function UpdateShablonForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
    $DENIEDDISABLED="";
    $ALLOWDISABLED="";
@@ -446,6 +448,7 @@ function UpdateShablonForm()
 function RemoveTRange2Shablon()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -456,8 +459,8 @@ function RemoveTRange2Shablon()
   if(isset($_GET["shablon_id"])) $shablon_id=$_GET["shablon_id"];
   if(isset($_GET["id"])) $id=$_GET["id"];
   
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
    
   echo "DELETE FROM sconfig_time WHERE  s_shablon_id='$shablon_id' .AND. s_trange_id='$id' <BR>";
   $DB->samsdb_query("DELETE FROM sconfig_time WHERE  s_shablon_id='$shablon_id' AND s_trange_id='$id' ");
@@ -471,6 +474,7 @@ function RemoveTRange2Shablon()
 function AddTRange2Shablon()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -479,8 +483,8 @@ function AddTRange2Shablon()
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
   if(isset($_GET["id"])) $id=$_GET["id"];
   
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$id', '$trange' ) ");
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
@@ -496,11 +500,12 @@ function shablonbuttom_1_prop()
 {
   global $SAMSConf;
   global $SHABLONConf;
+  global $USERConf;
   
   if(isset($_GET["id"])) $id=$_GET["id"];
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-   if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
    {
        GraphButton("main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$SHABLONConf->s_shablon_id",
 	               "basefrm","config_32.jpg","config_48.jpg","$shablonbuttom_1_prop_shablonbuttom_1_prop_1 '$SHABLONConf->s_name'");

@@ -5,35 +5,18 @@
  * (see the file 'main.php' for license details)
  */
 
-function loadjsfiles()
-{
-    $finp=fopen("menu/ua.js","r");
-    while(feof($finp)==0)
-    {
-	$string=fgets($finp, 10000);
-	print("$string");
-    }
-    fclose($finp);
-
-    $finp=fopen("menu/ftiens4.js","r");
-    while(feof($finp)==0)
-    {
-	$string=fgets($finp, 10000);
-        print("$string");
-    }
-    fclose($finp);
-}
-
-
   //require('./src/auth.php');
   require('./dbclass.php');
   require('./samsclass.php');
   require('./tools.php');
   include('./pluginmanager.php');
+  require("lib/treeview.php");
+  require('./userclass.php');
   global $SAMSConf;
+  global $USERConf;
 
   $SAMSConf=new SAMSCONFIG();
-  //$SAMSConf->access=2;
+  $USERConf=new SAMSUSER();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -46,6 +29,7 @@ function loadjsfiles()
  if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
  if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
+ if(isset($HTTP_COOKIE_VARS['samsadmin'])) $samsadmin=$HTTP_COOKIE_VARS['samsadmin'];
  if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
 
  if($SAMSConf->PHPVER<5)
@@ -61,41 +45,68 @@ function loadjsfiles()
      $SAMSConf->groupauditor=$_COOKIE['gauditor'];
      $SAMSConf->USERID=$_COOKIE['userid'];
      $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
+	$samsadmin=$_COOKIE['samsadmin'];
    }  
 
- $SAMSConf->access=UserAccess();
+// $SAMSConf->access=UserAccess();
+// $SAMSConf->access=2;
+// $SAMSConf->USERPASSWD=1;
+
+   if($samsadmin==1)
+	{
+		$USERConf->sams_admin();
+
+	}
+	else
+	{
+		if($SAMSConf->USERID > 0)
+			$USERConf->sams_user($SAMSConf->USERID);
+	}
+
 
 print("<html><head>\n");
-print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
-//print("<META  content=\"text/html; charset=KOI8-R\" http-equiv='Content-Type'>");
+header("Content-type: text/html; charset=$CHARSET");
 print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
 print("</head>\n");
 print("<body topmargin=16 marginheight=16 >\n");
-//$SAMSConf->PrintSAMSSettings();
 
 print("<IMG SRC=\"$SAMSConf->ICONSET/sams.gif\">\n");
+print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"icon/classic/treeview.css\">\n");
+echo "<script type=\"text/javascript\" src=\"lib/jquery-1.2.6.js\"></script> \n
+<script type=\"text/javascript\" src=\"lib/jquery.cookie.js\"></script>\n
+<script type=\"text/javascript\" src=\"lib/jquery.treeview.js\"></script>\n";
 
-print("<script language=\"javascript\">\n");
-loadjsfiles();
-print("PERSERVESTATE = 1\n");
-print("USETEXTLINKS = 1\n");
-print("STARTALLOPEN = 0\n");
-print("ICONPATH = '$SAMSConf->ICONSET/'\n\n");
 $HOSTNAME=getenv('HOSTNAME');
-print("foldersTree = gFld(\"$HOSTNAME \", \"main.php\", \"earth.gif\")\n");
+
+echo "<style type=\"text/css\">\n
+.filetree span.hostname { padding: 1px 0 1px 25px; display: block; }\n
+.filetree span.hostname { background: url($SAMSConf->ICONSET/earth.gif) 0 0 no-repeat; }\n
+</style>\n";
+
+echo "<li><span class=\"hostname\">$HOSTNAME</span></li>";
+echo "<div id=\"ex1\">";
+echo "<ul id=\"browser\" class=\"filetree treeview\">";
 
     ExecuteFunctions("./", "lframe_","1");
-    $manager = new PluginManager(1, 1, 1);
-    print($manager->generateTree());
-print("\n</script>\n");
-
-print("<a href=http://www.treeview.net/treemenu/userhelp ></a>\n");
-print("<script>initializeDocument()</script>\n");
-print("<noscript>\n");
-print("Ваш обозреватель не поддерживает Javascript. Установите <a href=\"software/mozilla/\">Mozilla</a>\n");
-print("</noscript>\n");
+echo "</ul>";
+echo "</div>";
 
 
+echo "<script type=\"text/javascript\">\n";
+echo "$(document).ready(function(){\n";
+echo "$(\"#browser\").treeview({";
+echo "                animated: \"fast\",";
+echo "                collapsed: true,";
+echo "                persist: \"cookie\",";
+echo "                toggle: function() {";
+echo "                        window.console && console.log(\"%o was toggled\", this);";
+echo "                }";
+echo " });\n";
+
+echo "});\n";
+echo "</script>\n";
+
+//echo "samsadmin=$USERConf->s_samsadmin <BR>userid=$USERConf->s_user_id=$id=$SAMSConf->USERID <BR> $USERConf->s_webaccess";
 print("</html>\n");
 
 

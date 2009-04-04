@@ -183,26 +183,34 @@ function CUserDoc()
 function ConfigTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  print("<SCRIPT>\n");
-  if($SAMSConf->access==2)
-    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
+//  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  {
+	print("<SCRIPT>\n");
+	print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    
+	print("</SCRIPT> \n");
+	print("<TABLE WIDTH=\"95%\" BORDER=0>\n");
+	print("<TR HEIGHT=60>\n");
+	print("<TD WIDTH=\"25%\"\">");
+	print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
+
+	ExecuteFunctions("./src", "configbuttom","1");
+
+	print("<TD>\n");
+	print("</TABLE>\n");
+  }
   else
-    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }
- print("</SCRIPT> \n");
+  {
+	print("<SCRIPT>\n");
+	 print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    
+	print("</SCRIPT> \n");
+  }
 
-  print("<TABLE WIDTH=\"95%\" BORDER=0>\n");
-  print("<TR HEIGHT=60>\n");
-  print("<TD WIDTH=\"25%\"\">");
-  print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
-
-    ExecuteFunctions("./src", "configbuttom","1");
-
-  print("<TD>\n");
-  print("</TABLE>\n");
 
 
 }

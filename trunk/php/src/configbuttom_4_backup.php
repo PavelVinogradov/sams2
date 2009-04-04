@@ -8,11 +8,14 @@
 function SaveBackUp()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-   if($SAMSConf->access!=2)     {       exit;     }
 
+	if($USERConf->ToWebInterfaceAccess("C")!=1 )
+		exit;
 
 	$samsdb=array('auth_param', 'passwd', 'proxy', 'redirect',
 	'sconfig', 'sconfig_time', 'sgroup', 'shablon', 'squiduser',
@@ -82,10 +85,13 @@ function SaveBackUp()
 function SaveBackUpForm()
 {
 	global $SAMSConf;
+	global $USERConf;
+	
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-	if($SAMSConf->access!=2)     {       exit;     }
+	if($USERConf->ToWebInterfaceAccess("C")!=1 )
+		exit;
   
 	PageTop("backup_48.jpg","$backupbuttom_1_savebase_SaveBackUpForm_1");
 	print("<BR>\n");
@@ -105,11 +111,13 @@ function SaveBackUpForm()
 function configbuttom_4_backup()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+//	if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+	if($USERConf->ToWebInterfaceAccess("C")==1 )
 	{
 		GraphButton("main.php?show=exe&function=savebackupform&filename=configbuttom_4_backup.php","basefrm","savebase_32.jpg","savebase_48.jpg","$backupbuttom_1_savebase_backupbuttom_1_savebase_1");
 	}

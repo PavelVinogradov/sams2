@@ -14,6 +14,7 @@
 function AuthNTLMTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -22,7 +23,7 @@ function AuthNTLMTray()
       print("        parent.basefrm.location.href=\"main.php\";\n");
       print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");

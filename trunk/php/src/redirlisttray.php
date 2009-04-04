@@ -7,12 +7,13 @@
 function DeleteList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
   
   if(isset($_GET["id"])) $id=$_GET["id"];
 
@@ -28,6 +29,7 @@ function DeleteList()
 function AddNewList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -36,8 +38,9 @@ function AddNewList()
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["name"])) $name=$_GET["name"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
+
   $num_rows=$DB->samsdb_query("INSERT INTO redirect (s_name,s_type) VALUES ( '$name', '$type' ) ");
   //UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
@@ -54,6 +57,7 @@ function AddNewList()
 function AddURLListForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -63,8 +67,8 @@ function AddURLListForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
   
  switch($type)
 	{
@@ -124,6 +128,7 @@ function AddURLListForm()
 function AddRedirListForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -132,8 +137,8 @@ function AddRedirListForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
   
   PageTop("redirect_48.jpg","$redirlisttray_AddRedirListForm_1 ");
   print("<BR>\n");
@@ -205,6 +210,7 @@ function UnecranChars($string)
 function AddURLFromList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -217,8 +223,8 @@ function AddURLFromList()
 
   if(strlen($url)>0)
     {   
-       if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+	if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
 
       $DB->samsdb_query("INSERT INTO url (s_url,s_redirect_id) VALUES ('$url', '$id') ");
 //      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE filename=\"$type\" ");
@@ -234,12 +240,14 @@ function AddURLFromList()
 function DeleteURLFromList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
+
   $exefilename="";
  if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["delete"])) $url=$_GET["delete"];
@@ -261,6 +269,7 @@ function DeleteURLFromList()
 function EditURLFromList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -270,8 +279,8 @@ function EditURLFromList()
   if(isset($_GET["editurl"])) $url=$_GET["editurl"];
   if(isset($_GET["oldvalue"])) $oldvalue=$_GET["oldvalue"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
 
    $oldvalue = UnecranChars ($oldvalue);
    $url = UnecranChars ($url);
@@ -290,6 +299,7 @@ function EditURLFromList()
 function DeleteAllURLFromList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -297,8 +307,8 @@ function DeleteAllURLFromList()
    $exefilename="";
   if(isset($_GET["type"])) $type=$_GET["type"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
 
   $num_rows=$DB->samsdb_query("DELETE FROM url WHERE s_redirect_id='$type' ");
   //UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $type","02");
@@ -312,6 +322,7 @@ function DeleteAllURLFromList()
 function RedirListForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -319,8 +330,8 @@ function RedirListForm()
   if(isset($_GET["id"])) $id=$_GET["id"];
   $count=0;
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
   
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
   $row=$DB->samsdb_fetch_array();
@@ -447,6 +458,7 @@ function RedirListForm()
 function RedirListTray()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -461,7 +473,7 @@ function RedirListTray()
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
   $row=$DB->samsdb_fetch_array();
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+  if($USERConf->ToWebInterfaceAccess("LC")==1 )
     {
 	print("<TABLE border=0 WIDTH=\"100%\">\n");
 	print("<TR HEIGHT=60>\n");

@@ -11,13 +11,14 @@ function AddUsersFromAdLDAP()
   require_once("adldap.php");
 
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
  
   if(isset($_GET["domainname"])) $domainname=$_GET["domainname"];
   if(isset($_GET["username"])) $userlist=$_GET["username"];
@@ -98,6 +99,7 @@ function AddUsersFromAdLDAP()
 function AddUsersFromADLDForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -105,9 +107,8 @@ function AddUsersFromADLDForm()
   if(isset($_GET["ldapgroup"])) $ldapgroup=$_GET["ldapgroup"];
   if(isset($_GET["getgroup"])) $getgroup=$_GET["getgroup"];
    
-  $SAMSConf->access=UserAccess();
-  if($SAMSConf->access!=2)     {       exit;     }
-  
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);  
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 Active Directory ");
   
@@ -288,11 +289,12 @@ exit(0);
 function authadldbuttom_2_usersadd()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=addusersfromadldform&filename=authadldbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_usersbuttom_1_domain_1 Active Directory");
 	}

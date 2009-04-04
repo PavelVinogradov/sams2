@@ -7,6 +7,10 @@
 function AuthEnabled()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
 
   if(isset($_GET["adld"])) $adld=$_GET["adld"];
   if(isset($_GET["ntlm"])) $ntlm=$_GET["ntlm"];
@@ -19,6 +23,7 @@ function AuthEnabled()
   if($ntlm=="on") $ntlm=1; else $ntlm=0;
   if($ldap=="on") $ldap=1; else $ldap=0;
   if($ncsa=="on") $ncsa=1; else $ncsa=0;
+
 
 	$DB=new SAMSDB(&$SAMSConf);
 	$num_rows=$DB->samsdb_query("UPDATE auth_param SET s_value='$ip' WHERE s_auth='ip' AND s_param='enabled' ");
@@ -36,9 +41,14 @@ function AuthEnabled()
 
 function AuthEnabledForm()
 {
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
   PageTop("config_48.jpg","Enabled authorisation type ");
   print("<P>\n");
-
+echo "";
   print("<FORM NAME=\"authenabledform\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"authenabled\">\n");
@@ -93,6 +103,7 @@ function AuthEnabledForm()
 function AuthTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -101,7 +112,7 @@ function AuthTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authenabledform&filename=authtray.php\";\n");
       print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");

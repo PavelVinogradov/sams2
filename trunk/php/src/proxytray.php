@@ -69,11 +69,12 @@ function ProxyTray()
 {
   global $SAMSConf;
   global $PROXYConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AULC")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
 	print("<SCRIPT>\n");
 	JSProxyInfo();

@@ -28,6 +28,7 @@ class SAMSUSER
   var $s_group_name;
   var $s_webaccess;
   var $s_defquote;
+  var $s_samsadmin;
 
   var $W_access;
   var $G_access;
@@ -36,11 +37,19 @@ class SAMSUSER
   var $U_access;
   var $L_access;
   var $C_access;
+//WGSAULC
 
 function SAMSUSER($userid)
 {
+
+}
+
+function sams_user($userid)
+{
   global $SAMSConf;
   $DB=new SAMSDB(&$SAMSConf);
+
+//  if()
 
   $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_name as s_shablon_name,shablon.s_quote as def_quote,sgroup.s_name as s_group_name FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id LEFT JOIN sgroup ON squiduser.s_group_id=sgroup.s_group_id WHERE s_user_id='$userid' ");
   $row=$DB->samsdb_fetch_array();
@@ -85,9 +94,281 @@ function SAMSUSER($userid)
 
 }
 
+function sams_admin()
+{
+  global $SAMSConf;
+  $this->s_samsadmin=1;
+  $this->s_user_id=-1;
+  $this->s_group_id=-1; 
+  $this->s_shablon_id=-1;
+  $this->s_webaccess="WGSAULC";
+
+  $this->W_access = 1;
+  $this->G_access = 1;
+  $this->S_access = 1;
+  $this->A_access = 1;
+  $this->U_access = 1;
+  $this->L_access = 1;
+  $this->C_access = 1;
+
+}
+
+
+function sams_admin_authentication($username,$passwd)
+  {
+     global $SAMSConf;
+     $DB=new SAMSDB(&$SAMSConf);
+
+     $time=time();
+     $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
+     if($num_rows==0)
+	echo "ERROR<BR>";
+     $row=$DB->samsdb_fetch_array();
+     //$row=mysql_fetch_array($result);
+     $autherrorc=$row['s_autherrorc'];
+     $autherrort=$row['s_autherrort'];
+     $admname=$row['s_user'];
+     $admpasswd=$row['s_pass'];
+     $DB->free_samsdb_query();
+     if($autherrorc==0||$time>$autherrort+60)
+       {  
+         if($time>$autherrort+60)
+           {  
+		$newpasswd=crypt("$passwd","00");
+		if( $admpasswd == $newpasswd )
+		  {
+			$SAMSConf->adminname=$username;
+			if( $autherror > 0 )
+				$DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='0'  WHERE s_user='$username' ");	        
+		  }
+		else
+		  {
+			if($autherrorc>=2)
+	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='$time' WHERE s_user='$username'  ");         
+			else
+	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc=s_autherrorc+1,s_autherrort='0'  WHERE s_user='$username'  ");        
+		  }
+		setcookie("samsadmin","1");
+		setcookie("user","$username");
+		setcookie("passwd","$newpasswd");
+	    }   
+         else
+           {  
+               $user="";
+               $function="autherror";
+           }
+       }
+  }   
 
 
 
+function sams_user_id_authentication($username,$passwd)
+  {   
+	if(isset($_POST["id"])) $id=$_POST["id"];
+	if(isset($_POST["userid"])) $password=$_POST["userid"];
+	if(isset($_POST["usernick"])) $user=$_POST["usernick"];
+	if(isset($_POST["auth"])) $auth=$_POST["auth"];
+	require('./authclass.php');
+
+	$time=time();
+	if($auth=="ntlm")
+		$USERAUTH = new NTLNAuthenticate();
+	else if($auth=="adld")
+		$USERAUTH = new ADLDAuthenticate();
+	else if($auth=="ldap")
+		$USERAUTH = new LDAPAuthenticate();
+	else 
+		$USERAUTH = new NCSAAuthenticate();
+	if($USERAUTH->UserIDAuthenticate($id, $password)==1)
+	{
+		if($USERAUTH->authOk==1)
+		{
+			if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
+			{  
+				$SAMSConf->groupauditor=$USERAUTH->gauditor;
+				setcookie("domainuser",$USERAUTH->UserName);
+				setcookie("gauditor",$USERAUTH->gauditor);
+				setcookie("userid",$USERAUTH->userid);
+				setcookie("webaccess",$USERAUTH->webaccess);
+				setcookie("samsadmin","0");
+			}
+			else
+			{  
+				print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+				$time2=60 - ($time - $USERAUTH->autherrort);
+				if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
+				{
+					print("<h2>next logon after $time2 second</h2> \n");
+				}   
+				$USERAUTH->SetUserAuthErrorVariables();
+				exit(0);
+			}
+		}
+		else
+		{  
+			print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+			$time2=60 - ($time - $autherrort);
+			if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
+			{
+				print("<h2>next logon after $time2 second</h2> \n");
+			}   
+			$USERAUTH->SetUserAuthErrorVariables();
+			exit(0);
+		}
+	}
+	else
+	{
+		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+		$time2=60 - ($time - $USERAUTH->autherrort);
+		if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
+		{
+			print("<h2>next logon after $time2 second</h2> \n");
+		}   
+		$USERAUTH->SetUserAuthErrorVariables();
+		exit(0);
+	}
+	$USERAUTH->SetUserAuthErrorVariables();
+  }  
+
+
+
+function sams_user_name_authentication($username,$passwd)
+{   
+     global $SAMSConf;
+     $DB=new SAMSDB(&$SAMSConf);
+
+	if(isset($_POST["id"])) $id=$_POST["id"];
+	if(isset($_POST["userid"])) $password=$_POST["userid"];
+	if(isset($_POST["user"])) $user=$_POST["user"];
+	require('./authclass.php');
+
+echo "1: sams_user_name_authentication id=$id user=$user password=$password<BR>";
+
+     $SQL="SELECT squiduser.s_user_id,shablon.s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_nick='$user';";
+
+     $time=time();
+     $num_rows=$DB->samsdb_query_value($SQL);
+     if($num_rows==1)
+     {
+	$row=$DB->samsdb_fetch_array();
+
+	if($row['s_auth']=="ntlm")
+		$USERAUTH = new NTLNAuthenticate();
+	else if($row['s_auth']=="adld")
+		$USERAUTH = new ADLDAuthenticate();
+	else if($row['s_auth']=="ldap")
+		$USERAUTH = new LDAPAuthenticate();
+	else 
+		$USERAUTH = new NCSAAuthenticate();
+
+	$USERAUTH->UserAuthenticate($user, $password);
+
+	if($USERAUTH->authOk==1)
+	{
+		if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
+		{  
+			$SAMSConf->groupauditor=$USERAUTH->gauditor;
+			setcookie("domainuser",$USERAUTH->UserName);
+			setcookie("gauditor",$USERAUTH->gauditor);
+			setcookie("userid",$USERAUTH->userid);
+			setcookie("webaccess",$USERAUTH->webaccess);
+			setcookie("samsadmin","0");
+		}
+		else
+		{  
+			print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+			$time2=60 - ($time - $USERAUTH->autherrort);
+			if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
+			{
+				print("<h2>next logon after $time2 second</h2> \n");
+			}   
+			$USERAUTH->SetUserAuthErrorVariables();
+			exit(0);
+		}
+	}
+	else
+	{  
+		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+		$time2=60 - ($time - $USERAUTH->autherrort);
+		if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
+		{
+			print("<h2>next logon after $time2 second</h2> \n");
+		}
+		$USERAUTH->SetUserAuthErrorVariables();
+		exit(0);
+	}
+	$USERAUTH->SetUserAuthErrorVariables();
+      }
+      else
+      {
+	print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+	exit(0);
+
+      }
+     print("<SCRIPT>\n");
+     print("        parent.lframe.location.href=\"lframe.php\";\n");
+     print("        parent.tray.location.href = \"tray.php?show=exe&filename=usertray.php&function=usertray&id=".$row['s_user_id']."\";\n");
+     print("</SCRIPT> \n");
+     exit(0);
+}  
+
+
+
+
+
+  function ToWebInterfaceAccess($str)
+    {
+	$maslen=strlen($str);
+	for($i=0;$i<$maslen;$i++)
+	{
+		if($str[$i]=="W" && $this->W_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="G" && $this->G_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="S" && $this->S_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="A" && $this->A_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="U" && $this->U_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="L" && $this->L_access == 1)
+		{
+			return(1);
+		}
+		if($str[$i]=="C" && $this->C_access == 1)
+		{
+			return(1);
+		}
+	}	
+	return(0);
+ }
+
+  function ToGroupStatAccess($str, $groupid)
+  {
+	$maslen=strlen($str);
+	for($i=0;$i<$maslen;$i++)
+	{
+		if($str[$i]=="G" && $this->G_access == 1 && $this->s_group_id==$groupid)
+		{
+			return(1);
+		}
+		if($str[$i]=="S" && $this->S_access == 1)
+		{
+			return(1);
+		}
+	}	
+	return(0);
+  }
 
 
 }

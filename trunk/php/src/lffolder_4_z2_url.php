@@ -14,12 +14,24 @@
 
  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     {
-      print("   context = insFld(sams, gFld(\"$lframe_sams_FolderContextDenied_1\", \"main.php?show=exe&filename=redirlisttray.php&function=addurllistform&type=regex\", \"stop.gif\"))\n");
-      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_type='regex' ");
-      while($row=$DB->samsdb_fetch_array())
-         {
-           print("      insDoc(context, gLnk(\"D\", \"$row[s_name]\", \"tray.php?show=exe&function=contextlisttray&id=$row[s_redirect_id]\",\"pfile.gif\"))\n");
-         }
+	$item=array("classname"=> "url",
+		"icon" => "stop.gif",
+		"target"=> "basefrm",
+		"url"=> "main.php?show=exe&filename=redirlisttray.php&function=addurllistform&type=regex",
+		"text"=> "$lframe_sams_FolderContextDenied_1");
+	treeFolder($item);
+
+	$num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_type='regex' ");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$item=array("classname"=> "url",
+			"target"=> "tray",
+			"url"=> "tray.php?show=exe&function=contextlisttray&id=$row[s_redirect_id]",
+			"text"=> "$row[s_name]");
+		treeFolderItem($item);
+
+	}
+	treeFolderClose();
     }	 
 
  }

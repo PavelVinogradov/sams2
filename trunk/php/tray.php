@@ -7,6 +7,7 @@
   global $SAMSConf;
   global $PROXYConf;
   global $USERConf;
+  global $SquidUSERConf;
   global $TRANGEConf;
   global $SHABLONConf;
   require('./dbclass.php');
@@ -17,6 +18,10 @@
   
   $SAMSConf=new SAMSCONFIG();
   $SAMSConf->access=2;
+
+require('./userclass.php');
+$USERConf=new SAMSUSER();
+
 $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER,   		$SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->PDO);
  $filename="";
  $sday=0;
@@ -48,6 +53,7 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
  if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
  if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
+	if(isset($HTTP_COOKIE_VARS['samsadmin'])) $samsadmin=$HTTP_COOKIE_VARS['samsadmin'];
 	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
 
  if($SAMSConf->PHPVER<5)
@@ -63,8 +69,19 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	$SAMSConf->groupauditor=$_COOKIE['gauditor'];
 	$SAMSConf->USERID=$_COOKIE['userid'];
 	$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
+	$samsadmin=$_COOKIE['samsadmin'];
    }  
-  $SAMSConf->access=UserAccess();
+   if($samsadmin==1)
+	{
+		$USERConf->sams_admin();
+
+	}
+	else
+	{
+		if($SAMSConf->USERID > 0)
+			$USERConf->sams_user($SAMSConf->USERID);
+	}
+//  $SAMSConf->access=UserAccess();
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -84,13 +101,13 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	$PROXYConf=new SAMSPROXY($proxy_id);
 	//$PROXYConf->PrintProxyClass();
 	}
-  if(strstr($filename,"userb")||strstr($filename,"usertray"))
-	{
-	 if(isset($_GET["id"])) $id=$_GET["id"];
-	require('./userclass.php');
-	$USERConf=new SAMSUSER($id);
-	//$PROXYConf->PrintProxyClass();
-	}
+//  if(strstr($filename,"userb")||strstr($filename,"usertray"))
+//	{
+//	 if(isset($_GET["id"])) $id=$_GET["id"];
+//	require('./userclass.php');
+//	$USERConf=new SAMSUSER($id);
+//	//$PROXYConf->PrintProxyClass();
+//	}
   if(strstr($filename,"trange"))
 	{
 	require('./trangeclass.php');

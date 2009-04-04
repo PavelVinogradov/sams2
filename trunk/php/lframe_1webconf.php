@@ -7,15 +7,21 @@
 
 function lframe_1webconf()
 {
-global $SAMSConf;
+  global $SAMSConf;
+  global $USERConf;
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
-    print("   web = insFld(foldersTree, gFld2(\" $lframe_1webconf_lframe_1webconf_1\", \"tray.php?show=exe&function=webconfigtray&filename=webconfigtray.php\", \"webinterface.gif\"))\n");
-//return(0);
-
+  if($USERConf->ToWebInterfaceAccess("C")==1)
+  {
+	$item=array("classname"=> "webconf",
+			"icon" => "webinterface.gif",
+			"target"=> "tray",
+			"url"=> "tray.php?show=exe&function=webconfigtray&filename=webconfigtray.php",
+			"text"=> "$lframe_1webconf_lframe_1webconf_1");
+	treeItem($item);
+  }
 }
 
 ?>

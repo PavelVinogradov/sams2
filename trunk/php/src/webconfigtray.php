@@ -193,11 +193,12 @@ function CUserDoc()
 function WebConfigTray()
 {
   global $SAMSConf;
+  global $USERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   print("<SCRIPT>\n");
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
   else
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }

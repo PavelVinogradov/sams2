@@ -8,9 +8,13 @@
 function SaveRedirList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
@@ -40,12 +44,13 @@ function SaveRedirList()
 function redirbuttom_2_savelist()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+  if($USERConf->ToWebInterfaceAccess("LC")==1 )
     {
        GraphButton("main.php?show=exe&function=saveredirlist&filename=redirbuttom_2_savelist.php&id=$id","basefrm","export_32.jpg","export_48.jpg","$redir_redirtray3");
 	}
