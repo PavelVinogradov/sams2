@@ -113,8 +113,9 @@ function UserSitesPeriod()
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 
-  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
-    exit(0);
+//  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
+  if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
+	exit(0);
 
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
@@ -246,7 +247,10 @@ function UserSitesForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
+	if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
+		exit(0);
+
+	PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
@@ -264,12 +268,14 @@ function userbuttom_4_site()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+//	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+	if($USERConf->ToWebInterfaceAccess("WAUC")==1)
 	{
-		GraphButton("main.php?show=exe&function=usersitesform&filename=userbuttom_4_site.php&id=$USERConf->s_user_id","basefrm","straffic_32.jpg","straffic_48.jpg","$userbuttom_4_site_userbuttom_4_site_1");
+		GraphButton("main.php?show=exe&function=usersitesform&filename=userbuttom_4_site.php&id=$SquidUSERConf->s_user_id","basefrm","straffic_32.jpg","straffic_48.jpg","$userbuttom_4_site_userbuttom_4_site_1");
 	}
 
 }

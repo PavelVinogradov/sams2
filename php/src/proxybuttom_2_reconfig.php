@@ -8,6 +8,7 @@
 function ReconfigSquid()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
  
   if(isset($_GET["cache"])) $cache=$_GET["cache"];
@@ -16,7 +17,7 @@ function ReconfigSquid()
   require($lang);
 
   $reconfigureOK=0;
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
 	PageTop("reconfig_48.jpg","$squidbuttom_0_reconfig_ReconfigSquid_1");
 	$result=mysql_query("insert into reconfig (s_proxy_id,s_service,s_action)  VALUES('$cache', 'squid', 'reconfig'); ");
@@ -48,12 +49,13 @@ function ReconfigSquid()
 function ReconfigSquidForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
   
   PageTop("reconfig_48.jpg","$squidbuttom_0_reconfig_ReconfigSquidForm_1 ");
 
@@ -88,13 +90,14 @@ function ReconfigSquidForm()
 function proxybuttom_2_reconfig()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($SAMSConf->access==2||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[domain]+$row[nick]"))
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=reconfigsquidform&filename=proxybuttom_2_reconfig.php","basefrm","recsquid_32.jpg","recsquid_48.jpg","$squidbuttom_0_reconfig_squidbuttom_0_reconfig_1");
     }

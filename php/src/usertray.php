@@ -12,7 +12,7 @@
 function UserAuthForm()
 {
   global $SAMSConf;
-  global $USERConf;
+  global $SquidUSERConf;
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -20,19 +20,22 @@ function UserAuthForm()
   if(isset($_GET["id"])) $userid=$_GET["id"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
 
-  PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT>");
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($userid);
+
+  PageTop("getpassword.jpg","$usertray_UserAuthForm_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT>");
   print("<P>\n");
   print("<FORM NAME=\"USERPASSWORD\" ACTION=\"main.php\" method=\"POST\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 //  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"usertray.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"userauth\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$USERConf->s_user_id\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$SquidUSERConf->s_user_id\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$auth\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
   print("<TR>\n");
   print("<TD><B>login:</B>\n");
 
-  print("<TD><B>$USERConf->s_nick\n");
+  print("<TD><B>$SquidUSERConf->s_nick\n");
   print("<TR>\n");
   print("<TD><B>password:</B>\n");
   print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"userid\" SIZE=30> \n");
@@ -160,6 +163,7 @@ function JSUserInfo()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -178,36 +182,36 @@ function JSUserInfo()
   $htmlcode="<HTML><BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/user.jpg\" align=\"RIGHT\" valign=\"middle\" >
-  <TD  valign=\"middle\"><h2  align=\"CENTER\">$usertray_UserForm_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT></h2>
+  <TD  valign=\"middle\"><h2  align=\"CENTER\">$usertray_UserForm_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT></h2>
   </TABLE>
   <TABLE>
-  <TR><TD><B>Nickname:<TD>$USERConf->s_nick
-  <TR><TD><B>$usertray_UserForm_2<TD>$USERConf->s_domain";
+  <TR><TD><B>Nickname:<TD>$SquidUSERConf->s_nick 
+  <TR><TD><B>$usertray_UserForm_2<TD>$SquidUSERConf->s_domain";
   if($SAMSConf->access==2)
-	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_3:<TD>$USERConf->s_ip";
-  $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$USERConf->s_name
-  <TR><TD><B>$usertray_UserForm_5:<TD>$USERConf->s_soname
-  <TR><TD><B>$usertray_UserForm_6:<TD>$USERConf->s_family
-  <TR><TD><B>$usertray_UserForm_7:<TD>$USERConf->s_group_name
+	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_3:<TD>$SquidUSERConf->s_ip";
+  $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$SquidUSERConf->s_name
+  <TR><TD><B>$usertray_UserForm_5:<TD>$SquidUSERConf->s_soname
+  <TR><TD><B>$usertray_UserForm_6:<TD>$SquidUSERConf->s_family
+  <TR><TD><B>$usertray_UserForm_7:<TD>$SquidUSERConf->s_group_name
   <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote 
-	<TR><TD><B>$usertray_UserForm_9:<TD>$USERConf->s_size";
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+	<TR><TD><B>$usertray_UserForm_9:<TD>$SquidUSERConf->s_size";
+  if($USERConf->ToWebInterfaceAccess("C")==1)
 	{
-	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$USERConf->s_shablon_name";
-	if( $USERConf->W_access == 1 ) 
+	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$SquidUSERConf->s_shablon_name";
+	if( $SquidUSERConf->W_access == 1 ) 
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_18";
-	if( $USERConf->G_access == 1 ) 
+	if( $SquidUSERConf->G_access == 1 ) 
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_19";
-	if($USERConf->S_access==1) 
+	if($SquidUSERConf->S_access==1) 
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_20";
-	if($USERConf->A_access==1) 
+	if($SquidUSERConf->A_access==1) 
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_21";
-	if($USERConf->U_access==1) 
+	if($SquidUSERConf->U_access==1) 
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_22";
-	if($USERConf->L_access==1)
+	if($SquidUSERConf->L_access==1)
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_23";
-	if($USERConf->C_access==1)
+	if($SquidUSERConf->C_access==1)
 		$htmlcode=$htmlcode."<TR><TD>$userbuttom_1_prop_UpdateUserForm_24";
     }
 
@@ -226,50 +230,39 @@ function UserTray()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
-//echo "id=$id, DataAccess=". $SAMSConf->ToUserDataAccess($id, "WGSC") ." SAMSConf->access=$SAMSConf->access $SAMSConf->domainusername<BR>";
-//exit(0);
-	if($SAMSConf->ToUserDataAccess($id, "WGSC")!=1 && $SAMSConf->access==0)
+  
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
+//echo "samsadmin=$USERConf->s_samsadmin userid=$USERConf->s_user_id=$id=$SAMSConf->USERID $USERConf->s_webaccess";
+	if($USERConf->s_samsadmin==1 || $USERConf->s_user_id==$id || $USERConf->ToGroupStatAccess("GS", $SquidUSERConf->s_group_id)==1 )
+	{
+		print("<SCRIPT>\n");
+		JSUserInfo();
+		print("</SCRIPT> \n");
+
+		print("<TABLE border=0 WIDTH=95%>\n");
+		print("<TR HEIGHT=60>\n");
+		print("<TD WIDTH=25%>");
+		print("<B>$usertray_UserTray_1 <BR> <FONT SIZE=\"+1\" COLOR=\"blue\">$SquidUSERConf->s_nick </FONT> </B>\n");
+		ExecuteFunctions("./src", "userbuttom", $USERConf->s_user_id);
+
+		print("<TD>\n");
+		print("</TABLE>\n");
+	}
+	else
 	{
 		print("<SCRIPT>\n");
 		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id&auth=$auth\";\n");
-//		print(" parent.basefrm.location.href=\"main.php\";\n");
 		print("</SCRIPT> \n");
 		exit(0);
 	}
-/*
-	if(strlen($SAMSConf->domainusername)==0&&$SAMSConf->access==0)
-        {
-		print("<SCRIPT>\n");
-		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&userid=$id\";\n");
-		print("</SCRIPT> \n");
-        }
-*/
-	if( $SAMSConf->access==0 && strlen($SAMSConf->domainusername)==0)
-	{
-		print("<SCRIPT>\n");
-		print("parent.basefrm.location.href=\"main.php?show=exe&filename=usertray.php&function=userauthform&id=$id\";\n");
-//		print(" parent.basefrm.location.href=\"main.php\";\n");
-		print("</SCRIPT> \n");
-		exit(0);
-	}
-
-  print("<SCRIPT>\n");
-  JSUserInfo();
-  print("</SCRIPT> \n");
-
-  print("<TABLE border=0 WIDTH=95%>\n");
-  print("<TR HEIGHT=60>\n");
-  print("<TD WIDTH=25%>");
-  print("<B>$usertray_UserTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$USERConf->s_nick</FONT></B>\n");
-      ExecuteFunctions("./src", "userbuttom", $USERConf->s_user_id);
-
-  print("<TD>\n");
-  print("</TABLE>\n");
-
 
 }
 

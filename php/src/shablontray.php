@@ -9,10 +9,12 @@ function MoveUsersToShablon()
 {
   global $SAMSConf;
   global $SHABLONConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
+
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["username"])) $users=$_GET["username"];
   for($i=0;$i<count($users);$i++)
@@ -33,6 +35,7 @@ function ShablonUsers()
 {
   global $SAMSConf;
   global $SHABLONConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -41,8 +44,8 @@ function ShablonUsers()
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["sid"])) $sid=$_GET["sid"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
 
@@ -109,7 +112,7 @@ function ShablonUsers()
   $DB->free_samsdb_query();
   print("</TABLE>\n");
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 
 	print("<SCRIPT language=JAVASCRIPT>\n");
@@ -165,10 +168,11 @@ function ShablonTray()
 {
   global $SAMSConf;
   global $SHABLONConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
       print("<SCRIPT>\n");
       print("        parent.basefrm.location.href=\"main.php?show=exe&filename=shablontray.php&function=shablonusers&id=$SHABLONConf->s_shablon_id&sid=ALL\";\n");

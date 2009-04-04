@@ -232,29 +232,39 @@ function UserGroupForm()
 
 function GroupTray()
 {
-if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["id"])) $id=$_GET["id"];
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  global $USERConf;
+//echo "samsadmin=$USERConf->s_samsadmin userid=$USERConf->s_user_id=$id=$SAMSConf->USERID $USERConf->s_webaccess";
 
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-  print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&filename=grouptray.php&function=usergroupform&id=$id&gid=ALL\";\n");
-  print("</SCRIPT> \n");
+  if($USERConf->ToWebInterfaceAccess("SC")==1 || ($USERConf->ToWebInterfaceAccess("G")==1 && $USERConf->s_group_id==$id ))
+  {
+	$DB=new SAMSDB(&$SAMSConf);
 
-//  $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
-  $row=$DB->samsdb_fetch_array();
-  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
-  print("<TR HEIGHT=60>\n");
-  print("<TD WIDTH=25%>");
-  print("<B>$grouptray_GroupTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[s_name]</FONT></B>\n");
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+	print("<SCRIPT>\n");
+	print("        parent.basefrm.location.href = \"main.php?show=exe&filename=grouptray.php&function=usergroupform&id=$id&gid=ALL\";\n");
+	print("</SCRIPT> \n");
 
-      ExecuteFunctions("./src", "groupbuttom",$id);
+	$num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
+	$row=$DB->samsdb_fetch_array();
+	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
+	print("<TR HEIGHT=60>\n");
+	print("<TD WIDTH=25%>");
+	print("<B>$grouptray_GroupTray_1 <BR><FONT SIZE=\"+1\" COLOR=\"blue\">$row[s_name] </FONT> </B>\n");
 
-  print("<TD>\n");
-  print("</TABLE>\n");
+	ExecuteFunctions("./src", "groupbuttom",$id);
 
+	print("<TD>\n");
+	print("</TABLE>\n");
+  }
+  else
+  {
+	print("<SCRIPT>\n");
+	print("        parent.basefrm.location.href=\"main.php\";\n");
+	print("</SCRIPT> \n");
+  }
 
 }
 

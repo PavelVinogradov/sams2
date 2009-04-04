@@ -8,7 +8,12 @@
 function LDAPtest()
 {
   global $SAMSConf;
-$info=array();
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+  $info=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -70,6 +75,11 @@ $info=array();
  
 function AuthLDAPValues()
 {
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
   PageTop("config_48.jpg","LDAP configuration ");
   print("<P>\n");
 
@@ -132,6 +142,7 @@ function AuthLDAPValues()
 function AuthLDAPTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -140,7 +151,7 @@ function AuthLDAPTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authldapvalues&filename=authldaptray.php\";\n");
       print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");

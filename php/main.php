@@ -102,8 +102,11 @@ if($shou==0)
 $DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
 
-//$DB=new SAMSDB(&$SAMSConf);
+//$DB=new SAMSDB($$SAMSConf);
 $DB=new SAMSDB(&$SAMSConf);
+
+require('./userclass.php');
+$USERConf=new SAMSUSER();
 
 $lang="./lang/lang.$SAMSConf->LANG";
 require($lang);
@@ -112,243 +115,41 @@ $WI=1;
   
 if($function=="logoff")
   {
-     setcookie("user","");
-     setcookie("passwd","");
-     setcookie("domainuser","");
-     setcookie("gauditor","");
-     setcookie("userid","");
-     setcookie("webaccess","");
-     $function="setcookie";
+	setcookie("user","");
+	setcookie("passwd","");
+	setcookie("domainuser","");
+	setcookie("gauditor","");
+	setcookie("userid","");
+	setcookie("webaccess","");
+	setcookie("samsadmin","0");
+	print("<SCRIPT>\n");
+	print("  parent.lframe.location.href=\"lframe.php\"; \n");
+	print("  parent.tray.location.href=\"tray.php?show=exe&filename=admintray.php&function=admintray\"; \n");
+	print("</SCRIPT> \n");
+
+
   }   
 /*
 Авторизация администратора
 */
 if($function=="setcookie")
   {
-     $time=time();
-     $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
-     if($num_rows==0)
-	echo "ERROR<BR>";
-     $row=$DB->samsdb_fetch_array();
-     //$row=mysql_fetch_array($result);
-     $autherrorc=$row['s_autherrorc'];
-     $autherrort=$row['s_autherrort'];
-     $admname=$row['s_user'];
-     $admpasswd=$row['s_pass'];
-     $DB->free_samsdb_query();
-     if($autherrorc==0||$time>$autherrort+60)
-       {  
-         if($time>$autherrort+60)
-           {  
-		$newpasswd=crypt("$userid","00");
-		if( $admpasswd == $newpasswd )
-		  {
-			$SAMSConf->adminname=$username;
-			if( $autherror > 0 )
-				$DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='0'  WHERE s_user='$username' ");	        
-		  }
-		else
-		  {
-			if($autherrorc>=2)
-	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='$time' WHERE s_user='$username'  ");         
-			else
-	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc=s_autherrorc+1,s_autherrort='0'  WHERE s_user='$username'  ");        
-		  }
-		setcookie("user","$username");
-		setcookie("passwd","$newpasswd");
-	    }   
-         else
-           {  
-               $user="";
-               $function="autherror";
-           }
-       }
+	$USERConf->sams_admin_authentication($username,$userid);
   }   
-//exit(0);
 
 /*
 Авторизация пользователя
 */
-
-
 if($function=="userauth")
-  {   
-	if(isset($_POST["id"])) $id=$_POST["id"];
-	if(isset($_POST["userid"])) $password=$_POST["userid"];
-	if(isset($_POST["usernick"])) $user=$_POST["usernick"];
-	if(isset($_POST["auth"])) $auth=$_POST["auth"];
-	require('./authclass.php');
-
-//$USERAUTH->ShowVariables();
-	if($auth=="ntlm")
-		$USERAUTH = new NTLNAuthenticate();
-	else if($auth=="adld")
-		$USERAUTH = new ADLDAuthenticate();
-	else if($auth=="ldap")
-		$USERAUTH = new LDAPAuthenticate();
-	else 
-		$USERAUTH = new NCSAAuthenticate();
-	
-	if($USERAUTH->UserIDAuthenticate($id, $password)==1)
-	{
-		$time=time();
-		if($USERAUTH->authOk==1)
-		{
-			if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
-			{  
-				$SAMSConf->groupauditor=$USERAUTH->gauditor;
-				setcookie("domainuser",$USERAUTH->UserName);
-				setcookie("gauditor",$USERAUTH->gauditor);
-				setcookie("userid",$USERAUTH->userid);
-				setcookie("webaccess",$USERAUTH->webaccess);
-			}
-			else
-			{  
-				$user="";
-				$function="autherror";
-			}
-		}
-		else
-		{  
-			$user="";
-			$function="autherror";
-		}
-	}
-	$USERAUTH->SetUserAuthErrorVariables();
-//$USERAUTH->ShowVariables();
+  {
+	$USERConf->sams_user_id_authentication();
   }  
 
 if($function=="nuserauth")
   {   
-	if(isset($_POST["id"])) $id=$_POST["id"];
-	if(isset($_POST["userid"])) $password=$_POST["userid"];
-	if(isset($_POST["user"])) $user=$_POST["user"];
-	require('./authclass.php');
-	$USERAUTH = new SAMSAuthenticate();
-	$USERAUTH->UserAuthenticate($user, $password);
-//$USERAUTH->ShowVariables();
-//exit(0);
+	$USERConf->sams_user_name_authentication();
 
-	$time=time();
-	if($USERAUTH->authOk==1)
-	{
-		if($USERAUTH->autherrorc<=2&&$time>$USERAUTH->autherrort+60)
-		{  
-			$SAMSConf->groupauditor=$USERAUTH->gauditor;
-			setcookie("domainuser",$USERAUTH->UserName);
-			setcookie("gauditor",$USERAUTH->gauditor);
-			setcookie("userid",$USERAUTH->userid);
-			setcookie("webaccess",$USERAUTH->webaccess);
-		}
-		else
-		{  
-			$user="";
-			$function="autherror";
-		}
-	}
-	else
-	{  
-		$user="";
-		$function="autherror";
-	}
-	$USERAUTH->SetUserAuthErrorVariables();
-//$USERAUTH->ShowVariables();
-//exit(0);
   }  
-
-
-
-/****************************************************
-
-if($function=="userauth")
-  {   
-     $user="";
-     if(isset($_POST["id"])) $id=$_POST["id"];
-     $SAMSConf->groupauditor=UserAuth();
-     $nick=$SAMSConf->domainusername;
-     $time=time();
-     if($SAMSConf->AUTHERRORRC==0||$time>$SAMSConf->AUTHERRORRT+60)
-       {  
-         if($time>$SAMSConf->AUTHERRORRT+60)
-           {  
-             setcookie("domainuser","$SAMSConf->domainusername");
-             setcookie("gauditor","$SAMSConf->groupauditor");
-             setcookie("userid","$SAMSConf->USERID");
-             setcookie("webaccess","$SAMSConf->USERWEBACCESS");
-             if(strlen($SAMSConf->domainusername)!=0)
-			$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
-	       else  
-	          {
-	           $user="";
-	           $function="autherror";
-	           if($SAMSConf->AUTHERRORRC>=2)
-			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='$time' WHERE s_user_id='$SAMSConf->USERID' ");
-	           else
-			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc=s_autherrorc+1,s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
-	          } 
-               }   
-         else
-           {  
-               $user="";
-               $function="autherror";
-           }
-       }
-
-     if($SAMSConf->groupauditor != "")
-       {
-         print("<SCRIPT>\n");
-         print(" parent.lframe.location.href=\"lframe.php\"; \n");
-	 print("</SCRIPT> \n");
-       }
-  }  
-
-if($function=="nuserauth")
-  {   
-     $user="";
-     if(isset($_POST["userid"])) $id=$_POST["userid"];
-     if(isset($_POST["user"])) $nick=$_POST["user"];
-     $SAMSConf->groupauditor=NotUsersTreeUserAuth();
-     $nick=$SAMSConf->domainusername;
-     $time=time();
-     if($SAMSConf->AUTHERRORRC==0||$time>$SAMSConf->AUTHERRORRT+60)
-       {  
-         if($time>$SAMSConf->AUTHERRORRT+60)
-           {  
-             setcookie("domainuser","$SAMSConf->domainusername");
-             setcookie("gauditor","$SAMSConf->groupauditor");
-             setcookie("userid","$SAMSConf->USERID");
-             setcookie("webaccess","$SAMSConf->USERWEBACCESS");
-             if(strlen($SAMSConf->domainusername)!=0)
-			$num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
-	       else  
-	          {
-	           $user="";
-	           $function="autherror";
-	           if($SAMSConf->AUTHERRORRC>=2)
-			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='$time' WHERE s_user_id='$SAMSConf->USERID' ");
-	           else
-			    $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc=s_autherrorc+1,s_autherrort='0' WHERE s_user_id='$SAMSConf->USERID' ");
-	          } 
-               }   
-         else
-           {  
-               $user="";
-               $function="autherror";
-           }
-       }
-
-     if($SAMSConf->groupauditor != "")
-       {
-         print("<SCRIPT>\n");
-         print(" parent.lframe.location.href=\"lframe.php\"; \n");
-	 print("</SCRIPT> \n");
-       }
-  }  
-
-
-***************************************************************/
-
-
 
 
 
@@ -358,8 +159,11 @@ if($function=="nuserauth")
 	$cookie_passwd="";
 	$cookie_domainuser="";
 	$cookie_gauditor="";
+	if(isset($HTTP_COOKIE_VARS['samsadmin'])) $samsadmin=$HTTP_COOKIE_VARS['samsadmin'];
+
 	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
 	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+
 	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
 	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
@@ -380,35 +184,42 @@ if($function=="nuserauth")
 		$SAMSConf->groupauditor=$_COOKIE['gauditor'];
 		$SAMSConf->USERID=$_COOKIE['userid'];
 		$SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
+		$samsadmin=$_COOKIE['samsadmin'];
 	  }  
 //  }
+   if($samsadmin==1)
+	{
+		$USERConf->sams_admin();
+
+	}
+	else
+	{
+		if($SAMSConf->USERID > 0)
+			$USERConf->sams_user($SAMSConf->USERID);
+	}
+
+
+
  $SAMSConf->access=UserAccess();
 if($gb!=1)
   { 
     print("<HTML><HEAD>");
-    print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
-    print("<META HTTP-EQUIV=\"expires\" CONTENT=\"THU, 01 Jan 1970 00:00:01 GMT\">");
-    print("<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">");
-    print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
+    header("Content-type: text/html; charset=$CHARSET");
+    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+    header("Expires: THU, 01 Jan 1970 00:00:01 GMT"); // Date in the past
 
+    print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
     print("</head>\n");
     print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");//     if($autherrorc==1&&$autherrort>0)
     print("<center>\n");
   }
-//echo "BD CONFIG: &$SAMSConf";
+
 
   if(strstr($filename,"proxy"))
 	{
 	require('./proxyclass.php');
 	$PROXYConf=new SAMSPROXY($_GET["id"]);
 	//$PROXYConf->PrintProxyClass();
-	}
-
-  if((strstr($filename,"userb")||strstr($filename,"usertray"))&&$function!="userauth")
-	{
-	 if(isset($_GET["id"])) $id=$_GET["id"];
-	require('./userclass.php');
-	$USERConf=new SAMSUSER($id);
 	}
 
   if(strstr($filename,"trange")&&$function!="addtrangeform"&&$function!="addtrange")
@@ -447,13 +258,13 @@ if($gb!=1)
 	$manager = new PluginManager($DB, 1, $SAMSConf);
 	print ($manager->dispatch($module, $function));
   }
-//exit(0);
-
 if($function=="nuserauth"|| $function=="userauth")
   {
+//exit(0);
+     if(isset($_POST["id"])) $id=$_POST["id"];
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
-     print("        parent.tray.location.href=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$USERAUTH->userid\";\n");
+     print("        parent.tray.location.href = \"tray.php?show=exe&filename=usertray.php&function=usertray&id=$id\";\n");
      print("</SCRIPT> \n");
   }   
 if($function=="setcookie")

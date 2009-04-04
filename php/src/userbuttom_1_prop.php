@@ -8,6 +8,8 @@
 function UpdateUser()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $gauditor="";
   if(isset($_GET["id"])) $userid=$_GET["id"];
@@ -36,8 +38,9 @@ function UpdateUser()
   if(isset($_GET["L_access"])) $L_access=$_GET["L_access"];
   if(isset($_GET["C_access"])) $C_access=$_GET["C_access"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
-	{      
+//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
+  if($USERConf->ToWebInterfaceAccess("AUC")!=1)
+	{
 		exit;    
 	}
   
@@ -57,14 +60,12 @@ function UpdateUser()
 
 /* *************************************************** */
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
+
   if($domain=="") 
 	$domain="workgroup";
   if($individuallimit!="on")
 	$userquote=-1;
-//echo "USERSHABLON=$usershablon <BR>";
-//echo "INDIVIDUALLIMIT=$individuallimit<BR>";
-//echo "USERQUOTE=$userquote<BR>";
-//exit(0);
+
   $DB->samsdb_query("UPDATE squiduser SET s_webaccess='$s_webaccess',s_gauditor='$gauditor', s_domain='$domain', s_nick='$usernick', s_family='$userfamily', s_name='$username', s_soname='$usersoname', s_group_id='$usergroup', s_quote='$userquote', s_enabled='$enabled', s_shablon_id='$usershablon', s_ip='$userip' WHERE s_user_id='$userid' ");
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
@@ -80,74 +81,80 @@ function UpdateUserForm()
 
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
 
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["userid"])) $userid=$_GET["userid"];
+  if(isset($_GET["id"])) $userid=$_GET["id"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
+//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
+ if($USERConf->ToWebInterfaceAccess("AUC")!=1)
 	{      
 		exit;    
 	}
-  
-  PageTop("user.jpg","$userbuttom_1_prop_UpdateUserForm_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT>");
 
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($userid);
+
+  
+  PageTop("user.jpg","$userbuttom_1_prop_UpdateUserForm_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT>");
+//exit(0);
   print("<FORM NAME=\"UPDATEUSER\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"updateuser\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"userbuttom_1_prop.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$USERConf->s_user_id\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$USERConf->s_auth\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"defstatus\" value=\"$USERConf->s_enabled\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$userid\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"auth\" value=\"$SquidUSERConf->s_auth\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"defstatus\" value=\"$SquidUSERConf->s_enabled\">\n");
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>Nickname:\n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_nick\" NAME=\"usernick\" SIZE=15> \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_nick\" NAME=\"usernick\" SIZE=15> \n");
 
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_2:\n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_domain\" NAME=\"domain\" SIZE=15> \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_domain\" NAME=\"domain\" SIZE=15> \n");
 
 /*
-//  if( $USERConf->auth=="ncsa"||$USERConf->auth=="ip")
+//  if( $SquidUSERConf->auth=="ncsa"||$SquidUSERConf->auth=="ip")
 //    {
        print("<TR>\n");
        print("<TD>\n");
        print("<B>$userbuttom_1_prop_UpdateUserForm_3:");
        print("<TD>\n");
        //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\">");
-       print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$USERConf->s_passwd\">");
+       print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$SquidUSERConf->s_passwd\">");
 //    }
 */
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_4: \n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_ip\" NAME=\"userip\" SIZE=15>/ \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_ip\" NAME=\"userip\" SIZE=15>/ \n");
 //  print("<INPUT TYPE=\"TEXT\" VALUE=\"$row[ipmask]\" NAME=\"useripmask\" SIZE=15> \n");
 
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_5: \n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_name\" NAME=\"username\" SIZE=30> \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_name\" NAME=\"username\" SIZE=30> \n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_6: \n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_soname\" NAME=\"usersoname\" SIZE=30> \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_soname\" NAME=\"usersoname\" SIZE=30> \n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_7: \n");
   print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" VALUE=\"$USERConf->s_family\" NAME=\"userfamily\" SIZE=30> \n");
+  print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_family\" NAME=\"userfamily\" SIZE=30> \n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_8: \n");
@@ -159,7 +166,7 @@ function UpdateUserForm()
 //  $row_u=mysql_fetch_array($result_u);
   while($row2=$DB2->samsdb_fetch_array())
       {
-       if($row2['s_group_id']==$USERConf->s_group_id)
+       if($row2['s_group_id']==$SquidUSERConf->s_group_id)
          {
            print("<OPTION VALUE=$row2[s_group_id] SELECTED> $row2[s_name]");
          }
@@ -194,7 +201,7 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<B>Individual linit \n");
   print("<TD>\n");
-  if($USERConf->s_quote!=-1)
+  if($SquidUSERConf->s_quote!=-1)
   {
 	print("<INPUT TYPE=\"CHECKBOX\" NAME=\"individuallimit\" CHECKED onclick=EnableIndividualQuote(UPDATEUSER)> \n");
   }
@@ -209,29 +216,29 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_10 \n");
   print("<TD>\n");
-  if($USERConf->s_quote==-1)
-	$uquote=$USERConf->s_defquote;
+  if($SquidUSERConf->s_quote==-1)
+	$uquote=$SquidUSERConf->s_defquote;
   else
-	$uquote=$USERConf->s_quote;
+	$uquote=$SquidUSERConf->s_quote;
   print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$uquote\" $QDISABLED> <B>0 - unlimited traffic \n");
   print("<TD>\n");
   
   
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"saveenabled\" value=\"$USERConf->s_enabled\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"saveenabled\" value=\"$SquidUSERConf->s_enabled\">\n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_11:  \n");
   print("<TD>\n");
   print("<SELECT NAME=\"enabled\" ID=\"enabled\" SIZE=1 TABINDEX=10 >\n");
-  if($USERConf->s_enabled==1)
+  if($SquidUSERConf->s_enabled==1)
     print("<OPTION VALUE=\"1\" SELECTED> $userbuttom_1_prop_UpdateUserForm_15");
   else
     print("<OPTION VALUE=\"1\"> $userbuttom_1_prop_UpdateUserForm_15"); 
-  if($USERConf->s_enabled==0)
+  if($SquidUSERConf->s_enabled==0)
     print("<OPTION VALUE=\"0\" SELECTED> $userbuttom_1_prop_UpdateUserForm_16");
   else
     print("<OPTION VALUE=\"0\"> $userbuttom_1_prop_UpdateUserForm_16");
-  if($USERConf->s_enabled==-1)
+  if($SquidUSERConf->s_enabled==-1)
     print("<OPTION VALUE=\"-1\" SELECTED> $userbuttom_1_prop_UpdateUserForm_17");
   else
     print("<OPTION VALUE=\"-1\"> $userbuttom_1_prop_UpdateUserForm_17");
@@ -251,14 +258,14 @@ function UpdateUserForm()
   $num_rows=$DB2->samsdb_query_value("SELECT s_shablon_id,s_name,s_quote FROM shablon");
   while($row2=$DB2->samsdb_fetch_array())
       {
-       if($row2['s_shablon_id']==$USERConf->s_shablon_id)
+       if($row2['s_shablon_id']==$SquidUSERConf->s_shablon_id)
          {
-//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\" SELECTED> $row2[s_name]");
+//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$SquidUSERConf->s_defquote\" SELECTED> $row2[s_name]");
             print("<OPTION VALUE=\"$row2[s_shablon_id]\" SELECTED> $row2[s_name]");
          }
        else
          {
-//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$USERConf->s_defquote\"> $row2[s_name]");
+//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$SquidUSERConf->s_defquote\"> $row2[s_name]");
             print("<OPTION VALUE=\"$row2[s_shablon_id]\"> $row2[s_name]");
          }
       }
@@ -268,57 +275,57 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_14  \n");
   print("<TD>\n");
-  if($USERConf->gauditor==1)
+  if($SquidUSERConf->gauditor==1)
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"gauditor\" CHECKED> \n");
   else
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"gauditor\" > \n");
 /* *************************************************** */
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_18  \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_18 (W)\n");
   print("<TD>\n");
   $WCHECKED="";
-  if($USERConf->W_access==1)
+  if($SquidUSERConf->W_access==1)
 	$WCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"W_access\" $WCHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_19 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_19 (G)\n");
   print("<TD>\n");
   $GCHECKED="";
-  if($USERConf->G_access==1)
+  if($SquidUSERConf->G_access==1)
 	$GCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"G_access\" $GCHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_20 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_20 (S)\n");
   print("<TD>\n");
   $SCHECKED="";
-  if($USERConf->S_access==1)
+  if($SquidUSERConf->S_access==1)
 	$SCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"S_access\" $SCHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_21 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_21 (A)\n");
   print("<TD>\n");
   $ACHECKED="";
-  if($USERConf->A_access==1)
+  if($SquidUSERConf->A_access==1)
 	$ACHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"A_access\" $ACHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_22 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_22 (U)\n");
   print("<TD>\n");
   $UCHECKED="";
-  if($USERConf->U_access==1)
+  if($SquidUSERConf->U_access==1)
 	$UCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"U_access\" $UCHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_23 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_23 (L)\n");
   print("<TD>\n");
   $LCHECKED="";
-  if($USERConf->L_access==1)
+  if($SquidUSERConf->L_access==1)
 	$LCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"L_access\" $LCHECKED> \n");
 
-  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_24 \n");
+  print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_24 (C)\n");
   print("<TD>\n");
   $CCHECKED="";
-  if($USERConf->C_access==1)
+  if($SquidUSERConf->C_access==1)
 	$CCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"C_access\" $CCHECKED> \n");
 
@@ -336,15 +343,16 @@ function userbuttom_1_prop()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
 
- if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+ if($USERConf->ToWebInterfaceAccess("AUC")==1)
     {
-       GraphButton("main.php?show=exe&function=updateuserform&filename=userbuttom_1_prop.php&id=$USERConf->s_user_id",
-	               "basefrm","config_32.jpg","config_48.jpg","$userbuttom_1_prop_userbuttom_1_prop_1 ");
+       GraphButton("main.php?show=exe&function=updateuserform&filename=userbuttom_1_prop.php&id=$SquidUSERConf->s_user_id", "basefrm","config_32.jpg","config_48.jpg","$userbuttom_1_prop_userbuttom_1_prop_1 ");
     }
 
 }

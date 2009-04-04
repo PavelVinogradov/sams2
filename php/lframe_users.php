@@ -36,7 +36,30 @@ function lframe_users()
             $SORDER = "s_nick";
         }
       $count=0;
-      print("   users = insFld(foldersTree, gFld2(\"$lframe_sams_UserFolder_1 \", \"tray.php?show=exe&filename=userstray.php&function=userstray\", \"paddressbook.gif\"))\n");
+	echo "<style type=\"text/css\">\n
+	.filetree span.users { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.users { background: url($SAMSConf->ICONSET/paddressbook.gif) 0 0 no-repeat; }\n
+	.filetree span.groups { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.groups { background: url($SAMSConf->ICONSET/pgroup.gif) 0 0 no-repeat; }\n
+
+	.filetree span.user { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.user { background: url($SAMSConf->ICONSET/puser.gif) 0 0 no-repeat; }\n
+
+	.filetree span.userd { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.userd { background: url($SAMSConf->ICONSET/puserd.gif) 0 0 no-repeat; }\n
+
+	.filetree span.userdd { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.userdd { background: url($SAMSConf->ICONSET/duserd.gif) 0 0 no-repeat; }\n
+
+	.filetree span.usera { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.usera { background: url($SAMSConf->ICONSET/quote_alarm.gif) 0 0 no-repeat; }\n
+	</style>\n";
+
+
+	echo "<li class=\"closed collapsable\"> <div class=\"hitarea closed-hitarea collapsable-hitarea\"></div> <span class=\"users\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=userstray.php&function=userstray\">$lframe_sams_UserFolder_1</A> </span>\n";
+	echo "<ul style=\"display: block;\">\n";
+
+
 
       if(strlen($SAMSConf->groupauditor)>1)
         {
@@ -52,9 +75,11 @@ function lframe_users()
       while($row=$DB->samsdb_fetch_array())
          {
 	    $metka="users$count";
-//echo "<!-- $row[s_name] -->";
-            print("     $metka = insFld(users, gFld2(\"$row[s_name]\", \"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\", \"pgroup.gif\"))\n");
-//            $num_rows_=$DB2->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
+
+//	    echo "<li class=\"collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\">$row[s_name]</span>\n";
+	    echo "<li class=\"closed collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\">$row[s_name]</A></span>\n";
+	    echo "<ul id=\"group_$row[s_group_id]\">\n";
+
             $num_rows_=$DB2->samsdb_query_value("SELECT squiduser.* , shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
 /**/
             while($row_=$DB2->samsdb_fetch_array())
@@ -66,18 +91,18 @@ function lframe_users()
                       else
 		        $traffic=$row_['s_size'];
 		      if($row_['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row_['s_quote']<=0)
-                         $gif="puser.gif";
+                         $class="user";
                       else
                         if($row_['s_quote']>0)
-                          $gif="quote_alarm.gif";
+                          $class="usera.gif";
                     }
                  if($row_['s_enabled']==0)
                     {
-                       $gif="puserd.gif";
+                       $class="userd";
                     }
                  if($row_['s_enabled']<0)
                     {
-                       $gif="duserd.gif";
+                       $class="userdd";
                     }
                  if($SAMSConf->SHOWNAME=="fam")
                        $name="$row_[s_family]";
@@ -88,16 +113,19 @@ function lframe_users()
                  else 
                        $name="$row_[s_nick]";
 		    
-                
-                 print("        insDoc($metka, gLnk(\"D\", \"$name\", \"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row_[s_user_id]&auth=$row_[s_auth]\",\"$gif\"))\n");
+		echo "<li><span class=\"$class\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row_[s_user_id]&auth=$row_[s_auth]\">$name</A></span></li>\n";
+
                }
 /**/
 	     $count++;  
+	    echo "</ul>";
+	    echo "</li>";
          }
 
 
 
-
+	echo "</ul>";
+	echo "</li>";
 
     }
 

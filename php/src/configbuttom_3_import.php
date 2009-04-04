@@ -31,6 +31,8 @@ function importurllists()
 {
   global $SAMSConf;
 
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
+	exit(0);
 
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
@@ -77,6 +79,10 @@ function importurllists()
 function importgroups()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
 
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
@@ -109,6 +115,10 @@ function importgroups()
 function importshablons()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
 
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
@@ -141,6 +151,10 @@ function importshablons()
 function importsamsusers()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
 
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
@@ -211,8 +225,10 @@ function importsamsusers()
 function IMPORTUSERS($hostname, $username, $pass)
 {
   global $SAMSConf;
+  global $USERConf;
 
- if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
  $this->DB=new SAMSDB(&$SAMSConf);
  $this->oldDB=new CREATESAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
@@ -239,11 +255,13 @@ function IMPORTUSERS($hostname, $username, $pass)
 function importdata()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
  if(isset($_GET["importusers"])) $importusers=$_GET["importusers"];
@@ -276,10 +294,13 @@ function importdata()
 function importdataform()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
- if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+// if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
   PageTop("shablon.jpg","Import database from SAMS 1 ");
 
@@ -308,11 +329,13 @@ function importdataform()
 function configbuttom_3_import()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+//  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        //print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",

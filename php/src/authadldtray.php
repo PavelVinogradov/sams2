@@ -9,6 +9,11 @@
 function ADLDtest()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
+
   $info=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -77,6 +82,9 @@ function ADLDtest()
 
 function AuthADLDValues()
 {
+  global $USERConf;
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
   PageTop("config_48.jpg","Active Directory configuration ");
   print("<P>\n");
@@ -125,6 +133,7 @@ function AuthADLDValues()
 function AuthADLDTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -133,7 +142,7 @@ function AuthADLDTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authadldvalues&filename=authadldtray.php\";\n");
       print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
 	print("<TR HEIGHT=60>\n");

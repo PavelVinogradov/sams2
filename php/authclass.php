@@ -26,7 +26,9 @@ function SetUserAuthErrorVariables()
 {
 	global $SAMSConf;
 	$DB=new SAMSDB(&$SAMSConf);
+
 	$time=time();
+
 	if($this->authOk!=0 && $this->autherrorc!=0 )
 	{
 		$result=$DB->samsdb_query("UPDATE squiduser SET s_autherrorc='0',s_autherrort='0' WHERE s_user_id='$this->userid' ");
@@ -70,6 +72,30 @@ function LoadUserVariables($request)
 return(0);
 }
 
+function LoadUndefinedUserVariables($request)
+{
+    global $SAMSConf;
+    $DB=new SAMSDB(&$SAMSConf);
+    $num_rows=$DB->samsdb_query_value($request);
+
+    if($num_rows>0)
+    {
+	$row=$DB->samsdb_fetch_array();
+	$this->UserName=$row['s_nick'];
+	$this->UserGroup=$row['s_group_id'];
+	$this->gauditor=$row['s_gauditor'];
+	$this->autherrorc=$row['s_autherrorc'];
+	$this->autherrort=$row['s_autherrort'];
+	$this->userid=$row['s_user_id'];
+	return(1);
+    }
+    else
+	$this->UserName="";
+
+return(0);
+}
+
+
 function ShowVariables()
 {
 echo "authOk=$this->authOk<BR>";
@@ -111,6 +137,7 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
+	$this->userid=$userid;
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	if($this->LoadUserVariables($request)>0)
 	{
@@ -173,8 +200,7 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
-echo "UserIDAuthenticate: $userid $password<BR>";
-
+	$this->userid=$userid;
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	if($this->LoadUserVariables($request)>0)
 	{
@@ -258,7 +284,8 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
-	$request="SELECT s_nick,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
+	$this->userid=$userid;
+	$request="SELECT s_nick, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	$this->LoadUserVariables($request);
 
 	$STR=$this->SAMSConf->WBINFOPATH." ".$this->UserName." \"$password\"";
@@ -286,9 +313,9 @@ function UserIDAuthenticate($userid, $password)
         			$domainname=strtok($user,"@");
 				$username=strtok("@");
     	    		}
-	}		
-	else
-            $username=$user;
+		}		
+		else
+            		$username=$user;
 	}	
 
  return($this->authOk);
@@ -317,11 +344,17 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
+	$this->userid=$userid;
 	$passwd=crypt($password, substr($password, 0, 2));
-	$request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'&&s_passwd='$passwd'";
+	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'&&s_passwd='$passwd'";
 	if($this->LoadUserVariables($request)>0)
 	{
 		$this->authOk=1;
+	}
+	else
+	{
+		$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+		$this->LoadUndefinedUserVariables($request);
 	}
  return($this->authOk);
 }

@@ -8,6 +8,7 @@
 function TestPDC()
 {
   global $SAMSConf;
+  global $USERConf;
   $info=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -68,6 +69,7 @@ function TestPDC()
 function ProxyReConfig()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -138,8 +140,8 @@ $group="NONE";
   if(isset($_GET["shablon"])) $shablon=$_GET["shablon"];
   if(isset($_GET["group"])) $group=$_GET["group"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
 
   if($autouser=="on") $autouser=1;
   if($at==1)     $at="@";
@@ -164,7 +166,11 @@ $group="NONE";
   if($defauth!=$auth)
     $DB->samsdb_query("UPDATE shablon SET s_auth='$auth' WHERE s_auth!='ip' ");
   $SAMSConf->LoadConfig();
-  PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
+
+	print("<SCRIPT>\n");
+	print("parent.tray.location.href=\"tray.php?show=exe&function=proxytray&filename=proxytray.php&id=$id\";\n");    
+	print("</SCRIPT> \n");
+
 }
 
 
@@ -172,6 +178,7 @@ function ProxyReConfigForm()
 {
   global $SAMSConf;
   global $PROXYConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
 
   $files=array();
@@ -179,8 +186,8 @@ function ProxyReConfigForm()
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
 
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfigForm_1 ");
@@ -752,12 +759,14 @@ function ProxyReConfigForm()
 function proxybuttom_1_prop()
 {
   global $SAMSConf;
+  global $USERConf;
+
  if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=proxyreconfigform&filename=proxybuttom_1_prop.php&id=$id",
 	               "basefrm","config_32.jpg","config_48.jpg","$adminbuttom_1_prop_adminbuttom_1_propadmintray_1");

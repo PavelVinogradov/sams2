@@ -139,7 +139,12 @@ $showbar->CreateBars();
 function UsersTrafficPeriod()
 {
   global $SAMSConf;
+  global $USERConf;
   global $DATE;
+
+  if($USERConf->ToWebInterfaceAccess("CS")!=1)
+	exit(0);
+
   $DB=new SAMSDB(&$SAMSConf);
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
@@ -166,43 +171,83 @@ function UsersTrafficPeriod()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
   $dateselect->SetPeriod2("$usersbuttom_2_traffic_UsersTrafficForm_3", $a);
-  print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
+ 
+ print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-//  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate&sort=$sort&desc=$desc \"><P>");
   
   $count=1;
   $size2=0;
   $hitsize=0;
   $traf=0;
-  print("<TABLE CLASS=samstable>");
-  print("<TH width=8%>No");
-  print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_4");
+
+  print("<script type=\"text/javascript\" src=\"lib/jquery-1.2.6.js\"></script>");
+  print("<script type=\"text/javascript\" src=\"lib/jquery.dataTables.js\"></script>\n");
+  print("<script type=\"text/javascript\">\n");
+  print("$(document).ready(function(){\n");
+  print("  $(\"#userstraffic\").dataTable({\n");
+  print("	\"bInfo\": 0,\n");
+  print("	\"iDisplayLength\": 100,\n");
+  print("	\"iDisplayStart\": 0,\n");
+  print("	\"iDisplayEnd\": 100,\n");
+  print("	\"oLanguage\": {\n");	
+  print("		\"sSearch\": \"search\", \n");
+  print("		\"sLengthMenu\": \"Show _MENU_ entries\"\n");
+  print("		},\n");
+  print("	\"aoColumns\": [ \n");
+  print("		{ \"sType\": \"numeric\", \"sWidth\": \"8%\" },\n");
+  print("		{ \"sType\": \"html\", \"sWidth\": \"16%\"},\n");
+  print("		{ \"sType\": \"formatted-num\", \"sWidth\": \"15%\" },\n");
+  print("		{ \"sType\": \"formatted-num\", \"sWidth\": \"15%\" },\n");
+  print("		{ \"sType\": \"formatted-num\", \"sWidth\": \"30%\" }\n");
+  print("    ]\n");
+  print("  });\n");
+  print("});\n");
+  print("</script>\n");
+
+
+
+
+  print("<TABLE CLASS=samstable id=\"userstraffic\">\n");
+//  print("<TABLE class=\"sortable\" id=\"userstraffic\">\n");
+
+	$item=array("head"=> "squid",
+		"access" => "pobject.gif",
+		"target"=> "tray",
+		"url"=> "tray.php?show=exe&filename=squidtray.php&function=squidtray",
+		"text"=> "SQUID");
+
+  print("<THEAD>\n");
+  print("<TH>No\n");
+  print("<TH>$usersbuttom_2_traffic_UsersTrafficPeriod_4\n");
   if($size=="On")
     {
-      print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_8");
+      print("<TH>$usersbuttom_2_traffic_UsersTrafficPeriod_8\n");
     }
   else
     {  
       if(($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")
-        print("<TH width=16%>Domain");
+        print("<TH>Domain\n");
     }  
   if($SAMSConf->access==2)
     {
-      print("<TH width=15%>$usersbuttom_2_traffic_UsersTrafficPeriod_6");
-      print("<TH width=15%>$usersbuttom_2_traffic_UsersTrafficPeriod_5");
+      print("<TH>$usersbuttom_2_traffic_UsersTrafficPeriod_6\n");
+      print("<TH>$usersbuttom_2_traffic_UsersTrafficPeriod_5\n");
     }
-  print("<TH width=30%>$usersbuttom_2_traffic_UsersTrafficPeriod_7");
+  print("<TH>$usersbuttom_2_traffic_UsersTrafficPeriod_7\n");
+  print("</THEAD>\n");
+  print("<TBODY>\n");
 
 	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by $sort $desc";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	while($row=$DB->samsdb_fetch_array())
 	{
-		print("<TR>");
-		LTableCell($count,8);
+		print("<TR>\n");
+		//LTableCell($count,8);
+		print("<TD>$count");
 		if($SAMSConf->SHOWNAME=="fam")
 			$name="$row[s_family]";
 		else if($SAMSConf->SHOWNAME=="famn")
@@ -213,6 +258,8 @@ function UsersTrafficPeriod()
 			$name="$row[s_nick]";
 		$str="<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\" TARGET=\"tray\">$name</A>\n";
 		LTableCell($str,16);
+//		LTableCell($name,16);
+//		print("<TD>$str</TD>");
 	 
 		if($size=="On")
 		{
@@ -226,21 +273,24 @@ function UsersTrafficPeriod()
 		if($SAMSConf->access==2)
 		{
 			$aaa=FormattedString("$row[0]");
-			RTableCell($aaa,15);
+			RTableCell("$aaa",15);
+//			echo "<TD> ".$row[0]." </TD>";
 			$aaa=FormattedString("$row[1]");
-			RTableCell($aaa,15);
+			RTableCell("$aaa",15);
+//			echo "<TD> ".$row[1]." </TD>";
 		}   
 		if($SAMSConf->realtraffic=="real")
 			PrintFormattedSize($row[0]-$row[1]);
 		else
 			PrintFormattedSize($row[0]);
          
-		print("</TR>");
+		print("</TR>\n");
 		$count=$count+1;
 		$size2=$size2+$row[0];
 		$hitsize=$hitsize+$row[1];
 	}
-  print("<TR>");
+  print("</TBODY>\n");
+  print("<TFOOT><TR>\n");
   print("<TD>");
   RBTableCell("$vsego",16);
   if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$_GET["size"]=="On")
@@ -257,7 +307,7 @@ function UsersTrafficPeriod()
   else
     PrintFormattedSize($size2);
   
-  print("</TABLE>");
+  print("</TFOOT></TABLE>\n");
 
 
 }
@@ -268,11 +318,17 @@ function UsersTrafficPeriod()
 function UsersTrafficForm()
 {
   global $SAMSConf;
-  require("reportsclass.php");
-  $dateselect=new DATESELECT("","");
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-  if(isset($_GET["userid"])) $userid=$_GET["userid"];
+  global $USERConf;
+
+	if($USERConf->ToWebInterfaceAccess("CS")!=1)
+		exit(0);
+
+	require("reportsclass.php");
+	$dateselect=new DATESELECT("","");
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+	if(isset($_GET["userid"])) $userid=$_GET["userid"];
+
 
 	$a = array(array($usersbuttom_2_traffic_UsersTrafficForm_4,'all_sum','desc','CHECKED' ), array($usersbuttom_2_traffic_UsersTrafficForm_5,'s_nick','',''));
 
@@ -292,14 +348,16 @@ function UsersTrafficForm()
 function usersbuttom_2_traffic()
 {
   global $SAMSConf;
+  global $USERConf;
   
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
+  if($USERConf->ToWebInterfaceAccess("CS")==1)
+  {
 
-   if($SAMSConf->access>0)
-    {
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+
        GraphButton("main.php?show=exe&function=userstrafficform&filename=usersbuttom_2_traffic.php","basefrm","traffic_32.jpg","traffic_48.jpg","$usersbuttom_2_traffic_usersbuttom_2_traffic_1");
-	}
+  }
 
 }
 

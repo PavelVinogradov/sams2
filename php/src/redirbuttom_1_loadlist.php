@@ -8,6 +8,7 @@
 function LoadRedirList()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -16,8 +17,8 @@ function LoadRedirList()
   if(isset($_GET["type"])) $type=$_GET["type"];
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+   if($USERConf->ToWebInterfaceAccess("CL")!=1 )
+	exit;
   
  $listfilename=$_FILES["userfile"]["name"];
  PageTop("import_48.jpg","$redir_loadfurllist1 <BR>$listfilename");
@@ -50,14 +51,15 @@ function LoadRedirList()
 function LoadRedirListForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
    $SAMSConf->access=UserAccess();
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")!=1)
-	{       exit;     }
+   if($USERConf->ToWebInterfaceAccess("CL")!=1 )
+	exit;
   
   PageTop("import_48.jpg","$redir_loadfurllist1");
   print("<FORM NAME=\"LOADBACKUP\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadredirlist&filename=redirbuttom_1_loadlist.php&id=$id&type=redir&execute=redirlisttray \" METHOD=POST>\n");
@@ -74,13 +76,15 @@ function LoadRedirListForm()
 function redirbuttom_1_loadlist()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+//  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+    if($USERConf->ToWebInterfaceAccess("CL")==1 )
     {
 	GraphButton("main.php?show=exe&function=loadredirlistform&filename=redirbuttom_1_loadlist.php&id=$id","basefrm","import_32.jpg","import_48.jpg","$redir_redirtray2 ");
     }

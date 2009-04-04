@@ -71,13 +71,14 @@ function DisableSelectedUsers()
 function AllUsersForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  
-//  TestWI();
-  $SAMSConf->access=UserAccess();
+
+  if($USERConf->ToWebInterfaceAccess("AUCS")!=1)
+  	exit(0);
 
   $groupname="";
   $type="all";
@@ -177,14 +178,14 @@ function AllUsersForm()
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"disableselectedusers\">\n");
       print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
    } 
-  
+  print("<script src=\"lib/sorttable.js\" type=\"text/javascript\"></script>");
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
+  print("<THEAD>\n");
   print("<TR>\n");
 
   if($SAMSConf->access>0)
     {
-      print("<TH  WIDTH=\"10%\">\n");
-      print("<B>$userstray_AllUsersForm_1</B> \n");
+      print("<TH  WIDTH=\"10%\"> <B>$userstray_AllUsersForm_1</B> \n");
     }
   print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_2</B>\n");
   print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_3</B>\n");
@@ -199,6 +200,7 @@ function AllUsersForm()
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_7</B>\n");
     }  
+  print("</THEAD>\n");
   $count=0;
   
   if($type=="search")
@@ -208,6 +210,7 @@ function AllUsersForm()
   else
     $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_group_id,squiduser.s_nick");
   
+  print("<TBODY>\n");
   while($row=$DB->samsdb_fetch_array())
       {
         $clrdate="";
@@ -288,6 +291,7 @@ function AllUsersForm()
 	   }
 	 $count=$count+1;  
       }
+      print("</TBODY>\n");
       print("<TR><TD><INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=EnableAll(groupform) > \n");
       print("<BR><INPUT TYPE=\"BUTTON\" VALUE=\"deselect all\" onclick=DisableAll(groupform) > \n");
       print("<TD><TD><TD><TD><TD><TD><TD> \n");
@@ -313,18 +317,23 @@ function AllUsersForm()
 function UsersTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-
-  print("<SCRIPT>\n");
-  print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
-  print("</SCRIPT> \n");
-
-//echo "<style type=\"text/css\"> TD.samstraytd {cursor:sw-resize; width:50px; height:50px; vertical-align:bottom; text-align: center; background-color: WHITE; } </style>\n";
-//TD.samstraytd {cursor:sw-resize;}
+  if($USERConf->ToWebInterfaceAccess("AUCS")==1)
+  {
+	print("<SCRIPT>\n");
+	print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
+	print("</SCRIPT> \n");
+  }
+  else
+  {
+	print("<SCRIPT>\n");
+	print("        parent.basefrm.location.href=\"main.php\";\n");
+	print("</SCRIPT> \n");
+  }
 
   print("<TABLE border=0 WIDTH=95%>\n");
   print("<TR HEIGHT=60>\n");

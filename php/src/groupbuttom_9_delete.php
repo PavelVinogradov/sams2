@@ -57,6 +57,7 @@ function DeleteGroup()
 function groupbuttom_9_delete()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -76,7 +77,7 @@ function groupbuttom_9_delete()
       print("     }\n");
       print("}\n");
       print("</SCRIPT> \n");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TD CLASS=\"samstraytd\">\n");
       print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");

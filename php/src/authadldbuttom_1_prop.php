@@ -9,6 +9,10 @@
 
 function AuthADLDReConfig()
 {
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
   UpdateAuthParameter("adld","adldserver");
   UpdateAuthParameter("adld","basedn");
   UpdateAuthParameter("adld","adadmin");
@@ -21,6 +25,7 @@ function AuthADLDReConfigForm()
 {
   global $SAMSConf;
   global $PROXYConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
 
   $files=array();
@@ -28,8 +33,8 @@ function AuthADLDReConfigForm()
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
 
   PageTop("config_48.jpg","ADLD Configuration ");
@@ -80,12 +85,14 @@ function AuthADLDReConfigForm()
 function authadldbuttom_1_prop()
 {
   global $SAMSConf;
+  global $USERConf;
+
  if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=authadldreconfigform&filename=authadldbuttom_1_prop.php",
 	               "basefrm","config_32.jpg","config_48.jpg","ADLD authorisation configure");

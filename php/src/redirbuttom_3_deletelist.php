@@ -8,6 +8,7 @@
 function redirbuttom_3_deletelist()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -17,7 +18,7 @@ function redirbuttom_3_deletelist()
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE s_redirect_id='$id' ");
   $row=$DB->samsdb_fetch_array();
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+  if($USERConf->ToWebInterfaceAccess("LC")==1 )
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function DeleteList(id)\n");

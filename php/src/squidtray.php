@@ -72,7 +72,7 @@ function SquidTray()
   require($lang);
 
       print("<SCRIPT>\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpsquidform\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=squidtray.php&function=helpsquidform\";\n");
       print("</SCRIPT> \n");
 
   if($SAMSConf->access==2)

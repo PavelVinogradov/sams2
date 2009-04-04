@@ -9,6 +9,7 @@
 function WebInterfaceReConfig()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -28,7 +29,7 @@ function WebInterfaceReConfig()
   if(isset($_GET["showgraph"])) $showgraph=$_GET["showgraph"];
   if(isset($_GET["createpdf"])) $createpdf=$_GET["createpdf"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
 	{       exit;     }
 
   if($urlaccess=="on")
@@ -57,12 +58,14 @@ function WebInterfaceReConfig()
 function WebInterfaceReConfigForm()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+  {       exit;     }
 
   $aaa = strtolower($SAMSConf->adminname);  
   
@@ -208,15 +211,14 @@ function WebInterfaceReConfigForm()
 function webconfigbuttom_1_prop()
 {
   global $SAMSConf;
+  global $USERConf;
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
-       GraphButton("main.php?show=exe&function=webinterfacereconfigform&filename=webconfigbuttom_1_prop.php",
-	               "basefrm","config_32.jpg","config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
+       GraphButton("main.php?show=exe&function=webinterfacereconfigform&filename=webconfigbuttom_1_prop.php", "basefrm", "config_32.jpg", "config_48.jpg", "$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
     }
 
 }

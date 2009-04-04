@@ -9,12 +9,14 @@ function DeleteProxy()
 {
 
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
   if(isset($_GET["id"])) $id=$_GET["id"];
 
@@ -36,12 +38,13 @@ function proxybuttom_9_delete()
 {
   global $SAMSConf;
   global $PROXYConf;
+  global $USERConf;
   if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

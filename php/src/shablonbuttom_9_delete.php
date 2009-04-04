@@ -8,6 +8,7 @@
 function DeleteShablon()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -15,8 +16,8 @@ function DeleteShablon()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
-	{       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit;
   
   if($sname!="default")
     {
@@ -49,16 +50,12 @@ function shablonbuttom_9_delete()
 {
   global $SAMSConf;
   global $SHABLONConf;
-//  $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB);
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if(isset($_GET["id"])) $id=$_GET["id"];
-//  $DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$id' ");
-//  $row=$DB->samsdb_fetch_array();
-
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

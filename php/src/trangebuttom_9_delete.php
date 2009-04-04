@@ -8,6 +8,7 @@
 function DeleteTRange()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -15,7 +16,7 @@ function DeleteTRange()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
   
   if($sname!="default")
@@ -39,12 +40,12 @@ function trangebuttom_9_delete()
 {
   global $SAMSConf;
   global $TRANGEConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

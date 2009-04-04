@@ -19,6 +19,7 @@ function UTF8ToSAMSLang($inp)
 function UpdateAuthParameter($auth,$parameter)
 {
   global $SAMSConf;
+
   if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
   if($value!="")
   {
@@ -469,33 +470,34 @@ function ATableCell($data,$url)
 {
   //print("<TD bgcolor=blanchedalmond align=right><font size=-1>");
   print("<TD align=right><font size=-1>");
-  print("<A HREF=\"$url\">$data</A></TD>"); 
+  print("<A HREF=\"$url\">$data</A></TD>\n"); 
 }
 function TableCell($data)
 {
 //  print("<TD bgcolor=blanchedalmond align=right><font size=-1>");
   print("<TD  NOWRAP>");
-  print("&nbsp;$data&nbsp;</TD>"); 
+  print("&nbsp;$data&nbsp;</TD>\n"); 
 }
 function RTableCell($data,$percent)
 {
   print("<TD WIDTH=\"$percent%\" align=right NOWRAP>");
-  print("&nbsp;$data&nbsp;</TD>"); 
+//  print("&nbsp;$data&nbsp;</TD>\n"); 
+  print("$data</TD>\n"); 
 }
 function LTableCell($data,$percent)
 {
   print("<TD WIDTH=\"$percent%\" align=left NOWRAP>");
-  print("&nbsp;$data&nbsp;</TD>"); 
+  print("$data</TD>\n"); 
 }
 function RBTableCell($data,$percent)
 {
   print("<TD WIDTH=\"$percent%\" align=right NOWRAP>");
-  print("&nbsp;<B>$data&nbsp;</TD>"); 
+  print("&nbsp;<B>$data&nbsp;</TD>\n"); 
 }
 function LBTableCell($data,$percent)
 {
   print("<TD WIDTH=\"$percent%\" align=left NOWRAP>");
-  print("&nbsp;<B>$data&nbsp;</TD>"); 
+  print("&nbsp;<B>$data&nbsp;</TD>\n"); 
 }
 
 function GraphButton($url,$target,$img_small,$img_big,$title)
