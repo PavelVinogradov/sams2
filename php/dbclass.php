@@ -260,6 +260,7 @@ class SAMSDB
 //	$link=@mysql_connect($host,$user,$passwd) || die (mysql_error());
 	if(($link=@mysql_connect($host,$user,$passwd))==FALSE)
 	{
+		$this->dberror=1;
 		$this->dberrortext=mysql_error();
 	}
 
