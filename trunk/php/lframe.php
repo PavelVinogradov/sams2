@@ -64,8 +64,8 @@
 	}
 
 
-print("<html><head>\n");
 header("Content-type: text/html; charset=$CHARSET");
+print("<html><head>\n");
 print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
 print("</head>\n");
 print("<body topmargin=16 marginheight=16 >\n");

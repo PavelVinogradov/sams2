@@ -203,11 +203,11 @@ if($function=="nuserauth")
  $SAMSConf->access=UserAccess();
 if($gb!=1)
   { 
-    print("<HTML><HEAD>");
     header("Content-type: text/html; charset=$CHARSET");
     header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
     header("Expires: THU, 01 Jan 1970 00:00:01 GMT"); // Date in the past
 
+    print("<HTML><HEAD>");
     print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
     print("</head>\n");
     print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");//     if($autherrorc==1&&$autherrort>0)
