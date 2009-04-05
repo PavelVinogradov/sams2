@@ -39,7 +39,7 @@ class SAMSUSER
   var $C_access;
 //WGSAULC
 
-function SAMSUSER($userid)
+function SAMSUSER()
 {
 
 }
