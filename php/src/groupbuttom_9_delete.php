@@ -9,11 +9,12 @@
 function NotEmptyGroupWarning($groupnick)
 {
   global $SAMSConf;
+  global $USERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
    
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
   
   PageTop("warning.jpg","$groupbuttom_9_delete_NotEmptyGroupWarning_1");
   print("<B>$groupbuttom_9_delete_NotEmptyGroupWarning_2</B>");
@@ -23,13 +24,16 @@ function NotEmptyGroupWarning($groupnick)
 function DeleteGroup()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
+
   $num_rows=$DB->samsdb_query_value("SELECT count(*) FROM squiduser WHERE s_group_id='$id' ");
   $row=$DB->samsdb_fetch_array();
   $count=$row[0];

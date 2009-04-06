@@ -8,6 +8,7 @@
 function ChangeAdminPasswd()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -18,8 +19,9 @@ function ChangeAdminPasswd()
   if(isset($_GET["passw1"])) $newpasswd=$_GET["passw1"];
   if(isset($_GET["oldpasswd"])) $oldpasswd=$_GET["oldpasswd"];
 
-    $SAMSConf->access=UserAccess();
-   if($SAMSConf->access<1)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
+
   	$passwd=crypt($newpasswd,"00");
 	$oldpasswd2=crypt($oldpasswd,"00");
 	$QUERY="SELECT s_pass FROM passwd WHERE s_user='$username'&&s_pass='$oldpasswd2' ";
@@ -41,12 +43,13 @@ function ChangeAdminPasswd()
 function ChangeAdminPasswdForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access<1)     {       exit;     }
+	if($USERConf->ToWebInterfaceAccess("C")!=1)
+		exit;
   
 	PageTop("userpasswd_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswdForm_1");
 	print("<P>\n");
@@ -109,10 +112,12 @@ function ChangeAdminPasswdForm()
 function adminbuttom_4_chpasswd()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access>=2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        GraphButton("main.php?show=exe&function=changeadminpasswdform&filename=adminbuttom_4_chpasswd.php",
 	               "basefrm","userpasswd_32.jpg","userpasswd_48.jpg","$adminbuttom_4_chpasswd_adminbuttom_4_chpasswd_1");

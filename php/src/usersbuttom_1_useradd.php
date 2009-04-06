@@ -9,9 +9,10 @@
 function GetDomainUsersList()
 {
   global $SAMSConf;
+  global $USERConf;
    
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
 
   db_connect($SAMSConf->SAMSDB) or exit();
   mysql_select_db($SAMSConf->SAMSDB);
@@ -91,11 +92,14 @@ function GetDomainUsersList()
 function AddUser()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
  
   if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];
   if(isset($_GET["username"])) $username=$_GET["username"];
@@ -199,12 +203,13 @@ function AddUser()
 function NewUserForm()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        if($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")
          {
@@ -366,12 +371,13 @@ function NewUserForm()
 function usersbuttom_1_useradd()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access==2||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[domain]+$row[nick]"))
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-//       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=newuserform&filename=usersbuttom_1_useradd.php","basefrm","useradd_32.jpg","useradd_48.jpg","$usersbuttom_1_useradd_usersbuttom_1_useradd_1");
 	}
 

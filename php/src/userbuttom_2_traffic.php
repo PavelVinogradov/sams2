@@ -74,7 +74,6 @@ function UserTrafficPeriod()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
   if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
 	exit(0);
 
@@ -101,7 +100,7 @@ function UserTrafficPeriod()
   print("<THEAD>\n");
   print("<TH>No");
   print("<TH>$traffic_data");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_3");
       print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_4");
@@ -117,7 +116,7 @@ function UserTrafficPeriod()
          LTableCell($count,10);
          $aaa=ReturnDate($row['s_date']);
          LTableCell($aaa,15);
-         if($SAMSConf->access==2)
+	 if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              $aaa=FormattedString("$row[0]");
              RTableCell($aaa,25);
@@ -138,7 +137,7 @@ function UserTrafficPeriod()
   print("</TBODY>\n");
   print("<TD>");
   RBTableCell("$vsego",25);
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $aaa=FormattedString("$size");
       RBTableCell("$aaa",25);
@@ -192,7 +191,6 @@ function userbuttom_2_traffic()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	if($USERConf->ToWebInterfaceAccess("WAUCS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
 	{
 		GraphButton("main.php?show=exe&function=usertrafficform&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id","basefrm","usertraffic_32.jpg","usertraffic_48.jpg","$userbuttom_2_traffic_userbuttom_2_traffic_1");

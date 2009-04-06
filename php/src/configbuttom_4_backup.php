@@ -116,7 +116,6 @@ function configbuttom_4_backup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//	if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	if($USERConf->ToWebInterfaceAccess("C")==1 )
 	{
 		GraphButton("main.php?show=exe&function=savebackupform&filename=configbuttom_4_backup.php","basefrm","savebase_32.jpg","savebase_48.jpg","$backupbuttom_1_savebase_backupbuttom_1_savebase_1");

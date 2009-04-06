@@ -8,9 +8,11 @@
 function UpdateGroup()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
 
-  if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["nick"])) $nick=$_GET["nick"];
@@ -29,6 +31,7 @@ function UpdateGroup()
 function UpdateGroupForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -36,7 +39,8 @@ function UpdateGroupForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
   $row=$DB->samsdb_fetch_array();

@@ -10,6 +10,7 @@
 function AddURLListForm()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -18,8 +19,8 @@ function AddURLListForm()
   print("        parent.tray.location.href=\"tray.php\";\n");
   print("</SCRIPT> \n");
 
-   $SAMSConf->access=UserAccess();
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
   
   PageTop("redirect_48.jpg","$redirlisttray_AddRedirListForm_1 ");
   print("<BR>\n");

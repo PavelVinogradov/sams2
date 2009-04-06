@@ -57,7 +57,6 @@ function LoadRedirListForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   $SAMSConf->access=UserAccess();
    if($USERConf->ToWebInterfaceAccess("CL")!=1 )
 	exit;
   
@@ -83,7 +82,6 @@ function redirbuttom_1_loadlist()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-//  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     if($USERConf->ToWebInterfaceAccess("CL")==1 )
     {
 	GraphButton("main.php?show=exe&function=loadredirlistform&filename=redirbuttom_1_loadlist.php&id=$id","basefrm","import_32.jpg","import_48.jpg","$redir_redirtray2 ");

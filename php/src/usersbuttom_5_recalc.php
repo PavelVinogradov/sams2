@@ -8,12 +8,14 @@
 function RecalcUsersTraffic()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
 	{      exit;     }
 
   $thisdate=strftime("%Y-%m-%d");
@@ -79,12 +81,12 @@ function RecalcUsersTraffic()
 function usersbuttom_5_recalc()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function RecalcCounter(username,userid)\n");

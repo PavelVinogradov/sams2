@@ -30,6 +30,7 @@ class IMPORTUSERS
 function importurllists()
 {
   global $SAMSConf;
+  global $USERConf;
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
 	exit(0);
@@ -38,7 +39,6 @@ function importurllists()
 	if($SAMSConf->DB_ENGINE=="MySQL")
 		$DBNAME="samsdb.";
 
-	if($SAMSConf->access!=2)     {       exit;     }
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM squidctrl.redirect ");
 	while($row=$this->oldDB->samsdb_fetch_array())
@@ -87,7 +87,7 @@ function importgroups()
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
 		$DBNAME="samsdb.";
-	if($SAMSConf->access!=2)     {       exit;     }
+
 	$this->groupcount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM sams ");
 	$row=$this->oldDB->samsdb_fetch_array();
@@ -124,7 +124,6 @@ function importshablons()
 	if($SAMSConf->DB_ENGINE=="MySQL")
 		$DBNAME="samsdb.";
 
-	if($SAMSConf->access!=2)     {       exit;     }
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM shablons ");
 	while($row=$this->oldDB->samsdb_fetch_array())
@@ -260,7 +259,6 @@ function importdata()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
@@ -299,7 +297,6 @@ function importdataform()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-// if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")!=1)
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
   PageTop("shablon.jpg","Import database from SAMS 1 ");
@@ -334,10 +331,8 @@ function configbuttom_3_import()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       //print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
 	               "basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
     }

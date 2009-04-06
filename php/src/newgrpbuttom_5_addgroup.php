@@ -8,21 +8,21 @@
 function AddGroup()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
 
-//  $groupname=TempName();
-
   $result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$groupnick'");
-//  $result=mysql_query("SELECT nick FROM groups where nick = '$groupnick';");
   if($result == 0) 
   {
     $result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$groupnick') ");
-//    if($result!=FALSE)
-//      UpdateLog("$SAMSConf->adminname","Added group  $groupnick ","02");
 
     print("<SCRIPT>\n");
     print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -37,7 +37,11 @@ function AddGroup()
 function NewGroupForm()
 {
   global $SAMSConf;
-  
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -64,11 +68,12 @@ function NewGroupForm()
 function newgrpbuttom_5_addgroup()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        GraphButton("main.php?show=exe&function=newgroupform&filename=newgrpbuttom_5_addgroup.php",
 	               "basefrm","useradd_32.jpg","useradd_48.jpg","$newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1");

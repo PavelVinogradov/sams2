@@ -100,7 +100,6 @@ function userbuttom_6_chpasswd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
 	if($USERConf->ToWebInterfaceAccess("WAUC")==1 && $USERConf->s_user_id == $SquidUSERConf->s_user_id)
 	{
 		GraphButton("main.php?show=exe&function=chuserpasswdform&filename=userbuttom_6_chpasswd.php&id=$SquidUSERConf->s_user_id","basefrm","userpasswd_32.jpg","userpasswd_48.jpg"," $userbuttom_6_chpasswd_userbuttom_6_chpasswd_1");

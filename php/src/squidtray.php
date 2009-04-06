@@ -8,6 +8,7 @@
 function HelpSquidForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $files=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -21,7 +22,7 @@ function HelpSquidForm()
   print("<TD>$squidtray_HelpSquidForm_2");
   print("</TABLE>");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $squidlogfiles=0;
 
@@ -67,6 +68,7 @@ function HelpSquidForm()
 function SquidTray()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -75,7 +77,7 @@ function SquidTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&filename=squidtray.php&function=helpsquidform\";\n");
       print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");
