@@ -7,11 +7,12 @@
 function MoveUsersToGroup()
 {
   global $SAMSConf;
-echo "12345<BR>";
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
  if(isset($_GET["id"])) $id=$_GET["id"];
  if(isset($_GET["username"])) $users=$_GET["username"];
-echo "count=count($users)<BR>";
+
   for($i=0;$i<count($users);$i++)
     {
            $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_group_id='$id' WHERE s_user_id='$users[$i]' ");
@@ -25,6 +26,8 @@ echo "count=count($users)<BR>";
 function DisableGroupUsers()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
  
@@ -59,10 +62,11 @@ function UserGroupForm()
 {
   
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  $SAMSConf->access=UserAccess();
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["gid"])) $gid=$_GET["gid"];
@@ -77,7 +81,7 @@ function UserGroupForm()
     }
   PageTop("user.jpg","$grouptray_UserGroupForm_1.<BR>$grouptray_UserGroupForm_2 <FONT COLOR=\"blue\">$gname</FONT>");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<FORM NAME=\"groupform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
@@ -87,17 +91,17 @@ function UserGroupForm()
   
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
 
-  if($SAMSConf->access>0)
+  if($USERConf->ToWebInterfaceAccess("CGS")==1)
     {
       print("<TH  WIDTH=\"10%\">\n");
       print(" <B>$grouptray_NewGroupForm_3 </B> \n");
     }
   print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$grouptray_NewGroupForm_4</B>\n");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$grouptray_NewGroupForm_5</B>\n");
     }   
-  if($SAMSConf->access==2||$ga==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1||$ga==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B>\n");
@@ -131,12 +135,12 @@ function UserGroupForm()
           {
               $gif="duserd.gif";
            }
-        if($SAMSConf->access>0)
+	if($USERConf->ToWebInterfaceAccess("CGS")==1)
            {
               print("<TD WIDTH=\"10%\">");
               print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\">");
            }
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[s_user_id]] ");
              if($row['s_enabled']==1)
@@ -145,11 +149,11 @@ function UserGroupForm()
            }
 	 
 	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              print("<TD WIDTH=\"15%\"> <B>$row[s_domain] </B>");
 	   }   
-	 if($SAMSConf->access==2||$ga==1)
+	 if($USERConf->ToWebInterfaceAccess("C")==1||$ga==1)
            {
 	    if($SAMSConf->realtraffic=="real")
 	     	PrintFormattedSize($row['s_size'] - $row['s_hit']);
@@ -168,7 +172,7 @@ function UserGroupForm()
   print("</TABLE>\n");
   $DB->free_samsdb_query();
 
-    if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"counter\" value=\"$count\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$id\">\n");
@@ -177,7 +181,7 @@ function UserGroupForm()
       print("</FORM>\n");
     } 
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
 	print("<SCRIPT language=JAVASCRIPT>\n");
         print("function SelectUsers(id)\n");
@@ -210,7 +214,7 @@ function UserGroupForm()
                print("<OPTION VALUE=\"$row[s_group_id]\" $SECTED> $row[s_name]\n");
          }
       print("</SELECT>\n");
-  $DB->free_samsdb_query();
+	$DB->free_samsdb_query();
 
       print("<SELECT NAME=\"username[]\" SIZE=10 MULTIPLE>\n");
       if($gid=="ALL")
@@ -235,7 +239,6 @@ function GroupTray()
   if(isset($_GET["id"])) $id=$_GET["id"];
   global $SAMSConf;
   global $USERConf;
-//echo "samsadmin=$USERConf->s_samsadmin userid=$USERConf->s_user_id=$id=$SAMSConf->USERID $USERConf->s_webaccess";
 
   if($USERConf->ToWebInterfaceAccess("SC")==1 || ($USERConf->ToWebInterfaceAccess("G")==1 && $USERConf->s_group_id==$id ))
   {

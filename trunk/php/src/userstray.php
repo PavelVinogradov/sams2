@@ -7,8 +7,9 @@
 function DisableSelectedUsers()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
-  if($SAMSConf->access!=2)
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
     exit(0);
 
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
@@ -86,7 +87,7 @@ function AllUsersForm()
   if(isset($_GET["username"])) $username=$_GET["username"];
 
   PageTop("user.jpg","$grouptray_UserGroupForm_1");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<FORM NAME=\"searchform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
@@ -170,7 +171,7 @@ function AllUsersForm()
        print("}\n");
        print("</SCRIPT> \n");
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<FORM NAME=\"groupform\" ACTION=\"main.php\"  METHOD=\"post\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
@@ -183,20 +184,20 @@ function AllUsersForm()
   print("<THEAD>\n");
   print("<TR>\n");
 
-  if($SAMSConf->access>0)
+  if($USERConf->ToWebInterfaceAccess("CGS")==1)
     {
       print("<TH  WIDTH=\"10%\"> <B>$userstray_AllUsersForm_1</B> \n");
     }
   print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_2</B>\n");
   print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_3</B>\n");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_4</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_5</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_9</B>\n");
     }  
   print("<TH WIDTH=\"30%\" bgcolor=beige> <B>$userstray_AllUsersForm_6</B>\n");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_7</B>\n");
     }  
@@ -238,13 +239,13 @@ function AllUsersForm()
           {
               $gif="duserd.gif";
            }
-        if($SAMSConf->access>0)
+	if($USERConf->ToWebInterfaceAccess("CGS")==1)
            {
               print("<TD WIDTH=\"10%\">");
               print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\">");
               
 	   }
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[s_user_id]\" ");
              if($row['s_enabled']==1)
@@ -256,7 +257,7 @@ function AllUsersForm()
 	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
 	    if($SAMSConf->realtraffic=="real")
 	        PrintFormattedSize($row['s_size']-$row['s_hit']);
@@ -285,7 +286,7 @@ function AllUsersForm()
 	   }
 	   
          print("<TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]");
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
               print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" > \n");
 	   }
@@ -298,7 +299,7 @@ function AllUsersForm()
       print("<INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=DeleteAll(groupform) > \n");
   print("</TABLE>\n");
 
-    if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"counter\" value=\"$count\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"groupname\" value=\"$groupname\">\n");

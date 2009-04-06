@@ -76,7 +76,7 @@ function UserForm()
       print("<TD>\n");
       print("$row[S_domain]\n");
     }  
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TR>\n");
       print("<TD>\n");
@@ -106,8 +106,8 @@ function UserForm()
   print("<TD>\n");
   print("$row2[s_name]\n");
   $DB2->free_samsdb_query();
-  
-  if($SAMSConf->access==2||strcasecmp($SAMSConf->domainusername,$row[nick])==0||$SAMSConf->groupauditor==$row[group])
+
+  if($USERConf->ToWebInterfaceAccess("C")==1 || strcasecmp($SAMSConf->domainusername,$row[nick])==0 || $SAMSConf->groupauditor==$row[group])
     {
        print("<TR>\n");
        print("<TD>\n");
@@ -137,7 +137,8 @@ function UserForm()
 //       else
 //	     PrintTrafficSize($row['s_size']);
     }
-  if($SAMSConf->access==2)
+
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        print("<TR>\n");
        print("<TD>\n");
@@ -187,7 +188,7 @@ function JSUserInfo()
   <TABLE>
   <TR><TD><B>Nickname:<TD>$SquidUSERConf->s_nick 
   <TR><TD><B>$usertray_UserForm_2<TD>$SquidUSERConf->s_domain";
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_3:<TD>$SquidUSERConf->s_ip";
   $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$SquidUSERConf->s_name
   <TR><TD><B>$usertray_UserForm_5:<TD>$SquidUSERConf->s_soname

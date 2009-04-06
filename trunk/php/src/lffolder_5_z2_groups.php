@@ -13,7 +13,6 @@
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
    
-// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
     if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 

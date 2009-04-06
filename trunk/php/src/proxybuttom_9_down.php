@@ -8,13 +8,14 @@
 function DownSquid()
 {
   global $SAMSConf;
+  global $USERConf;
  
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        PageTop("reconfig_48.jpg","Shutdown proxy server");
        

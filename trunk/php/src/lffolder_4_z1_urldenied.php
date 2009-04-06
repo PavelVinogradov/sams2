@@ -1,3 +1,4 @@
+
 <?php
 /*
  * SAMS (Squid Account Management System)
@@ -14,7 +15,6 @@
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
     if($USERConf->ToWebInterfaceAccess("CL")==1 )
     {
 	$item=array("classname"=> "denied",

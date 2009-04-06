@@ -188,7 +188,6 @@ function ConfigTray()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if($SAMSConf->access==2)
   if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
 	print("<SCRIPT>\n");

@@ -8,12 +8,13 @@
 function ClearUsersTrafficCounter()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $SAMSConf->access=UserAccess();
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_size='0', s_hit='0' ");
 //      UpdateLog("$SAMSConf->adminname","$usersbuttom_6_clear_ClearUsersTrafficCounter","01");
@@ -28,10 +29,12 @@ function ClearUsersTrafficCounter()
 function usersbuttom_6_clear()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");

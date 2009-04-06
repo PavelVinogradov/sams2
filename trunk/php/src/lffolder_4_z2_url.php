@@ -8,11 +8,13 @@
  function lffolder_4_z2_url()
  {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
- if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "LC")==1)
+  if($USERConf->ToWebInterfaceAccess("CL")==1)
     {
 	$item=array("classname"=> "url",
 		"icon" => "stop.gif",

@@ -9,8 +9,14 @@
 function RemoveCache()
 {
   global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
+
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
+
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
   
   $num_rows=$DB->samsdb_query_value("SELECT * FROM proxy ");
@@ -31,6 +37,8 @@ function RemoveCache()
 function AddCache()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
 
 $delaypool=0;
@@ -80,7 +88,8 @@ $adminaddr="root@localhost";
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	exit;
 
   if($at==1)    { $at="@"; }
   if($slashe==1)   {  $slashe="\\"; }
@@ -103,11 +112,13 @@ $adminaddr="root@localhost";
 function CacheForm()
 {
   global $SAMSConf;
+  global $USERConf;
+
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       PageTop("proxyes_48.jpg","$CacheForm_squidbuttom_4_addcache_1");
       //print("<H2>$CacheForm_squidbuttom_4_addcache_1</H2>\n");
@@ -494,14 +505,14 @@ function CacheForm()
 function squidbuttom_4_addcache()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
 
-   if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        GraphButton("main.php?show=exe&function=cacheform&filename=squidbuttom_4_addcache.php","basefrm","proxyes_32.jpg","proxyes_48.jpg","$squidbuttom_4_addcache_squidbuttom_4_addcache_1");
 	}
 
