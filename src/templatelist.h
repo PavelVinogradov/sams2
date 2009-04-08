@@ -41,6 +41,7 @@ public:
 
   static vector<long> getIds();
 
+  static bool save ();
 private:
   static bool load();
 

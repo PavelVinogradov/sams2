@@ -87,7 +87,7 @@ int main (int argc, char *argv[])
 {
   int parse_errors = 0;
   int c;
-  uint dbglevel = 0;
+  uint dbglevel_cmd = 0;
   string optname = "";
   bool verbose = false;
   string log_engine = "";
@@ -128,8 +128,8 @@ int main (int argc, char *argv[])
           verbose = true;
           break;
         case 'd':
-          if (sscanf (optarg, "%d", &dbglevel) != 1)
-            dbglevel = 0;
+          if (sscanf (optarg, "%d", &dbglevel_cmd) != 1)
+            dbglevel_cmd = 0;
           break;
         case 'l':
           log_engine = optarg;
@@ -150,6 +150,17 @@ int main (int argc, char *argv[])
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
   SamsConfig::reload ();
+
+  uint dbglevel;
+  int dbglevel_db = SamsConfig::getInt (defDEBUG, err);
+  if ((dbglevel_cmd == 0) && (err == ERR_OK) )
+    {
+      dbglevel = (uint)dbglevel_db;
+    }
+  else
+    {
+      dbglevel = dbglevel_cmd;
+    }
 
   Logger::setEngine (log_engine);
   Logger::setVerbose (verbose);

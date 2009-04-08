@@ -221,8 +221,9 @@ bool SamsConfig::readDB ()
 
   long s_sleep;
   long s_parser_time;
+  long s_debuglevel;
 
-  s << "select s_sleep, s_parser_time from proxy where s_proxy_id=" << proxyid;
+  s << "select s_sleep, s_parser_time, s_debuglevel from proxy where s_proxy_id=" << proxyid;
   //s << "select s_parser_time, s_sleep from proxy where s_proxy_id=" << proxyid;
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_sleep, 0))
@@ -233,6 +234,13 @@ bool SamsConfig::readDB ()
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_LONG, &s_parser_time, 0))
+    {
+      delete query;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  if (!query->bindCol (3, DBQuery::T_LONG, &s_debuglevel, 0))
     {
       delete query;
       delete conn;
@@ -259,6 +267,7 @@ bool SamsConfig::readDB ()
 
   setInt (defSLEEPTIME, s_sleep);
   setInt (defDAEMONSTEP, s_parser_time);
+  setInt (defDEBUG, s_debuglevel);
 
   delete query;
 

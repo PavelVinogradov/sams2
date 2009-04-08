@@ -135,6 +135,29 @@ bool Template::getClearDate (struct tm & clear_date) const
   return true;
 }
 
+void Template::adjustClearDate()
+{
+  // Если период очистки счетчиков стандартный, то дата обнуления счетчиков не важна.
+  if (_period_type != Template::PERIOD_CUSTOM)
+    return;
+
+  struct tm clear_date;
+  time_t new_date;
+  char str_new_date[15];
+  char *rest;
+  rest = strptime (_clear_date.c_str (), "%Y-%m-%d %H:%M:%S", &clear_date);
+  if (rest == NULL)
+    {
+      ERROR ("Invalid date specification: " << _clear_date);
+      return;
+    }
+  new_date = mktime(&clear_date);
+  new_date += _period_days * 86400;
+  strftime (str_new_date, sizeof (str_new_date), "%Y-%m-%d", localtime (&new_date));
+  _clear_date = str_new_date;
+  _clear_date += " 00:00:00";
+}
+
 void Template::setAllDeny (bool alldeny)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << alldeny << ")]");

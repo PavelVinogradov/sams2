@@ -26,6 +26,7 @@
 #include "userfilter.h"
 #include "samsuser.h"
 #include "tools.h"
+#include "proxy.h"
 #include "debug.h"
 
 DBCleaner::DBCleaner ()
@@ -130,7 +131,7 @@ void DBCleaner::clearCounters ()
             strUserFilter << " or ";
 
           strUserFilter << "(";
-          if (!strDomain.empty ())
+          if (!strDomain.empty () && Proxy::useDomain ())
             strUserFilter << "s_domain='" << strDomain << "' and ";
           strUserFilter << "s_nick='" << strUser << "'";
           strUserFilter << ")";
@@ -221,7 +222,7 @@ void DBCleaner::clearCache ()
             strUserFilter << " or ";
 
           strUserFilter << "(";
-          if (!strDomain.empty ())
+          if (!strDomain.empty () && Proxy::useDomain ())
             strUserFilter << "s_domain='" << strDomain << "' and ";
           strUserFilter << "s_nick='" << strUser << "'";
           strUserFilter << ")";

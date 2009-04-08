@@ -28,20 +28,14 @@
 <OL>
   <LI>
     Отредактируйте конфигурационный файл <A HREF="sams2_conf.html">sams2.conf</A>, согласно
-    вашей конфигурации, но параметры <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> и
-    <A HREF="sams2_conf.html#sams2.conf.db_password">DB_PASSWORD</A> оставьте пустыми.
+    вашей конфигурации.
   </LI>
   <LI>
     В любом web браузере откройте страницу http://yourservername/sams2. Введите имя и пароль
     администратора базы данных, установите флаг "Create SAMS DB user" и введите имя и пароль пользователя SAMS2 для
-    последующего подключения к БД. На данном этапе этого пользователя не должно существовать в БД.
+    последующего подключения к БД (тот, который указали в sams2.conf).
+    На данном этапе этого пользователя не должно существовать в БД.
     (<SPAN STYLE='color:red'>Не удаляйте @localhost в имени пользователя!</SPAN>)
-  </LI>
-  <LI>
-    Перед тем как нажать кнопку "Starting SAMS webinterface", отредактируйте вновь конфигурационный файл
-    <A HREF="sams2_conf.html">sams2.conf</A>, заполнив параметры
-    <A HREF="sams2_conf.html#sams2.conf.db_user">DB_USER</A> (уже без @localhost) и
-    <A HREF="sams2_conf.html#sams2.conf.db_password">DB_PASSWORD</A>
   </LI>
   <LI> Запустите демон.
     <TABLE BORDER=1 CELLSPACING=0 CELLPADDING=10>
