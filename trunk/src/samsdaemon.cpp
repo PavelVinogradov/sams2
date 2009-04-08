@@ -112,6 +112,7 @@ int check_interval; //Интервал в секунах, через котор�
 long steptime;      //Интервал в минутах, через который нужно обрабатывать лог squid
 Proxy::ParserType parserType; // Тип обработки лог файла squid
 string cmdreconfiguresquid; // Команда для реконфигурирования squid
+uint dbglevel_cmd = 0;
 
 void reload (int signal_number)
 {
@@ -137,6 +138,19 @@ void reload (int signal_number)
     }
 
   Proxy::getParserType (parserType, steptime);
+
+  uint dbglevel;
+  int dbglevel_db = SamsConfig::getInt (defDEBUG, err);
+  if ((dbglevel_cmd == 0) && (err == ERR_OK) )
+    {
+      dbglevel = (uint)dbglevel_db;
+    }
+  else
+    {
+      dbglevel = dbglevel_cmd;
+    }
+
+  Logger::setDebugLevel (dbglevel);
 }
 
 void reconfigureSQUID ()
@@ -171,7 +185,6 @@ int main (int argc, char *argv[])
   int parse_errors = 0;
   int c;
   int err;
-  uint dbglevel = 0;
   int reconnect_timeout = 3600;
   string optname = "";
   bool must_fork = true;
@@ -223,8 +236,8 @@ int main (int argc, char *argv[])
           verbose = true;
           break;
         case 'd':
-          if (sscanf (optarg, "%d", &dbglevel) != 1)
-            dbglevel = 0;
+          if (sscanf (optarg, "%d", &dbglevel_cmd) != 1)
+            dbglevel_cmd = 0;
           break;
         case 'f':
           must_fork = true;
@@ -257,6 +270,17 @@ int main (int argc, char *argv[])
   // Сначала прочитаем конфигурацию, параметры командной строки
   // имеют приоритет, потому анализируются позже
   SamsConfig::reload ();
+
+  uint dbglevel;
+  int dbglevel_db = SamsConfig::getInt (defDEBUG, err);
+  if ((dbglevel_cmd == 0) && (err == ERR_OK) )
+    {
+      dbglevel = (uint)dbglevel_db;
+    }
+  else
+    {
+      dbglevel = dbglevel_cmd;
+    }
 
   Logger::setEngine (log_engine);
   Logger::setVerbose (verbose);
@@ -514,11 +538,15 @@ int main (int argc, char *argv[])
           for (i = 0; i < tpl_ids.size (); i++)
             {
               tpl = TemplateList::getTemplate (tpl_ids[i]);
+              if (!tpl)
+                continue;
               // У шаблона месячный период и начался новый месяц
               // или у шаблона недельный период и начался понедельник
+              // или у шаблона суточный период
               // или шаблон имеет нестандартный период, и настал день очистки счетчиков
               if  ( ((tpl->getPeriodType () == Template::PERIOD_MONTH) && (time_now->tm_mday == 1)) ||
                     ((tpl->getPeriodType () == Template::PERIOD_WEEK) && (time_now->tm_wday == 1))  ||
+                    (tpl->getPeriodType () == Template::PERIOD_DAY) ||
                     (tpl->getClearDate (time_clear) && (time_now->tm_year == time_clear.tm_year) && (time_now->tm_yday == time_clear.tm_yday))
                   )
                 {
@@ -527,6 +555,7 @@ int main (int argc, char *argv[])
                     cleaner = new DBCleaner ();
                   cleaner->setTemplateFilter (tpl_ids[i]);
                   cleaner->clearCounters ();
+                  tpl->adjustClearDate ();
                   need_reconfig = true;
                 }
             }

@@ -196,6 +196,8 @@ bool TemplateList::reload ()
         tpl->setPeriod (Template::PERIOD_MONTH, 0);
       else if (str_period == "W")
         tpl->setPeriod (Template::PERIOD_WEEK, 0);
+      else if (str_period == "D")
+        tpl->setPeriod (Template::PERIOD_DAY, 0);
       else
         {
           if (sscanf (str_period.c_str (), "%ld", &period_days) != 1)
@@ -296,4 +298,41 @@ vector<long> TemplateList::getIds ()
       lst.push_back((*it).first);
     }
   return lst;
+}
+
+bool TemplateList::save ()
+{
+  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
+
+  if (!_conn)
+    {
+      _conn = SamsConfig::newConnection ();
+      if (!_conn)
+        {
+          ERROR ("Unable to create connection.");
+          return false;
+        }
+
+      if (!_conn->connect ())
+        {
+          delete _conn;
+          return false;
+        }
+      _connection_owner = true;
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using new connection " << _conn);
+    }
+    else
+    {
+      DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
+    }
+
+/*
+  DBQuery *query = NULL;
+  _conn->newQuery (query);
+  if (!query)
+    {
+      ERROR("Unable to create query.");
+      return false;
+    }
+*/
 }
