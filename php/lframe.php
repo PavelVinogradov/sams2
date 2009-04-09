@@ -98,6 +98,7 @@ echo "$(\"#browser\").treeview({";
 echo "                animated: \"fast\",";
 echo "                collapsed: true,";
 echo "                persist: \"cookie\",";
+echo "                prerendered: true, \n";
 echo "                toggle: function() {";
 echo "                        window.console && console.log(\"%o was toggled\", this);";
 echo "                }";
