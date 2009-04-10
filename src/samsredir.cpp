@@ -87,6 +87,7 @@ int main (int argc, char *argv[])
 {
   int parse_errors = 0;
   int c;
+  int err;
   uint dbglevel_cmd = 0;
   string optname = "";
   bool verbose = false;

@@ -335,4 +335,5 @@ bool TemplateList::save ()
       return false;
     }
 */
+  return true;
 }
