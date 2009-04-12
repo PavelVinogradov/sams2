@@ -17,6 +17,7 @@ function SiteUserList()
   require($lang);
 
   if(isset($_GET["site"])) $site=$_GET["site"];
+  if(isset($_GET["id"])) $id=$_GET["id"];
  
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
@@ -102,6 +103,12 @@ function UserSitesPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
   require("reportsclass.php");
   $DB=new SAMSDB(&$SAMSConf);
   
@@ -113,9 +120,10 @@ function UserSitesPeriod()
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
   if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
 
-//  if($SAMSConf->access==0 && $SAMSConf->domainusername!=$username && $SAMSConf->groupauditor!=$usergroup && strlen($SAMSConf->adminname)==0)
-  if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
-	exit(0);
+	if($USERConf->ToWebInterfaceAccess("GSC")!=1 && ($USERConf->s_user_id != $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")!=1 ) )
+	{
+		exit(0);
+	}
 
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
@@ -130,13 +138,13 @@ function UserSitesPeriod()
   $eyea=$DATE->eyea;
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
 
-  PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
+  PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesPeriod_2");
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersitesperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_site.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$USERConf->s_user_id\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$SquidUSERConf->s_user_id\">\n");
 	$dateselect->SetPeriod();
   print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
@@ -155,8 +163,7 @@ if($SAMSConf->access==2)
   print("<TH>$userbuttom_4_site_UserSitesPeriod_5");
 
   $count=1;
-//  $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$USERConf->s_nick'&&s_domain='$USERConf->s_domain'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
-  $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$USERConf->s_nick'&&s_domain='$USERConf->s_domain'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
+  $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$SquidUSERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
 
   $num_rows=$DB->samsdb_query_value("$query");
   $cache=0; 
@@ -165,7 +172,7 @@ if($SAMSConf->access==2)
   while($row=$DB->samsdb_fetch_array())
        {
          print("<TR>");
-$row['norm_url'];
+//$row['norm_url'];
 	if($url_domain!=$row['url_domain'])
 	{
 		print("<TD>\n");
@@ -192,13 +199,11 @@ $row['norm_url'];
 //	}
 	   
          if($SAMSConf->access==2)
-           TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$USERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
+           TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$SquidUSERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
 
 
 
-         if($SAMSConf->access==1)
-           TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A>\n");
-         if($SAMSConf->access==0&&$SAMSConf->URLACCESS=="Y")
+	if($USERConf->ToWebInterfaceAccess("WAUCS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
            TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A>\n");
 
          if($SAMSConf->access==2)
@@ -242,24 +247,31 @@ function UserSitesForm()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
+
   require("reportsclass.php");
   $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
-		exit(0);
+	if($USERConf->ToWebInterfaceAccess("GSC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ) )
+	{
 
-	PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
+		PageTop("straffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT><BR>$userbuttom_4_site_UserSitesForm_1");
 
-	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersitesperiod\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_site.php\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$USERConf->s_user_id\">\n");
-	$dateselect->SetPeriod();
-	print("</FORM>\n");
-
+		print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersitesperiod\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_site.php\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$SquidUSERConf->s_user_id\">\n");
+		$dateselect->SetPeriod();
+		print("</FORM>\n");
+	}
 }
 
 
@@ -272,8 +284,7 @@ function userbuttom_4_site()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//	if($SAMSConf->access>0 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
-	if($USERConf->ToWebInterfaceAccess("WAUC")==1)
+	if($USERConf->ToWebInterfaceAccess("WAUCS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
 	{
 		GraphButton("main.php?show=exe&function=usersitesform&filename=userbuttom_4_site.php&id=$SquidUSERConf->s_user_id","basefrm","straffic_32.jpg","straffic_48.jpg","$userbuttom_4_site_userbuttom_4_site_1");
 	}

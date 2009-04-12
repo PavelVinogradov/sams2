@@ -38,7 +38,6 @@ function UpdateUser()
   if(isset($_GET["L_access"])) $L_access=$_GET["L_access"];
   if(isset($_GET["C_access"])) $C_access=$_GET["C_access"];
 
-//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
   if($USERConf->ToWebInterfaceAccess("AUC")!=1)
 	{
 		exit;    
@@ -90,7 +89,6 @@ function UpdateUserForm()
 
   if(isset($_GET["id"])) $userid=$_GET["id"];
 
-//  if($SAMSConf->access!=2 && $SAMSConf->ToUserDataAccess($id, "AUC")!=1)
  if($USERConf->ToWebInterfaceAccess("AUC")!=1)
 	{      
 		exit;    
@@ -349,7 +347,6 @@ function userbuttom_1_prop()
   require($lang);
 
 
-// if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "AUC")==1)
  if($USERConf->ToWebInterfaceAccess("AUC")==1)
     {
        GraphButton("main.php?show=exe&function=updateuserform&filename=userbuttom_1_prop.php&id=$SquidUSERConf->s_user_id", "basefrm","config_32.jpg","config_48.jpg","$userbuttom_1_prop_userbuttom_1_prop_1 ");
