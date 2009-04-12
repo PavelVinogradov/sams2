@@ -36,7 +36,6 @@ function userbuttom_9_delete()
   require($lang);
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-//  if($SAMSConf->access==2 ||  $SAMSConf->ToUserDataAccess($id, "UC")==1)
   if($USERConf->ToWebInterfaceAccess("UC")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");

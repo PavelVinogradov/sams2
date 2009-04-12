@@ -64,12 +64,8 @@ function adminbuttom_2_chuser()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  $SAMSConf->access=UserAccess();
-//  if($SAMSConf->access==2)
-//    {
        GraphButton("main.php?show=exe&function=changeuser&filename=adminbuttom_2_chuser.php",
 	               "basefrm","usergroup_32.jpg","usergroup_48.jpg","$adminbuttom_2_chuser_adminbuttom_2_chuser_1");
- //   }
 
 }
 

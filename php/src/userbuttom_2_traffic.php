@@ -12,6 +12,17 @@ function UserTrafficPeriodGB()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
+	if($USERConf->ToWebInterfaceAccess("GSC")!=1 && ($USERConf->s_user_id != $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")!=1 ) )
+	{
+		exit(0);
+	}
+
   $DB=new SAMSDB(&$SAMSConf);
 
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -33,7 +44,7 @@ function UserTrafficPeriodGB()
       $data1[$i]=0;
       $data2[$i]=0;
     }
-  $num_rows=$DB->samsdb_query_value("SELECT SUM(s_size), SUM(s_hit), MONTH(s_date), DAYOFMONTH(s_date), YEAR(s_date) FROM cachesum WHERE s_user='$USERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate' &&s_domain='$USERConf->s_domain' GROUP BY s_date");
+  $num_rows=$DB->samsdb_query_value("SELECT SUM(s_size), SUM(s_hit), MONTH(s_date), DAYOFMONTH(s_date), YEAR(s_date) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate'  GROUP BY s_date");
   while($row=$DB->samsdb_fetch_array())
      {
         $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
@@ -63,6 +74,19 @@ function UserTrafficPeriod()
   global $SAMSConf;
   global $DATE;
   global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
+	if($USERConf->ToWebInterfaceAccess("GSC")!=1 && ($USERConf->s_user_id != $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")!=1 ) )
+	{
+		exit(0);
+	}
+
+//echo "id=$id $SquidUSERConf->s_user_id $SquidUSERConf->s_nick<BR>";
+//exit(0);
   $DB=new SAMSDB(&$SAMSConf);
  
   $sdate=$DATE->sdate();
@@ -77,11 +101,12 @@ function UserTrafficPeriod()
   if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
 	exit(0);
 
-  PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $USERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
+
+  PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\"> $SquidUSERConf->s_nick</FONT><BR>$userbuttom_2_traffic_UserTrafficPeriod_2");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$USERConf->s_user_id\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$SquidUSERConf->s_user_id\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usertrafficperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_2_traffic.php\">\n");
@@ -92,7 +117,7 @@ function UserTrafficPeriod()
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
 //  if($SAMSConf->SHOWGRAPH=="Y")
-    printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$USERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
+    printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
   $count=1;
   $cache=0;
   print("\n<script src=\"lib/sorttable.js\" type=\"text/javascript\"></script>\n");
@@ -109,7 +134,9 @@ function UserTrafficPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
   $size=0;
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$USERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
+
+
   while($row=$DB->samsdb_fetch_array())
        {
          print("<TR>");
@@ -162,23 +189,29 @@ function UserTrafficForm()
 {
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
   require("reportsclass.php");
   $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($USERConf->ToWebInterfaceAccess("WAUC")!=1)
-		exit(0);
+	if($USERConf->ToWebInterfaceAccess("GSC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ) )
+	{
+		PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT> <BR>$userbuttom_2_traffic_UserTrafficForm_1");
 
-	PageTop("usertraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$USERConf->s_nick</FONT> <BR>$userbuttom_2_traffic_UserTrafficForm_1");
-
-	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=UserName value=\"$USERConf->s_user_id\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usertrafficperiod\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_2_traffic.php\">\n");
-	$dateselect->SetPeriod();
-	print("</FORM>\n");
+		print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=UserName value=\"$SquidUSERConf->s_user_id\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usertrafficperiod\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_2_traffic.php\">\n");
+		$dateselect->SetPeriod();
+		print("</FORM>\n");
+	}
 }
 
 
