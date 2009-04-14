@@ -253,7 +253,7 @@ function GroupTrafficPeriod()
       if(($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")
         print("<TH width=16%>Domain\n");
     }  
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       print("<TH width=15%>$usersbuttom_2_traffic_UsersTrafficPeriod_6\n");
       print("<TH width=15%>$usersbuttom_2_traffic_UsersTrafficPeriod_5\n");
@@ -289,7 +289,7 @@ function GroupTrafficPeriod()
 			if(($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")
 				TableCell($row['s_domain'],16);
 		}
-		if($SAMSConf->access==2)
+		if($USERConf->ToWebInterfaceAccess("C")==1)
 		{
 			$aaa=FormattedString("$row[0]");
 			RTableCell($aaa,15);
@@ -313,7 +313,7 @@ function GroupTrafficPeriod()
   RBTableCell("$vsego",16);
   if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$_GET["size"]=="On")
     print("<TD>");
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $aaa=FormattedString("$size2");
       RBTableCell($aaa,15);

@@ -17,7 +17,6 @@
   include('./pluginmanager.php');  
   
   $SAMSConf=new SAMSCONFIG();
-  $SAMSConf->access=2;
 
 require('./userclass.php');
 $USERConf=new SAMSUSER();
@@ -81,7 +80,6 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 		if($SAMSConf->USERID > 0)
 			$USERConf->sams_user($SAMSConf->USERID);
 	}
-//  $SAMSConf->access=UserAccess();
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -99,15 +97,7 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	{
 	require('./proxyclass.php');
 	$PROXYConf=new SAMSPROXY($proxy_id);
-	//$PROXYConf->PrintProxyClass();
 	}
-//  if(strstr($filename,"userb")||strstr($filename,"usertray"))
-//	{
-//	 if(isset($_GET["id"])) $id=$_GET["id"];
-//	require('./userclass.php');
-//	$USERConf=new SAMSUSER($id);
-//	//$PROXYConf->PrintProxyClass();
-//	}
   if(strstr($filename,"trange"))
 	{
 	require('./trangeclass.php');

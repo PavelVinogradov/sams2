@@ -229,7 +229,7 @@ $this->USERWEBACCESS="W";
       else
         $this->LANGCODE = "RU";
       $this->ICONSET="icon/$row[s_iconset]";
-      $this->USERACCESS=$row['s_useraccess'];
+      $this->USERACCESS=$row['s_user'];
       $this->URLACCESS=$row['s_urlaccess'];
       $this->SHOWUTREE=$row['s_showutree'];
       $this->SHOWNAME=$row['s_showname'];
@@ -323,7 +323,6 @@ $this->USERWEBACCESS="W";
       echo "database = $this->DB_ENGINE<BR>";
       echo "adminname = $this->adminname<BR>";
       echo "groupauditor = $this->groupauditor<BR>";
-      echo "access = $this->access<BR>";
       echo "domainusername = $this->domainusername<BR>";
       echo "SAMSDB = $this->SAMSDB<BR>";    
       echo "LOGDB = $this->LOGDB<BR>";    

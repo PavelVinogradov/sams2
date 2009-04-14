@@ -55,7 +55,7 @@ function AdminTray()
   require($lang);
 
 	print("<SCRIPT>\n");
-//	if($SAMSConf->access!=2)
+
 	if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{
 		print("parent.basefrm.location.href= 	\"main.php?show=exe&filename=admintray.php&function=userdoc\";\n");    
@@ -64,7 +64,7 @@ function AdminTray()
 
 	print("<TABLE WIDTH=\"90%\" BORDER=0 ALIGN=CENTER>\n");
 	print("<TR>\n");
-//	if($SAMSConf->access!=2)
+
 	if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{
 		print("<TD WIDTH=34 HEIGH=34><IMAGE src=\"$SAMSConf->ICONSET/config_32.jpg\" BORDER=0 ALT=\"SAMS management interface\"\n ");

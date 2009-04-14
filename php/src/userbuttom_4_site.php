@@ -24,8 +24,10 @@ function SiteUserList()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-  if($SAMSConf->access==0&&$SAMSConf->domainusername !=$username)
-	exit(0);
+	if($USERConf->ToWebInterfaceAccess("GSC")!=1 && ($USERConf->s_user_id != $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")!=1 ) )
+	{
+		exit(0);
+	}
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
 
   PageTop("usergroup_48.jpg","$userbuttom_4_site_SiteUserList_1 <BR>$site $USERConf->s_nick");
@@ -152,15 +154,15 @@ function UserSitesPeriod()
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
   print("<TABLE CLASS=samstable>");
-  print("<TH>No");
-  print("<TH>Domain");
-  print("<TH>URL");
-if($SAMSConf->access==2)
-    {
-      print("<TH>");
-      print("<TH>$userbuttom_4_site_UserSitesPeriod_4");
+  print("<TH WIDTH=6%>No");
+  print("<TH WIDTH=20%>Domain");
+  print("<TH WIDTH=20%>URL");
+  if($USERConf->ToWebInterfaceAccess("C")==1)
+  {
+      print("<TH WIDTH=15%>");
+      print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_4");
    }   
-  print("<TH>$userbuttom_4_site_UserSitesPeriod_5");
+  print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_5");
 
   $count=1;
   $query="select trim(leading \"http://\" from substring_index(s_url,'/',3)) as norm_url,sum(s_size) as url_size,sum(s_hit) as hit_size, substring_index(trim(leading \"http://\" from substring_index(s_url,'/',3)),'.',-2) as url_domain from squidcache where s_user='$SquidUSERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate' group by norm_url order by url_domain,s_url desc limit 25000";
@@ -180,6 +182,7 @@ if($SAMSConf->access==2)
 		$acount=count($a);
 		if (ctype_alpha($a[$acount-1])) 
 		{
+
 			print("<TD  colspan=5><A HREF=\"http://$row[url_domain]\" TARGET=\"BLANK\"><B>$row[url_domain]</B></A>\n");
 			$url_domain=$row['url_domain'];
 		} 
@@ -192,21 +195,19 @@ if($SAMSConf->access==2)
 
 		print("<TR>\n");
 	}
-//	else/
+//	else
 //	{
 		LTableCell($count,8);
 		print("<TD>\n");
 //	}
 	   
-         if($SAMSConf->access==2)
-           TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$SquidUSERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
+	if($USERConf->ToWebInterfaceAccess("C")==1)
+           	TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$SquidUSERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A> 1.1");
+	else
+		if($USERConf->ToWebInterfaceAccess("WAUS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
+			TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A> 2.2\n");
 
-
-
-	if($USERConf->ToWebInterfaceAccess("WAUCS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
-           TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A>\n");
-
-         if($SAMSConf->access==2)
+	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              $aaa=FormattedString("$row[url_size]\n");
              RTableCell("$aaa",15);
@@ -223,7 +224,7 @@ if($SAMSConf->access==2)
          $cache=$cache+$row['hit_size'];
        }
  print("<TR><TD>");
- if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $aaa=FormattedString($counter);
       RBTableCell($aaa,15);

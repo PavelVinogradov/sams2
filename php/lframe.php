@@ -48,10 +48,6 @@
 	$samsadmin=$_COOKIE['samsadmin'];
    }  
 
-// $SAMSConf->access=UserAccess();
-// $SAMSConf->access=2;
-// $SAMSConf->USERPASSWD=1;
-
    if($samsadmin==1)
 	{
 		$USERConf->sams_admin();
