@@ -1,0 +1,13 @@
+#
+# This configuration file allows the SAMS2 web management
+# to be accessed at http://localhost/sams2/
+#
+
+Alias /sams2/doc __DOCPREFIX
+
+<Location "/sams2/doc">
+    Options Indexes
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Location>
