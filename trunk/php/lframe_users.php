@@ -11,11 +11,12 @@ function lframe_users()
 //  $DB=new SAMSDB(&$SAMSConf);
 
  global $SAMSConf;
+ global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $DB2=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($SAMSConf->SHOWUTREE=="1"||$SAMSConf->access>0||strlen($SAMSConf->groupauditor)>0)
+  if($SAMSConf->SHOWUTREE=="1"||$USERConf->ToWebInterfaceAccess("GSAUC")==1)
     {
       switch ($SAMSConf->SHOWNAME)
         { 

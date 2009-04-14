@@ -68,6 +68,7 @@ function TestPDC()
 function SamsReConfig()
 {
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -109,7 +110,8 @@ function SamsReConfig()
   if(isset($_GET["adminaddr"])) $adminaddr=$_GET["adminaddr"];
   if(isset($_GET["defauth"])) $defauth=$_GET["defauth"];
 
-   if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	{       exit;     }
   
   if($at=="on")
     $at="@";
@@ -150,12 +152,14 @@ function SamsReConfig()
 function SamsReConfigForm()
 {
   global $SAMSConf;
+  global $USERConf;
   $files=array();
   $DB=new SAMSDB(&$SAMSConf);
    
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
- if($SAMSConf->access!=2)     {       exit;     }
+  if($USERConf->ToWebInterfaceAccess("C")!=1)
+	{       exit;     }
   
 
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfigForm_1");
@@ -625,12 +629,12 @@ function SamsReConfigForm()
 function configbuttom_1_prop()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-//  if($SAMSConf->access==2)
- if($SAMSConf->access==2 || $SAMSConf->ToUserDataAccess($USERConf->s_user_id, "C")==1)
+ if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        //print("<TD  CLASS=\"samstraytd\">\n");
        GraphButton("main.php?show=exe&function=samsreconfigform&filename=configbuttom_1_prop.php",

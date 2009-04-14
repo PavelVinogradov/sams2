@@ -14,7 +14,7 @@ function DownSquid()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        PageTop("reconfig_48.jpg","Shutdown proxy server");
        
@@ -79,7 +79,7 @@ function squidbuttom_9_down()
   require($lang);
 
 
-   if($SAMSConf->access==2)
+  if($USERConf->ToWebInterfaceAccess("C")==1)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");
@@ -101,11 +101,7 @@ function squidbuttom_9_down()
          }
        print("}\n");
        print("</SCRIPT> \n");
-       
-      // print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
-      // GraphButton("main.php?show=exe&function=shutdown_proxy&filename=proxybuttom_1_down.php","basefrm","loadbase_32.jpg","loadbase_48.jpg","Shutdown proxy server");
-       
-//       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
+
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/shutdown_32.jpg\" \n ");
        print("TITLE=\"Shutdown proxy server\"  border=0 ");

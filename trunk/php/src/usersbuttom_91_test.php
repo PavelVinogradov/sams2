@@ -9,7 +9,6 @@ function TestTable()
   require($lang);
   
 //  TestWI();
-  $SAMSConf->access=UserAccess();
 
   $groupname="";
   $type="all";

@@ -200,7 +200,6 @@ if($function=="nuserauth")
 
 
 
- $SAMSConf->access=UserAccess();
 if($gb!=1)
   { 
     header("Content-type: text/html; charset=$CHARSET");
