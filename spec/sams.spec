@@ -1,22 +1,85 @@
-#%define _prefix /usr
-%define debug_packages  %{nil}
+%define debug_packages %{nil}
+
+%define dist centos
+%define disttag .el5
+
+%define webuser apache
+%define webgroup apache
+%define apacheconf /httpd/conf.d
+%define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
+%define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null&& echo 1 || echo 0)
+%define is_Mandriva_2009 %(grep -qi  "mandriva.*2009" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
+%define is_RHEL %(grep -qi  "^red hat" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
+%define is_Fedora %(grep -qi  "^fedora" /etc/fedora-release  &>/dev/null && echo 1 || echo 0)
+%define is_CentOS %(grep -qi  "^centos" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
+
+%if %is_Mandriva_2008
+%define dist mandriva8
+%define disttag .mdk
+%endif
+%if %is_Mandriva_2009
+%define dist mandriva9
+%define disttag .mdk
+%endif
+%if %is_suse
+%define dist suse
+%define disttag .suse
+%define webuser wwwrun
+%define webgroup www
+%define apacheconf /apache2/conf.d
+%endif
+%if %is_Fedora
+%define dist fedora
+%define disttag .fc9
+%define enable_debug_packages %{nil}
+%endif
+%if %is_RHEL
+%define dist rhel
+%define disttag .rhel
+%endif
 
 
 Name:          sams2
 Version:       2.0.0
 Release:       a2
-Epoch:         584
+Epoch:         606
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
 Source:        %{name}-%{version}-%{epoch}.tar.bz2
+Source1:       doc_sams2_conf
 URL:           http://sams.perm.ru
 Packager:      SAMS Development Group
-Requires:      mysql, pcre, squid, samba
 Provides:      sams2 = %{version}
 Prefix:        %{_prefix}
 BuildRoot:     %{_tmppath}/%{name}-buildroot
-BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel, samba
+
+%if %{dist} == "suse"
+Requires:      mysql, postgresql-server, unixODBC , pcre, squid
+BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel autoconf automake libtool
+%endif
+%if %{dist} == "centos"
+Requires:      mysql-server, postgresql-server, unixODBC, pcre, squid
+BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel autoconf automake libtool
+%endif
+%if %{dist} == "rhel"
+Requires:      mysql-server, postgresql-server, unixODBC, pcre, squid
+BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel autoconf automake libtool
+%endif
+%if %{dist} == "fedora"
+Requires:      mysql-server, postgresql-server, unixODBC, pcre, squid
+BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel autoconf automake libtool
+%endif
+%if %dist == "mandriva9"
+Requires:      mysql-common, postgresql8.3-server, libunixODBC1, libpcre, squid
+BuildRequires: mysql-devel, postgresql8.3-devel, unixODBC-devel, gcc-c++, libpcre-devel autoconf automake libtool
+%endif
+
+%if %dist == "mandriva8"
+Requires:      mysql-common, postgresql8.2-server, libunixODBC1, libpcre, squid
+BuildRequires: mysql-devel, postgresql8.2-devel, unixODBC-devel, gcc-c++, libpcre-devel autoconf automake libtool
+%endif
+
 
 %description
 This program basically used for administrative purposes of squid proxy.
@@ -27,9 +90,23 @@ authorization mode.
 %package web
 Summary:       SAMS2 web administration tool
 Group:         Applications/System
-Requires:      httpd, php, php-mysql, php-gd, php-ldap, samba
 Provides:      sams2-web = %{version}
-BuildRequires: samba
+%if %{dist} == "mandriva"
+Requires:      apache-base, php, php-mysql, php-gd, php-ldap, php-pgsql, php-odbc, php-zlib, squid,  /usr/bin/wbinfo
+%endif
+%if %{dist} == "suse"
+Requires: apache2, apache2-mod_php5, php, php-mysql, php-gd, php-ldap, php-pgsql, php-odbc, php-zlib, squid, /usr/bin/wbinfo
+%endif
+%if %{dist} == "centos"
+Requires: httpd, php, php-mysql, php-gd, php-ldap, php-pgsql, php-odbc,php-zlib, squid,  /usr/bin/wbinfo
+%endif
+%if %{dist} == "rhel"
+Requires: httpd, php, php-mysql, php-gd, php-ldap, php-pgsql, php-odbc,php-zlib, squid,  /usr/bin/wbinfo
+%endif
+%if %{dist} == "fedora"
+Requires: httpd, php, php-mysql, php-gd, php-ldap, php-pgsql, php-odbc,php-zlib, squid,  /usr/bin/wbinfo
+%endif
+
 
 %description web
 The sams2-web package provides web administration tool
@@ -46,56 +123,82 @@ Prereq:        /usr/bin/find /bin/rm /usr/bin/xargs
 %description doc
 The sams2-doc package includes the HTML versions of the "Using SAMS2".
 
-
 #######################################################################
 
 
 %prep
 %setup -q -n %{name}-%{version}-%{epoch}
+echo %{dist}
+echo %{_target_platform}|
 
 %build
 make -f Makefile.cvs
-%configure \
-	--prefix=%{_prefix} \
-	--with-configfile=%{_sysconfdir}/sams2.conf 
-make
+%configure
 
+make
+	
 %install
 # Clean up in case there is trash left from a previous build
 [ "${RPM_BUILD_ROOT}" != "/" ] && [ -d "${RPM_BUILD_ROOT}" ] && \
-	rm -rf "${RPM_BUILD_ROOT}"
-
+    rm -rf "${RPM_BUILD_ROOT}"
+	    
 make DESTDIR=$RPM_BUILD_ROOT install
 
 install -d "${RPM_BUILD_ROOT}%{_initrddir}"
-install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d
+install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}
 
 install -m755 redhat/init.d 					\
-		"${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
-		-e 's,__CONFDIR,%{_sysconfdir},g'		\
-		"${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-install -m644 redhat/httpd_conf					\
-		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
+    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
+	sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
+	    -e 's,__CONFDIR,%{_sysconfdir},g'		\
+	    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
+
+install -m644 "etc/httpd_conf"				\
+    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
 sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name}-%{version},g'	\
-		"${RPM_BUILD_ROOT}%{_sysconfdir}"/httpd/conf.d/sams2.conf
+    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
+install -m644 "etc/doc_sams2_conf"			\
+    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
+sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-%{version},g'	\
+	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
+
+sed -i -e 's,^SQUIDCACHEDIR=.*$,SQUIDCACHEDIR=/var/spool/squid,g'	\
+	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
+sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\
+	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
+
 install -d "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
 install -m644 ChangeLog AUTHORS COPYING NEWS INSTALL "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
-
+%if %{dist}=="suse"
+mv -f --target-directory="${RPM_BUILD_ROOT}"%{_docdir}/%{name}-%{version}		\
+    "${RPM_BUILD_ROOT}"%{_datadir}/doc/%{name}-%{version}/*
+%endif
+								    
 %clean
 [ "${RPM_BUILD_ROOT}" != "/" ] && [ -d "${RPM_BUILD_ROOT}" ] && \
-	rm -rf "${RPM_BUILD_ROOT}"
+rm -rf "${RPM_BUILD_ROOT}"
 
 %post
 /sbin/chkconfig --add sams2
 
 %post web
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
 %{_initrddir}/httpd reload
+%endif
+
+%post doc
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
+%{_initrddir}/httpd reload
+%endif
 
 %preun
 if [ $1 = 0 ] ; then
-    /sbin/service sams2 stop >/dev/null 2>&1
-    /sbin/chkconfig --del sams2
+/sbin/service sams2 stop >/dev/null 2>&1
+/sbin/chkconfig --del sams2
 fi
 
 #######################################################################
@@ -108,17 +211,20 @@ fi
 %{_prefix}/bin/samsredir
 %{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2
-%attr(640,apache,apache) %config(noreplace) %{_sysconfdir}/sams2.conf
+%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
 %{_libdir}/sams2/*
 
 ##########
 %files doc
 %defattr(-,root,root)
+%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}%{apacheconf}/doc4sams2.conf
 %doc %{_docdir}/%{name}-%{version}
 
 ##########
 %files web
-%defattr(-,apache,apache)
-%attr(640,apache,apache) %config(noreplace) %{_sysconfdir}/sams2.conf
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/sams2.conf
+%defattr(-,%{webuser},%{webgroup})
+%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
+%config(noreplace) %{_sysconfdir}%{apacheconf}/sams2.conf
 %{_datadir}/%{name}-%{version}
+
+%changelog
