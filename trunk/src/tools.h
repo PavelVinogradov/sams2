@@ -173,6 +173,13 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
  */
 bool fileDelete (const string & path, const string & filemask);
 
+/**
+ * @brief Копирует файл с именем @a name в новый файл с именем @a newname
+ *
+ * @param name Имя исходного файла
+ * @param newname Имя результирующего файла
+ * @return true при успешном копировании и false при неудаче.
+ */
 bool fileCopy (const string & name, const string & newname);
 
 /**
@@ -196,8 +203,17 @@ bool fileDelete (const string & path);
  */
 bool fileExist (const string & path);
 
+/**
+ * @brief Возвращает список файлов по маске @a filemask в директории @a path
+ *
+ * @param path Полный или относительный путь к директории
+ * @param filemask Маска файла
+ */
 vector<string> fileList (const string & path, const string & filemask);
 
+/**
+ * @brief Отнимает @a days дней от даты @a stime
+ */
 void timeSubstractDays (struct tm & stime, int days);
 
 /*

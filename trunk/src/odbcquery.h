@@ -68,12 +68,7 @@ public:
 
   bool fetch ();
 
-  /**
-   * @brief Возвращает количество строк, на которые воздействует инструкция UPDATE, INSERT или DELETE
-   *
-   * @return Количество измененных строк
-   */
-  int affectedRows ();
+  long affectedRows ();
 
   bool bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen);
 

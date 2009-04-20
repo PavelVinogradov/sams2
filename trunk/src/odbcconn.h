@@ -80,8 +80,8 @@ public:
 protected:
 
 private:
-  SQLHDBC _hdbc;               ///< Handle for a connection
-  string _source;             ///< Источник данных ODBC
+  SQLHDBC _hdbc;                ///< Handle for a connection
+  string _source;               ///< Источник данных ODBC
   string _user;                 ///< Логин
   string _pass;                 ///< Пароль
   SQLHENV _env;                 ///< Handle for environment

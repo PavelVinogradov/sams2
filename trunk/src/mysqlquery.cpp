@@ -52,6 +52,9 @@ MYSQLQuery::~MYSQLQuery()
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 
   destroy ();
+
+  if (_conn)
+    _conn->unregisterQuery (this);
 }
 
 bool MYSQLQuery::sendQueryDirect (const string & query)
@@ -445,6 +448,23 @@ bool MYSQLQuery::fetch ()
   return ok;
 }
 
+long MYSQLQuery::affectedRows ()
+{
+  if (!_statement)
+  {
+    ERROR("[" << this << "->" << __FUNCTION__ << "] " << "NULL statement.");
+    return 0;
+  }
+
+  long res = (long) mysql_stmt_affected_rows (_statement);
+  if (res < 0)
+    {
+      WARNING("Unable to get affected rows.");
+      res = 0;
+    }
+  return res;
+}
+
 bool MYSQLQuery::createStatement ()
 {
   if (!_conn)
@@ -498,9 +518,6 @@ void MYSQLQuery::destroy ()
   _param_real_len = NULL;
   _bind_column = NULL;
   _columns_real_len = NULL;
-
-  if (_conn)
-    _conn->unregisterQuery (this);
 }
 
 #endif // #ifdef USE_MYSQL

@@ -22,14 +22,33 @@ using namespace std;
 
 #include <string>
 #include <vector>
+#include <map>
 
 class DNS
 {
 public:
+  /**
+   * @brief Получает по IP адресу список имен из DNS
+   *
+   * @param address IP адрес хоста в форме nnn.nnn.nnn.nnn
+   * @param names Список имен, зарегистрированных в DNS
+   * @retval true Если найдена запись в DNS
+   * @retval false Если не найдена запись в DNS или не распознан IP адрес
+   */
   static bool getNamesByAddr(const string &address, vector<string> &names);
+
+  /**
+   * @brief Получает по доменному имени список IP адресов из DNS
+   *
+   * @param name Доменное имя хоста
+   * @param addrs Список IP адресов, зарегистрированных в DNS
+   * @retval true Если найдена запись в DNS
+   * @retval false Если не найдена запись в DNS
+   */
   static bool getAddrsByName(const string &name, vector<string> &addrs);
 
 protected:
+  static map<string, vector<string> > entries; ///< Кеш предыдущих запросов
 };
 
 #endif /*#ifndef DNS_H*/

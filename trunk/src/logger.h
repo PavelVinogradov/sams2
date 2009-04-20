@@ -81,6 +81,13 @@ public:
    */
   static void sendError (const string & mess);
 
+  /**
+   * @brief Устанавливает имя отправителя сообщений
+   *
+   * Как правило, это имя процесса, но ничто не мешает использовать любое другое.
+   *
+   * @param sender Имя отправителя
+   */
   static void setSender(const string & sender);
 
   /**
@@ -119,10 +126,30 @@ public:
    */
   static void setVerbose (bool verbose);
 
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова addLog. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection(DBConn *conn);
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy();
 
+  /**
+   * @brief Добавляет сообщение в БД
+   *
+   * @param code Код события
+   * @param mess Текст сообщения
+   */
   static void addLog(LogKind code, const string &mess);
 
 protected:
@@ -144,11 +171,11 @@ protected:
   static bool _started;                ///< true, Если поток вывода сообщений успешно открыт
   static bool _verbose;                ///< Текущий уровень многословности
   static uint _dbgLevel;               ///< Текущий уровень отладочных сообщений
-  static string _sender;
+  static string _sender;               ///< Имя отправителя сообщений
   static LoggerEngine _engine;         ///< Используемый способ вывода сообщений
   static ofstream _fout;               ///< Поток вывода в файл
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
+  static DBConn *_conn;                ///< Используемое подключение к БД
+  static bool _connection_owner;       ///< true если владельцем подключения является экземпляр класса
   static pid_t _pid;                   ///< Идентификатор текущего процесса
 };
 

@@ -25,19 +25,54 @@ using namespace std;
 class GroupList
 {
 public:
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection (DBConn * conn);
+
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload();
+
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy();
 
+  /**
+   * @brief Возвращает идентификатор группы
+   *
+   * @param name Имя группы
+   * @return Идентификатор группы или -1 если группа с таким именем не найдена
+   */
   static int getGroupId(const string & name);
 
 private:
+  /**
+   * @brief Загружает список групп из БД
+   *
+   * Если список был загружен ранее, то ничего не происходит.
+   *
+   * @return true если ошибок нет и false в противном случае
+   * @sa reload
+   */
   static bool load();
 
-  static bool _loaded;
-  static DBConn * _conn;                     ///< Используемое соединение с БД
-  static bool _connection_owner;
-  static map<string, int> _list;
+  static bool _loaded;              ///< Был ли загружен список из БД
+  static DBConn * _conn;            ///< Используемое подключение к БД
+  static bool _connection_owner;    ///< true если владельцем подключения является экземпляр класса
+  static map<string, int> _list;    ///< Список идентификаторов групп пользователей
 };
 
 #endif

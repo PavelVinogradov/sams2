@@ -29,22 +29,60 @@ class TimeRange;
 class TimeRangeList
 {
 public:
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload ();
 
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection (DBConn *conn);
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy ();
 
+  /**
+   * @brief Возвращает список идентификаторов временных интервалов
+   *
+   * @return Список идентификаторов временных интервалов
+   */
   static vector<long> getIds ();
 
+  /**
+   * @brief Возвращает временной интервал по его идентификатору
+   *
+   * @param id Идентификатор временного интервала
+   * @return Временной интервал или NULL если такой не найден.
+   */
   static TimeRange * getTimeRange (long id);
+
 private:
+  /**
+   * @brief Загружает список временных интервалов из БД
+   *
+   * Если список уже был загружен, то ничего не делает.
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool load();
 
-  static bool _loaded;
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
-  static map<string, TimeRange*> _list;
+  static bool _loaded;                  ///< Был ли загружен список из БД
+  static DBConn *_conn;                 ///< Используемое подключение к БД
+  static bool _connection_owner;        ///< true если владельцем подключения является экземпляр класса
+  static map<string, TimeRange*> _list; ///< Список временных интервалов
 };
 
 #endif

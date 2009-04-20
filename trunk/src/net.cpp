@@ -235,7 +235,7 @@ bool Net::isDomain (const string & host)
         }
     }
 
-  DEBUG (DEBUG9, host << " is " << ((res) ? "IP address" : " domain name"));
+  DEBUG (DEBUG9, host << " is " << ((res) ? "IP address" : "domain name"));
   return !res;
 }
 

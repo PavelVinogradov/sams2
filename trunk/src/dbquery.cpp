@@ -99,6 +99,12 @@ bool DBQuery::fetch ()
   return false;
 }
 
+long DBQuery::affectedRows ()
+{
+  WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");
+  return 0;
+}
+
 void DBQuery::destroy ()
 {
   WARNING ("[DBQuery::" << __FUNCTION__ << "] " << " must be overriden.");

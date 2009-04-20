@@ -116,7 +116,7 @@ uint dbglevel_cmd = 0;
 
 void reload (int signal_number)
 {
-  DEBUG (DEBUG2, "Reloading");
+  DEBUG (DEBUG2, "Reload...");
 
   SamsConfig::reload ();
   TimeRangeList::reload ();
@@ -157,6 +157,8 @@ void reconfigureSQUID ()
 {
   int err;
   basic_stringstream < char >msg;
+
+  DEBUG (DEBUG2, "Reconfigure Squid...");
 
   // Если получили запрос на реконфигурирование, то скорей всего в БД что-то изменилось
   // значит нужно получить эти изменения
@@ -559,6 +561,8 @@ int main (int argc, char *argv[])
                   need_reconfig = true;
                 }
             }
+
+          TemplateList::saveClearDates ();
 
           if (need_reconfig)
             reconfigureSQUID ();

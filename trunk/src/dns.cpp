@@ -21,8 +21,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <strings.h>
 #include <netdb.h>
 //extern int h_errno;
+
+map<string, vector<string> > DNS::entries;
 
 bool DNS::getNamesByAddr(const string &address, vector<string> &names)
 {
@@ -31,7 +34,17 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
   struct hostent *h;
   struct in_addr addr;
 
-  DEBUG (DEBUG5, "[" << __FUNCTION__ << "(" << address << ")]");
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << address << ")]");
+
+  map<string, vector<string> >::const_iterator it;
+  it = entries.find (address);
+  if (it != entries.end ())
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << address << ")] Found in the cache");
+      names = it->second;
+      return true;
+    }
+
   ok = inet_aton(address.c_str (), &addr);
   if (!ok)
     {
@@ -54,16 +67,27 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
       j++;
     }
 
+  entries[address] = names;
+
   return true;
 }
 
 bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
 {
-  int i;
   struct hostent *h = NULL;
+  struct in_addr a;
   char *str = NULL;
 
-  DEBUG (DEBUG5, "[" << __FUNCTION__ << "(" << name << ")]");
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << name << ")]");
+
+  map<string, vector<string> >::const_iterator it;
+  it = entries.find (name);
+  if (it != entries.end ())
+    {
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << name << ")] Found in the cache");
+      addrs = it->second;
+      return true;
+    }
 
   h = gethostbyname(name.c_str ());
   if (!h)
@@ -71,12 +95,16 @@ bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
       return false;
     }
 
-  for (i=0; i<h->h_length; i++)
+  while (*h->h_addr_list)
     {
-      str = inet_ntoa ( (in_addr &) h->h_addr_list[i]);
+      bcopy(*h->h_addr_list++, (char *) &a, sizeof(a));
+
+      str = inet_ntoa (a);
       DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << str);
       addrs.push_back (str);
     }
+
+  entries[name] = addrs;
 
   return true;
 }

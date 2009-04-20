@@ -300,7 +300,7 @@ vector<long> TemplateList::getIds ()
   return lst;
 }
 
-bool TemplateList::save ()
+bool TemplateList::saveClearDates ()
 {
   DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
 
@@ -326,7 +326,6 @@ bool TemplateList::save ()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
-/*
   DBQuery *query = NULL;
   _conn->newQuery (query);
   if (!query)
@@ -334,6 +333,39 @@ bool TemplateList::save ()
       ERROR("Unable to create query.");
       return false;
     }
-*/
+
+  char s_clrdate[15];
+  long s_shablon_id;
+
+  basic_stringstream < char > tpl_update_cmd;
+  tpl_update_cmd << "update shablon set s_clrdate=? where s_shablon_id=?";
+  if (!query->prepareQuery (tpl_update_cmd.str ()))
+    {
+      return false;
+    }
+  if (!query->bindParam (1, DBQuery::T_CHAR, s_clrdate, sizeof (s_clrdate)))
+    {
+      return false;
+    }
+  if (!query->bindParam (2, DBQuery::T_LONG, &s_shablon_id, 0))
+    {
+      return false;
+    }
+
+  memset (s_clrdate, 0, sizeof (s_clrdate));
+  string new_date_str;
+  map < long, Template* >::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      if ( (*it).second->getClearDateStr (new_date_str) )
+        {
+          strcpy (s_clrdate, new_date_str.c_str ());
+          s_shablon_id = (*it).second->getId ();
+          query->sendQuery ();
+        }
+    }
+
+  delete query;
+
   return true;
 }

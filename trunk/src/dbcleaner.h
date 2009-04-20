@@ -117,7 +117,7 @@ protected:
   DateFilter *_date_filter;       ///< Текущий фильтр по датам
   bool        _date_filter_owner; ///< Флаг, указывающий нужно ли удалять фильтр в деструкторе
   UserFilter *_user_filter;       ///< Текущий фильтр по пользователям
-  long        _tpl_id;
+  long        _tpl_id;            ///< Текущий фильтр по шаблону
 };
 
 #endif

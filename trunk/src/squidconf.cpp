@@ -32,9 +32,6 @@
 #include "timerange.h"
 #include "tools.h"
 
-//string SquidConf::sams_marker = " # sams marker";
-
-
 SquidConf::SquidConf()
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");

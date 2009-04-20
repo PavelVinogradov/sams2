@@ -31,10 +31,29 @@ class Net;
 class LocalNetworks
 {
 public:
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection (DBConn * conn);
 
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload();
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy();
 
   /**
@@ -59,15 +78,17 @@ protected:
   /**
    * @brief Загружает список локальных сетей из БД
    *
-   * @param conn Соединение с БД
+   * Если список был загружен ранее, то ничего не происходит.
+   *
    * @return true если ошибок нет и false в противном случае
+   * @sa reload
    */
   static bool load ();
 
-  static bool _loaded;
-  static vector < Net * >_nets;      ///< Список локальных сетей
-  static DBConn *_conn;
-  static bool _connection_owner;
+  static bool _loaded;              ///< Был ли загружен список из БД
+  static vector < Net * >_nets;     ///< Список локальных сетей
+  static DBConn *_conn;             ///< Используемое подключение к БД
+  static bool _connection_owner;    ///< true если владельцем подключения является экземпляр класса
 };
 
 #endif

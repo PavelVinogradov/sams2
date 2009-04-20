@@ -33,9 +33,9 @@ class DBQuery
 
 public:
 
-  /*
+  /**
    * @brief Тип переменной
-   */ 
+   */
   enum VarType
   {
     T_LONG,        ///< long (tinyint, smallint, integer)
@@ -43,14 +43,14 @@ public:
     T_CHAR,        ///< char (char, varchar)
   };
 
-  /*
+  /**
    * @brief Преобразование типа переменной в строку
    * @param t Тип переменной
    * @return Тип переменной в виде строке
    */
   static string toString (VarType t);
 
-  /*
+  /**
    * @brief Деструктор
    */
   virtual ~ DBQuery ();
@@ -151,6 +151,15 @@ public:
    */
   virtual bool fetch ();
 
+  /**
+   * @brief Возвращает количество строк, на которые воздействует инструкция UPDATE, INSERT или DELETE
+   *
+   * Эта функция может быть использована только после выполнения
+   * запросов типа INSERT, UPDATE, DELETE.
+   *
+   * @return Количество измененных строк.
+   */
+  virtual long affectedRows ();
 protected:
   /**
    * @brief Конструктор

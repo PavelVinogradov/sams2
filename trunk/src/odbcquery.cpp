@@ -286,7 +286,7 @@ bool ODBCQuery::fetch ()
   return ok;
 }
 
-int ODBCQuery::affectedRows ()
+long ODBCQuery::affectedRows ()
 {
   long err;
   SQLINTEGER count;

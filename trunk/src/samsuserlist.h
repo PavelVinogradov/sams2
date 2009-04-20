@@ -33,10 +33,29 @@ class SAMSUserList
 {
   friend class Proxy;
 public:
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection (DBConn * conn);
 
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload();
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy();
 
   /**
@@ -58,6 +77,12 @@ public:
    */
   static SAMSUser *findUserByIP (const IP & ip);
 
+  /**
+   * @brief Возвращает список пользователей, входящих в шаблон с идентификатором @a id
+   *
+   * @param id Идентификатор шаблона
+   * @param lst Список пользователей
+   */
   static void getUsersByTemplate (long id, vector<SAMSUser *> &lst);
 
   /**
@@ -68,20 +93,30 @@ public:
    */
   static bool addNewUser(SAMSUser *user);
 
+  /**
+   * @brief Возвращает количество активных пользователей в шаблоне с идентификатором @a template_id
+   *
+   * @param template_id Идентификатор шаблона
+   * @return lst Количество активных пользователей
+   */
   static long activeUsersInTemplate (long template_id);
 private:
   /**
    * @brief Загружает пользователей из БД
    *
+   * Если список уже был загружен ранне, то ничего не происходит.
+   *
    * @param conn Соединение с БД
    * @return true при успешном завершении и false при любой ошибке
+   *
+   * @sa reload
    */
   static bool load ();
 
-  static bool _loaded;
-  static vector < SAMSUser * >_users;        ///< список пользователей
-  static DBConn * _conn;                     ///< Используемое соединение с БД
-  static bool _connection_owner;
+  static bool _loaded;                  ///< Был ли загружен список из БД
+  static vector < SAMSUser * >_users;   ///< Список пользователей
+  static DBConn * _conn;                ///< Используемое подключение к БД
+  static bool _connection_owner;        ///< true если владельцем подключения является экземпляр класса
 };
 
 #endif

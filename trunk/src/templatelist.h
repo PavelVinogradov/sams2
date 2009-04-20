@@ -29,10 +29,29 @@ class DBConn;
 class TemplateList
 {
 public:
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload();
 
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection(DBConn *conn);
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy();
 
   static Template * getTemplate(const string & name);
@@ -41,14 +60,14 @@ public:
 
   static vector<long> getIds();
 
-  static bool save ();
+  static bool saveClearDates ();
 private:
   static bool load();
 
-  static bool _loaded;
-  static map<long, Template*> _list;
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
+  static bool _loaded;                  ///< Был ли загружен список из БД
+  static map<long, Template*> _list;    ///< Cписок шаблонов
+  static DBConn *_conn;                 ///< Используемое подключение к БД
+  static bool _connection_owner;        ///< true если владельцем подключения является экземпляр класса
 };
 
 #endif

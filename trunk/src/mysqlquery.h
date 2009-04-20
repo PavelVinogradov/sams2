@@ -51,6 +51,8 @@ public:
 
   bool fetch ();
 
+  long affectedRows ();
+
 private:
   struct Column
   {

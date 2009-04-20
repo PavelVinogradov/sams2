@@ -60,8 +60,21 @@ public:
      */
   static void useFile (const string &fname);
 
+  /**
+   * @brief Перезагружает настройки
+   *
+   * Сначала считываются настройки из конфигурационного файла, затем из БД.
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload ();
 
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy ();
 
     /**
@@ -140,11 +153,30 @@ public:
      */
   static void setBool (const string attrname, const bool value);
 
+  /**
+   * @brief Возвращает новое подключение к БД
+   *
+   * @return Экземпляр класса подключения к БД или NULL если такой создать невозможно
+   */
   static DBConn * newConnection ();
 
+  /**
+   * @brief Возвращает движок, используемый для подключения к БД
+   *
+   * @return Движок, используемый для подключения к БД
+   */
   static DBConn::DBEngine getEngine();
 
 private:
+  /**
+   * @brief Чтение настроек
+   *
+   * Если настройки были считаны ранее, то ничего не происходит.
+   * Сначала считываются настройки из конфигурационного файла, затем из БД.
+   *
+   * @return true если ошибок не произошло и false в противном случае
+   * @sa reload
+   */
   static bool load();
 
     /**
@@ -166,11 +198,11 @@ private:
      */
   static bool readDB ();
 
-  static string _config_file;
-  static bool _file_loaded;
-  static bool _db_loaded;
-  static bool _internal;
-  static DBConn::DBEngine _engine;
+  static string _config_file;                 ///< Путь к конфигурационному файлу
+  static bool _file_loaded;                   ///< Загружены ли параметры из файла
+  static bool _db_loaded;                     ///< Загружены ли параметры из БД
+  static bool _internal;                      ///< Используется для предотвращения повторных загрузок из файла
+  static DBConn::DBEngine _engine;            ///< Используемый движок для подключения к БД
   static map < string, string > _attributes;  ///< Список параметров и их значений
 };
 

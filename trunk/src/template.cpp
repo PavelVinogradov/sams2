@@ -135,14 +135,43 @@ bool Template::getClearDate (struct tm & clear_date) const
   return true;
 }
 
+bool Template::getClearDateStr (string & date_str) const
+{
+  // Если период очистки счетчиков стандартный, то нужно проверять по смене периода
+  // например, начало новой недели или начало нового месяца
+  if (_period_type != Template::PERIOD_CUSTOM)
+    return false;
+  if (_clear_date.empty ())
+    return false;
+
+
+  struct tm clear_date;
+  char *rest;
+  rest = strptime (_clear_date.c_str (), "%Y-%m-%d %H:%M:%S", &clear_date);
+  if (rest == NULL)
+    {
+      ERROR ("Invalid date specification: " << _clear_date);
+      return false;
+    }
+
+  date_str = _clear_date.substr (0, 10);
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << date_str);
+
+  return true;
+}
+
 void Template::adjustClearDate()
 {
   // Если период очистки счетчиков стандартный, то дата обнуления счетчиков не важна.
   if (_period_type != Template::PERIOD_CUSTOM)
     return;
 
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "]");
+
   struct tm clear_date;
   time_t new_date;
+  time_t now;
   char str_new_date[15];
   char *rest;
   rest = strptime (_clear_date.c_str (), "%Y-%m-%d %H:%M:%S", &clear_date);
@@ -152,10 +181,19 @@ void Template::adjustClearDate()
       return;
     }
   new_date = mktime(&clear_date);
-  new_date += _period_days * 86400;
+  // Если с последнего обновления прошло несколько периодов, то учтем это,
+  // чтобы следующая дата очистки не оказалась в прошлом.
+  now = time (NULL);
+  while (difftime (new_date, now) < 86399)
+    {
+      new_date += _period_days * 86400;
+    }
+
   strftime (str_new_date, sizeof (str_new_date), "%Y-%m-%d", localtime (&new_date));
   _clear_date = str_new_date;
   _clear_date += " 00:00:00";
+
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] new date: " << _clear_date);
 }
 
 void Template::setAllDeny (bool alldeny)

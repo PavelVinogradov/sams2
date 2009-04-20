@@ -27,18 +27,42 @@ using namespace std;
 class SquidConf
 {
 public:
+  /**
+   * @brief Конструктор
+   */
   SquidConf ();
 
+  /**
+   * @brief Деструктор
+   */
   ~SquidConf ();
 
+  /**
+   * @brief Изменяет конфигурационный файл squid
+   *
+   * @return true если ошибок не возникло и false в противном случае
+   */
   static bool defineAccessRules();
 
 private:
+  /**
+   * @brief Изменяет конфигурационный файл squid
+   *
+   * @return true если ошибок не возникло и false в противном случае
+   */
   static bool defineACL ();
+
+  /**
+   * @brief Пропускает комментарии из потока @a in
+   *
+   * Все комментарии копируются в поток @a out без изменений.
+   * Строки, добавленные SAMS'ом ранее, пропускаются и не копируются в поток @a out
+   *
+   * @param in Входящий поток
+   * @param out Исходящий поток
+   * @return Следующую строку, не содержащую комментария
+   */
   static string skipComments (ifstream & in, ofstream & out);
-
-  static string sams_marker;
-
 };
 
 #endif

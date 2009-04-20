@@ -46,6 +46,8 @@ public:
   bool sendQuery ();
 
   bool fetch ();
+
+  long affectedRows ();
 private:
   string convert (const string & cmd);
 

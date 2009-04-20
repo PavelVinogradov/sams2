@@ -24,13 +24,16 @@ using namespace std;
 
 class DBConn;
 
+/**
+ * @brief Информация о плагине
+ */
 struct Plugin
 {
-  void *handle;
-  string (*getInfo)();
-  string (*getName)();
-  string (*getVersion)();
-  string (*getAuthor)();
+  void *handle;           ///< Обработчик плагина
+  string (*getInfo)();    ///< Функция, возвращающая информацию, предоставляемую плагином
+  string (*getName)();    ///< Функция, возвращающая название плагина
+  string (*getVersion)(); ///< Функция, возвращающая версию плагина
+  string (*getAuthor)();  ///< Функция, возвращающая автора плагина
 };
 
 /**
@@ -39,24 +42,62 @@ struct Plugin
 class PluginList
 {
 public:
+  /**
+   * @brief Перезагружает список из БД
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool reload ();
+
+  /**
+   * @brief Устанавливает использование существующего подключения к БД
+   *
+   * Метод должен быть использован до вызова reload и load. Иначе будет создано
+   * новое подключение к БД.
+   *
+   * @param conn Существующее подключение к БД
+   */
   static void useConnection (DBConn *conn);
+
+  /**
+   * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
+   *
+   * Используется для сброса всех переменных в начальное значение
+   * без уничтожения экземпляра класса
+   */
   static void destroy ();
+
+  /**
+   * @brief Обновляет в БД информацию, предоставляемую плагинами
+   *
+   * Информация обновляется только для активных плагинов.
+   *
+   * @return true если ошибок нет и false в противном случае
+   */
   static bool updateInfo ();
 protected:
   /**
    * @brief Загружает и инициализирует плагины
    *
+   * Если список был загружен ранее, то ничего не происходит.
+   *
    * @return true если ошибок нет и false в противном случае
+   * @sa reload
    */
   static bool load ();
 
+  /**
+   * @brief Загружает плагин
+   *
+   * @param path Полный путь к библиотеке плагина
+   * @return true если плагин загружен без ошибок и false в противном случае
+   */
   static bool loadPlugin (const string &path);
 
-  static bool _loaded;
-  static DBConn *_conn;                ///< Соединение с БД
-  static bool _connection_owner;
-  static vector < Plugin * >_plugins;      ///< Список плагинов
+  static bool _loaded;                    ///< Был ли загружен список из БД
+  static DBConn *_conn;                   ///< Используемое подключение к БД
+  static bool _connection_owner;          ///< true если владельцем подключения является экземпляр класса
+  static vector < Plugin * >_plugins;     ///< Список плагинов
 };
 
 #endif
