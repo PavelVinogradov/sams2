@@ -41,8 +41,18 @@ public:
     PERIOD_CUSTOM   ///< Указанное количество дней
   };
 
+  /**
+   * @brief Конструктор
+   *
+   * @param id Идентификатор шаблона
+   * @param id2 Идентификатор вторичного шаблона
+   */
   Template (long id, long id2);
 
+  /**
+   * @brief Деструктор
+   *
+   */
   ~Template ();
 
   /**
@@ -59,8 +69,20 @@ public:
    */
   long getLimitedId () const;
 
+  /**
+   * @brief Устанавливает тип авторизации
+   *
+   * Тип авторизации может быть: ip, ncsa, ntlm, adld, ldap
+   *
+   * @param auth Тип авторизации в виде строки
+   */
   void setAuth (const string & auth);
 
+  /**
+   * @brief Устанавливает тип авторизации
+   *
+   * @param auth Тип авторизации
+   */
   void setAuth (Proxy::usrAuthType auth);
 
   /**
@@ -70,6 +92,11 @@ public:
    */
   Proxy::usrAuthType getAuth () const;
 
+  /**
+   * @brief Устанавливает ограничение трафика для каждого пользователя шаблона
+   *
+   * @param quote Ограничение трафика
+   */
   void setQuote (long quote);
 
   /**
@@ -85,7 +112,7 @@ public:
    * Если тип периода стандартный (месяц, неделя, день), то количество дней игнорируется.
    * При нестандартном периоде необходимо установить день очистки счетчиков.
    *
-   * @sa setClearDay
+   * @sa setClearDate
    * @param ptype Тип периода
    * @param days Количество дней
    */
@@ -119,22 +146,41 @@ public:
   bool getClearDate (struct tm & clear_date) const;
 
   /**
+   * @brief Возвращает дату очистки счетчиков в виде строки
+   *
+   * Если функция возвращает false, значит установлен стандартный период ограничения трафика
+   * или дата не была установлена или установлена неверная дата.
+   *
+   * @return false при ошибке и true при успешном выполнении
+   */
+  bool getClearDateStr (string & date_str) const;
+
+  /**
    * @brief Изменяет дату очистки счетчиков
    *
    * Добавляет к текущему значению даты очистки счетчиков количество дней периода.
    * Эта функция должна использоваться только при нестандартном периоде ограничения трафика.
-   * В противном случае она будет проигнорирована.
+   * В противном случае она будет проигнорирована. Новая дата очистки счетчиков не может быть
+   * в прошлом, поэтому количество дней периода добавляются до тех пор, пока новая дата не
+   * станет в будущем.
    * Дата меняется только в экземпляре класса, в БД изменения не вносятся.
+   *
+   * @sa TemplateList::saveClearDates
    */
   void adjustClearDate ();
 
   /**
-   * @brief Устанавливает флаг запрета ко всем ресурсам, кроме разрешенных
+   * @brief Устанавливает флаг запрета ко всем ресурсам, кроме явно разрешенных
    *
    * @param alldeny Если true, то запрещать ресурс, если он не разрешен
    */
   void setAllDeny(bool alldeny);
 
+  /**
+   * @brief Возвращает флаг запрета ко всем ресурсам, кроме явно разрешенных
+   *
+   * @return true если доступ ко всем ресурсам запрещен
+   */
   bool getAllDeny () const;
 
   /**
@@ -199,20 +245,28 @@ public:
    */
   bool isUrlMatchRegex (const string & url) const;
 
+  /**
+   * @brief Изменяет url адрес в зависимости от подключенных к шаблону групп адресов
+   *
+   * @param url url адрес ресурса
+   * @return Измененный адрес или пустую строку если адрес не должен быть изменен.
+   *
+   * @sa UrlGroup::modifyUrl
+   */
   string modifyUrl (const string & url) const;
 
 private:
-  long _id; ///< Идентификатор шаблона
-  long _id2; ///< Идентификатор вторичного шаблона
-  Proxy::usrAuthType _auth;
-  long _quote;
-  Template::PeriodType _period_type;
-  long _period_days;
-  string _clear_date;
-  bool _alldeny;
-  vector <long> _times;
+  long _id;                           ///< Идентификатор шаблона
+  long _id2;                          ///< Идентификатор вторичного шаблона
+  Proxy::usrAuthType _auth;           ///< Тип авторизации
+  long _quote;                        ///< Лимит трафика
+  Template::PeriodType _period_type;  ///< Тип периода
+  long _period_days;                  ///< Количество дней у нестандартного периода
+  string _clear_date;                 ///< День следующей очистки счетчиков у нестандартного периода
+  bool _alldeny;                      ///< Флаг для отказа в доступе ко всем адресам, кроме явно разрешенных
+  vector <long> _times;               ///< Список идентификаторов временных границ
   //vector <long> _urlgroups;
-  vector <UrlGroup *> _urlgroups;
+  vector <UrlGroup *> _urlgroups;     ///< Список групп адресов
 };
 
 #endif

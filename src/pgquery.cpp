@@ -39,6 +39,11 @@ PgQuery::PgQuery (PgConn *conn):DBQuery ()
   basic_stringstream < char >s;
   s << this;
   _query_name = s.str ();
+
+  if (_conn)
+    {
+      _conn->registerQuery (this);
+    }
 }
 
 
@@ -47,6 +52,9 @@ PgQuery::~PgQuery ()
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 
   destroy ();
+
+  if (_conn)
+    _conn->unregisterQuery (this);
 }
 
 bool PgQuery::sendQueryDirect (const string & query)
@@ -144,18 +152,24 @@ bool PgQuery::sendQuery ()
 {
   int status;
   uint i;
-  PGresult *res = NULL;
+
+  if (_res)
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << _res << ")");
+      PQclear (_res);
+      _res = NULL;
+    }
 
   if (!_prepeared && (_params.size () > 0))
     {
-      res = PQprepare(_conn->_pgconn, _query_name.c_str (), _prepeared_query.c_str (), _params.size (), NULL);
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQprepare(" << _conn->_pgconn << ", " << _query_name << ", " << _prepeared_query << ", " << _params.size () << ") = " << res);
+      _res = PQprepare(_conn->_pgconn, _query_name.c_str (), _prepeared_query.c_str (), _params.size (), NULL);
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQprepare(" << _conn->_pgconn << ", " << _query_name << ", " << _prepeared_query << ", " << _params.size () << ") = " << _res);
 
-      status = PQresultStatus (res);
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQresultStatus(" << res << ") = " << PQresStatus((ExecStatusType)status));
-      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << res << ")");
-      PQclear (res);
-      res = NULL;
+      status = PQresultStatus (_res);
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQresultStatus(" << _res << ") = " << PQresStatus((ExecStatusType)status));
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << _res << ")");
+      PQclear (_res);
+      _res = NULL;
 
       if ((status != PGRES_COMMAND_OK) && (status != PGRES_TUPLES_OK))
         {
@@ -206,15 +220,17 @@ bool PgQuery::sendQuery ()
         }
     }
 
-  res = PQexecPrepared(_conn->_pgconn, _query_name.c_str (), _params.size (), _param_values, _param_real_len, _param_formats, 0);
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQexecPrepared(" << _conn->_pgconn << ", " << _query_name << ", " << _params.size () << ") = " << res);
+  _res = PQexecPrepared(_conn->_pgconn, _query_name.c_str (), _params.size (), _param_values, _param_real_len, _param_formats, 0);
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQexecPrepared(" << _conn->_pgconn << ", " << _query_name << ", " << _params.size () << ") = " << _res);
 
-  status = PQresultStatus (res);
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQresultStatus(" << res << ") = " << PQresStatus((ExecStatusType)status));
+  status = PQresultStatus (_res);
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQresultStatus(" << _res << ") = " << PQresStatus((ExecStatusType)status));
 
-  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << res << ")");
-  PQclear (res);
-  res = NULL;
+/*
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << _res << ")");
+  PQclear (_res);
+  _res = NULL;
+*/
 
   if ((status != PGRES_COMMAND_OK) && (status != PGRES_TUPLES_OK))
     {
@@ -287,6 +303,17 @@ bool PgQuery::fetch ()
   return ok;
 }
 
+long PgQuery::affectedRows ()
+{
+  long res = 0;
+  char *str_rows = PQcmdTuples (_res);
+  if (!str_rows || !*str_rows)
+    return res;
+  if (sscanf (str_rows, "%ld", &res) != 1)
+    return 0;
+  return res;
+}
+
 string PgQuery::convert (const string & cmd)
 {
   basic_stringstream < char >s;
@@ -306,7 +333,7 @@ void PgQuery::destroy ()
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
   if (_res)
-      PQclear (_res);
+    PQclear (_res);
 
   if (_param_values)
     {

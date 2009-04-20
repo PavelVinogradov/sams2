@@ -26,34 +26,91 @@ using namespace std;
 class TimeRange
 {
 public:
+  /**
+   * @brief Конструктор
+   *
+   * @param id Идентификатор временного интервала
+   * @param name Имя временного интервала
+   */
   TimeRange(long id, const string &name);
 
+  /**
+   * @brief Деструктор
+   *
+   */
   ~TimeRange();
 
+  /**
+   * @brief Возвращает идентификатор временного интервала
+   *
+   * @return Идентификатор временного интервала
+   */
   long getId () const;
 
+  /**
+   * @brief Устанавливает параметры временного интервала
+   *
+   * @param days Дни недели
+   * @param tstart Начало интервала в формате HH:MM:SS
+   * @param tend Конец интервала в формате HH:MM:SS
+   */
   void setTimeRange(const string &days, const string &tstart, const string &tend);
 
+  /**
+   * @brief Определяет попадает ли текущее время в заданный интервал
+   *
+   * @retval true Текущее время попадает в заданный интервал
+   * @retval false Текущее время не попадает в заданный интервал
+   */
   bool hasNow () const;
 
+  /**
+   * @brief Определяет попадает ли полночь в заданный интервал
+   *
+   * @retval true Полночь попадает в заданный интервал
+   * @retval false Полночь не попадает в заданный интервал
+   */
   bool hasMidnight () const;
 
+  /**
+   * @brief Определяет задан ли интервал полностью на сутки
+   *
+   * @retval true Интервал задан полностью на сутки
+   * @retval false Интервал задан на часть суток
+   */
   bool isFullDay () const;
 
+  /**
+   * @brief Возвращает дни недели, для которых действует интервал времени
+   *
+   * Каждый день недели кодируется одним из символов SMTWHFA (с воскресенья по субботу соответственно)
+   *
+   * @return Дни недели
+   */
   string getDays () const;
 
+  /**
+   * @brief Возвращает начало временного интервала в виде строки
+   *
+   * @return Начало временного интервала в формате HH:MM:SS
+   */
   string getStartTimeStr () const;
 
+  /**
+   * @brief Возвращает конец временного интервала в виде строки
+   *
+   * @return Конец временного интервала в формате HH:MM:SS
+   */
   string getEndTimeStr () const;
 
 private:
-  long  _id;
-  string _days;
-  string _tstart;
-  string _tend;
+  long  _id;                    ///< Идентификатор временного интервала
+  string _days;                 ///< Дни недели
+  string _tstart;               ///< Начало интервала в формате HH:MM:SS
+  string _tend;                 ///< Конец интервала в формате HH:MM:SS
   time_t _time_start;           ///< Начало интервала
-  time_t _time_end;             ///< Окончание интервала
-  bool _hasMidnight;
+  time_t _time_end;             ///< Конец интервала
+  bool _hasMidnight;            ///< Флаг, определяющий есть ли полночь во временном интервале
 };
 
 #endif

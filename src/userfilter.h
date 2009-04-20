@@ -68,7 +68,13 @@ public:
    */
   bool setUsersList (const string & usersList);
 
+  /**
+   * @brief Устанавливает список пользователей
+   *
+   * @param usersList Список пользователей
+   */
   bool setUsersList (const vector<SAMSUser *> & usersList);
+
   /**
    * @brief Проверяет, подпадает ли под фильтр пользователь @a user
    *
@@ -77,6 +83,11 @@ public:
    */
   bool match (SAMSUser * user);
 
+  /**
+   * @brief Возвращает список пользователей
+   *
+   * @return Список пользователей
+   */
   vector <string> getUsersList ();
 protected:
     vector < string > _tblUsers;        ///< Список пользователей
