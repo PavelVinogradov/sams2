@@ -9,6 +9,7 @@ function DeleteUser()
 {
 
   global $SAMSConf;
+  global $USERConf;
   $DB=new SAMSDB(&$SAMSConf);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -17,6 +18,7 @@ function DeleteUser()
 	exit(0);
   
   if(isset($_GET["id"])) $userid=$_GET["id"];
+
   $query="DELETE FROM squiduser WHERE s_user_id='$userid'";
   $num_rows=$DB->samsdb_query_value($query);
   print("<SCRIPT>\n");
