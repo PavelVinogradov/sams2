@@ -80,7 +80,7 @@ void UrlGroup::addUrl (const string & url)
       else
         {
           _patterns.push_back (re);
-          /// @TODO Убрать использование переменной _list если _type=ACC_REGEXP, но для этого подправить asString()
+          /// TODO Убрать использование переменной _list если _type=ACC_REGEXP, но для этого подправить asString()
           _list.push_back (url);
         }
 #endif

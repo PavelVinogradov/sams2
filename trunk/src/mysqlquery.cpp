@@ -88,6 +88,8 @@ bool MYSQLQuery::sendQueryDirect (const string & query)
 
 bool MYSQLQuery::bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen)
 {
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
+
   enum_field_types dType;
   switch (dstType)
     {
@@ -104,13 +106,6 @@ bool MYSQLQuery::bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int 
         return false;
         break;
     }
-
-  return bindCol (colNum, dType, buf, bufLen);
-}
-
-bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen)
-{
-  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << colNum << ", type:" << dstType << ", len:" << bufLen );
 
   if (colNum == 1 && _columns.size()>0)
     {
@@ -131,7 +126,7 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
     }
 
   struct Column col;
-  col.t = dstType;
+  col.t = dType;
   col.dst = buf;
   col.len = bufLen-1;
   _columns.push_back(col);
@@ -141,6 +136,8 @@ bool MYSQLQuery::bindCol (uint colNum, enum_field_types dstType, void *buf, int 
 
 bool MYSQLQuery::bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen)
 {
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
+
   enum_field_types dType;
   switch (dstType)
     {
@@ -157,13 +154,6 @@ bool MYSQLQuery::bindParam (uint num, DBQuery::VarType dstType, void *buf, int b
         return false;
         break;
     }
-
-  return bindParam (num, dType, buf, bufLen);
-}
-
-bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int bufLen)
-{
-  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "num:" << num << ", type:" << dstType << ", len:" << bufLen );
 
   if (num == 1 && _params.size()>0)
     {
@@ -184,7 +174,7 @@ bool MYSQLQuery::bindParam (uint num, enum_field_types dstType, void *buf, int b
     }
 
   struct Param par;
-  par.t = dstType;
+  par.t = dType;
   par.dst = buf;
   par.len = bufLen;
   _params.push_back(par);

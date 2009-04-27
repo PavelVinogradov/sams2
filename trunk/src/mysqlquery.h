@@ -32,21 +32,29 @@ using namespace std;
 
 class MYSQLConn;
 
+/**
+ * @brief Выполненяет запросы к базе данных через MySQL API
+ */
 class MYSQLQuery : public DBQuery
 {
 public:
+  /**
+   * @brief Конструктор
+   *
+   * @param conn Используемое подключение к БД
+   */
   MYSQLQuery(MYSQLConn *conn);
 
+  /**
+   * @brief Деструктор
+   */
   ~MYSQLQuery();
 
   bool sendQueryDirect (const string & query);
   bool bindCol (uint colNum, DBQuery::VarType dstType, void *buf, int bufLen);
-  bool bindCol (uint colNum, enum_field_types dstType, void *buf, int bufLen);
 
   bool prepareQuery (const string & query);
-//  bool bindResult (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
   bool bindParam (uint num, DBQuery::VarType dstType, void *buf, int bufLen);
-  bool bindParam (uint num, enum_field_types dstType, void *buf, int bufLen);
   bool sendQuery ();
 
   bool fetch ();
@@ -54,40 +62,51 @@ public:
   long affectedRows ();
 
 private:
+  /**
+   * @brief Структура для привязки к столбцам в наборе результатов
+   */
   struct Column
   {
-    enum_field_types t;
-    void *dst;
-    int len;
+    enum_field_types t;   ///< Тип данных для C параметра
+    void *dst;            ///< Указатель на буфер для данных столбца
+    int len;              ///< Длина буфера в байтах
   };
+
+  /**
+   * @brief Структура для привязки к маркерам для выполнения предварительно подготовленных запросов
+   */
   struct Param
   {
-    enum_field_types t;
-    void *dst;
-    //void *use_dst;
-    int len;
+    enum_field_types t;   ///< Тип данных для C параметра
+    void *dst;            ///< Указатель на буфер для данных маркера
+    int len;              ///< Длина буфера в байтах
   };
-  bool _prepeared_statement;
-  MYSQL_STMT *_statement;
-  vector<struct Column> _columns;
-  vector<struct Param> _params;
-  MYSQL_BIND *_bind_param;
-  MYSQL_BIND *_bind_column;
-  unsigned long *_param_real_len;
-  unsigned long *_columns_real_len;
-  bool _param_binded;
-  bool _col_binded;
-  MYSQL_RES *_res;
-  MYSQLConn *_conn;
+  bool                  _prepeared_statement;   ///< Флаг, указывающий тип запроса (прямой или предварительно подготовленный)
+  MYSQL_STMT            *_statement;            ///< Дескриптор запроса
+  vector<struct Column> _columns;               ///< Список столбцов
+  vector<struct Param>  _params;                ///< Список маркеров
+  MYSQL_BIND            *_bind_param;           ///< Список маркеров для привязки
+  MYSQL_BIND            *_bind_column;          ///< Список столбцов для привязки
+  unsigned long         *_param_real_len;       ///< Список реальных размеров текущего значения маркеров
+  unsigned long         *_columns_real_len;     ///< Список реальных размеров текущего значения столбцов
+  bool                  _param_binded;          ///< Флаг, указывающий были ли привязаны маркеры
+  bool                  _col_binded;            ///< Флаг, указывающий были ли привязаны столбцы
+  MYSQL_RES             *_res;                  ///< Дескриптор результата
+  MYSQLConn             *_conn;                 ///< Используемое подключение к БД
 
   /**
    * @brief Выделяет память для запроса
+   *
+   * Если ранее память была выделена, то предварительно освобождает ее.
    *
    * @return true если память выделена успешно и false в противном случае
    */
   bool createStatement ();
 
 protected:
+  /**
+   * @brief Освобождает все ресурсы и переводит экземпляр класса в исходное состояние
+   */
   void destroy ();
 
 };

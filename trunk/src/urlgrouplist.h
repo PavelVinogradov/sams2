@@ -56,10 +56,26 @@ public:
    */
   static void destroy();
 
+  /**
+   * @brief Возвращает список идентификаторов групп url с разрешенными адресами
+   *
+   * @return Список идентификаторов групп url
+   */
   static vector<long> getAllowGroupIds ();
 
+  /**
+   * @brief Возвращает список идентификаторов групп url с запрещенными адресами
+   *
+   * @return Список идентификаторов групп url
+   */
   static vector<long> getDenyGroupIds ();
 
+  /**
+   * @brief Возвращает группу url по заданному идентификатору
+   *
+   * @param id Идентификатор группы
+   * @return Указатель на экземпляр класса или NULL если группа с таким идентификатором не найдена
+   */
   static UrlGroup* getUrlGroup (long id);
 
   //static string modifyUrl (const string &url);

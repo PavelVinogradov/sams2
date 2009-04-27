@@ -62,7 +62,7 @@ public:
    *
    * Метод должен быть переопределен у наследника.
    *
-   * @return Экземпляр объекта DBQuery или NULL при какой либо ошибке
+   * @param query Указатель на экземпляр класса объекта DBQuery или NULL при какой либо ошибке
    */
   virtual void newQuery (DBQuery *& query);
 
@@ -81,7 +81,7 @@ public:
   DBEngine getEngine();
 
   /**
-   * @brief Закрывает соединение
+   * @brief Закрывает подключение
    *
    * Метод должен быть переопределен у наследника.
    */
@@ -90,15 +90,24 @@ public:
   /**
    * @brief Регистрирует запрос
    *
+   * Добавляет запрос к списку, если указатель не NULL
+   *
+   * @param query Указатель на экземпляр класса
    */
   virtual void registerQuery(DBQuery * query);
 
   /**
    * @brief Разрегистрирует запрос
    *
+   * Удаляет запрос из списка, если указатель не NULL
+   *
+   * @param query Указатель на экземпляр класса
    */
   virtual void unregisterQuery(DBQuery * query);
 
+  /**
+   * @brief Разрегистрирует и уничтожает все зарегистрированные запросы
+   */
   virtual void unregisterAllQueries ();
 
 private:

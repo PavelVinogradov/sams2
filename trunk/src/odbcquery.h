@@ -124,10 +124,10 @@ private:
    */
   void destroy ();
 
-  SQLHSTMT statement;           ///< Handle for a statement
+  SQLHSTMT statement;           ///< Дескриптор запроса
 
 protected:
-  ODBCConn * _conn;
+  ODBCConn * _conn;             ///< Используемое подключение к БД
 };
 
 #endif // #ifdef USE_UNIXODBC

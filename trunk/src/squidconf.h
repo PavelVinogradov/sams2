@@ -24,6 +24,9 @@ using namespace std;
 #include <fstream>
 #include <string>
 
+/**
+ * @brief Внесение изменений в конфигурационный файл squid
+ */
 class SquidConf
 {
 public:

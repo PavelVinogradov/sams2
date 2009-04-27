@@ -37,21 +37,44 @@ class MYSQLConn : public DBConn
 friend class MYSQLQuery;
 
 public:
+  /**
+   * @brief Конструктор
+   */
   MYSQLConn ();
 
+  /**
+   * @brief Деструктор
+   *
+   * Самостоятельно закрывает соединение, если оно было установлено,
+   * и освобождает все используемые ресурсы, включая запросы, использующие это соединение.
+   */
   ~MYSQLConn ();
 
+  /**
+   * @brief Подключение к БД
+   *
+   * Параметры подключения берутся из SamsConfig
+   *
+   * @return true если соединение установлено и false при какой либо ошибке
+   */
   bool connect ();
 
+  /**
+   * @brief Создание нового запроса
+   *
+   * @param query Указатель на экземпляр класса объекта DBQuery или NULL при какой либо ошибке
+   */
   void newQuery (DBQuery *& query);
 
+  /**
+   * @brief Закрывает подключение
+   */
   void disconnect ();
-
-  MYSQL *_mysql;
 
 private:
 
 protected:
+  MYSQL *_mysql;                ///< Дескриптор подключения к БД
   string _dbname;               ///< Имя базы данных
   string _user;                 ///< Логин
   string _pass;                 ///< Пароль

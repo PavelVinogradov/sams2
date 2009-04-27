@@ -26,6 +26,9 @@ using namespace std;
 class Template;
 class DBConn;
 
+/**
+ * @brief Список шаблонов
+ */
 class TemplateList
 {
 public:
@@ -54,14 +57,44 @@ public:
    */
   static void destroy();
 
+  /**
+   * @brief Возвращает шаблон по заданному имени
+   *
+   * @param name Имя шаблона
+   * @return Указатель на экземпляр класса или NULL если шаблон с таким именем не найден
+   */
   static Template * getTemplate(const string & name);
 
+  /**
+   * @brief Возвращает шаблон по заданному идентификатору
+   *
+   * @param id Идентификатор шаблона
+   * @return Указатель на экземпляр класса или NULL если шаблон с таким идентификатором не найден
+   */
   static Template * getTemplate(long id);
 
+  /**
+   * @brief Возвращает список идентификаторов всех шаблонов
+   *
+   * @return Список идентификаторов шаблонов
+   */
   static vector<long> getIds();
 
+  /**
+   * @brief Сохраняет в БД дату следующей очистки счетчиков у шаблонов с нестандартным периодом
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool saveClearDates ();
+
 private:
+  /**
+   * @brief Загружает список шаблонов из БД
+   *
+   * Если список уже был загружен, то ничего не делает.
+   *
+   * @return true при успешном завершении и false в противном случае
+   */
   static bool load();
 
   static bool _loaded;                  ///< Был ли загружен список из БД

@@ -25,7 +25,7 @@ using namespace std;
 class DBConn;
 
 /**
- * @brief Базовый класс для различных способов запросов к БД
+ * @brief Базовый класс для запросов к БД
  */
 class DBQuery
 {
@@ -86,8 +86,7 @@ public:
    *   printf("id=%ld, name=%s\n", num, desc);
    * @endcode
    *
-   * @param colNum Номер столбца, упорядоченный последовательно
-   *        в увеличивающемся порядке, начинающемся с 1.
+   * @param colNum Порядковый номер столбца,начиная с 1.
    * @param dstType Тип данных для C параметра.
    * @param buf Указатель на буфер для данных столбца.
    * @param bufLen Длина буфера @a buf в байтах.
@@ -100,6 +99,28 @@ public:
   /**
    * @brief Привязывает буферы данных прикладных программ к маркерам в SQL запросе
    *
+   * Например, следующий код используется для обновления значений в БД
+   * @code
+   * char name[15];
+   * long id=0;
+   *
+   * query->prepareQuery ("update mytest set name=? where id=?");
+   * query->bindParam (1, DBQuery::T_CHAR, name, sizeof (name));
+   * query->bindParam (2, DBQuery::T_LONG, &id, 0);
+   *
+   * while (id < 5)
+   *   {
+   *     sprintf (name, "id is %d", id);
+   *     id++;
+   *     query->sendQuery ();
+   *   }
+   * @endcode
+   *
+   * @param num Порядковый номер маркера, начиная с 1
+   * @param dstType Тип данных для C параметра
+   * @param buf Указатель на буфер для данных маркера
+   * @param bufLen Длина буфера @a buf в байтах
+   * @sa prepareQuery(), sendQuery()
    */
   virtual bool bindParam (uint num, VarType dstType, void *buf, int bufLen);
 
