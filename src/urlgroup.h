@@ -33,7 +33,7 @@ using namespace std;
 #endif
 
 /**
- * @brief UrlGroup Группа доступных или запрещенных ресурсов
+ * @brief Группа доступных или запрещенных ресурсов
  */
 
 class UrlGroup

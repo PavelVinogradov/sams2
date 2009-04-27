@@ -21,6 +21,9 @@ using namespace std;
 
 #include <string>
 
+/**
+ * @brief Управление процессами
+ */
 class ProcessManager
 {
 public:

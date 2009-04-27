@@ -55,14 +55,24 @@ public:
    ~ODBCConn ();
 
   /**
-   * @brief Подключается к БД
+   * @brief Подключение к БД
    *
-   * @return true если подключение прошло успешно и false в противном случае
+   * Параметры подключения берутся из SamsConfig
+   *
+   * @return true если соединение установлено и false при какой либо ошибке
    */
   bool connect ();
 
+  /**
+   * @brief Создание нового запроса
+   *
+   * @param query Указатель на экземпляр класса объекта DBQuery или NULL при какой либо ошибке
+   */
   void newQuery (DBQuery *& query);
 
+  /**
+   * @brief Закрывает подключение
+   */
   void disconnect ();
 
   bool isConnected ();

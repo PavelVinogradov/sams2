@@ -24,6 +24,9 @@ using namespace std;
 #include <vector>
 #include <map>
 
+/**
+ * @brief Выполненяет преобразование адресов в имена и обратно
+ */
 class DNS
 {
 public:

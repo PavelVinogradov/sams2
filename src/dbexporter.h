@@ -25,11 +25,20 @@ class SamsConfig;
 class UserFilter;
 class DateFilter;
 
+/**
+ * @brief Выгружает данные во внешний файл
+ */
 class DBExporter
 {
 public:
+  /**
+   * @brief Конструктор
+   */
   DBExporter ();
 
+  /**
+   * @brief Деструктор
+   */
   ~DBExporter ();
 
   /**
@@ -46,8 +55,22 @@ public:
    */
   void setDateFilter (DateFilter * filt);
 
+  /**
+   * @brief Устанавливает фильтр по датам
+   *
+   * @param dateSpec Фильтр по датам
+   * @sa DateFilter::setDateInterval
+   */
   void setDateFilter (const string & dateSpec);
 
+  /**
+   * @brief Записывает в файл кеш из БД, учитывая установленные фильтры
+   *
+   * При экспорте учитываются фильтр по датам и пользователям.
+   *
+   * @param fname Имя файла
+   * @return true если экспорт завершен успешно и false в противном случае
+   */
   bool exportToFile (const string &fname);
 
 protected:

@@ -26,6 +26,9 @@ using namespace std;
 
 class UrlGroup;
 
+/**
+ * @brief Шаблон пользователей
+ */
 class Template
 {
 public:
@@ -141,6 +144,7 @@ public:
    * Если функция возвращает false, значит установлен стандартный период ограничения трафика
    * или дата не была установлена или установлена неверная дата.
    *
+   * @param clear_date Структура для сохранения даты
    * @return false при ошибке и true при успешном выполнении
    */
   bool getClearDate (struct tm & clear_date) const;
@@ -151,6 +155,7 @@ public:
    * Если функция возвращает false, значит установлен стандартный период ограничения трафика
    * или дата не была установлена или установлена неверная дата.
    *
+   * @param date_str Строка для сохранения даты
    * @return false при ошибке и true при успешном выполнении
    */
   bool getClearDateStr (string & date_str) const;

@@ -32,11 +32,22 @@ using namespace std;
 
 class PgConn;
 
+/**
+ * @brief Выполненяет запросы к базе данных через PosgreSQL API
+ */
 class PgQuery : public DBQuery
 {
 public:
+  /**
+   * @brief Конструктор
+   *
+   * @param conn Используемое подключение к БД
+   */
   PgQuery(PgConn *conn);
 
+  /**
+   * @brief Деструктор
+   */
   ~PgQuery();
 
   bool sendQueryDirect (const string & query);
@@ -49,31 +60,45 @@ public:
 
   long affectedRows ();
 private:
-  string convert (const string & cmd);
 
-  PgConn  *_conn;
-  PGresult *_res;
+  /**
+   * @brief Структура для привязки к столбцам в наборе результатов
+   */
   struct Column
   {
-    VarType t;
-    void *dst;
-    int len;
+    VarType t;    ///< Тип данных для C параметра
+    void *dst;    ///< Указатель на буфер для данных столбца
+    int len;      ///< Длина буфера в байтах
   };
+
+  /**
+   * @brief Структура для привязки к маркерам для выполнения предварительно подготовленных запросов
+   */
   struct Param
   {
-    VarType t;
-    void *dst;
-    int len;
+    VarType t;    ///< Тип данных для C параметра
+    void *dst;    ///< Указатель на буфер для данных маркера
+    int len;      ///< Длина буфера в байтах
   };
-  vector<struct Column> _columns;
-  vector<struct Param> _params;
-  bool _prepeared;
-  int _current_row;
-  string _prepeared_query;
-  string _query_name;
-  char **_param_values;
-  int *_param_real_len;
-  int *_param_formats;
+
+  /**
+   * @brief Преобразовывает метки маркера в необходимый формат для libpq API
+   *
+   * @param cmd Строка подготовленного SQL запроса
+   */
+  string convert (const string & cmd);
+
+  PgConn                  *_conn;             ///< Используемое подключение к БД
+  PGresult                *_res;              ///< Дескриптор результата запроса
+  vector<struct Column>   _columns;           ///< Список столбцов
+  vector<struct Param>    _params;            ///< Список маркеров
+  bool                    _prepeared;         ///< Флаг, указывающий была ли выполнена подготовка SQL запроса
+  int                     _current_row;       ///< Текущий номер строки в выборке
+  string                  _prepeared_query;   ///< Строка подготовленного SQL запроса, преобразованная для libpq API
+  string                  _query_name;        ///< Имя запроса (любая уникальная строка)
+  char                    **_param_values;    ///< Значения маркеров
+  int                     *_param_real_len;   ///< Список реальных размеров текущего значения маркеров
+  int                     *_param_formats;    ///< Формат маркеров (заглушка)
 
 protected:
   void destroy ();

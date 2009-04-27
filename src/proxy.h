@@ -26,7 +26,9 @@ using namespace std;
 class DBConn;
 class SAMSUser;
 
-
+/**
+ * @brief Прокси сервер
+ */
 class Proxy
 {
 public:
@@ -150,11 +152,11 @@ public:
   static long getEndValue ();
 
   /**
-   * @brief Устанавливает смещение в файле, откуда нужно читать значения
+   * @brief Устанавливает смещение в log файле squid, откуда нужно читать значения
    *
    * Не записывает значение в БД!!! Нарушение уровней с функцией getEndValue()
    *
-   * @return Смещение в файле
+   * @param val Новое смещение в log файле squid
    */
   static void setEndValue (long val);
 
@@ -165,22 +167,70 @@ public:
    */
   static long getKbSize ();
 
+  /**
+   * @brief Возвращает способ обработки лог файла squid
+   *
+   * @param ptype Способ обработки лог файла squid
+   * @param ptime Интервал времени, через который обрабатывать лог файл squid
+   */
   static void getParserType (ParserType & ptype, long & ptime);
 
+  /**
+   * @brief Возвращает тип учитываемого трафика
+   *
+   * @return Тип учитываемого трафика
+   */
   static TrafficType getTrafficType ();
 
+  /**
+   * @brief Возвращает url адрес для подстановки вместо баннеров
+   *
+   * @return url адрес для подмены баннеров
+   */
   static string getRedirectAddr ();
 
+  /**
+   * @brief Возвращает url адрес, используемый при блокировке доступа в редиректоре
+   *
+   * @return url адрес, используемый при блокировке доступа
+   */
   static string getDenyAddr ();
 
+  /**
+   * @brief Возвращает электронный адрес администратора
+   *
+   * @return Электронный адрес администратора
+   */
   static string getAdminAddr ();
 
+  /**
+   * @brief Возвращает необходимость использования DNS
+   *
+   * @retval true При необходимости, отправлять запросы DNS серверу
+   * @retval false Не отправлять запросы DNS серверу
+   */
   static bool isUseDNS ();
 
+  /**
+   * @brief Возвращает необходимость использования имени домена
+   *
+   * @retval true Имя домена используется
+   * @retval false Имя домена игнорируется
+   */
   static bool useDomain ();
 
+  /**
+   * @brief Возвращает используемый регистр букв в имени домена
+   *
+   * @return Регистр букв
+   */
   static CharCase getDomainCase ();
 
+  /**
+   * @brief Возвращает используемый регистр букв в имени пользователя
+   *
+   * @return Регистр букв
+   */
   static CharCase getUsernameCase ();
 
   /**

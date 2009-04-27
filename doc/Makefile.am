@@ -15,7 +15,8 @@ static_docs = \
 	faq.html \
 	commands.html \
 	tables.html \
-	sams2_conf.html
+	sams2_conf.html \
+	news.html
 
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
@@ -25,7 +26,7 @@ else
 doc_list = $(static_docs)
 endif
 
-#doc_DATA = $(doc_list)
+doc_DATA = $(doc_list)
 
 EXTRA_DIST = $(doc_list)
 

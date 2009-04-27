@@ -23,6 +23,9 @@ using namespace std;
 
 #include <time.h>
 
+/**
+ * @brief Временной интервал
+ */
 class TimeRange
 {
 public:

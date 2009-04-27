@@ -26,6 +26,9 @@ using namespace std;
 class DBConn;
 class TimeRange;
 
+/**
+ * @brief Список временных интервалов
+ */
 class TimeRangeList
 {
 public:

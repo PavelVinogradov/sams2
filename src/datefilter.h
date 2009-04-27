@@ -40,6 +40,7 @@ public:
    * @brief Конструктор с определением интервала дат
    *
    * @param dateSpec Интервал дат
+   * @sa setDateInterval
    */
   DateFilter (const string & dateSpec);
 

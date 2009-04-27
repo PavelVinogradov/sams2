@@ -38,14 +38,38 @@ class PgConn : public DBConn
 friend class PgQuery;
 
 public:
+  /**
+   * @brief Конструктор
+   */
   PgConn();
 
+  /**
+   * @brief Деструктор
+   *
+   * Самостоятельно закрывает соединение, если оно было установлено,
+   * и освобождает все используемые ресурсы, включая запросы, использующие это соединение.
+   */
   ~PgConn();
 
+  /**
+   * @brief Подключение к БД
+   *
+   * Параметры подключения берутся из SamsConfig
+   *
+   * @return true если соединение установлено и false при какой либо ошибке
+   */
   bool connect ();
 
+  /**
+   * @brief Создание нового запроса
+   *
+   * @param query Указатель на экземпляр класса объекта DBQuery или NULL при какой либо ошибке
+   */
   void newQuery (DBQuery *& query);
 
+  /**
+   * @brief Закрывает подключение
+   */
   void disconnect ();
 
 private:
@@ -53,8 +77,7 @@ private:
   string _user;                 ///< Логин
   string _pass;                 ///< Пароль
   string _host;                 ///< Имя сервера
-
-  PGconn * _pgconn;
+  PGconn * _pgconn;             ///< Дескриптор подключения к БД
 };
 
 #endif // #ifdef USE_PQ

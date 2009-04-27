@@ -22,6 +22,9 @@ using namespace std;
 #include <map>
 #include <string>
 
+/**
+ * @brief Список групп пользователей
+ */
 class GroupList
 {
 public:
