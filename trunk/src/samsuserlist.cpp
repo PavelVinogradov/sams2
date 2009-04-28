@@ -28,7 +28,8 @@
 #include "debug.h"
 
 bool SAMSUserList::_loaded = false;
-vector < SAMSUser * > SAMSUserList::_users;
+//vector < SAMSUser * > SAMSUserList::_users;
+map < string, SAMSUser * > SAMSUserList::_users;
 DBConn * SAMSUserList::_conn;
 bool SAMSUserList::_connection_owner = false;
 
@@ -63,6 +64,7 @@ bool SAMSUserList::reload()
   long s_enabled;
   char s_ip[20];
   char s_passwd[25];
+  char s_auth[10];
   DBQuery *query = NULL;
 
   if (!_conn)
@@ -155,9 +157,14 @@ bool SAMSUserList::reload()
       delete query;
       return false;
     }
+  if (!query->bindCol (13, DBQuery::T_CHAR, s_auth, sizeof(s_auth)))
+    {
+      delete query;
+      return false;
+    }
 
   //string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
-  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2 \
+  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
                    from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
@@ -167,35 +174,45 @@ bool SAMSUserList::reload()
   _users.clear();
 
   // Используется только для предотвращения утечки памяти
-  string s_tmp;
+  string s_tmp_ip;
+  string s_tmp_domain;
+  string s_tmp_nick;
+  string s_tmp_auth;
+  string s_tmp_passwd;
   bool usedomain = Proxy::useDomain ();
   while (query->fetch ())
     {
       usr = new SAMSUser ();
+
+      if (usedomain)
+        {
+          s_tmp_domain = s_domain;
+          usr->setDomain (s_tmp_domain);
+        }
+      s_tmp_nick = s_nick;
+      usr->setNick (s_tmp_nick);
+      s_tmp_ip = s_ip;
+      usr->setIP (s_tmp_ip);
+      s_tmp_auth = s_auth;
+
+      string hash = Proxy::createUserHash (s_tmp_auth, s_tmp_ip, s_tmp_domain, s_tmp_nick);
+
+      usr->setActiveTemplateId (s_shablon_id);
       usr->setId (s_user_id);
       usr->setGroupId (s_group_id);
-      usr->setActiveTemplateId (s_shablon_id);
       if (s_shablon_id2 == LONG_MAX)
         usr->setLimitedTemplateId (-1);
       else
         usr->setLimitedTemplateId (s_shablon_id2);
-      s_tmp = s_nick;
-      usr->setNick (s_tmp);
-      if (usedomain)
-        {
-          s_tmp = s_domain;
-          usr->setDomain (s_tmp);
-        }
       usr->setQuote (s_quote);
       usr->setSize (s_size);
       usr->setHit (s_hit);
       usr->setEnabled (s_enabled);
-      s_tmp = s_ip;
-      usr->setIP (s_tmp);
-      s_tmp = s_passwd;
-      usr->setPassword (s_tmp);
+      s_tmp_passwd = s_passwd;
+      usr->setPassword (s_tmp_passwd);
 
-      _users.push_back (usr);
+//      _users.push_back (usr);
+      _users[hash] = usr;
     }
 
   delete query;
@@ -222,10 +239,10 @@ void SAMSUserList::destroy()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
 
-  vector < SAMSUser * >::iterator it;
+  map < string, SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      delete *it;
+      delete (*it).second;
     }
   _users.clear();
 }
@@ -238,65 +255,28 @@ bool SAMSUserList::load ()
   return reload();
 }
 
-
-SAMSUser *SAMSUserList::findUserByNick (const string & domain, const string & nick)
-{
-  if (nick == "-")
-    return NULL;
-
-  if (!load())
-    return NULL;
-
-  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")]");
-
-  bool usedomain = Proxy::useDomain ();
-  SAMSUser *usr = NULL;
-  vector < SAMSUser * >::iterator it;
-  for (it = _users.begin (); it != _users.end (); it++)
-    {
-      if ((*it)->getNick () == nick)
-        {
-          if (usedomain && ((*it)->getDomain () != domain))
-            continue;
-          usr = (*it);
-          break;
-        }
-    }
-  if (usr)
-    {
-      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = " << *usr);
-    }
-  else
-    {
-      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << domain << ", " << nick << ")] = NULL");
-    }
-  return usr;
-}
-
-SAMSUser *SAMSUserList::findUserByIP (const IP & ip)
+SAMSUser *SAMSUserList::findUser (const string & auth, const string & ip, const string & domain, const string & nick)
 {
   if (!load ())
     return NULL;
 
-  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")]");
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")]");
 
   SAMSUser *usr = NULL;
-  vector < SAMSUser * >::iterator it;
-  for (it = _users.begin (); it != _users.end (); it++)
-    {
-      if ((*it)->getIP ().equal (ip))
-        {
-          usr = (*it);
-          break;
-        }
-    }
+
+  string hash = Proxy::createUserHash (auth, ip, domain, nick);
+  map < string, SAMSUser * >::iterator it;
+  it = _users.find (hash);
+  if (it != _users.end ())
+    usr = (*it).second;
+
   if (usr)
     {
-      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = " << *usr);
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")] = " << *usr);
     }
   else
     {
-      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << ip << ")] = NULL");
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")] = NULL");
     }
   return usr;
 }
@@ -308,20 +288,20 @@ void SAMSUserList::getUsersByTemplate (long id, vector<SAMSUser *> &lst)
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << id << ")]");
 
   lst.clear();
-  vector < SAMSUser * >::iterator it;
+  map < string, SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      if ((*it)->getCurrentTemplateId () == id)
+      if ((*it).second->getCurrentTemplateId () == id)
         {
-          DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << *(*it));
-          lst.push_back ( (*it) );
+          DEBUG (DEBUG9, "[" << __FUNCTION__ << "] " << *(*it).second);
+          lst.push_back ( (*it).second );
         }
     }
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << id << ")] Qty users in template: " << lst.size ());
 //  sort(lst.begin(), lst.end());
 }
 
-bool SAMSUserList::addNewUser(SAMSUser *user)
+bool SAMSUserList::addNewUser(const string & auth, SAMSUser *user)
 {
   if (!user)
     return false;
@@ -329,7 +309,7 @@ bool SAMSUserList::addNewUser(SAMSUser *user)
   if (!load())
     return false;
 
-  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << user << ")]");
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << user << ")]");
 
   if (user->getId() > 0)
     {
@@ -396,7 +376,8 @@ bool SAMSUserList::addNewUser(SAMSUser *user)
 
   user->setId (s_user_id);
 
-  _users.push_back (user);
+  string hash = Proxy::createUserHash (auth, user->getIP ().asString (), user->getDomain(), user->getNick());
+  _users[hash] = user;
 
   basic_stringstream < char >mess;
 
@@ -414,12 +395,12 @@ long SAMSUserList::activeUsersInTemplate (long template_id)
 {
   load ();
   long cnt = 0;
-  vector < SAMSUser * >::iterator it;
+  map < string, SAMSUser * >::iterator it;
   for (it = _users.begin (); it != _users.end (); it++)
     {
-      if ((*it)->getCurrentTemplateId () == template_id)
+      if ((*it).second->getCurrentTemplateId () == template_id)
         {
-          if ((*it)->getEnabled () == SAMSUser::STAT_ACTIVE || (*it)->getEnabled () == SAMSUser::STAT_LIMITED)
+          if ((*it).second->getEnabled () == SAMSUser::STAT_ACTIVE || (*it).second->getEnabled () == SAMSUser::STAT_LIMITED)
             cnt++;
         }
     }

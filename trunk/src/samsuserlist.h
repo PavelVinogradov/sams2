@@ -20,6 +20,7 @@
 using namespace std;
 
 #include <vector>
+#include <map>
 
 #include "ip.h"
 
@@ -59,23 +60,15 @@ public:
   static void destroy();
 
   /**
-   * @brief Поиск пользователя по нику и домену
+   * @brief Поиск пользователя
    *
-   * @a domain должен четко совпадать с искомым
-   *
+   * @param auth Тип авторизации
+   * @param ip IP адрес
    * @param domain Имя домена
    * @param nick Ник
    * @return Найденного пользователя или NULL при его отсутствии
    */
-  static SAMSUser *findUserByNick (const string & domain, const string & nick);
-
-  /**
-   * @brief Поиск пользователя по ip адресу
-   *
-   * @param ip ip адрес
-   * @return Найденного пользователя или NULL при его отсутствии
-   */
-  static SAMSUser *findUserByIP (const IP & ip);
+  static SAMSUser *findUser (const string & auth, const string & ip, const string & domain, const string & nick);
 
   /**
    * @brief Возвращает список пользователей, входящих в шаблон с идентификатором @a id
@@ -91,7 +84,7 @@ public:
    * @param user Пользователь
    * @return true если пользователь успешно добавлен и false в противном случае
    */
-  static bool addNewUser(SAMSUser *user);
+  static bool addNewUser(const string & auth, SAMSUser *user);
 
   /**
    * @brief Возвращает количество активных пользователей в шаблоне с идентификатором @a template_id
@@ -113,7 +106,8 @@ private:
   static bool load ();
 
   static bool _loaded;                  ///< Был ли загружен список из БД
-  static vector < SAMSUser * >_users;   ///< Список пользователей
+  static map < string, SAMSUser * >_users;   ///< Список пользователей
+//  static vector < SAMSUser * >_users;   ///< Список пользователей
   static DBConn * _conn;                ///< Используемое подключение к БД
   static bool _connection_owner;        ///< true если владельцем подключения является экземпляр класса
 };

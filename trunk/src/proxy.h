@@ -247,7 +247,7 @@ public:
    */
   static long getCacheAge ();
 
-  /**
+  /*
    * @brief Поиск пользователя SAMS
    *
    * Поиск происходит в зависимости от настроек прокси.
@@ -258,7 +258,7 @@ public:
    * @param ident Ник пользователя, включая домен
    * @return Указатель на найденного пользователя или NULL при его отсутствии
    */
-  static SAMSUser *findUser (const IP & ip, const string & ident);
+//  static SAMSUser *findUser (const IP & ip, const string & ident);
 
   /**
    * @brief Поиск пользователя SAMS
@@ -280,6 +280,7 @@ public:
    */
   static bool needClearCounters ();
 
+  static string createUserHash (const string &auth, const string &ip, const string &domain, const string &nick);
 protected:
   /**
    * @brief Загружает настройки

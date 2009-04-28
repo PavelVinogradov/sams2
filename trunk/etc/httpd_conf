@@ -5,7 +5,7 @@
 
 Alias /sams2 __WEBPREFIX
 
-<Location "sams2">
+<Location "/sams2">
     Options Indexes
     AllowOverride None
     Order allow,deny
