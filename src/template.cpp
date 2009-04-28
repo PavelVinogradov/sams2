@@ -80,7 +80,7 @@ void Template::setAuth (Proxy::usrAuthType auth)
 
 Proxy::usrAuthType Template::getAuth () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << Proxy::toString (_auth));
   return _auth;
 }
 

@@ -51,7 +51,7 @@ public:
   static bool getAddrsByName(const string &name, vector<string> &addrs);
 
 protected:
-  static map<string, vector<string> > entries; ///< Кеш предыдущих запросов
+  //static map<string, vector<string> > entries; ///< Кеш предыдущих запросов
 };
 
 #endif /*#ifndef DNS_H*/

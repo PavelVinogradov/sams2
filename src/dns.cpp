@@ -23,9 +23,8 @@
 
 #include <strings.h>
 #include <netdb.h>
-//extern int h_errno;
 
-map<string, vector<string> > DNS::entries;
+//map<string, vector<string> > DNS::entries;
 
 bool DNS::getNamesByAddr(const string &address, vector<string> &names)
 {
@@ -36,6 +35,7 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
 
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << address << ")]");
 
+/*
   map<string, vector<string> >::const_iterator it;
   it = entries.find (address);
   if (it != entries.end ())
@@ -44,6 +44,7 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
       names = it->second;
       return true;
     }
+*/
 
   ok = inet_aton(address.c_str (), &addr);
   if (!ok)
@@ -67,7 +68,7 @@ bool DNS::getNamesByAddr(const string &address, vector<string> &names)
       j++;
     }
 
-  entries[address] = names;
+  //entries[address] = names;
 
   return true;
 }
@@ -80,6 +81,7 @@ bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
 
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << name << ")]");
 
+/*
   map<string, vector<string> >::const_iterator it;
   it = entries.find (name);
   if (it != entries.end ())
@@ -88,6 +90,7 @@ bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
       addrs = it->second;
       return true;
     }
+*/
 
   h = gethostbyname(name.c_str ());
   if (!h)
@@ -104,7 +107,7 @@ bool DNS::getAddrsByName(const string &name, vector<string> &addrs)
       addrs.push_back (str);
     }
 
-  entries[name] = addrs;
+  //entries[name] = addrs;
 
   return true;
 }

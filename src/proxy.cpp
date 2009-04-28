@@ -225,7 +225,7 @@ long Proxy::getCacheAge ()
   return _squidbase;
 }
 
-SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
+SAMSUser *Proxy::findUser (const string & ip, const string & ident)
 {
   load();
 
@@ -250,42 +250,10 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
       usrNick = identTbl[0];
     }
 
-  switch (_domain_case)
-    {
-      case CASE_UPPER:
-        usrDomain = ToUpper (usrDomain);
-        break;
-      case CASE_LOWER:
-        usrDomain = ToLower (usrDomain);
-        break;
-      default:
-        break;
-    }
-
-  switch (_username_case)
-    {
-      case CASE_UPPER:
-        usrNick = ToUpper (usrNick);
-        break;
-      case CASE_LOWER:
-        usrNick = ToLower (usrNick);
-        break;
-      default:
-        break;
-    }
-
-  if (_auth == AUTH_IP || usrNick == "-")
-    usr = SAMSUserList::findUserByIP (ip);
+  if (usrNick == "-")
+    usr = SAMSUserList::findUser ("ip", ip, usrDomain, usrNick);
   else
-    usr = SAMSUserList::findUserByNick (usrDomain, usrNick);
-
-  if (usr == NULL && usrNick != "-")
-    {
-      if (_auth == AUTH_IP)
-        usr = SAMSUserList::findUserByNick (usrDomain, usrNick);
-      else
-        usr = SAMSUserList::findUserByIP (ip);
-    }
+    usr = SAMSUserList::findUser ("nonip", ip, usrDomain, usrNick);
 
   if (usr == NULL)
     {
@@ -305,8 +273,8 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr = new SAMSUser ();
           if (tpl->getAuth() == Proxy::AUTH_IP)
             {
-              usr->setNick (ip.asString());
-              usr->setIP (ip.asString());
+              usr->setNick (ip);
+              usr->setIP (ip);
             }
           else if (usrNick == "-")
             {
@@ -334,7 +302,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           usr->setGroupId (_defaultgrp);
           usr->setActiveTemplateId (_defaulttpl);
           usr->setLimitedTemplateId (tpl->getLimitedId ());
-          if (!SAMSUserList::addNewUser (usr))
+          if (!SAMSUserList::addNewUser (toString (tpl->getAuth ()), usr))
             {
               DEBUG (DEBUG_PROXY, "[" << __FUNCTION__ << "] Failed to create new user.");
               delete usr;
@@ -353,7 +321,7 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
           else
             {
               sqlcmd << "insert into reconfig (s_proxy_id, s_service, s_action)";
-              sqlcmd << " values (" << _id << ", squid, reconfig)";
+              sqlcmd << " values (" << _id << ", 'squid', 'reconfig')";
               query->sendQueryDirect (sqlcmd.str ());
               delete query;
             }
@@ -363,20 +331,61 @@ SAMSUser *Proxy::findUser (const IP & ip, const string & ident)
   return usr;
 }
 
-SAMSUser *Proxy::findUser (const string & ip, const string & ident)
-{
-  IP _ip;
-  if (!_ip.parseString (ip))
-    {
-      return NULL;
-    }
-
-  return findUser (_ip, ident);
-}
-
 bool Proxy::needClearCounters ()
 {
   return _auto_clean_counters;
+}
+
+string Proxy::createUserHash (const string &auth, const string &ip, const string &domain, const string &nick)
+{
+  string hash = "";
+
+  if (auth == "ip")
+    {
+      hash = ip;
+      DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")] = " << hash);
+      return hash;
+    }
+
+  string usrDomain="";
+  string usrNick=nick;
+  if (_usedomain)
+    {
+      if (domain.empty ())
+        usrDomain = _defaultdomain;
+      else
+        usrDomain = domain;
+
+      switch (_domain_case)
+        {
+          case CASE_UPPER:
+            usrDomain = ToUpper (usrDomain);
+            break;
+          case CASE_LOWER:
+            usrDomain = ToLower (usrDomain);
+            break;
+          default:
+            break;
+        }
+    }
+
+  switch (_username_case)
+    {
+      case CASE_UPPER:
+        usrNick = ToUpper (usrNick);
+        break;
+      case CASE_LOWER:
+        usrNick = ToLower (usrNick);
+        break;
+      default:
+        break;
+    }
+
+  hash = usrDomain + usrNick;
+
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")] = " << hash);
+
+  return hash;
 }
 
 bool Proxy::load ()

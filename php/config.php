@@ -1,1 +1,1 @@
-<?php $configfile="sams2.conf"; ?>
+<?php $configfile="/etc/sams2.conf"; ?>

@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = foreign 1.4
 
 DISTCLEANFILES = Makefile.in
-distdir = $(PACKAGE)-$(VERSION)
+distdir = $(PACKAGE)
 
 dist-hook:
 	find $(distdir) -type d -name .svn | xargs rm -rf
@@ -23,7 +23,7 @@ install-data-local:
 		fi \
 	done
 	sed -i -e 's,__VERSION,$(VERSION),g' $(DESTDIR)/$(datadir)/$(distdir)/dbclass.php
-	sed -i -e 's,sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php
+	sed -i -e 's,/etc/sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php
 
 uninstall-local:
 	rm -fr $(DESTDIR)/$(datadir)/$(distdir)
