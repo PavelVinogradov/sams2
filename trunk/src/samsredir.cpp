@@ -59,7 +59,6 @@ void usage ()
   cout << "                Produce more output." << endl;
   cout << "    -d, --debug=LEVEL" << endl;
   cout << "                Produce lots of debugging information depend on LEVEL." << endl;
-  cout << "                If LEVEL greater than zero, start in foreground mode (unless --fork specified)." << endl;
   cout << "                For more information about possible LEVEL values refer to a developer." << endl;
   cout << "    -l, --logger=LOGGER" << endl;
   cout << "                Set engine for messages output. Possible values for LOGGER are: console, syslog, file." << endl;
