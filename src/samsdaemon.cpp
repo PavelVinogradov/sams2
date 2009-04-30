@@ -339,7 +339,7 @@ int main (int argc, char *argv[])
   pid_t childpid=0;
 
   DEBUG (DEBUG_DAEMON, "dbglevel="<<dbglevel<<", use_must_fork="<<use_must_fork<<", must_fork="<<must_fork);
-  if ( (use_must_fork && must_fork) || ( (dbglevel == 0) && !use_must_fork) )
+  if ( (use_must_fork && must_fork) || ( (dbglevel_cmd == 0) && !use_must_fork) )
     {
       childpid = fork ();
     }
