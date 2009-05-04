@@ -2,7 +2,7 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS = src php doc plugins/loadavg
+SUBDIRS = src php doc plugins/loadavg plugins/fsusage
 bin_SCRIPTS = scripts/sams_send_email
 
 EXTRA_DIST = Makefile.cvs doc php etc spec debian redhat scripts

@@ -162,6 +162,7 @@
   $usertray_UserForm_10="Статус";
   $usertray_UserForm_11="Отключен";
   $usertray_UserForm_12="Шаблон";
+  $usertray_UserForm_13="Активен";
   $usertray_UserTray_1="Пользователь";
 
   $userstray_AddUser_1="Добавлен пользователь";
@@ -630,6 +631,12 @@
   $userstray_AllUsersForm_6="Имя пользователя";
   $userstray_AllUsersForm_7="Удалить пользователя";
   $userstray_AllUsersForm_8="Изменить";
+  $userstray_AllUsersForm_9="Период ограничения трафика";
+  $userstray_AllUsersForm_10="дней";
+  $userstray_AllUsersForm_11="Месяц";  
+  $userstray_AllUsersForm_12="Неделя";  
+  $userstray_AllUsersForm_13="Искать пользователей:";  
+  $userstray_AllUsersForm_14="День";  
 
   $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="Доступ разрешен";
   $allowlisttray_AddAllowListForm_1="Список содержит URL, доступ пользователей к которым разрешен."; 
@@ -682,7 +689,6 @@
   $adminbuttom_1_prop_SamsReConfigForm_21="Домен пользователя в squid.log записывается ПРОПИСНЫМИ буквами";
   $adminbuttom_1_prop_SamsReConfigForm_22="Имя пользователя в access.log записывать";
   $adminbuttom_1_prop_SamsReConfigForm_23="Имя пользователя в access.log записывается ПРОПИСНЫМИ буквами";
-    $usertray_UserForm_13="Да";
   
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Загрузить NCSA пользователей из файла";
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_2="Выберите файл";
@@ -703,6 +709,7 @@
 
   $lframe_0ident_lframe_0ident_1="Авторизация пользователя";
   $lframe_1webconf_lframe_1webconf_1="Настройки WEB интерфейса";
+  $lframe_2sysplug_lframe_1webconf_1="Настройки системных плагинов";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_2="Показывать пользователей как"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_3="Пользователь"; 
@@ -795,10 +802,6 @@
 
   $shablonnew_NewShablonForm_17="незабудьте выставить способ авторизации по-умолчанию внастройках SAMS";
 
-  $userstray_AllUsersForm_9="Период ограничения трафика";
-  $userstray_AllUsersForm_10="дней";
-  $userstray_AllUsersForm_11="Месяц";  
-  $userstray_AllUsersForm_12="Неделя";  
   $proxybuttom_1_down_proxybuttom_1_down_1="Выключить прокси сервер?";
   $shutdown_proxy_proxybuttom_1_down_1="Прокси сервер";
   $shutdown_proxy_proxybuttom_1_down_2="Выключить";
@@ -856,6 +859,8 @@
 
   $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
   $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
+  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
+  $shablonbuttom_1_prop_UpdateShablonForm_27="День";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Старый пароль";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="Новый пароль";
@@ -871,10 +876,8 @@
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Ввести название группы вручную";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Поле ручного ввода группы";
 
-  $userstray_AllUsersForm_13="Искать пользователей:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="Настройки SAMS";
 
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_18="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
   $redirlisttray_AddRedirListForm_5="Не задано имя списка";

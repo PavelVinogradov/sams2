@@ -206,10 +206,10 @@ function AllUsersForm()
   
   if($type=="search")
   {
-    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE squiduser.s_nick like '%$username%' ORDER BY squiduser.s_shablon_id,squiduser.s_nick");
+    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate, shablon.s_quote AS s_defquote FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE squiduser.s_nick like '%$username%' ORDER BY squiduser.s_shablon_id,squiduser.s_nick");
   }
   else
-    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_group_id,squiduser.s_nick");
+    $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,sgroup.s_name AS gnick, shablon.s_period, shablon.s_clrdate, shablon.s_quote AS s_defquote FROM squiduser LEFT JOIN sgroup ON sgroup.s_group_id=squiduser.s_group_id LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_group_id,squiduser.s_nick");
   
   print("<TBODY>\n");
   while($row=$DB->samsdb_fetch_array())
@@ -266,11 +266,15 @@ function AllUsersForm()
 
              
 	     if($row['s_quote']>0)
-	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[s_quote] Mb");
-	     else  
-	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
+	       print("<TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>$row[s_quote] Mb</font>");
+             else if ($row['s_quote'] == 0)
+	       print("<TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>unlimited</font>");
+             else if ($row[s_defquote] > 0)
+               print("<TD WIDTH=\"15%\" ALIGN=CENTER>$row[s_defquote] Mb");
+	     else
+	       print("<TD WIDTH=\"15%\" ALIGN=CENTER>unlimited");
 	   
-	      if($row['s_period']!="M"&&$row['s_period']!="W")
+	      if($row['s_period']!="M"&&$row['s_period']!="W"&&$row['s_period']!="D")
                 {
 		  $period="$row[period] $userstray_AllUsersForm_10";
 	        }
@@ -281,6 +285,10 @@ function AllUsersForm()
 	      if($row['s_period']=="W")
                 {
 		  $period="$userstray_AllUsersForm_12";
+	        }
+	      if($row['s_period']=="D")
+                {
+		  $period="$userstray_AllUsersForm_14";
 	        }
 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $period ");
 	   }

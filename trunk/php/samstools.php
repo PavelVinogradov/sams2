@@ -216,12 +216,12 @@ function PrintFormattedSize($size) {
 	if($ksize<100&&$msize>0)
 		$ksize="0$ksize";
    
-	$result .= "<TD ALIGN=RIGHT>&nbsp;";
+	$result .= "  <TD ALIGN=RIGHT>&nbsp;";
 	if($gsize>0)
 		$result .= "<B>". $gsize ."</B>&nbsp;Gb ";
 	if($gsize>0||$msize>0)
 		$result .= "<B>". $msize ."</B>&nbsp;Mb";
-	$result .= "<B>&nbsp;". $ksize ."</B>&nbsp;kb\n";
+	$result .= "<B>&nbsp;". $ksize ."</B>&nbsp;kb</TD>\n";
 	
 	return $result;
 }

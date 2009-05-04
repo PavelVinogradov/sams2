@@ -93,24 +93,24 @@ function UserGroupForm()
 
   if($USERConf->ToWebInterfaceAccess("CGS")==1)
     {
-      print("<TH  WIDTH=\"10%\">\n");
-      print(" <B>$grouptray_NewGroupForm_3 </B> \n");
+      print("<TH WIDTH=\"10%\">");
+      print("<B>$grouptray_NewGroupForm_3</B></TH>\n");
     }
-  print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$grouptray_NewGroupForm_4</B>\n");
+  print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$grouptray_NewGroupForm_4</B></TH>\n");
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-      print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$grouptray_NewGroupForm_5</B>\n");
+      print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$grouptray_NewGroupForm_5</B></TH>\n");
     }   
   if($USERConf->ToWebInterfaceAccess("C")==1||$ga==1)
     {
-      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B>\n");
-      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B>\n");
+      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B></TH>\n");
+      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B></TH>\n");
     }  
-  print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B>\n");
+  print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B></TH>\n");
   $DB->free_samsdb_query();
 
   $count=0;
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$id' ORDER BY s_nick");
+  $num_rows=$DB->samsdb_query_value("SELECT squiduser.*, shablon.s_quote AS s_defquote FROM squiduser, shablon WHERE squiduser.s_group_id='$id' AND squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_nick");
   while($row=$DB->samsdb_fetch_array())
       {
        print("<TR>\n");
@@ -137,7 +137,7 @@ function UserGroupForm()
            }
 	if($USERConf->ToWebInterfaceAccess("CGS")==1)
            {
-              print("<TD WIDTH=\"10%\">");
+              print("  <TD WIDTH=\"10%\">");
               print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\">");
            }
 	if($USERConf->ToWebInterfaceAccess("C")==1)
@@ -145,13 +145,13 @@ function UserGroupForm()
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[s_user_id]] ");
              if($row['s_enabled']==1)
 	       print(" CHECKED ");
-	     print("> \n ");
+	     print("></TD>\n");
            }
 	 
-	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
+	 print("  <TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B></TD>\n");
 	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
-             print("<TD WIDTH=\"15%\"> <B>$row[s_domain] </B>");
+             print("  <TD WIDTH=\"15%\"> <B>$row[s_domain]</B></TD>\n");
 	   }   
 	 if($USERConf->ToWebInterfaceAccess("C")==1||$ga==1)
            {
@@ -160,12 +160,16 @@ function UserGroupForm()
 	    else
 		PrintFormattedSize($row['s_size']);
              
-	     if($row['s_quote']>0)
-	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[s_quote] Mb");
-	     else  
-	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
+             if($row['s_quote']>0)
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>$row[s_quote] Mb</font></TD>\n");
+             else if($row['s_quote']==0)
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>unlimited</font></TD>\n");
+             else if($row['s_defquote']>0)
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER>$row[s_defquote] Mb</TD>\n");
+             else
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER>unlimited</TD>\n");
 	   }
-         print("<TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]");
+         print("  <TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]</TD>\n");
 	 
 	 $count=$count+1;  
       }

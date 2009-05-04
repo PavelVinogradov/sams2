@@ -5,7 +5,7 @@
 # Чтобы обновить базу с версии versions[i-1] до версии versions[i], нужно выполнить команды db_cmd[i]
 # Первый элемент в массиве db_cmd должен быть пустой
 
-versions=("1.9.9" "2.9.9" "3.9.9" "4.9.9" "5.9.9" "6.9.9")
+versions=("1.9.9" "2.9.9" "3.9.9" "4.9.9" "5.9.9" "6.9.9" "7.9.9")
 db_cmd[0]=""
 db_cmd[1]="CREATE TABLE sysinfo (                              \
  s_proxy_id INT              NOT NULL ,                        \
@@ -30,6 +30,8 @@ INSERT INTO auth_param VALUES('adld', 'enabled', '0');	\
 INSERT INTO auth_param VALUES('ncsa', 'enabled', '0');	\
 INSERT INTO auth_param VALUES('ip', 'enabled', '1');"
 db_cmd[5]="ALTER TABLE squiduser ADD s_ulimit VARCHAR(1);"
+db_cmd[6]="TRUNCATE TABLE sysinfo; \
+ALTER TABLE sysinfo ADD s_row_id SERIAL PRIMARY KEY FIRST;"
 
 
 

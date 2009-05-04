@@ -137,96 +137,130 @@ function UpdateShablonForm()
   $DB->free_samsdb_query();
 
  // перенаправление запроса
-  print("<TR  bgcolor=blanchedalmond><TD WIDTH=\"40%\">\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_8\n");
+  $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
 	if($s_type[$i]=="redir")
 	  {
-	        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_8</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
         	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked>\n");
-		print("<TD WIDTH=\"60%\"> $s_name[$i]\n");
-
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
 	  }
      }
 
-  print("<TR bgcolor=blanchedalmond><TD WIDTH=\"40%\" ALIGN=RIGHT>\n");
-  print("<INPUT TYPE=\"CHECKBOX\" NAME=\"alldenied\" onclick=EnableDeniedLists(UPDATESHABLON) $DENIEDCHECKED>\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_22 \n");
+  $DENIEDCHECKED="";
+  if ($SHABLONConf->s_alldenied == 1)
+    $DENIEDCHECKED="CHECKED";
+
+  print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\" ALIGN=RIGHT>");
+  print("<INPUT TYPE=\"CHECKBOX\" NAME=\"alldenied\" onclick=EnableDeniedLists(UPDATESHABLON) $DENIEDCHECKED></TD>\n");
+  print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_22</B></TD>\n");
 
  // запрет доступа
-  print("<TR  bgcolor=blanchedalmond><TD WIDTH=\"40%\">\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_9\n");
+  $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
 	if($s_type[$i]=="denied")
 	  {
-	        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_9</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
         	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked>\n");
-		print("<TD WIDTH=\"60%\"> $s_name[$i]\n");
-
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
 	  }
      }
 
  // запрет доступа по регулярным выражениям
-  print("<TR  bgcolor=blanchedalmond><TD WIDTH=\"40%\">\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_10\n");
+  $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
 	if($s_type[$i]=="regex")
 	  {
-	        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_10</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
         	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked>\n");
-		print("<TD WIDTH=\"60%\"> $s_name[$i]\n");
-
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
 	  }
      }
 
  // доступ разрешен
-  print("<TR  bgcolor=blanchedalmond><TD WIDTH=\"40%\">\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_11\n");
+  $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
 	if($s_type[$i]=="allow")
 	  {
-	        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_11</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
         	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked>\n");
-		print("<TD WIDTH=\"60%\"> $s_name[$i]\n");
-
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
 	  }
      }
 
  // afqks
-  print("<TR  bgcolor=blanchedalmond><TD WIDTH=\"40%\">\n");
-  print("<TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_23\n");
+  $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
 	if($s_type[$i]=="files")
 	  {
-	        print("<TR><TD ALIGN=RIGHT WIDTH=\"40%\">\n");
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_23</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
         	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked>\n");
-		print("<TD WIDTH=\"60%\"> $s_name[$i]\n");
-
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
 	  }
      }
 
@@ -335,6 +369,7 @@ function UpdateShablonForm()
 
   $MSELECTED="";
   $WSELECTED="";
+  $DSELECTED="";
   $ASELECTED="";
   $ADISABLED="DISABLED";
   $AVALUE="1";
@@ -346,7 +381,11 @@ function UpdateShablonForm()
      $WSELECTED="SELECTED";
   print("<OPTION value=\"W\" $WSELECTED>$shablonbuttom_1_prop_UpdateShablonForm_25 \n");
 
-  if($SHABLONConf->s_period!="M"&&$SHABLONConf->s_period!="W")
+  if($SHABLONConf->s_period=="D")   
+     $DSELECTED="SELECTED";
+  print("<OPTION value=\"D\" $DSELECTED>$shablonbuttom_1_prop_UpdateShablonForm_27 \n");
+
+  if($SHABLONConf->s_period!="M"&&$SHABLONConf->s_period!="W"&&$SHABLONConf->s_period!="D")
     {   
       $ASELECTED="SELECTED";
       $ADISABLED="";
@@ -467,7 +506,7 @@ function RemoveTRange2Shablon()
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
-  print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$id\"; \n");
+  print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$shablon_id\"; \n");
   print("</SCRIPT> \n");
 }
 

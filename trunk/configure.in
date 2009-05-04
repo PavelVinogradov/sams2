@@ -3,6 +3,8 @@ AM_INIT_AUTOMAKE(sams2, 2.0.0)
 AC_CONFIG_SRCDIR([src/tools.h])
 AC_CONFIG_HEADER([src/config.h])
 
+AC_GNU_SOURCE
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -12,6 +14,7 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -33,6 +36,10 @@ AC_HEADER_STDC
 AC_FUNC_MKTIME
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([inet_ntoa memset strerror])
+
+gl_READUTMP
+gl_SYS_PROC_UPTIME
+gl_GETLOADAVG([plugins/loadavg])
 
 # SCO-ODT-3.0 is reported to need -lufc for crypt.
 # NetBSD needs -lcrypt for crypt.
@@ -71,7 +78,7 @@ if test "$lt_cv_dlopen" = "dlopen"; then
     fi
 fi
 
-AC_CONFIG_FILES([Makefile src/Makefile php/Makefile doc/Makefile plugins/loadavg/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile php/Makefile doc/Makefile plugins/loadavg/Makefile plugins/fsusage/Makefile])
 AC_OUTPUT
 
 eval path_sysconfdir=$sysconfdir

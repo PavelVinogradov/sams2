@@ -288,7 +288,7 @@ function ProxyReConfigForm()
   print("<TD><SELECT NAME=\"loglevel\">\n");
   for($i=0;$i<10;$i++)
     {
-        if($PROXYConf->s_loglevel==$i)
+        if($PROXYConf->s_debuglevel==$i)
              print("<OPTION VALUE=\"$i\" SELECTED> $i");
 	 else    
              print("<OPTION VALUE=\"$i\"> $i");

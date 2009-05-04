@@ -43,6 +43,6 @@ $pgdb[2] = "CREATE TABLE proxy (
 	s_udscript varchar(25) NOT NULL default 'NONE', 
 	s_adminaddr varchar(60) ) ";
 
-$pgdb[3] = "INSERT INTO proxy VALUES('1','main proxy server','0''http://your.ip.address/sams/icon/classic/blank.gif','http://your.ip.address/sams/messages','none','1','1','ip','/usr/bin','Y','+','0','0','0','1','0','','1','1','0','real','0','0','workgroup','0','NONE','')";
+$pgdb[3] = "INSERT INTO proxy VALUES('1','main proxy server','0''http://your.ip.address/sams2/icon/classic/blank.gif','http://your.ip.address/sams2/messages','none','1','1','ip','/usr/bin','Y','+','0','0','0','1','0','','1','1','0','real','0','0','workgroup','0','NONE','')";
  
 ?>
