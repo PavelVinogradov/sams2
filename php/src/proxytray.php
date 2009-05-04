@@ -43,6 +43,28 @@ function JSProxyInfo()
   if($PROXYConf->s_redirector=="squid")
             $redirector="$adminbuttom_1_prop_SamsReConfigForm_8";
 
+  $extrainfo="";
+  $DB=new SAMSDB(&$SAMSConf);
+  $num_rows=$DB->samsdb_query("SELECT * FROM sysinfo WHERE s_status='1' AND s_proxy_id='$PROXYConf->s_proxy_id'");
+
+  if ($num_rows>0)
+    {
+      $extrainfo=$extrainfo."<HR>";
+      $extrainfo=$extrainfo."<TABLE CLASS=samstable>";
+    }
+
+  while($row=$DB->samsdb_fetch_array())
+    {
+      $extrainfo=$extrainfo."<TR><TD><FONT COLOR=blue>$row[s_name] updated at $row[s_date]</FONT></TD></TR>";
+      $extrainfo=$extrainfo."<TR><TD>$row[s_info]</TD></TR>";
+    }
+  if ($num_rows>0)
+    {
+      $extrainfo=$extrainfo."</TABLE>";
+    }
+
+  $DB->free_samsdb_query();
+
   $htmlcode="<HTML><BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/user.jpg\" align=\"RIGHT\" valign=\"middle\" >
@@ -54,6 +76,8 @@ function JSProxyInfo()
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_6<TD>$redirector
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_46<TD>$traffic
   </TABLE>";
+
+  $htmlcode=$htmlcode.$extrainfo;
 
   $htmlcode=$htmlcode."</CENTER></BODY></HTML>";
   $htmlcode=str_replace("\"","\\\"",$htmlcode);

@@ -163,8 +163,9 @@
   $usertray_UserForm_8=" Download quote ";
   $usertray_UserForm_9=" Accepted "; 
   $usertray_UserForm_10=" Activated "; 
-  $usertray_UserForm_11=" Switch off "; 
+  $usertray_UserForm_11=" Disabled "; 
   $usertray_UserForm_12=" Template "; 
+  $usertray_UserForm_13=" Active ";
   $usertray_UserTray_1=" User "; 
 
   $userstray_AddUser_1=" The user has been added "; 
@@ -632,6 +633,12 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $userstray_AllUsersForm_6="Username";
   $userstray_AllUsersForm_7="Delete user";
   $userstray_AllUsersForm_8="Change";
+  $userstray_AllUsersForm_9="Period of limit";
+  $userstray_AllUsersForm_10="days";
+  $userstray_AllUsersForm_11="Month";  
+  $userstray_AllUsersForm_12="Week";  
+  $userstray_AllUsersForm_13="Users search:";  
+  $userstray_AllUsersForm_14="Day";  
 
   $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="URL access allowed";
   $allowlisttray_AddAllowListForm_1="The list contains the URL expressions that are allowed for the users."; 
@@ -697,7 +704,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_20c="no change";
   $adminbuttom_1_prop_SamsReConfigForm_20d=" letters";
   $adminbuttom_1_prop_SamsReConfigForm_22="User name is entered with the ";
-  $usertray_UserForm_13="Switch on";
   
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Insert NCSA users from file ";
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_2="Select file";
@@ -718,6 +724,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $lframe_0ident_lframe_0ident_1="User authenticate";
   $lframe_1webconf_lframe_1webconf_1="WEB interface settings";
+  $lframe_2sysplug_lframe_1webconf_1="System plugin settings";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_2="Show users as"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_3="User"; 
@@ -835,6 +842,8 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $shablonbuttom_1_prop_UpdateShablonForm_24="Month";
   $shablonbuttom_1_prop_UpdateShablonForm_25="Week";
+  $shablonbuttom_1_prop_UpdateShablonForm_26=" Automatically clear up the users traffic disabled in the SAMS settings";
+  $shablonbuttom_1_prop_UpdateShablonForm_27="Day";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Old password";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
@@ -848,10 +857,8 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Enter name of AD group manually";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Field of manual input of group";
 
-  $userstray_AllUsersForm_13="Users search:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="SAMS configuration";
 
-  $shablonbuttom_1_prop_UpdateShablonForm_26=" Automatically clear up the users traffic disabled in the SAMS settings";
   $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
   $shablonnew_NewShablonForm_19="Users template name has not been entered";
   $redirlisttray_AddRedirListForm_5="List name has not been entered";

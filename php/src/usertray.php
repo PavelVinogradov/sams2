@@ -168,16 +168,19 @@ function JSUserInfo()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->s_quote>0)
-	$quote=" $USERConf->s_quote Mb";
-  else  if($USERConf->s_quote==-1)
-	$quote=" $USERConf->s_defquote Mb";
+  if($SquidUSERConf->s_quote>0)
+    $quote=" $SquidUSERConf->s_quote Mb";
+  else if($SquidUSERConf->s_quote==-1)
+    $quote=" $SquidUSERConf->s_defquote Mb";
   else
-	$quote=" unlimited ";
-  if($USERConf->s_enabled>0)
-		$enabled="$usertray_UserForm_13";
+    $quote=" unlimited ";
+
+  if($SquidUSERConf->s_enabled>0)
+    $enabled="$usertray_UserForm_13";
+  else if($SquidUSERConf->s_enabled<0)
+    $enabled="$usertray_UserForm_11";
   else
-		$enabled="$usertray_UserForm_11";
+    $enabled="Inactive";
 
 
   $htmlcode="<HTML><BODY><CENTER>

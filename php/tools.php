@@ -370,12 +370,12 @@ function PrintFormattedSize($size)
  if($ksize<100&&$msize>0)
    $ksize="0$ksize";
    
-  print("<TD ALIGN=RIGHT>&nbsp;");
+  print("  <TD ALIGN=RIGHT>&nbsp;");
   if($gsize>0)
     print("<B>$gsize</B>&nbsp;Gb ");
   if($gsize>0||$msize>0)
     print("<B>$msize</B>&nbsp;Mb");
-  print("<B>&nbsp;$ksize</B>&nbsp;kb\n");
+  print("<B>&nbsp;$ksize</B>&nbsp;kb</TD>\n");
 }
 
 function ExecuteShellScript($script, $str)

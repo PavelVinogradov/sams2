@@ -969,7 +969,8 @@ VAR $DATA=Array();
                  }
                $prev=$i;
              }
-           $i-=$RW/$count;
+           if($count>0)
+             $i-=$RW/$count;
          }
 
        header("Content-Type:image/png");

@@ -518,7 +518,7 @@ s_autogrp int DEFAULT '0')";
 
 //'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
 //$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
-$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
+$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
 , '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '0', '0' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
@@ -553,7 +553,7 @@ $pgdb[24] = "CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_proxy_id, s_date, 
 $pgdb[25] = "CREATE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
 $pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
-$pgdb[28] = "CREATE TABLE sysinfo ( s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
+$pgdb[28] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
 s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date DATETIME NOT NULL ,
 s_status INT NOT NULL)";
 

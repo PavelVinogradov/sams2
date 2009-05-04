@@ -2,17 +2,14 @@ using namespace std;
 
 #include <string>
 
-extern "C" const char * get_uptime ();
-
 string information()
 {
-  return get_uptime ();
-  //return "System Information here";
+  return "File System Usage Information here";
 }
 
 string name()
 {
-  return "Load average";
+  return "File System Usage";
 }
 
 string version()
