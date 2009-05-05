@@ -153,6 +153,15 @@ string ToLower (const string & str);
 string ToUpper (const string & str);
 
 /**
+ * @brief Проверяет заканчивается ли строка @a str подстрокой @a substr
+ *
+ * @param str Проверяемая строка
+ * @param substr Искомая подстрока
+ * @return true если строка @a str заканчивается подстрокой @a substr и false в противном случае
+ */
+bool endsWith(const string & str, const string & substr);
+
+/**
  * @brief Разбивает одну строку на несколько, используя разделители @a delim
  *
  * @param s Исходная строка

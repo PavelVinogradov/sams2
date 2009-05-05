@@ -235,12 +235,20 @@ public:
   bool isUrlWhitelisted (const string & url) const;
 
   /**
-   * @brief Возвращает признак доступности ресурса
+   * @brief Возвращает признак недоступности ресурса
    *
    * @param url url адрес ресурса
    * @return true если ресурс присутствует в списках запрета и false в противном случае
    */
   bool isUrlBlacklisted (const string & url) const;
+
+  /**
+   * @brief Возвращает признак присутствия запрещенного расширения файла
+   *
+   * @param url url адрес ресурса
+   * @return true если ресурс содержит запрещенное расширение файла и false в противном случае
+   */
+  bool isUrlHasFileExt (const string & url) const;
 
   /**
    * @brief Возвращает признак совпадения ресурса со списком регулярных выражений
