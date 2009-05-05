@@ -50,7 +50,7 @@ public:
    * @param id Идентификатор шаблона
    * @param id2 Идентификатор вторичного шаблона
    */
-  Template (long id, long id2);
+  Template (const long & id, const long & id2);
 
   /**
    * @brief Деструктор
@@ -86,7 +86,7 @@ public:
    *
    * @param auth Тип авторизации
    */
-  void setAuth (Proxy::usrAuthType auth);
+  void setAuth (const Proxy::usrAuthType & auth);
 
   /**
    * @brief Возвращает тип авторизации шаблона
@@ -100,7 +100,7 @@ public:
    *
    * @param quote Ограничение трафика
    */
-  void setQuote (long quote);
+  void setQuote (const long & quote);
 
   /**
    * @brief Возвращает размер ограничения трафика
@@ -119,7 +119,7 @@ public:
    * @param ptype Тип периода
    * @param days Количество дней
    */
-  void setPeriod (Template::PeriodType ptype, long days);
+  void setPeriod (const Template::PeriodType & ptype, const long & days);
 
   /**
    * @brief Возвращает тип периода ограничения трафика
@@ -179,7 +179,7 @@ public:
    *
    * @param alldeny Если true, то запрещать ресурс, если он не разрешен
    */
-  void setAllDeny(bool alldeny);
+  void setAllDeny(const bool & alldeny);
 
   /**
    * @brief Возвращает флаг запрета ко всем ресурсам, кроме явно разрешенных
@@ -193,7 +193,7 @@ public:
    *
    * @param id Идентификатор временного ограничения
    */
-  void addTimeRange (long id);
+  void addTimeRange (const long & id);
 
   /**
    * @brief Возвращает список идентификаторов временных границ, когда доступ разрешен
@@ -207,7 +207,7 @@ public:
    *
    * @param id Идентификатор группы ресурсов
    */
-  void addUrlGroup (long id);
+  void addUrlGroup (const long & id);
 
   /**
    * @brief Возвращает список идентификаторов групп ресурсов

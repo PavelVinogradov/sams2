@@ -180,8 +180,16 @@ void Split (const string & s, const string & delim, vector < string > &tbl, bool
 
   tbl.clear();
 
+  if (s.empty ())
+    return;
+
   next = s.find_first_of (delim);
 
+  if (next == -1)
+    {
+      tbl.push_back (s);
+      return;
+    }
   string token;
   while ((next = s.find_first_of (delim, prev)) != -1)
     {
