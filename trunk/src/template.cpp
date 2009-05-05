@@ -22,7 +22,7 @@
 
 #include "debug.h"
 
-Template::Template (long id, long id2)
+Template::Template (const long & id, const long & id2)
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "(" << id << ", " << id2 << ")]");
 
@@ -72,7 +72,7 @@ void Template::setAuth (const string & auth)
     }
 }
 
-void Template::setAuth (Proxy::usrAuthType auth)
+void Template::setAuth (const Proxy::usrAuthType & auth)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(...)]");
   _auth = auth;
@@ -84,7 +84,7 @@ Proxy::usrAuthType Template::getAuth () const
   return _auth;
 }
 
-void Template::setQuote (long quote)
+void Template::setQuote (const long & quote)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << quote << ")]");
   _quote = quote;
@@ -96,7 +96,7 @@ long Template::getQuote () const
   return _quote;
 }
 
-void Template::setPeriod (Template::PeriodType ptype, long days)
+void Template::setPeriod (const Template::PeriodType & ptype, const long & days)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(..., " << days << ")]");
 
@@ -196,7 +196,7 @@ void Template::adjustClearDate()
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] new date: " << _clear_date);
 }
 
-void Template::setAllDeny (bool alldeny)
+void Template::setAllDeny (const bool & alldeny)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << alldeny << ")]");
   _alldeny = alldeny;
@@ -208,7 +208,7 @@ bool Template::getAllDeny () const
   return _alldeny;
 }
 
-void Template::addTimeRange (long id)
+void Template::addTimeRange (const long & id)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
   _times.push_back (id);
@@ -219,7 +219,7 @@ vector <long> Template::getTimeRangeIds () const
   return _times;
 }
 
-void Template::addUrlGroup (long id)
+void Template::addUrlGroup (const long & id)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
 

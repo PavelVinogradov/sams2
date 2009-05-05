@@ -236,8 +236,6 @@ int main (int argc, char *argv[])
 
       INFO ("Input: " << line);
 
-      Split (fields[1], "/", source);
-
       // Мы незнаем что такое попалось, но на всякий случай ничего менять не будем
       if (fields.size () < 4)
         {
@@ -246,6 +244,8 @@ int main (int argc, char *argv[])
           cout << line << endl << flush;
           continue;
         }
+
+      Split (fields[1], "/", source);
 
       // url считается локальным и неважно какой пользователь обратился, разрешаем доступ
       if (LocalNetworks::isLocalUrl(fields[0]))
@@ -372,6 +372,8 @@ int main (int argc, char *argv[])
       INFO ("Output: " << line);
       cout << line << endl << flush;
     }
+
+  delete conn;
 
   return 0;
 }
