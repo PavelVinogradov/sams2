@@ -222,7 +222,6 @@ vector <long> Template::getTimeRangeIds () const
 void Template::addUrlGroup (long id)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << id << ")]");
-  //_urlgroups.push_back (id);
 
   UrlGroup *grp = UrlGroupList::getUrlGroup (id);
 
@@ -234,8 +233,6 @@ vector <long> Template::getUrlGroupIds () const
 {
   vector <long> res;
   vector <UrlGroup*>::const_iterator it;
-  //vector <long>::const_iterator it;
-  //UrlGroup *grp = NULL;
 
   for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
     {
@@ -243,11 +240,12 @@ vector <long> Template::getUrlGroupIds () const
     }
 
   return res;
-//  return _urlgroups;
 }
 
 bool Template::isTimeDenied (const string & url) const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
+
   TimeRange * tr = NULL;
   vector <long>::const_iterator it;
 
@@ -268,19 +266,12 @@ bool Template::isTimeDenied (const string & url) const
 
 bool Template::isUrlWhitelisted (const string &url) const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
+
   vector <UrlGroup*>::const_iterator it;
-  //vector <long>::const_iterator it;
-  //UrlGroup *grp = NULL;
 
   for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
     {
-/*
-      grp = UrlGroupList::getUrlGroup (*it);
-      if (!grp)
-        continue;
-      if (grp->getAccessType () == UrlGroup::ACC_ALLOW && grp->hasUrl (url))
-        return true;
-*/
       if ((*it)->getAccessType () == UrlGroup::ACC_ALLOW && (*it)->hasUrl (url))
         return true;
     }
@@ -289,20 +280,27 @@ bool Template::isUrlWhitelisted (const string &url) const
 
 bool Template::isUrlBlacklisted (const string &url) const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
+
   vector <UrlGroup*>::const_iterator it;
-  //vector <long>::const_iterator it;
-  //UrlGroup *grp = NULL;
 
   for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
     {
-/*
-      grp = UrlGroupList::getUrlGroup (*it);
-      if (!grp)
-        continue;
-      if (grp->getAccessType () == UrlGroup::ACC_DENY && grp->hasUrl (url))
-        return true;
-*/
       if ((*it)->getAccessType () == UrlGroup::ACC_DENY && (*it)->hasUrl (url))
+        return true;
+    }
+  return false;
+}
+
+bool Template::isUrlHasFileExt (const string & url) const
+{
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
+
+  vector <UrlGroup*>::const_iterator it;
+
+  for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
+    {
+      if ((*it)->getAccessType () == UrlGroup::ACC_FILEEXT && (*it)->hasUrl (url))
         return true;
     }
   return false;
@@ -310,19 +308,12 @@ bool Template::isUrlBlacklisted (const string &url) const
 
 bool Template::isUrlMatchRegex (const string & url) const
 {
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
+
   vector <UrlGroup*>::const_iterator it;
-  //vector <long>::const_iterator it;
-  //UrlGroup *grp = NULL;
 
   for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
     {
-/*
-      grp = UrlGroupList::getUrlGroup (*it);
-      if (!grp)
-        continue;
-      if (grp->getAccessType () == UrlGroup::ACC_REGEXP && grp->hasUrl (url))
-        return true;
-*/
       if ((*it)->getAccessType () == UrlGroup::ACC_REGEXP && (*it)->hasUrl (url))
         return true;
     }
@@ -334,18 +325,10 @@ string Template::modifyUrl (const string & url) const
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
 
   vector <UrlGroup*>::const_iterator it;
-  //vector <long>::const_iterator it;
-  //UrlGroup *grp = NULL;
   string res = "";
 
   for (it = _urlgroups.begin (); it != _urlgroups.end (); it++)
     {
-/*
-      grp = UrlGroupList::getUrlGroup (*it);
-      if (!grp)
-        continue;
-      res = grp->modifyUrl (url);
-*/
       res = (*it)->modifyUrl (url);
       if (!res.empty ())
         break;

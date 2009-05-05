@@ -152,6 +152,25 @@ string ToUpper (const string & str)
   return res;
 }
 
+bool endsWith(const string & str, const string & substr)
+{
+  if (substr.empty ())
+    return true;
+
+  if (str.empty ())
+    return false;
+
+  if (substr.size () > str.size ())
+    return false;
+
+  string part = str.substr (str.size () - substr.size (), substr.size ());
+
+  if (part == substr)
+    return true;
+
+  return false;
+}
+
 void Split (const string & s, const string & delim, vector < string > &tbl, bool removeEmpty)
 {
   uint prev = 0;

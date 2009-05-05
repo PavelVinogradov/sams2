@@ -136,6 +136,8 @@ bool UrlGroupList::reload()
             access_type = UrlGroup::ACC_REDIR;
           else if (s_tmp == "replace")
             access_type = UrlGroup::ACC_REPLACE;
+          else if (s_tmp == "files")
+            access_type = UrlGroup::ACC_FILEEXT;
           else
             {
               WARNING("Unsupported url group type: " << s_tmp);

@@ -20,8 +20,39 @@ using namespace std;
 #include "urlgroup.h"
 #include "url.h"
 #include "proxy.h"
+#include "tools.h"
 
 #include "debug.h"
+
+string UrlGroup::toString (accessType t)
+{
+  string res;
+  switch (t)
+    {
+    case ACC_DENY:
+      res = "deny";
+      break;
+    case ACC_ALLOW:
+      res = "allow";
+      break;
+    case ACC_REGEXP:
+      res = "regex";
+      break;
+    case ACC_REDIR:
+      res = "redir";
+      break;
+    case ACC_REPLACE:
+      res = "replace";
+      break;
+    case ACC_FILEEXT:
+      res = "files";
+      break;
+    default:
+      res = "unknown";
+      break;
+    }
+  return res;
+}
 
 UrlGroup::UrlGroup (const long &id, const UrlGroup::accessType &access)
 {
@@ -58,7 +89,6 @@ long UrlGroup::getId ()
 
 UrlGroup::accessType UrlGroup::getAccessType ()
 {
-//  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = ...");
   return _type;
 }
 
@@ -107,6 +137,8 @@ void UrlGroup::addUrl (const string & url)
 
 bool UrlGroup::hasUrl (const string & url) const
 {
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "(" << url << ")] type=" << toString (_type));
+
   if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
     {
 #ifndef WITHOUT_PCRE
@@ -134,6 +166,19 @@ bool UrlGroup::hasUrl (const string & url) const
 #endif
         }
 #endif // #ifndef WITHOUT_PCRE
+      return false;
+    }
+  else if (_type == UrlGroup::ACC_FILEEXT)
+    {
+      vector<string>::const_iterator it;
+      for (it = _list.begin (); it != _list.end (); it++)
+        {
+          if (endsWith (url, (*it)))
+            {
+              DEBUG (DEBUG4, "[" << this << "] Url " << url << " has file extension " << *it);
+              return true;
+            }
+        }
       return false;
     }
   else
@@ -181,6 +226,7 @@ string UrlGroup::modifyUrl (const string & url) const
           case ACC_DENY:
           case ACC_ALLOW:
           case ACC_REGEXP:
+          case ACC_FILEEXT:
             break;
           case ACC_REDIR:
             res = Proxy::getRedirectAddr ();

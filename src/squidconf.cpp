@@ -137,7 +137,8 @@ bool SquidConf::defineACL ()
               DEBUG (DEBUG2, "Found TAG: " << current_tag);
             }
 
-          if (current_tag == "acl")
+          // Если используется редиректор, то не вносим новые правила для acl
+          if (current_tag == "acl" && redir_type != Proxy::REDIR_INTERNAL)
             {
               // Создаем списки пользователей
               vector<SAMSUser *> users;
@@ -244,7 +245,7 @@ bool SquidConf::defineACL ()
             } // if (current_tag == "acl")
 
           // Если используется редиректор, то не вносим новые правила для http_access
-          if (current_tag == "http_access")
+          if (current_tag == "http_access" && redir_type != Proxy::REDIR_INTERNAL)
             {
               fout << "# Setup Sams2 HTTP Access here" << endl;
               vector <long> times;
@@ -266,36 +267,37 @@ bool SquidConf::defineACL ()
 
                   restriction.str("");
 
-                  if (redir_type != Proxy::REDIR_INTERNAL)
+                  time_ids = tpl->getTimeRangeIds ();
+                  for (j = 0; j < time_ids.size(); j++)
                     {
-                      time_ids = tpl->getTimeRangeIds ();
-                      for (j = 0; j < time_ids.size(); j++)
-                        {
-                          TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
-                          if (!tr)
-                            continue;
-                          if (tr->isFullDay())
-                            continue;
-                          restriction << " Sams2Template" <<tpls[i] << "time";
-                          break;
-                        }
-
-                      //Определяем разрешенные и запретные адреса для текущего шаблона
-                      group_ids = tpl->getUrlGroupIds ();
-                      for (j = 0; j < group_ids.size(); j++)
-                        {
-                          UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
-                          if (!grp)
-                            continue;
-                          if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
-                            restriction << " Sams2Allow" << group_ids[j];
-                          else if (grp->getAccessType () == UrlGroup::ACC_DENY)
-                            restriction << " !Sams2Deny" << group_ids[j];
-                        }
-
-                      //Определяем запретные типы файлов для текущего шаблона
-                      //Определяем запретные регулярные выражения для текущего шаблона
+                      TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
+                      if (!tr)
+                        continue;
+                      if (tr->isFullDay())
+                        continue;
+                      restriction << " Sams2Template" <<tpls[i] << "time";
+                      break;
                     }
+
+                  //Определяем разрешенные и запретные адреса для текущего шаблона
+                  group_ids = tpl->getUrlGroupIds ();
+                  for (j = 0; j < group_ids.size(); j++)
+                    {
+                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
+                      if (!grp)
+                        continue;
+                      if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
+                        restriction << " Sams2Allow" << group_ids[j];
+                      else if (grp->getAccessType () == UrlGroup::ACC_DENY)
+                        restriction << " !Sams2Deny" << group_ids[j];
+                    }
+
+                  //Определяем запретные типы файлов для текущего шаблона
+                  //...
+
+                  //Определяем запретные регулярные выражения для текущего шаблона
+                  //...
+
                   if (SAMSUserList::activeUsersInTemplate ( tpls[i]) > 0)
                     fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
                 }
@@ -316,6 +318,7 @@ bool SquidConf::defineACL ()
                   WARNING ("Unable to identify proxy address");
                 }
             }
+
           fout << nextline << endl;
         }
       else

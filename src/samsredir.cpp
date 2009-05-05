@@ -328,6 +328,16 @@ int main (int argc, char *argv[])
           continue;
         }
 
+      // Если в url присутствует запрещенное расширение файла, блокируем доступ
+      if ( tpl->isUrlHasFileExt (fields[0]) )
+        {
+          INFO ("Has disallowed file extension");
+          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
+          continue;
+        }
+
       // Если url в текущее время не разрешен, блокируем доступ
       if ( tpl->isTimeDenied (fields[0]) )
         {
