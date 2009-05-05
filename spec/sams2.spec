@@ -39,7 +39,7 @@
 
 Name:          sams2
 Version:       2.0.0
-Epoch:         615
+Epoch:         618
 Release:       a2.%{epoch}%{disttag}
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet

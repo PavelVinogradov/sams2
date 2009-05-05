@@ -137,8 +137,7 @@ bool SquidConf::defineACL ()
               DEBUG (DEBUG2, "Found TAG: " << current_tag);
             }
 
-          // Если используется редиректор, то не вносим новые правила для acl
-          if (current_tag == "acl" && redir_type != Proxy::REDIR_INTERNAL)
+          if (current_tag == "acl")
             {
               // Создаем списки пользователей
               vector<SAMSUser *> users;
@@ -184,6 +183,21 @@ bool SquidConf::defineACL ()
                         }
                     }
 
+                  if (fncsa.is_open ())
+                    {
+                      fncsa.close ();
+/* Смена владельца не актуальна, т.к. демоны авторизации работают под root
+                      string chown_cmd = "chown squid " + ncsafile;
+                      if (system (chown_cmd.c_str ()))
+                        {
+                          WARNING ("Unable to change owner of " << ncsafile);
+                        }
+*/
+                    }
+
+                  if (redir_type == Proxy::REDIR_INTERNAL)
+                    continue;
+
                   //Определяем временные границы для текущего шаблона
                   time_ids = tpl->getTimeRangeIds ();
                   for (j = 0; j < time_ids.size(); j++)
@@ -208,44 +222,34 @@ bool SquidConf::defineACL ()
                     }
                 }
 
-              // Создаем списки запретных адресов
-              group_ids = UrlGroupList::getAllowGroupIds();
-              for (i = 0; i < group_ids.size (); i++)
+              if (redir_type != Proxy::REDIR_INTERNAL)
                 {
-                  UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
-                  if (!grp)
-                    continue;
-                  else
-                    fout << "acl Sams2Allow" << group_ids[i] << " dstdom_regex " << *grp << endl;
-                }
-
-              // Создаем списки разрешенных адресов
-              group_ids = UrlGroupList::getDenyGroupIds();
-              for (i = 0; i < group_ids.size (); i++)
-                {
-                  UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
-                  if (!grp)
-                    continue;
-                  else
-                    fout << "acl Sams2Deny" << group_ids[i] << " dstdom_regex " << *grp << endl;
-                }
-
-              if (fncsa.is_open ())
-                {
-                  fncsa.close ();
-/* Смена владельца не актуальна, т.к. демоны авторизации работают под root
-                  string chown_cmd = "chown squid " + ncsafile;
-                  if (system (chown_cmd.c_str ()))
+                  // Создаем списки запретных адресов
+                  group_ids = UrlGroupList::getAllowGroupIds();
+                  for (i = 0; i < group_ids.size (); i++)
                     {
-                      WARNING ("Unable to change owner of " << ncsafile);
+                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
+                      if (!grp)
+                        continue;
+                      else
+                        fout << "acl Sams2Allow" << group_ids[i] << " dstdom_regex " << *grp << endl;
                     }
-*/
+
+                  // Создаем списки разрешенных адресов
+                  group_ids = UrlGroupList::getDenyGroupIds();
+                  for (i = 0; i < group_ids.size (); i++)
+                    {
+                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
+                      if (!grp)
+                        continue;
+                      else
+                        fout << "acl Sams2Deny" << group_ids[i] << " dstdom_regex " << *grp << endl;
+                    }
                 }
 
             } // if (current_tag == "acl")
 
-          // Если используется редиректор, то не вносим новые правила для http_access
-          if (current_tag == "http_access" && redir_type != Proxy::REDIR_INTERNAL)
+          if (current_tag == "http_access")
             {
               fout << "# Setup Sams2 HTTP Access here" << endl;
               vector <long> times;
@@ -267,36 +271,39 @@ bool SquidConf::defineACL ()
 
                   restriction.str("");
 
-                  time_ids = tpl->getTimeRangeIds ();
-                  for (j = 0; j < time_ids.size(); j++)
+                  if (redir_type != Proxy::REDIR_INTERNAL)
                     {
-                      TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
-                      if (!tr)
-                        continue;
-                      if (tr->isFullDay())
-                        continue;
-                      restriction << " Sams2Template" <<tpls[i] << "time";
-                      break;
+                      time_ids = tpl->getTimeRangeIds ();
+                      for (j = 0; j < time_ids.size(); j++)
+                        {
+                          TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
+                          if (!tr)
+                            continue;
+                          if (tr->isFullDay())
+                            continue;
+                          restriction << " Sams2Template" <<tpls[i] << "time";
+                          break;
+                        }
+
+                      //Определяем разрешенные и запретные адреса для текущего шаблона
+                      group_ids = tpl->getUrlGroupIds ();
+                      for (j = 0; j < group_ids.size(); j++)
+                        {
+                          UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
+                          if (!grp)
+                            continue;
+                          if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
+                            restriction << " Sams2Allow" << group_ids[j];
+                          else if (grp->getAccessType () == UrlGroup::ACC_DENY)
+                            restriction << " !Sams2Deny" << group_ids[j];
+                        }
+
+                      //Определяем запретные типы файлов для текущего шаблона
+                      //...
+
+                      //Определяем запретные регулярные выражения для текущего шаблона
+                      //...
                     }
-
-                  //Определяем разрешенные и запретные адреса для текущего шаблона
-                  group_ids = tpl->getUrlGroupIds ();
-                  for (j = 0; j < group_ids.size(); j++)
-                    {
-                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
-                      if (!grp)
-                        continue;
-                      if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
-                        restriction << " Sams2Allow" << group_ids[j];
-                      else if (grp->getAccessType () == UrlGroup::ACC_DENY)
-                        restriction << " !Sams2Deny" << group_ids[j];
-                    }
-
-                  //Определяем запретные типы файлов для текущего шаблона
-                  //...
-
-                  //Определяем запретные регулярные выражения для текущего шаблона
-                  //...
 
                   if (SAMSUserList::activeUsersInTemplate ( tpls[i]) > 0)
                     fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
