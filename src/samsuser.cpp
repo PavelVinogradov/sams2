@@ -118,13 +118,13 @@ string SAMSUser::getIPasString () const
 
 void SAMSUser::setPassword (const string & pass)
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << pass << ")]");
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(*hidden*)]");
   _passwd = pass;
 }
 
 string SAMSUser::getPassword () const
 {
-  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = " << _passwd);
+  DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] = *hidden*");
   return _passwd;
 }
 

@@ -120,6 +120,13 @@ bool TimeRangeList::reload()
       trange = new TimeRange (s_trange_id, s_name);
       trange->setTimeRange (s_days, s_timestart, s_timeend);
       _list[s_name] = trange;
+
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found Time Interval: " <<
+        "id=" << s_trange_id << " " <<
+        "days=" << s_days << " " <<
+        "start=" << s_timestart << " " <<
+        "end=" << s_timeend
+        );
     }
 
   delete query;

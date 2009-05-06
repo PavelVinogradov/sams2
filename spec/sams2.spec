@@ -5,6 +5,7 @@
 
 %define webuser apache
 %define webgroup apache
+%define squidgroup squid
 %define apacheconf /httpd/conf.d
 %define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
 %define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null&& echo 1 || echo 0)
@@ -26,6 +27,7 @@
 %define disttag .suse
 %define webuser wwwrun
 %define webgroup www
+%define squidgroup nogroup
 %define apacheconf /apache2/conf.d
 %endif
 %if %is_Fedora
@@ -39,7 +41,7 @@
 
 Name:          sams2
 Version:       2.0.0
-Epoch:         618
+Epoch:		616
 Release:       a2.%{epoch}%{disttag}
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
@@ -126,13 +128,23 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 install -d "${RPM_BUILD_ROOT}%{_initrddir}"
 install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}
+install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/sysconfig
+install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/logrotate.d
 
-install -m755 redhat/init.d 					\
+%if %{dist}=="suse"
+install -m755 "suse/init.d" 					\
     "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-	sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
+%else
+install -m755 "redhat/init.d" 					\
+    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
+%endif
+sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
 	    -e 's,__CONFDIR,%{_sysconfdir},g'		\
 	    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-
+install -m644 "redhat/sysconfig"				\
+	"${RPM_BUILD_ROOT}%{_sysconfdir}"/sysconfig/sams2
+install -m644 "redhat/logrotate"				\
+	"${RPM_BUILD_ROOT}%{_sysconfdir}"/logrotate.d/sams2
 install -m644 "etc/httpd_conf"				\
     "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
 sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name},g'	\
@@ -149,6 +161,7 @@ sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\
 
 install -d "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
 install -m644 ChangeLog AUTHORS COPYING NEWS INSTALL "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
+
 %if %{dist}=="suse"
 mv -f --target-directory="${RPM_BUILD_ROOT}"%{_docdir}/%{name}-%{version}		\
     "${RPM_BUILD_ROOT}"%{_datadir}/doc/%{name}-%{version}/*
@@ -170,24 +183,24 @@ rm -rf "${RPM_BUILD_ROOT}"
 
 %post doc
 %if %{dist}=="suse"
-%{_initrddir}/apache2 reload
+    %{_initrddir}/apache2 reload
 %else
-%{_initrddir}/httpd reload
+    %{_initrddir}/httpd reload
 %endif
 
 %preun
 %if %{dist} == "suse"
-%stop_on_removal /etc/initd/sams2
+    %stop_on_removal sams2
 %else
     if [ $1 = 0 ] ; then
-/	sbin/service sams2 stop >/dev/null 2>&1
+	/sbin/service sams2 stop >/dev/null 2>&1
 	/sbin/chkconfig --del sams2
     fi
 %endif
 
 %postun
 %if %{dist} == "suse"
-%insserv_cleanup /etc/initd/sams2
+    %insserv_cleanup sams2
 %endif
 
 #######################################################################
@@ -200,20 +213,22 @@ rm -rf "${RPM_BUILD_ROOT}"
 %{_prefix}/bin/samsredir
 %{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2
-%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
+%{_sysconfdir}/sysconfig/sams2
+%{_sysconfdir}/logrotate.d/sams2
+%attr(640,%{webuser},%{squidgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
 %{_libdir}/sams2/*
 
 ##########
 %files doc
 %defattr(-,root,root)
-%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}%{apacheconf}/doc4sams2.conf
+%attr(644,root,root) %config(noreplace) %{_sysconfdir}%{apacheconf}/doc4sams2.conf
 %doc %{_docdir}/%{name}-%{version}
 
 ##########
 %files web
 %defattr(-,%{webuser},%{webgroup})
-%attr(640,%{webuser},%{webgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
-%config(noreplace) %{_sysconfdir}%{apacheconf}/sams2.conf
+%attr(640,%{webuser},%{squidgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
+%attr(644,root,root) %config(noreplace) %{_sysconfdir}%{apacheconf}/sams2.conf
 %{_datadir}/%{name}
 
 %changelog
