@@ -188,6 +188,8 @@ bool TemplateList::reload ()
       if (s_tpl_id2 == LONG_MAX)
         s_tpl_id2 = -1;
 
+      period_days = -1;
+     
       tpl = new Template(s_tpl_id, s_tpl_id2);
       tpl->setAuth (s_auth);
       tpl->setQuote (s_quote);
@@ -208,6 +210,14 @@ bool TemplateList::reload ()
         }
       _list[s_tpl_id] = tpl;
 
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found Template: " <<
+        "id=" << s_tpl_id << ":" << s_tpl_id2 << " " <<
+        "auth=" << s_auth << " " <<
+        "period=" << str_period << ((period_days==-1)?(""):(" day[s]")) << " " <<
+        "quote=" << s_quote << " " <<
+        "alldeny=" << ((s_alldenied==0)?"false":"true")
+        );
+
       sqlcmd.str("");
       sqlcmd << "select s_trange_id from sconfig_time where s_shablon_id=" << s_tpl_id;
       if (query2->sendQueryDirect (sqlcmd.str ()))
@@ -215,6 +225,9 @@ bool TemplateList::reload ()
           while (query2->fetch ())
             {
               tpl->addTimeRange (s_trange_id);
+              DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Template " <<
+                s_tpl_id << " has time interval " << s_trange_id
+                );
             }
         }
 
@@ -225,6 +238,9 @@ bool TemplateList::reload ()
           while (query3->fetch ())
             {
               tpl->addUrlGroup (s_redirect_id);
+              DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Template " <<
+                s_tpl_id << " has url group " << s_redirect_id
+                );
             }
         }
     }

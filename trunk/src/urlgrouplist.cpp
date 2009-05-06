@@ -111,7 +111,7 @@ bool UrlGroupList::reload()
     }
 
   // Локальные сети анализируются в специальном классе LocalNetworks
-  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url, a.s_dest from redirect a, url b where a.s_redirect_id=b.s_redirect_id and a.s_type!='local' order by a.s_redirect_id";
+  string sqlcmd = "select a.s_redirect_id, a.s_type, b.s_url, a.s_dest from redirect a, url b where a.s_redirect_id=b.s_redirect_id and a.s_type!='local' order by a.s_type, a.s_redirect_id";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -148,6 +148,13 @@ bool UrlGroupList::reload()
           _groups.push_back (grp);
         }
       grp->addUrl (s_url);
+
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found url rule: " <<
+        "id=" << s_redirect_id << " " <<
+        "type=" << s_tmp << " " <<
+        "url=" << s_url << " " <<
+        "replacement=" << s_dest
+        );
     }
 
   delete query;

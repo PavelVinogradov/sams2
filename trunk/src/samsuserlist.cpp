@@ -165,7 +165,7 @@ bool SAMSUserList::reload()
 
   //string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
   string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
-                   from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id";
+                   from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id order by a.s_user_id";
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -201,9 +201,8 @@ bool SAMSUserList::reload()
       usr->setId (s_user_id);
       usr->setGroupId (s_group_id);
       if (s_shablon_id2 == LONG_MAX)
-        usr->setLimitedTemplateId (-1);
-      else
-        usr->setLimitedTemplateId (s_shablon_id2);
+        s_shablon_id2 = -1;
+      usr->setLimitedTemplateId (s_shablon_id2);
       usr->setQuote (s_quote);
       usr->setSize (s_size);
       usr->setHit (s_hit);
@@ -211,8 +210,17 @@ bool SAMSUserList::reload()
       s_tmp_passwd = s_passwd;
       usr->setPassword (s_tmp_passwd);
 
-//      _users.push_back (usr);
       _users[hash] = usr;
+
+      s_tmp_domain += "\\";
+      DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found user: " <<
+        "id=" << s_user_id << " " <<
+        "tplid=" << s_shablon_id << ":" << s_shablon_id2 << " " <<
+        "status=" << SAMSUser::toString((SAMSUser::usrStatus)s_enabled) << " " <<
+        "ip=" << s_tmp_ip << " " <<
+        "[domain\\]nick=" << ((usedomain)?(s_tmp_domain):("")) << s_tmp_nick << " " <<
+        "quote:size:hit=" << s_quote << ":" << s_size  << ":" << s_hit
+        );
     }
 
   delete query;

@@ -48,7 +48,7 @@ public:
   * @param s Статус пользователя
   * @return Статус пользователя в виде строки
   */
-  string toString (usrStatus s);
+  static string toString (usrStatus s);
 
   /**
    * @brief Конструктор
