@@ -239,7 +239,7 @@ int main (int argc, char *argv[])
       // Мы незнаем что такое попалось, но на всякий случай ничего менять не будем
       if (fields.size () < 4)
         {
-          INFO ("Invalid fields count: " << fields.size());
+          INFO ("Reason: Invalid fields count: " << fields.size());
           INFO ("Output: " << line);
           cout << line << endl << flush;
           continue;
@@ -250,7 +250,7 @@ int main (int argc, char *argv[])
       // url считается локальным и неважно какой пользователь обратился, разрешаем доступ
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
-          INFO ("Url is local");
+          INFO ("Reason: Url is local");
           INFO ("Output: " << line);
 	  cout << line << endl << flush;
           continue;
@@ -261,7 +261,7 @@ int main (int argc, char *argv[])
       // Пользователь не найден, блокируем доступ
       if (!usr)
         {
-          INFO ("User not found");
+          INFO ("Reason: User not found");
           if (fields[2] != "-")
             {
               INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
@@ -281,7 +281,7 @@ int main (int argc, char *argv[])
 
       if ( (usr->getEnabled () != SAMSUser::STAT_ACTIVE) && (usr->getEnabled () != SAMSUser::STAT_LIMITED) )
         {
-          INFO ("User not active (disabled or blocked)");
+          INFO ("Reason: User not active (disabled or blocked)");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -292,7 +292,7 @@ int main (int argc, char *argv[])
       tpl = TemplateList::getTemplate (usr->getCurrentTemplateId ());
       if (!tpl)
         {
-          INFO ("Nothing to do without template");
+          INFO ("Reason: User's template not found");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -302,7 +302,7 @@ int main (int argc, char *argv[])
       // Если url существует в белом списке, разрешаем доступ
       if ( tpl->isUrlWhitelisted (fields[0]) )
         {
-          INFO ("In white list");
+          INFO ("Reason: In white list");
           INFO ("Output: " << line);
 	  cout << line << endl << flush;
           continue;
@@ -311,7 +311,7 @@ int main (int argc, char *argv[])
       // Если url существует в черном списке, блокируем доступ
       if ( tpl->isUrlBlacklisted (fields[0]) )
         {
-          INFO ("In black list");
+          INFO ("Reason: In black list");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -321,7 +321,7 @@ int main (int argc, char *argv[])
       // Если url существует в списке регулярных выражений, блокируем доступ
       if ( tpl->isUrlMatchRegex (fields[0]) )
         {
-          INFO ("In regular expression list");
+          INFO ("Reason: In regular expression list");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -331,7 +331,7 @@ int main (int argc, char *argv[])
       // Если в url присутствует запрещенное расширение файла, блокируем доступ
       if ( tpl->isUrlHasFileExt (fields[0]) )
         {
-          INFO ("Has disallowed file extension");
+          INFO ("Reason: Has disallowed file extension");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -341,7 +341,7 @@ int main (int argc, char *argv[])
       // Если url в текущее время не разрешен, блокируем доступ
       if ( tpl->isTimeDenied (fields[0]) )
         {
-          INFO ("Denied due to time restrictions");
+          INFO ("Reason: Denied due to time restrictions");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -350,7 +350,7 @@ int main (int argc, char *argv[])
 
       if ( tpl->getAllDeny () )
         {
-          INFO ("Denied to all and not whitelisted");
+          INFO ("Reason: Denied to all and not whitelisted");
           INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -360,7 +360,7 @@ int main (int argc, char *argv[])
       destination = tpl->modifyUrl (fields[0]);
       if (!destination.empty ())
         {
-          INFO ("Redirected to another location");
+          INFO ("Reason: Redirected to another location");
           INFO ("Output: " << destination << " " << fields[1] << " " << fields[2] << " " << fields[3]);
           cout << destination;
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
@@ -368,7 +368,7 @@ int main (int argc, char *argv[])
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
-      INFO ("Access granted");
+      INFO ("Reason: Access granted");
       INFO ("Output: " << line);
       cout << line << endl << flush;
     }
