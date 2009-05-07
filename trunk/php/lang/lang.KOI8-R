@@ -887,6 +887,7 @@
   $usersbuttom_1_useradd_AddUser_2=" Уже зарегистрирован в системе";
 
   $filedeniedlisttray_filedeniedlisttray_1="Расширения файлов.  <BR>Список";
+  $regexlisttray_regexlisttray_1="Регулярные выражения.  <BR>Список";
 
   $shablonbuttom_9_delete_DeleteShablon_1="Шаблон присвоен";
   $shablonbuttom_9_delete_DeleteShablon_2="пользователям";

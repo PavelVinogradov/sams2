@@ -346,6 +346,8 @@ function RedirListForm()
 		$type="$allowlisttray_allowlisttray_1";
 	if($row['s_type']=="files")
 		$type=" $filedeniedlisttray_filedeniedlisttray_1";
+	if($row['s_type']=="regex")
+		$type=" $regexlisttray_regexlisttray_1";
   PageTop("redirect_48.jpg","$type <FONT COLOR=\"BLUE\">$row[s_name]</FONT>");
   $DB->free_samsdb_query();
   print("<BR>\n");

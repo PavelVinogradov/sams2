@@ -876,6 +876,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
 
   $filedeniedlisttray_filedeniedlisttray_1="File extensions.  <BR>List";
+  $regexlisttray_regexlisttray_1="Regular expressions.  <BR>List";
 
   $shablonbuttom_9_delete_DeleteShablon_1="Template contains";
   $shablonbuttom_9_delete_DeleteShablon_2="users";

@@ -28,7 +28,7 @@
 	{
 		$item=array("classname"=> "url",
 			"target"=> "tray",
-			"url"=> "tray.php?show=exe&function=contextlisttray&id=$row[s_redirect_id]",
+			"url"=> "tray.php?show=exe&filename=redirlisttray.php&function=redirlisttray&id=$row[s_redirect_id]",
 			"text"=> "$row[s_name]");
 		treeFolderItem($item);
 
