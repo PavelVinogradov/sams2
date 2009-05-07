@@ -26,12 +26,13 @@ function LDAPtest()
 	$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
 	$usersrdn=GetAuthParameter("ldap","usersrdn");
 	$usersfilter=GetAuthParameter("ldap","usersfilter");
+	$usernameattr=GetAuthParameter("ldap","usernameattr");
 	$groupsrdn=GetAuthParameter("ldap","groupsrdn");
 	$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
 	print("<H1>Test LDAP connection</H1>");
 	include('ldap.php');
-	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
+	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
 	if($samsldap != NULL)
 	{
 
@@ -55,11 +56,11 @@ function LDAPtest()
 	        print("<TABLE CLASS=samstable>");
         	print("<TH width=5%>No");
         	print("<TH >Name");
-        	print("<TH >Common name");
+        	print("<TH >Display name");
 		for($j=0;$j<$userdata['userscount'];$j++)
 		{
 			echo "<TR><TD>$j<TD> ".$userdata['uid'][$j];
-			echo "<TD> ".$userdata['cn'][$j];
+			echo "<TD> ".$userdata['name'][$j];
 		}
 		echo "</TABLE>";
 
@@ -113,6 +114,11 @@ function AuthLDAPValues()
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>Users filter</B>\n");
   $value=GetAuthParameter("ldap","usersfilter");
+  print("<TD>$value\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>User name attribute</B>\n");
+  $value=GetAuthParameter("ldap","usernameattr");
   print("<TD>$value\n");
 
   print("<TR bgcolor=blanchedalmond>\n");

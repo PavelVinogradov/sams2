@@ -19,9 +19,14 @@ function AuthLDAPReConfig()
   UpdateAuthParameter("ldap","adadminpasswd");
   UpdateAuthParameter("ldap","usersrdn");
   UpdateAuthParameter("ldap","usersfilter");
+  UpdateAuthParameter("ldap","usernameattr");
   UpdateAuthParameter("ldap","groupsrdn");
   UpdateAuthParameter("ldap","groupsfilter");
 
+  print("<SCRIPT>\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=authldapvalues&filename=authldaptray.php\";\n");
+  print("        parent.lframe.location.href=\"lframe.php\";\n");
+  print("</SCRIPT> \n");
 }
 
 function AuthLDAPReConfigForm()
@@ -84,6 +89,11 @@ function AuthLDAPReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"usersfilter\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
+  print("<TD><B>User name attribute</B>\n");
+  $value=GetAuthParameter("ldap","usernameattr");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"usernameattr\" VALUE=\"$value\">\n");
+
+  print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>Groups RDN</B>\n");
   $value=GetAuthParameter("ldap","groupsrdn");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"groupsrdn\" VALUE=\"$value\">\n");
@@ -112,7 +122,7 @@ function authldapbuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=authldapreconfigform&filename=authldapbuttom_1_prop.php",
-	               "basefrm","config_32.jpg","config_48.jpg","LDAP authorisation configure");
+	               "basefrm","config_32.jpg","config_48.jpg","LDAP authorization configure");
     }
 
 }

@@ -16,9 +16,9 @@ function AddUsersFromLDAP()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
- 
+
   if(isset($_GET["username"])) $userlist=$_GET["username"];
   if(isset($_GET["groupname"])) $usergroup=$_GET["groupname"];
   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
@@ -39,7 +39,6 @@ function AddUsersFromLDAP()
 	$user="$string";
 	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')";
 	$num_rows=$DB->samsdb_query($query);
-
 
      }
 
@@ -78,15 +77,21 @@ function AddUsersFromLDAPForm()
 	$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
 	$usersrdn=GetAuthParameter("ldap","usersrdn");
 	$usersfilter=GetAuthParameter("ldap","usersfilter");
+	$usernameattr=GetAuthParameter("ldap","usernameattr");
 	$groupsrdn=GetAuthParameter("ldap","groupsrdn");
 	$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
 	include('ldap.php');
-	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
+	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
 
 
 	if($samsldap != NULL)
 	{
+		print("<FORM NAME=\"SelectUsersGroup\" ACTION=\"main.php\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addusersfromldapform\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authldapbuttom_2_usersadd.php\">\n");
+
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
 			$a=$samsldap->GetUsersData();
 		else
@@ -95,11 +100,6 @@ function AddUsersFromLDAPForm()
 			$b=$samsldap->GetUsersWithSecondaryGroupID($addgroupname);
 		}
 		$groupinfo=$samsldap->GetGroupsData();
-
-		print("<FORM NAME=\"SelectUsersGroup\" ACTION=\"main.php\">\n");
-		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addusersfromldapform\">\n");
-		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authldapbuttom_2_usersadd.php\">\n");
 
 // Uncomment the following block to show users either from selected group or entire list
 /*
@@ -161,7 +161,7 @@ function AddUsersFromLDAPForm()
 		for($i=0;$i<$a['userscount'];$i++)
 		{
 			$user=$a['uid'][$i];
-			$username=$a['cn'][$i];
+			$username=$a['name'][$i];
 
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
@@ -174,7 +174,7 @@ function AddUsersFromLDAPForm()
 		for($i=0;$i<$b['userscount'];$i++)
 		{
 			$user=$b['uid'][$i];
-			$username=$b['cn'][$i];
+			$username=$b['name'][$i];
 
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
