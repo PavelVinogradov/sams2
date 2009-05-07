@@ -151,7 +151,7 @@ bool UrlGroup::hasUrl (const string & url) const
       for (idx = 0; idx < _patterns.size (); idx++)
         {
 #ifdef USE_PCRECPP
-          if (_patterns[idx]->FullMatch (url))
+          if (_patterns[idx]->PartialMatch (url))
             {
               DEBUG (DEBUG4, "[" << this << "] Found rule " << _patterns[idx]->pattern () << " for " << url);
               return true;
