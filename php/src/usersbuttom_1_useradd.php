@@ -335,7 +335,7 @@ function NewUserForm()
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function SetQuote()\n");
        print("{\n");
-       $result=mysql_query("SELECT * FROM shablons");
+       $result=mysql_query("SELECT * FROM shablon");
        while($row=mysql_fetch_array($result))
            {
               print("if(document.forms[\"NEWUSER\"].elements[\"usershablon\"].value==\"$row[s_shablon_id]\" )\n");

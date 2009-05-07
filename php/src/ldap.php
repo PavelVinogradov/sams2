@@ -4,6 +4,7 @@ class sams_ldap {
     var $host;
     var $usersrdn;
     var $usersfilter;
+    var $usernameattr;
     var $groupsrdn;
     var $groupsfilter;
     var $user;
@@ -11,16 +12,20 @@ class sams_ldap {
     var $connection;
     var $ld;
     
-    function sams_ldap($host, $basedn, $usersrdn, $usersfilter, $groupsrdn, $groupsfilter, $user, $passwd)
+    function sams_ldap($host, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $user, $passwd)
     {
 	$this->host=$host;
 	$this->base_dn=$basedn;
 	$this->usersrdn=$usersrdn;
 	$this->usersfilter=$usersfilter;
+	$this->usernameattr=$usernameattr;
 	$this->groupsrdn=$groupsrdn;
 	$this->groupsfilter=$groupsfilter;
 	$this->user=$user;
 	$this->password=$passwd;
+	if (is_null($this->usernameattr) || empty($this->usernameattr)) {
+		$this->usernameattr = "description";
+	}
 	$this->ld = new ldap($this->host);
 	if (!$this->ld->connect()) 
 	{
@@ -50,20 +55,20 @@ class sams_ldap {
 		$filter = "(cn=*)";
 	}
 
-	$array=array('cn','uid');
+	$array=array($this->usernameattr,'uid');
         if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
 	{
 	    $i=0;
 	    if ($entry = $sr->firstEntry()) 
 	    {
 		$attrs = $entry->getAttributes();
-		$userdata['cn'][$i]=$attrs['cn'][0];
+		$userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		$userdata['uid'][$i]=$attrs['uid'][0];
 	        while ($entry->nextEntry()) 
 	        {
 		    $i++;
 		    $attrs = $entry->getAttributes();
-		    $userdata['cn'][$i]=$attrs['cn'][0];
+		    $userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		    $userdata['uid'][$i]=$attrs['uid'][0];
 	        }
 		$i++;
@@ -76,7 +81,7 @@ class sams_ldap {
     {
 	$userdata = array();
 	$basedn="$this->usersrdn,$this->base_dn";
-	$array=array('cn','uid','gidNumber');
+	$array=array($this->usernameattr,'uid','gidNumber');
 
         if($sr = $this->ld->searchSubtree($basedn,"(gidNumber=$gid)",$array))
 	{
@@ -84,13 +89,13 @@ class sams_ldap {
 	    if ($entry = $sr->firstEntry()) 
 	    {
 		$attrs = $entry->getAttributes();
-		$userdata['cn'][$i]=$attrs['cn'][0];
+		$userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		$userdata['uid'][$i]=$attrs['uid'][0];
 	        while ($entry->nextEntry()) 
 	        {
 			$i++;
 			$attrs = $entry->getAttributes();
-			$userdata['cn'][$i]=$attrs['cn'][0];
+		        $userdata['name'][$i]=$attrs[$this->usernameattr][0];
 			$userdata['uid'][$i]=$attrs['uid'][0];
 	        }
 		$i++;

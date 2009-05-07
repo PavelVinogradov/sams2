@@ -119,14 +119,17 @@ function UserAuthenticate($user, $password)
 	$request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick=\"$user\" ";
 	if($this->LoadUserVariables($request)>0)
 	{
-		$adldserver=GetAuthParameter("ldap","ldapserver");
+
+		$host=GetAuthParameter("ldap","ldapserver");
 		$basedn=GetAuthParameter("ldap","basedn");
-		$adadmin=GetAuthParameter("ldap","adadmin");
-		$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
-		$usergroup=GetAuthParameter("ldap","usergroup");
+		$usersrdn=GetAuthParameter("ldap","usersrdn");
+		$usersfilter=GetAuthParameter("ldap","usersfilter");
+		$usernameattr=GetAuthParameter("ldap","usernameattr");
+		$groupsrdn=GetAuthParameter("ldap","groupsrdn");
+		$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
 		include('src/ldap.php');
-		$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+		$samsldap = new sams_ldap($host, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $user, $passwd);
 
 		if ($samsldap->Authenticate($this->UserName,$password))
 		{
@@ -141,14 +144,16 @@ function UserIDAuthenticate($userid, $password)
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	if($this->LoadUserVariables($request)>0)
 	{
-		$adldserver=GetAuthParameter("ldap","ldapserver");
+		$host=GetAuthParameter("ldap","ldapserver");
 		$basedn=GetAuthParameter("ldap","basedn");
-		$adadmin=GetAuthParameter("ldap","adadmin");
-		$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
-		$usergroup=GetAuthParameter("ldap","usergroup");
+		$usersrdn=GetAuthParameter("ldap","usersrdn");
+		$usersfilter=GetAuthParameter("ldap","usersfilter");
+		$usernameattr=GetAuthParameter("ldap","usernameattr");
+		$groupsrdn=GetAuthParameter("ldap","groupsrdn");
+		$groupsfilter=GetAuthParameter("ldap","groupsfilter");
 
 		include('src/ldap.php');
-		$samsldap = new sams_ldap($adldserver, $basedn, $usergroup, $adadmin, $adadminpasswd);
+		$samsldap = new sams_ldap($host, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $user, $passwd);
 
 		if ($samsldap->Authenticate($this->UserName,$password))
 		{
