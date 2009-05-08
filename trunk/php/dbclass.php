@@ -502,7 +502,7 @@ function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muse
 $pgdb[0] = "CREATE TABLE websettings (	s_lang varchar(15) NOT NULL default 'EN', s_iconset varchar(25) NOT NULL default 'classic', s_useraccess smallint NOT NULL default '1', s_urlaccess smallint NOT NULL default '1', s_showutree smallint NOT NULL default '1' , s_showname varchar(5) NOT NULL default 'nick', s_showgraph smallint NOT NULL default '0', 	s_createpdf varchar(5) NOT NULL default 'NONE',	s_version char(5) NOT NULL default '1.0')"; 
 $pgdb[1] = "INSERT INTO websettings VALUES('EN','classic','1','1','1','nick','0','NONE','2.0.0')";
 $pgdb[2] = "CREATE TABLE proxy (  s_proxy_id SERIAL PRIMARY KEY, s_description varchar(100) default 'Proxy server', 
-s_endvalue bigint NOT NULL default '0', s_redirect_to varchar(100) default 'http://your.ip.address/sams2/icon/classic/blank.gif', s_denied_to varchar(100) default 'http://your.ip.address/sams2/messages', s_redirector varchar(25) default 'NONE', s_delaypool smallint default '0', s_auth varchar(4) default 'ip', s_wbinfopath varchar(100) default '/usr/bin', s_separator varchar(15) default '+', s_usedomain smallint default '0', s_bigd smallint default '0', s_bigu smallint default '0', s_sleep int default '1', s_parser smallint default '0', s_parser_time int default '1', s_count_clean smallint default '0', s_nameencode smallint default '0', s_realsize varchar(4) default 'real', s_checkdns smallint default '0', s_debuglevel int NOT NULL default '0', s_defaultdomain varchar(25) NOT NULL default 'workgroup', s_squidbase int NOT NULL default '0', 
+s_endvalue bigint NOT NULL default '0', s_redirect_to varchar(100) default 'http://your.ip.address/sams2/icon/classic/blank.gif', s_denied_to varchar(100) default 'http://your.ip.address/sams2/messages', s_redirector varchar(25) default 'NONE', s_delaypool smallint default '0', s_auth varchar(4) default 'ip', s_wbinfopath varchar(100) default '/usr/bin', s_separator varchar(15) default '+', s_usedomain smallint default '0', s_bigd smallint default '2', s_bigu smallint default '2', s_sleep int default '1', s_parser smallint default '0', s_parser_time int default '1', s_count_clean smallint default '0', s_nameencode smallint default '0', s_realsize varchar(4) default 'real', s_checkdns smallint default '0', s_debuglevel int NOT NULL default '0', s_defaultdomain varchar(25) NOT NULL default 'workgroup', s_squidbase int NOT NULL default '0', 
 s_udscript varchar(100) NOT NULL default 'NONE', 
 s_adminaddr varchar(60) NOT NULL default 'root@localhost', 
 s_kbsize varchar(15) NOT NULL default '1024', 
@@ -518,7 +518,7 @@ s_autogrp int DEFAULT '0')";
 
 //'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
 //$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
-$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
+$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
 , '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '0', '0' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
@@ -553,12 +553,12 @@ $pgdb[24] = "CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_proxy_id, s_date, 
 $pgdb[25] = "CREATE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
 $pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
-$pgdb[28] = "CREATE TABLE sysinfo ( s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
+$pgdb[28] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
 s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date DATETIME NOT NULL ,
 s_status INT NOT NULL)";
 
 $pgdb[29] = "create table auth_param (s_auth varchar(4) default '', s_param varchar(50) default '', s_value varchar(50) default '')";
-$pgdb[30] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
+$pgdb[30] = "INSERT INTO auth_param VALUES('ntlm', 'enabled', '0')";
 $pgdb[31] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
 $pgdb[32] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
 $pgdb[33] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
