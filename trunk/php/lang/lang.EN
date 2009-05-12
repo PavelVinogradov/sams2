@@ -353,6 +353,7 @@
   $redirlisttray_AddRedirListForm_3=" Set up "; 
   $redirlisttray_AddRedirListForm_4=" List contains URL, to which user's demands would be redirected "; 
   $redirlisttray_RedirListTray_1=" List"; 
+  $redirlisttray_ReplaceListTray_1=" Substitute List";
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1=" Delete the list "; 
 
@@ -588,6 +589,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $lframe_sams_FileDenied_1=" File types "; 
   $lframe_sams_FolderDenied_1=" URL access forbidden "; 
   $lframe_sams_FolderRedirect_1=" Redirection ";
+  $lframe_sams_FolderSubstitute_1="Substitute";
 
   $userbuttom_4_site_SiteUserList_1=" URL list received from "; 
   $userbuttom_4_site_SiteUserList_2=" Edit the URL "; 

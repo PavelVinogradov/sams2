@@ -24,7 +24,9 @@ function JSProxyInfo()
   if($PROXYConf->s_auth=="ntlm")
 	$auth="NTLM";
   if($PROXYConf->s_auth=="adld")
-	$auth="ADLD";
+	$auth="Active Directory";
+  if($PROXYConf->s_auth=="ldap")
+	$auth="LDAP";
   if($PROXYConf->s_parser==0)
 	$parser="No";
   if($PROXYConf->s_parser==2)

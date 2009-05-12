@@ -142,6 +142,8 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
+  $redir_addreplaceform1="Подстановка запроса.<BR>Создание нового списка URL";
+
   $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
   $redir_filetypesform2="Удалить";
   $redir_filetypesform3="Изменить";
@@ -340,6 +342,28 @@
   $shablonbuttom_1_prop_UpdateShablonForm_5="Скорость канала для всего шаблона (byte/s)";
   $shablonbuttom_1_prop_UpdateShablonForm_6="Скорость канала для отдельного пользователя (byte/s)";
   $shablonbuttom_1_prop_UpdateShablonForm_7="Сохранить изменения";
+  $shablonbuttom_1_prop_UpdateShablonForm_8="Перенаправление запроса";
+  $shablonbuttom_1_prop_UpdateShablonForm_9="Запрет доступа";
+  $shablonbuttom_1_prop_UpdateShablonForm_10="Запрет доступа по регулярным выражениям";
+  $shablonbuttom_1_prop_UpdateShablonForm_11="Доступ к URL разрешен";
+  $shablonbuttom_1_prop_UpdateShablonForm_12="Встроенные";
+  $shablonbuttom_1_prop_UpdateShablonForm_13="Временной период";
+  $shablonbuttom_1_prop_UpdateShablonForm_14="Дни недели";
+  $shablonbuttom_1_prop_UpdateShablonForm_15="Другой период";
+  $shablonbuttom_1_prop_UpdateShablonForm_16="период";
+  $shablonbuttom_1_prop_UpdateShablonForm_17=" дней";
+  $shablonbuttom_1_prop_UpdateShablonForm_18="Дата следующего обнуления счетчика трафика";
+  $shablonbuttom_1_prop_UpdateShablonForm_19="Способ авторизации пользователей: ";
+  $shablonbuttom_1_prop_UpdateShablonForm_20="Период лимита трафика: ";
+  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
+  $shablonbuttom_1_prop_UpdateShablonForm_22="Доступ запрещен ко всем URL";
+  $shablonbuttom_1_prop_UpdateShablonForm_23="Запрет загрузки файлов по расширениям";
+  $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
+  $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
+  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
+  $shablonbuttom_1_prop_UpdateShablonForm_27="День";
+  $shablonbuttom_1_prop_UpdateShablonForm_28="Вторичный шаблон";
+
   $shablonbuttom_1_prop_shablonbuttom_1_prop_1="Изменить шаблон";
 
   $redirlisttray_RedirListForm_1="Удалить URL";
@@ -350,6 +374,8 @@
   $redirlisttray_AddRedirListForm_3="Создать";
   $redirlisttray_AddRedirListForm_4="Список содержит URL, запросы пользователей к которым будет перенаправлены";
   $redirlisttray_RedirListTray_1=" Перенаправление запроса <BR> Список ";
+  $redirlisttray_ReplaceListTray_1=" Подстановка запроса <BR> Список ";
+  $redirlisttray_ReplaceListTray_2="Адрес для подстановки";
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1="Удалить список";
 
@@ -587,6 +613,7 @@
   $lframe_sams_FileDenied_1="Расширения файлов"; 
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
+  $lframe_sams_FolderSubstitute_1="Подстановка";
 
   $userbuttom_4_site_SiteUserList_1="Список URL, полученных с ";
   $userbuttom_4_site_SiteUserList_2="редактирование URL";
@@ -668,26 +695,19 @@
 
   $week=array("", "Пон", "Вт","Ср", "Чт", "Пт", "Сб","Вск");
 
-  $shablonbuttom_1_prop_UpdateShablonForm_8="Перенаправление запроса";
-  $shablonbuttom_1_prop_UpdateShablonForm_9="Запрет доступа";
-  $shablonbuttom_1_prop_UpdateShablonForm_10="Запрет доступа по регулярным выражениям";
-  $shablonbuttom_1_prop_UpdateShablonForm_11="Доступ к URL разрешен";
-  $shablonbuttom_1_prop_UpdateShablonForm_12="Встроенные";
-  $shablonbuttom_1_prop_UpdateShablonForm_13="Временной период";
-  $shablonbuttom_1_prop_UpdateShablonForm_14="Дни недели";
 
   $userbuttom_6_chpasswd_userbuttom_6_chpasswd_1="Смена пароля пользователя";
   $userbuttom_6_chpasswd_ChUserPasswdForm_1="Смена пароля пользователя ";
   $userbuttom_6_chpasswd_ChUserPasswd_1="Сменен пароль пользователя ";
 
   $adminbuttom_1_prop_SamsReConfigForm_44="Домен пользователя в access.log записывается МАЛЕНЬКИМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывть";
-  $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫМИ";
-  $adminbuttom_1_prop_SamsReConfigForm_20b="строчными";
-  $adminbuttom_1_prop_SamsReConfigForm_20c="Без изменения";
+  $adminbuttom_1_prop_SamsReConfigForm_20="Регистр домена пользователя в access.log";
+  $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫЕ БУКВЫ";
+  $adminbuttom_1_prop_SamsReConfigForm_20b="строчные буквы";
+  $adminbuttom_1_prop_SamsReConfigForm_20c="Без Изменения";
   $adminbuttom_1_prop_SamsReConfigForm_20d=" буквами";
   $adminbuttom_1_prop_SamsReConfigForm_21="Домен пользователя в squid.log записывается ПРОПИСНЫМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_22="Имя пользователя в access.log записывать";
+  $adminbuttom_1_prop_SamsReConfigForm_22="Регистр имени пользователя в access.log";
   $adminbuttom_1_prop_SamsReConfigForm_23="Имя пользователя в access.log записывается ПРОПИСНЫМИ буквами";
   
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Загрузить NCSA пользователей из файла";
@@ -775,10 +795,6 @@
   $groupbuttom_0_prop_UpdateGroupForm_2="Название группы";
   $groupbuttom_0_prop_groupbuttom_0_prop_1="Изменить свойства группы";    
 
-  $shablonbuttom_1_prop_UpdateShablonForm_15="Другой период";
-  $shablonbuttom_1_prop_UpdateShablonForm_16="период";
-  $shablonbuttom_1_prop_UpdateShablonForm_17=" дней";
-  $shablonbuttom_1_prop_UpdateShablonForm_18="Дата следующего обнуления счетчика трафика";
   
   $shablonnew_NewShablonForm_9="Способ авторизации пользователей";
   $shablonnew_NewShablonForm_10="Период лимита трафика";
@@ -789,8 +805,6 @@
   $shablonnew_NewShablonForm_15=" дней";
   $shablonnew_NewShablonForm_16="Дата следующего обнуления счетчика трафика";
 
-  $shablonbuttom_1_prop_UpdateShablonForm_19="Способ авторизации пользователей: ";
-  $shablonbuttom_1_prop_UpdateShablonForm_20="Период лимита трафика: ";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_9="Показывать графики в отчетах"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_10="Создавать PDF отчеты"; 
@@ -818,15 +832,11 @@
   $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси сервер";
   $squidbuttom_0_reconfig_ReconfigSquidForm_4="Реконфигурировать";
 
-  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
-
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1="Найдены группы домена:";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2="Выбрать группу пользователей";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_3="Найдены пользователи группы Active Directory";
 
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4="Найдены пользователи группы Active Directory";
-  $shablonbuttom_1_prop_UpdateShablonForm_22="Доступ запрещен ко всем URL";
-  $shablonbuttom_1_prop_UpdateShablonForm_23="Запрет загрузки файлов по расширениям";
   $logbuttom_9_delete_ClearLog_1="Удалены логи";
 
   $shablontray_ShablonUsers_2="Выберите пользователей для назначения шаблона";
@@ -857,10 +867,6 @@
   $logbuttom_9_delete_ClearLogForm_1="Очистить логи";
   $redirbuttom_4_redirstat_ShowRedirStat_1="Статистика списка перенаправления запросов";
 
-  $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
-  $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счетчиков трафика отключена в настройках SAMS";
-  $shablonbuttom_1_prop_UpdateShablonForm_27="День";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Старый пароль";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="Новый пароль";

@@ -59,18 +59,24 @@ function ShablonUsers()
      print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_24</FONT>\n");
   else if($SHABLONConf->s_period=="W")   
      print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_25</FONT>\n");
+  else if($SHABLONConf->s_period=="D")   
+     print("<FONT COLOR=\"BLUE\">$shablonbuttom_1_prop_UpdateShablonForm_27</FONT>\n");
   else
 	{
 		print("<FONT COLOR=\"BLUE\">$SHABLONConf->s_period $shablonbuttom_1_prop_UpdateShablonForm_17</FONT>\n");
 		 print("<TR><TD>$shablonbuttom_1_prop_UpdateShablonForm_18:<TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_clrdate</FONT>");
 	}
- $weekday=array("", "M","T","W","H","F","A","S");  
- print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_14 </B><TD><FONT COLOR=\"BLUE\">\n");
-  for($i=1;$i<8;$i++)
-     {
-	if(strpos(" $row[days]","$weekday[$i]")>0)
-		print("$week[$i] \n");
-     }  
+  $second_template="NONE";
+  if ($SHABLONConf->s_shablon_id2 != -1)
+    {
+      $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$SHABLONConf->s_shablon_id2'");
+      if($row=$DB->samsdb_fetch_array())
+         {
+            $second_template = $row["s_name"];
+         }
+    }
+
+  print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_28 </B><TD><FONT COLOR=\"BLUE\">$second_template\n");
   print("<TR>\n");
   print("</TABLE>\n");
 
