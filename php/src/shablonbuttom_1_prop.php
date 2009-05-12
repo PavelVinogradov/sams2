@@ -19,7 +19,8 @@ function UpdateShablon()
 	exit;
 
    $period="M";
- if(isset($_GET["id"])) $sname=$_GET["id"];
+  if(isset($_GET["id"])) $sname=$_GET["id"];
+  if(isset($_GET["shablon2"])) $shablon2=$_GET["shablon2"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
   if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
   if(isset($_GET["userip"])) $userpool=$_GET["userip"];
@@ -67,7 +68,7 @@ for($i=0;$i<$tc;$i++)
           }
      }
 //echo "UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate'  WHERE s_shablon_id='$sname'";
-  $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate'  WHERE s_shablon_id='$sname' ");
+  $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_shablon_id2='$shablon2'  WHERE s_shablon_id='$sname' ");
 
   print("<SCRIPT>\n");
   print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$sname\"; \n");
@@ -159,6 +160,31 @@ function UpdateShablonForm()
                 print("</TR>\n");
 	  }
      }
+
+ // подстановка запроса
+  $section_exist=0;
+  for($i=0; $i<$credir; $i++)
+      {
+	if($s_type[$i]=="replace")
+	  {
+                if ($section_exist==0)
+                  {
+                    print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\"></TD>\n");
+                    print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>Substitute url</B></TD>\n");
+                    print("</TR>\n");
+                    $section_exist=1;
+                  }
+	        print("<TR>\n  <TD ALIGN=RIGHT WIDTH=\"40%\">");
+        	print("<IMG SRC=\"$SAMSConf->ICONSET/redir.jpg\"> ");
+		$checked="";
+		if(in_array($s_id[$i], $s_selected))
+			$checked="CHECKED";
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
+                print("</TR>\n");
+	  }
+     }
+
 
   $DENIEDCHECKED="";
   if ($SHABLONConf->s_alldenied == 1)
@@ -314,6 +340,25 @@ function UpdateShablonForm()
   print("<INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=6 VALUE=\"$SHABLONConf->s_userpool\"> \n" );
   
   
+  print("<TR>\n");
+  print("<TD><B>$shablonbuttom_1_prop_UpdateShablonForm_28</B>\n");
+  print("<TD><SELECT NAME=\"shablon2\" ID=\"shablon2\" SIZE=1>\n");
+  print("<OPTION VALUE=\"-1\" SELECTED> NONE");
+  $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
+  while($row=$DB->samsdb_fetch_array())
+      {
+       if($row['s_shablon_id']==$SHABLONConf->s_shablon_id2)
+         {
+            print("<OPTION VALUE=$row[s_shablon_id] SELECTED> $row[s_name]");
+         }
+       else
+         {
+            print("<OPTION VALUE=$row[s_shablon_id]> $row[s_name]");
+         }
+      }
+  print("</SELECT>\n");
+  $DB->free_samsdb_query();
+
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$shablonbuttom_1_prop_UpdateShablonForm_19 \n");

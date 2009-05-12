@@ -8,6 +8,7 @@
 class SAMSSHABLON
 {
   var $s_shablon_id;
+  var $s_shablon_id2;
   var $s_name;
   var $s_shablonpool;
   var $s_userpool;
@@ -25,6 +26,7 @@ function SAMSSHABLON($shablonid)
   $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$shablonid' ");
   $row=$DB->samsdb_fetch_array();
   $this->s_shablon_id=$row['s_shablon_id'];
+  $this->s_shablon_id2=$row['s_shablon_id2'];
   $this->s_name=$row['s_name'];
   $this->s_shablonpool=$row['s_shablonpool'];
   $this->s_userpool=$row['s_userpool'];

@@ -54,6 +54,32 @@ function AddNewList()
 
 }
 
+function SaveDestination()
+{
+  global $SAMSConf;
+  global $USERConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  if(isset($_GET["row_id"])) $row_id=$_GET["row_id"];
+  if(isset($_GET["dest"])) $dest=$_GET["dest"];
+  if(isset($_GET["type"])) $type=$_GET["type"];
+
+  if($USERConf->ToWebInterfaceAccess("LC")!=1 )
+	exit;
+
+  $num_rows=$DB->samsdb_query("UPDATE redirect SET s_dest='$dest' WHERE s_redirect_id='$row_id'");
+
+  //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
+
+  print("<SCRIPT>\n");
+  print("  parent.lframe.location.href=\"lframe.php\"; \n");
+  print("  parent.tray.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlisttray&id=$row_id\";\n");
+  print("</SCRIPT> \n");
+}
+
 function AddURLListForm()
 {
   global $SAMSConf;
@@ -73,6 +99,8 @@ function AddURLListForm()
  switch($type)
 	{
 	case 'redir':  PageTop("redirect_48.jpg","$redir_addredirectform1 ");
+				break;
+	case 'replace': PageTop("redirect_48.jpg","$redir_addreplaceform1 ");
 				break;
 	case 'denied':  PageTop("redirect_48.jpg","$denied_adddeniedform1 ");
 				break;
@@ -340,6 +368,8 @@ function RedirListForm()
 
 	if($row['s_type']=="redir")
 		$type="$redirlisttray_RedirListTray_1";
+	if($row['s_type']=="replace")
+		$type="$redirlisttray_ReplaceListTray_1";
 	if($row['s_type']=="denied")
 		$type="$deniedlisttray_DeniedListTray_1";
 	if($row['s_type']=="allow")
@@ -349,6 +379,19 @@ function RedirListForm()
 	if($row['s_type']=="regex")
 		$type=" $regexlisttray_regexlisttray_1";
   PageTop("redirect_48.jpg","$type <FONT COLOR=\"BLUE\">$row[s_name]</FONT>");
+  print("<FORM NAME=\"destination\" ACTION=\"main.php\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"savedestination\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"redirlisttray.php\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"row_id\" VALUE=\"$id\"> \n");
+  if($row['s_type']=="replace")
+    {
+      print("<INPUT TYPE=\"HIDDEN\" NAME=\"type\" VALUE=\"replace\"> \n");
+      print("Substitute destination <INPUT TYPE=\"TEXT\" NAME=\"dest\" SIZE=50 VALUE=\"$row[s_dest]\">  </INPUT>");
+      print("<INPUT TYPE=\"SUBMIT\" value=\"Save\">\n");
+      print("<BR>");
+    }
+  print("</FORM>");
   $DB->free_samsdb_query();
   print("<BR>\n");
 
@@ -418,6 +461,15 @@ function RedirListForm()
   print(" var res=AppendURLString(URL);\n");
   print(" document.forms[\"EDITURL\"].elements[\"oldvalue\"].value=res;\n");
   print("}\n");
+
+  print("function SaveDestination(formname)\n");
+  print("{\n");
+  //print(" var s=formname.deleteurl.value;\n");
+  //print(" var res=AppendURLString(s);\n");
+  //print(" document.forms[\"table\"].elements[\"deletedurl\"].value=res;\n");
+  //print(" document.forms[\"table\"].submit();\n");
+  print("}\n");
+  
   print("</script>\n");
   
   print("<P>\n");
@@ -482,6 +534,8 @@ function RedirListTray()
 	print("<TD WIDTH=25%>");
 	if($row['s_type']=="redir")
 		$type="$redirlisttray_RedirListTray_1";
+	if($row['s_type']=="replace")
+		$type="$redirlisttray_ReplaceListTray_1";
 	if($row['s_type']=="denied")
 		$type="$deniedlisttray_DeniedListTray_1";
 	if($row['s_type']=="allow")

@@ -15,12 +15,12 @@ function SysPlugConfig()
   while($row=$DB->samsdb_fetch_array())
     {
       if(isset($_GET[$row['s_row_id']])) $val=$_GET[$row['s_row_id']];
+      else $val="off";
       if($val=="on") $val=1; else $val=0;
       $num_rows=$DB2->samsdb_query("UPDATE sysinfo SET s_status='$val' WHERE s_row_id='$row[s_row_id]'");
     }
 
   $DB->free_samsdb_query();
-  $DB2->free_samsdb_query();
 
   print("<SCRIPT>\n");
   print("        parent.basefrm.location.href=\"main.php?show=exe&function=sysplugconfigform&filename=sysplugconfigtray.php\";\n");
