@@ -253,7 +253,7 @@ SAMSUser *Proxy::findUser (const string & ip, const string & ident)
   if (usrNick == "-")
     usr = SAMSUserList::findUser ("ip", ip, usrDomain, usrNick);
   else
-    usr = SAMSUserList::findUser ("nonip", ip, usrDomain, usrNick);
+    usr = SAMSUserList::findUser (toString (_auth), ip, usrDomain, usrNick);
 
   if (usr == NULL)
     {
@@ -349,7 +349,7 @@ string Proxy::createUserHash (const string &auth, const string &ip, const string
 
   string usrDomain="";
   string usrNick=nick;
-  if (_usedomain)
+  if (_usedomain && (auth == "ntlm" || auth == "adld"))
     {
       if (domain.empty ())
         usrDomain = _defaultdomain;
