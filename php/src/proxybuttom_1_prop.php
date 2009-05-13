@@ -14,21 +14,21 @@ function ProxyReConfig()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-$delaypool=$PROXYConf->s_delaypool;
-$usedomain=$PROXYConf->s_usedomain;
+$delaypool=0;
+$usedomain=0;
 $bigdomain=$PROXYConf->s_bigd;
 $bigusername=$PROXYConf->s_bigu;
-$parser_on=$PROXYConf->s_parser;
+$parser_on=0;
 $parser_time=$PROXYConf->s_parser_time;
-$count_clean=$PROXYConf->s_count_clean;
+$count_clean=0;
 $sleep=$PROXYConf->s_sleep;
-$nameencode=$PROXYConf->s_nameencode;
-$checkdns=$PROXYConf->s_checkdns;
+$nameencode=0;
+$checkdns=0;
 $loglevel=$PROXYConf->s_debuglevel;
 $squidbase=$PROXYConf->s_squidbase;
 $adminaddr=$PROXYConf->s_adminaddr;
 
-$autouser=$PROXYConf->s_autouser;
+$autouser=0;
 $shablon=$PROXYConf->s_autotpl;
 $group=$PROXYConf->s_autogrp;
 
@@ -62,6 +62,7 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["autouser"])) $autouser=SetCheckBoxValue($_GET["autouser"]);
   if(isset($_GET["shablon"])) $shablon=$_GET["shablon"];
   if(isset($_GET["group"])) $group=$_GET["group"];
+
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
@@ -162,8 +163,8 @@ function ProxyReConfigForm()
   print("}\n");
   print("function EnableDomainName(formname) \n");
   print("{\n");
-  print("  var usedomain=formname.usedomain.checked; \n");
-  print("  if(usedomain==true) \n");
+  print("  var needdomain=formname.usedomain.checked; \n");
+  print("  if(needdomain==true) \n");
   print("      formname.bigdomain.disabled=false; \n");
   print("  else \n");
   print("      formname.bigdomain.disabled=true; \n");
