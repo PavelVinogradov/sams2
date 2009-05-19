@@ -82,12 +82,27 @@ function ADLDtest()
 
 function AuthADLDValues()
 {
+  global $SAMSConf;
   global $USERConf;
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  PageTop("config_48.jpg","Active Directory configuration ");
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+  PageTop("config_48.jpg","$AuthADLDValues_authadldtray_1 ");
   print("<P>\n");
+
+  $DB=new SAMSDB(&$SAMSConf);
+  $result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='adld' AND s_param='adldgroup'");
+  if($result>0)
+  {
+	echo "<H3>$AuthADLDValues_authadldtray_2:</H3>";
+	while($row=$DB->samsdb_fetch_array())
+	{
+		echo "<B>".$row['s_value']."</B><BR>\n";
+	}
+	echo "<P>";
+  }
 
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
 

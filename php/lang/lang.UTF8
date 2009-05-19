@@ -911,6 +911,9 @@
   $usersbuttom_2_traffic_UsersTrafficForm_4="размеру полученного трафика";
   $usersbuttom_2_traffic_UsersTrafficForm_5="именам пользователей";
 
+  $AuthADLDValues_authadldtray_1="Настройки доступа к Active Directory";
+  $AuthADLDValues_authadldtray_2="Пользователи SAMS синхронизируются с группами Active Directory";
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
