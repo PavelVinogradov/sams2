@@ -1,5 +1,13 @@
 <?php
 
+function SearchAuthParameter($auth,$parameter,$value)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  $num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' AND s_value='$value' ");
+  return($num_rows);
+}
+
 function UTF8ToSAMSLang($inp)
 {
   global $SAMSConf;
