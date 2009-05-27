@@ -11,7 +11,7 @@ class sams_ldap {
     var $password;
     var $connection;
     var $ld;
-    
+
     function sams_ldap($host, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $user, $passwd)
     {
 	$this->host=$host;
@@ -27,14 +27,14 @@ class sams_ldap {
 		$this->usernameattr = "description";
 	}
 	$this->ld = new ldap($this->host);
-	if (!$this->ld->connect()) 
+	if (!$this->ld->connect())
 	{
     	    die("Error connecting: ".$this->ld->ldapError."\n");
 	}
 	$ldbind=$this->ld->bind("$this->user","$this->password");
 	return($ldbind);
     }
-    function CompareValue($dn, $attr, $value) 
+    function CompareValue($dn, $attr, $value)
     {
 	$result = $this->ld->compare($dn, $attr, $value);
 	return $result;
@@ -44,7 +44,21 @@ class sams_ldap {
     {
 	$ldbind=$this->ld->bind("uid=$user,$this->usersrdn,$this->base_dn","$passwd");
 	return($ldbind);
-    }	
+    }
+
+    function GetUserInfo($user)
+    {
+        $userinfo = array();
+        $basedn="$this->usersrdn,$this->base_dn";
+        $array=array($this->usernameattr,'uid');
+        if($sr = $this->ld->searchSubtree($basedn,"(cn=$user)",$array))
+        {
+            if ($entry = $sr->firstEntry())
+                $userinfo = $entry->getAttributes();
+        }
+
+        return($userinfo);
+    }
 
     function GetUsersData()
     {
@@ -59,58 +73,79 @@ class sams_ldap {
         if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
 	{
 	    $i=0;
-	    if ($entry = $sr->firstEntry()) 
+	    if ($entry = $sr->firstEntry())
 	    {
 		$attrs = $entry->getAttributes();
+                $userdata['keys'][$attrs['uid'][0]] = $attrs['uid'][0];
 		$userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		$userdata['uid'][$i]=$attrs['uid'][0];
-	        while ($entry->nextEntry()) 
+	        while ($entry->nextEntry())
 	        {
 		    $i++;
 		    $attrs = $entry->getAttributes();
+                    $userdata['keys'][$attrs['uid'][0]] = $attrs['uid'][0];
 		    $userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		    $userdata['uid'][$i]=$attrs['uid'][0];
 	        }
 		$i++;
-	    } 
-	    $userdata['userscount']=$i;
+	    }
+	    //$userdata['userscount']=$i;
 	}
-	return($userdata); 
+	return($userdata);
     }
     function GetUsersWithPrimaryGroupID($gid)
     {
 	$userdata = array();
 	$basedn="$this->usersrdn,$this->base_dn";
-	$array=array($this->usernameattr,'uid','gidNumber');
+	$array=array($this->usernameattr,'uid');
 
         if($sr = $this->ld->searchSubtree($basedn,"(gidNumber=$gid)",$array))
 	{
 	    $i=0;
-	    if ($entry = $sr->firstEntry()) 
+	    if ($entry = $sr->firstEntry())
 	    {
 		$attrs = $entry->getAttributes();
+                $userdata['keys'][$attrs['uid'][0]] = $attrs['uid'][0];
 		$userdata['name'][$i]=$attrs[$this->usernameattr][0];
 		$userdata['uid'][$i]=$attrs['uid'][0];
-	        while ($entry->nextEntry()) 
+	        while ($entry->nextEntry())
 	        {
 			$i++;
 			$attrs = $entry->getAttributes();
+                        $userdata['keys'][$attrs['uid'][0]] = $attrs['uid'][0];
 		        $userdata['name'][$i]=$attrs[$this->usernameattr][0];
 			$userdata['uid'][$i]=$attrs['uid'][0];
 	        }
 		$i++;
-	    } 
-	    $userdata['userscount']=$i;
+	    }
+	    //$userdata['userscount']=$i;
 	}
-	return($userdata); 
+	return($userdata);
     }
     function GetUsersWithSecondaryGroupID($gid)
     {
-	$userdata = array();
-	$basedn="$this->usersrdn,$this->base_dn";
-	$array=array('cn','uid','gidNumber');
+      $userdata = array();
+      $groupsbasedn="$this->groupsrdn,$this->base_dn";
+      $groupattrs=array('memberUid');
 
-	return($userdata); 
+      if($sr = $this->ld->searchSubtree($groupsbasedn,"(gidNumber=$gid)", $groupattrs))
+      {
+        if ($entry = $sr->firstEntry())
+        {
+          $members = $entry->getValues('memberUid');
+          if (is_array($members))
+            foreach ($members as $member) {
+              $userinfo = $this->GetUserInfo($member);
+              if (is_array($userinfo) && !is_null($userinfo['uid'][0]) && !empty($userinfo['uid'][0]))
+              {
+                $userdata['keys'][$userinfo['uid'][0]] = $userinfo['uid'][0];
+                $userdata['uid'][count($userdata['uid'])] = $userinfo['uid'][0];
+                $userdata['name'][count($userdata['name'])] = $userinfo[$this->usernameattr][0];
+              }
+            }
+        }
+      }
+      return($userdata);
     }
     function GetGroupsData()
     {
@@ -125,13 +160,13 @@ class sams_ldap {
         if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
 	{
 	    $i=0;
-	    if ($entry = $sr->firstEntry()) 
+	    if ($entry = $sr->firstEntry())
 	    {
 		$attrs = $entry->getAttributes();
 		$groupdata['cn'][$i]=$attrs['cn'][0];
 		$groupdata['description'][$i]=$attrs['description'][0];
 		$groupdata['gidNumber'][$i]=$attrs['gidNumber'][0];
-	        while ($entry->nextEntry()) 
+	        while ($entry->nextEntry())
 	        {
 		    $i++;
 		    $attrs = $entry->getAttributes();
@@ -140,10 +175,10 @@ class sams_ldap {
 		    $groupdata['gidNumber'][$i]=$attrs['gidNumber'][0];
 	        }
 		$i++;
-	    } 
+	    }
 	    $groupdata['groupscount']=$i;
 	}
-        return($groupdata); 
+        return($groupdata);
     }
 }
 
@@ -151,16 +186,16 @@ class sams_ldap {
 /**
  * class.ldap.php4
  * Provides an object orientated LDAP wrapper
- * 
+ *
  * @author Shannon Wynter {@link http://fremnet.net/contact}
  * @version 0.2
  * @copyright Copyright &copy; 2006, Shannon Wynter
  * @link http://fremnet.net
- * 
+ *
  * This is simply an object orientated wrapper for the PHP LDAP functions.
- * 
+ *
  * I've thrown in the children function
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -174,7 +209,7 @@ class sams_ldap {
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * ChangeLog
  * -----------
  * version 0.2, 2006-11-17, Shannon Wynter {@link http://fremnet.net/contact}
@@ -182,7 +217,7 @@ class sams_ldap {
  *
  * version 0.1, 2006-06-22, Shannon Wynter {@link http://fremnet.net/contact}
  *  - Initial release
- * 
+ *
  * Notes
  * -----------
  * I've not included the reference related functions as they're not documented.
@@ -190,9 +225,9 @@ class sams_ldap {
 
 /**
  * Class ldap.
- * 
+ *
  * PHP4 class to wrap around the main LDAP functions
- * 
+ *
  * Makes use of class ldapresult which in turn makes use of class ldapresultentry
  *
  */
@@ -201,10 +236,10 @@ class ldap {
 	/**
 	 * Array of server IP address or hostname (add ports with <space>port)
 	 * EG: array('localhost 10138')
-	 * 
+	 *
 	 * I know it's strange to use <space> as a port separator, but we don't
 	 * want to be splitting up a ldap:// url
-	 * 
+	 *
 	 * @access public
 	 * @var array
 	 */
@@ -212,9 +247,9 @@ class ldap {
 
 	/**
 	 * The version of LDAP we'll be using
-	 * 
+	 *
 	 * Should be 2 or 3
-	 * 
+	 *
 	 * @access public
 	 * @var integer
 	 */
@@ -265,9 +300,9 @@ class ldap {
 
 	/**
 	 * Creates a connection to the LDAP server which will be used for all future access
-	 * 
+	 *
 	 * Will loop through all the servers in $this->server until it finds one it can connect to
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_connect
 	 * @return boolean Success
 	 */
@@ -288,9 +323,9 @@ class ldap {
 
 	/**
 	 * Starts TLS over our connection if we're using version 3 of the LDAP protocol
-	 * 
+	 *
 	 * Note: TLS and SSL are mutually exclusive
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_start_tls
 	 * @return false
 	 */
@@ -323,7 +358,7 @@ class ldap {
 
 	/**
 	 * Binds to the LDAP directory with specified RDN and password.
-	 * 
+	 *
 	 * $dn and $password are option, if not specified an anonymous bind is attempted.
 	 *
 	 * Note: I have added a check to make sure the password is passed when dn is.
@@ -347,7 +382,7 @@ class ldap {
 	}
 
 	/**
-	 * Sets the value of the specified option to be $value. Returns TRUE on 
+	 * Sets the value of the specified option to be $value. Returns TRUE on
 	 * success or FALSE on failure
 	 *
 	 * For information about the options and values, please see the link
@@ -363,7 +398,7 @@ class ldap {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Gets the value of the specified option and returns it or FALSE on failure
 	 *
@@ -380,14 +415,14 @@ class ldap {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
-	 * Performs the search for a specified filter on the directory with the 
+	 * Performs the search for a specified filter on the directory with the
 	 * scope of LDAP_SCOPE_SUBTREE. This is equivalent to searching the entire
 	 * directory. $base_dn specifies the base DN for the directory.
 	 *
 	 * Only $base_dn and $filter are required
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_search
 	 * @param string $base_dn
 	 * @param string $filter
@@ -408,16 +443,16 @@ class ldap {
 	}
 
 	/**
-	 * Performs the search for a specified filter on the directory with the 
-	 * scope of LDAP_SCOPE_ONELEVEL. 
-	 * 
+	 * Performs the search for a specified filter on the directory with the
+	 * scope of LDAP_SCOPE_ONELEVEL.
+	 *
 	 * LDAP_SCOPE_ONELEVEL means that the search should only return information that
 	 * is at the level immediately below the $base_dn given in the call.
 	 * (Equivalent to typing "ls" and getting a list of files and folders in the
 	 * current working directory.)
 	 *
 	 * Only $base_dn and $filter are required
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_list
 	 * @param string $base_dn
 	 * @param string $filter
@@ -437,11 +472,11 @@ class ldap {
 	}
 
 	/**
-	 * Performs the search for a specified filter on the directory with the 
+	 * Performs the search for a specified filter on the directory with the
 	 * scope of LDAP_SCOPE_BASE. So it is equivalent to reading an entry from the directory.
-	 * 
+	 *
 	 * Only $base_dn and $filter are required
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_read
 	 * @param string $base_dn
 	 * @param string $filter
@@ -452,23 +487,23 @@ class ldap {
 	 * @param int[optional] $deref
 	 * @return ldapresult
 	 */
-	function searchBase($base_dn, $filter, $attrs=null, $attrsonly=null, $sizelimit=null, $timelimit=null, $deref=null) 
+	function searchBase($base_dn, $filter, $attrs=null, $attrsonly=null, $sizelimit=null, $timelimit=null, $deref=null)
 	{
 	$result = @ldap_list($this->connection,$base_dn,$filter,$attrs,$attrsonly,$sizelimit,$timelimit,$deref);
-		if ($result = @ldap_list($this->connection,$base_dn,$filter,$attrs,$attrsonly,$sizelimit,$timelimit,$deref)) 
+		if ($result = @ldap_list($this->connection,$base_dn,$filter,$attrs,$attrsonly,$sizelimit,$timelimit,$deref))
 		{
 			return new ldapresult($this,$result);
 		}
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Add attribute values to current attributes
-	 * 
+	 *
 	 * This function adds attribute(s) to the specified $dn. It performs the modification at
 	 * the attribute level as opposed to the object level.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_mod_add
 	 * @param string $dn The DN you want to update
 	 * @param array $entry The data you want to add
@@ -487,7 +522,7 @@ class ldap {
 	 *
 	 * This function removes attribute(s) from the specified $dn. It performs the modification
 	 * at the attribute level as opposed to the object level.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_mod_del
 	 * @param string $dn The DN you want to update
 	 * @param array $entry The data you want to delete
@@ -499,11 +534,11 @@ class ldap {
 		}
 		$this->setErrVars();
 		return false;
-	}	
+	}
 
 	/**
 	 * Replace attribute values with new ones
-	 * 
+	 *
 	 * This function replaces attribute(s) from the specified $dn. It performs the modification
 	 * at the attribute level as opposed to the object level.
 	 *
@@ -518,7 +553,7 @@ class ldap {
 		}
 		$this->setErrVars();
 		return false;
-	}	
+	}
 
 	/**
 	 * Modify an LDAP entry
@@ -527,7 +562,7 @@ class ldap {
 	 * Array $entry specifies the information about the entry. The values in the entries are
 	 * indexed by individual attributes. In case of multiple values for an attribute, they are
 	 * indexed using integers starting with 0
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_modify
 	 * @param string $dn The DN we're modifying
 	 * @param array $entry
@@ -539,7 +574,7 @@ class ldap {
 		}
 		$this->setErrVars();
 		return false;
-	}	
+	}
 
 	/**
 	 * Add entries to the LDAP directory
@@ -548,7 +583,7 @@ class ldap {
 	 * Array $entry specifies the information about the entry. The values in the entries are
 	 * indexed by individual attributes. In case of multiple values for an attribute, they are
 	 * indexed using integers starting with 0
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_add
 	 * @param string $dn The DN we're adding
 	 * @param array $entry
@@ -576,7 +611,7 @@ class ldap {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Modify the name of an entry
 	 *
@@ -584,7 +619,7 @@ class ldap {
 	 * parent/superior entry is specified by $newparent. If the parameter $deleteoldrdn is TRUE
 	 * the old RDN value(s) is removed, else the old RDN value(s) is retained as non-distinguished
 	 * values of the entry.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_rename
 	 * @param string $dn The entry to be renamed/moved
 	 * @param string $newrdn The new RDN
@@ -607,12 +642,12 @@ class ldap {
 
 	/**
 	 * Compare the value of attribute found in entry specified with $dn
-	 * 
+	 *
 	 * Used to compare the value of attr to the value of same attribute in the LDAP directory
 	 * entry specified with $dn.
-	 * 
+	 *
 	 * Returns TRUE if value matches, otherwise returns FALSE. Returns -1 on error.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_compare
 	 * @param string $dn The DN which we are comparing
 	 * @param string $attr The attribute to check
@@ -626,12 +661,12 @@ class ldap {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Get an array full of immediate children for the node specified by $dn
 	 *
 	 * Returns array if successful, otherwise returns FALSE
-	 * 
+	 *
 	 * @param string $dn The base dn that we want to look for children under
 	 * @return array
 	 */
@@ -647,10 +682,10 @@ class ldap {
 		}
 		return $returning;
 	}
-	
+
 	/**
 	 * Helper function: Set the error variables
-	 * 
+	 *
 	 * I'm so slack...
 	 */
 	function setErrVars() {
@@ -661,9 +696,9 @@ class ldap {
 
 /**
  * class ldapresult
- * 
+ *
  * PHP4 class to act as an object wrapper around a ldap result resource
- * 
+ *
  * Makes use of class ldapresultentry
  *
  */
@@ -712,16 +747,16 @@ class ldapresult {
 		$this->ldap = $ldap;
 		$this->result = $result;
 	}
-	
+
 	/**
 	 * Returns the ldapresultentry for the first entry on success and FALSE on error.
 	 *
 	 * Entries in the LDAP result are read sequentially using the ldap_first_entry()
 	 * and ldap_next_entry() functions.
-	 * 
+	 *
 	 * $entry = $obj->firstEntry() returns an ldapentry for first entry in the result.
 	 * You then call $entry->nextEntry()
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_first_entry
 	 * @return ldapresultentry
 	 */
@@ -732,7 +767,7 @@ class ldapresult {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Returns a complete result information in a multi-dimensional array
 	 * on success and FALSE on error.
@@ -747,7 +782,7 @@ class ldapresult {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Returns the number of entries or FALSE on error
 	 *
@@ -763,7 +798,7 @@ class ldapresult {
 	}
 	/**
 	 * Sort LDAP results
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_sort
 	 * @param unknown_type $sortFilter
 	 * @return unknown
@@ -775,7 +810,7 @@ class ldapresult {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Frees up the memory allocated internally to store the result
 	 *
@@ -792,7 +827,7 @@ class ldapresult {
 
 	/**
 	 * Helper function: Set the error variables
-	 * 
+	 *
 	 * I'm so slack...
 	 */
 	function setErrVars() {
@@ -803,7 +838,7 @@ class ldapresult {
 
 /**
  * Class ldapresultentry
- * 
+ *
  * PHP4 wrapper around an ldap entry resource
  *
  */
@@ -840,10 +875,10 @@ class ldapresultentry {
 	 * @var resource
 	 */
 	var $entry;
-	
+
 	/**
 	 * The &ber_identifier used in get*Attribute functions
-	 * 
+	 *
 	 * @access private
 	 * @var integer
 	 */
@@ -860,12 +895,12 @@ class ldapresultentry {
 		$this->connection = $connection;
 		$this->entry = $entry;
 	}
-	
+
 	/**
 	 * Loads the next ldap entry
 	 *
 	 * If there are no more entries (or an error) it returns false.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_next_entry
 	 * @return boolean Success
 	 */
@@ -876,14 +911,14 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Used to simplify reading the attributes and values from an entry in the search result.
 	 * The return value is a multi-dimensional array of attributes and values
 	 *
 	 * Returns a complete entry information in a multi-dimensional array on success
 	 * and FALSE on error.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_get_attributes
 	 * @return mixed
 	 */
@@ -894,10 +929,10 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Used to find out the DN of an entry in the result
-	 * 
+	 *
 	 * Returns the DN of the result or FALSE on error
 	 *
 	 * @link http://www.php.net/ldap_get_dn
@@ -910,16 +945,16 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Get all the binary values from the entry
-	 * 
+	 *
 	 * Used to read all the values of the attribute in the entry
 	 *
 	 * I renamed the get_values_len to getValuesBin as it seemed more logical
-	 * 
+	 *
 	 * Returns an array of values for the attribute on success and FALSE  on error.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_get_values_len
 	 * @param string $attr The attribute you want to read
 	 * @return array
@@ -931,14 +966,14 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Get all values from the entry
 	 *
 	 * Used to read all the values of the attribute in the entry
-	 * 
+	 *
 	 * Returns an array of values for the attribute on success and FALSE  on error.
-	 * 
+	 *
 	 * @link http://www.php.net/ldap_get_values
 	 * @param string $attr The attribute you want to read
 	 * @return array
@@ -953,7 +988,7 @@ class ldapresultentry {
 
 	/**
 	 * Return the name of the first attribute
-	 * 
+	 *
 	 * Returns the name of the first attribute in the entry on success or failure on error
 	 *
 	 * @link http://www.php.net/ldap_first_attribute
@@ -967,10 +1002,10 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-	
+
 	/**
 	 * Return the name of the next attribute
-	 * 
+	 *
 	 * Returns the next attribute in the entry on success or FALSE on error
 	 *
 	 * @link http://www.php.net/ldap_next_attribute
@@ -988,10 +1023,10 @@ class ldapresultentry {
 		$this->setErrVars();
 		return false;
 	}
-		
+
 	/**
 	 * Helper function: Set the error variables
-	 * 
+	 *
 	 * I'm so slack...
 	 */
 	function setErrVars() {

@@ -93,11 +93,20 @@ function AddUsersFromLDAPForm()
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authldapbuttom_2_usersadd.php\">\n");
 
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
-			$a=$samsldap->GetUsersData();
+			$c=$samsldap->GetUsersData();
 		else
 		{
 			$a=$samsldap->GetUsersWithPrimaryGroupID($addgroupname);
 			$b=$samsldap->GetUsersWithSecondaryGroupID($addgroupname);
+			$c=$a;
+			for($j=0;$j<count($b['uid']);$j++)
+			{
+				if (array_key_exists($b['uid'][$j], $c['keys']))
+					continue;
+				$c['uid'][count($c['uid'])] = $b['uid'][$j];
+				$c['keys'][$b['uid'][$j]] = $b['uid'][$j];
+				$c['name'][count($c['name'])] = $b['name'][$j];
+			}
 		}
 		$groupinfo=$samsldap->GetGroupsData();
 
@@ -108,18 +117,14 @@ function AddUsersFromLDAPForm()
                 print("<TH width=5%>No");
                 print("<TH >Name");
                 print("<TH >Common name");
-                for($j=0;$j<$a['userscount'];$j++)
+                for($j=0;$j<count($c['uid']);$j++)
                 {
-                        echo "<TR><TD>$j<TD> ".$a['uid'][$j];
-                        echo "<TD> ".$a['cn'][$j];
-                }
-                for($j=0;$j<$b['userscount'];$j++)
-                {
-                        echo "<TR><TD>$j<TD> ".$b['uid'][$j];
-                        echo "<TD> ".$b['cn'][$j];
+                        echo "<TR><TD>$j<TD> ".$c['uid'][$j];
+                        echo "<TD> ".$c['name'][$j];
                 }
                 echo "</TABLE>";
 */
+
 
 		$SELECTED="";
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
@@ -158,10 +163,10 @@ function AddUsersFromLDAPForm()
 			print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
 
 		print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
-		for($i=0;$i<$a['userscount'];$i++)
+		for($i=0;$i<count($c['uid']);$i++)
 		{
-			$user=$a['uid'][$i];
-			$username=$a['name'][$i];
+			$user=$c['uid'][$i];
+			$username=$c['name'][$i];
 
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
@@ -171,18 +176,6 @@ function AddUsersFromLDAPForm()
 			$DB->free_samsdb_query();
 		}
 
-		for($i=0;$i<$b['userscount'];$i++)
-		{
-			$user=$b['uid'][$i];
-			$username=$b['name'][$i];
-
-			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
-			if($num_rows==0)  
-			{
-				print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
-			}
-			$DB->free_samsdb_query();
-		}
 		print("</SELECT>\n");
 		print("<P>" );
   
