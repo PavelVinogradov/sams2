@@ -397,6 +397,12 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       if (sll.setLine (line) != true)
         continue;
 
+      if (LocalNetworks::isLocalUrl (sll.getUrl ()))
+        {
+          DEBUG (DEBUG9, "Consider url is local");
+          continue;
+        }
+
       // Ищем пользователя, а если его нет и настроен autouser, то создаем
       usr = Proxy::findUser (sll.getIP (), sll.getIdent ());
 
@@ -417,11 +423,6 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       if ((_user_filter != NULL) && (!_user_filter->match (usr)))
         {
           DEBUG (DEBUG9, "Filtered out: " << *usr << " not in the filter");
-          continue;
-        }
-      if (LocalNetworks::isLocalUrl (sll.getUrl ()))
-        {
-          DEBUG (DEBUG9, "Consider url is local");
           continue;
         }
 

@@ -40,6 +40,7 @@ AC_CHECK_FUNCS([inet_ntoa memset strerror])
 gl_READUTMP
 gl_SYS_PROC_UPTIME
 gl_GETLOADAVG([plugins/loadavg])
+gl_FSUSAGE
 
 # SCO-ODT-3.0 is reported to need -lufc for crypt.
 # NetBSD needs -lcrypt for crypt.

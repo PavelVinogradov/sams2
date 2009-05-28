@@ -2,6 +2,8 @@ using namespace std;
 
 #include <string>
 
+extern "C" const char * get_fsusage ();
+
 string information()
 {
   return "File System Usage Information here";

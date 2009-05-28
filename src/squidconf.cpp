@@ -172,8 +172,12 @@ bool SquidConf::defineACL ()
                     {
                       if (((*it)->getEnabled() != SAMSUser::STAT_ACTIVE) && ((*it)->getEnabled() != SAMSUser::STAT_LIMITED))
                         {
-                          haveBlockedUsers = true;
-                          fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
+                          // Блокируем пользователей в squid.conf только если никакой редиректор не используется.
+                          if (redir_type == Proxy::REDIR_NONE)
+                            {
+                              haveBlockedUsers = true;
+                              fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
+                            }
                         }
                       else
                         {
