@@ -1,12 +1,22 @@
 using namespace std;
 
 #include <string>
+#include <stdlib.h>
 
-extern "C" const char * get_fsusage ();
+extern "C" char * get_fsusage ();
 
 string information()
 {
-  return "File System Usage Information here";
+  string res;
+  char *str_res = get_fsusage ();
+
+  if (str_res)
+    {
+      res = str_res;
+      free (str_res);
+    }
+
+  return res;
 }
 
 string name()

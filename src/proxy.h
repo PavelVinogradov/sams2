@@ -54,12 +54,12 @@ public:
   enum usrAuthType
   {
     AUTH_NONE,                  ///< Не используется
+    AUTH_IP,                    ///< Авторизация по сетевому (IP) адресу
+    AUTH_HOST,                  ///< Авторизация по сетевому имени
     AUTH_NTLM,                  ///< Авторизация в домене Windows через SMB протокол
     AUTH_ADLD,                  ///< Авторизация в домене ActiveDirectory
     AUTH_LDAP,                  ///< Авторизация в OpenLDAP
-    AUTH_NCSA,                  ///< Авторизация NCSA
-    AUTH_HOST,                  ///< Авторизация по сетевому имени
-    AUTH_IP                     ///< Авторизация по сетевому (IP) адресу
+    AUTH_NCSA                   ///< Авторизация NCSA
   };
 
   /**
