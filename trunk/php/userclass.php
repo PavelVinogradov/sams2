@@ -122,7 +122,10 @@ function sams_admin_authentication($username,$passwd)
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
      if($num_rows==0)
+      {
 	echo "ERROR<BR>";
+        exit(0);
+      }
      $row=$DB->samsdb_fetch_array();
      //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
