@@ -23,12 +23,13 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include "system.h"
 /*
 #include "canonicalize.h"
-*/
 #include "error.h"
+*/
 #include "fsusage_c.h"
 #include "human.h"
 /*
@@ -39,7 +40,6 @@
 #include "quote.h"
 */
 #include "save-cwd.h"
-#include "xgetcwd.h"
 
 /* If true, show inode information. */
 bool inode_format;
@@ -119,28 +119,35 @@ enum
   SYNC_OPTION
 };
 
-void
+char *
 print_header (void)
 {
+  char *str_header;
+  char str_res[1024];
+  char str_tmp[256];
+
   char buf[MAX (LONGEST_HUMAN_READABLE + 1, INT_BUFSIZE_BOUND (uintmax_t))];
 
   if (print_type)
-    fputs ("Filesystem    Type", stdout);
+    strcpy (str_res, "Filesystem    Type");
   else
-    fputs ("Filesystem        ", stdout);
+    strcpy (str_res, "Filesystem        ");
 
   if (inode_format)
-    printf ("    Inodes   IUsed   IFree IUse%%");
+    strcat (str_res, "    Inodes   IUsed   IFree IUse%%");
   else if (human_output_opts & human_autoscale)
     {
       if (human_output_opts & human_base_1024)
-	printf ("    Size  Used Avail Use%%");
+	strcat (str_res, "    Size  Used Avail Use%%");
       else
-	printf ("     Size   Used  Avail Use%%");
+	strcat (str_res, "     Size   Used  Avail Use%%");
     }
   else if (posix_format)
-    printf (" %s-blocks      Used Available Capacity",
+    {
+      sprintf (str_tmp, " %s-blocks      Used Available Capacity",
 	    umaxtostr (output_block_size, buf));
+      strcat (str_res, str_tmp);
+    }
   else
     {
       int opts = (human_suppress_point_zero
@@ -170,11 +177,15 @@ print_header (void)
       if (! (opts & human_base_1024))
 	opts |= human_B;
 
-      printf (" %4s-blocks      Used Available Use%%",
+      sprintf (str_tmp, " %4s-blocks      Used Available Use%%",
 	      human_readable (output_block_size, buf, opts, 1, 1));
+      strcat (str_res, str_tmp);
     }
 
-  printf (" Mounted on\n");
+  strcat (str_res, " Mounted on\n");
+  str_header = (char*) malloc(strlen(str_res));
+  strcpy (str_header, str_res);
+  return str_header;
 }
 
 /* Is FSTYPE a type of file system that should be listed?  */
@@ -243,7 +254,7 @@ df_readable (bool negative, uintmax_t n, char *buf,
    not be able to produce statistics in this case.
    ME_DUMMY and ME_REMOTE are the mount entry flags.  */
 
-void
+char *
 show_dev (char const *disk, char const *mount_point,
 	  char const *stat_file, char const *fstype,
 	  bool me_dummy, bool me_remote)
@@ -263,14 +274,18 @@ show_dev (char const *disk, char const *mount_point,
   bool negate_used;
   double pct = -1;
 
+  char str_res[1024];
+  char str_tmp[256];
+  char *str_dev = NULL;
+
   if (me_remote & show_local_fs)
-    return;
+    return NULL;
 
   if (me_dummy & !show_all_fs & !show_listed_fs)
-    return;
+    return NULL;
 
   if (!selected_fstype (fstype) || excluded_fstype (fstype))
-    return;
+    return NULL;
 
   /* If MOUNT_POINT is NULL, then the file system is not mounted, and this
      program reports on the file system that the special file is on.
@@ -281,18 +296,17 @@ show_dev (char const *disk, char const *mount_point,
 
   if (get_fs_usage (stat_file, disk, &fsu))
     {
-      error (0, errno, "%s", quote (stat_file));
-      exit_status = EXIT_FAILURE;
-      return;
+//      error (0, errno, "%s", quote (stat_file));
+      return NULL;
     }
 
   if (fsu.fsu_blocks == 0 && !show_all_fs && !show_listed_fs)
-    return;
+    return NULL;
 
   if (! file_systems_processed)
     {
       file_systems_processed = true;
-      print_header ();
+      str_dev = print_header ();
     }
 
   if (! disk)
@@ -307,19 +321,20 @@ show_dev (char const *disk, char const *mount_point,
       size_t disk_name_len = strlen (disk);
       size_t fstype_len = strlen (fstype);
       if (disk_name_len + fstype_len < 18)
-	printf ("%s%*s  ", disk, 18 - (int) disk_name_len, fstype);
+	sprintf (str_tmp, "%s%*s  ", disk, 18 - (int) disk_name_len, fstype);
       else if (!posix_format)
-	printf ("%s\n%18s  ", disk, fstype);
+	sprintf (str_tmp, "%s\n%18s  ", disk, fstype);
       else
-	printf ("%s %s", disk, fstype);
+	sprintf (str_tmp, "%s %s", disk, fstype);
     }
   else
     {
       if (strlen (disk) > 20 && !posix_format)
-	printf ("%s\n%20s", disk, "");
+	sprintf (str_tmp, "%s\n%20s", disk, "");
       else
-	printf ("%-20s", disk);
+	sprintf (str_tmp, "%-20s", disk);
     }
+  strcpy (str_res, str_tmp);
 
   if (inode_format)
     {
@@ -366,7 +381,7 @@ show_dev (char const *disk, char const *mount_point,
       negate_used = (total < available_to_root);
     }
 
-  printf (" %*s %*s %*s ",
+  sprintf (str_tmp, " %*s %*s %*s ",
 	  width + col1_adjustment,
 	  df_readable (false, total,
 		       buf[0], input_units, output_units),
@@ -374,6 +389,7 @@ show_dev (char const *disk, char const *mount_point,
 			      buf[1], input_units, output_units),
 	  width, df_readable (negate_available, available,
 			      buf[2], input_units, output_units));
+  strcat (str_res, str_tmp);
 
   if (used == UINTMAX_MAX || available == UINTMAX_MAX)
     ;
@@ -409,9 +425,10 @@ show_dev (char const *disk, char const *mount_point,
     }
 
   if (0 <= pct)
-    printf ("%*.0f%%", use_width - 1, pct);
+    sprintf (str_tmp, "%*.0f%%", use_width - 1, pct);
   else
-    printf ("%*s", use_width, "- ");
+    sprintf (str_tmp, "%*s", use_width, "- ");
+  strcat (str_res, str_tmp);
 
   if (mount_point)
     {
@@ -424,9 +441,22 @@ show_dev (char const *disk, char const *mount_point,
       else if (strncmp ("/tmp_mnt/", mount_point, 9) == 0)
 	mount_point += 8;
 #endif
-      printf (" %s", mount_point);
+      sprintf (str_tmp, " %s", mount_point);
+      strcat (str_res, str_tmp);
     }
-  putchar ('\n');
+  strcat (str_res, "\n");
+
+  if (str_dev)
+    {
+      str_dev = (char*)realloc(str_dev, strlen (str_dev) + strlen (str_res));
+    }
+  else
+    {
+      str_dev = (char*)malloc(strlen(str_res));
+      str_dev[0] = '\0';
+    }
+  strcat (str_dev, str_res);
+  return str_dev;
 }
 
 /* Return the root mountpoint of the file system on which FILE exists, in
@@ -442,7 +472,7 @@ find_mount_point (const char *file, const struct stat *file_stat)
 
   if (save_cwd (&cwd) != 0)
     {
-      error (0, errno, "cannot get current directory");
+      //error (0, errno, "cannot get current directory");
       return NULL;
     }
 
@@ -452,7 +482,7 @@ find_mount_point (const char *file, const struct stat *file_stat)
       last_stat = *file_stat;
       if (chdir (file) < 0)
 	{
-	  error (0, errno, "cannot change to directory %s", quote (file));
+	  //error (0, errno, "cannot change to directory %s", quote (file));
 	  return NULL;
 	}
     }
@@ -466,14 +496,13 @@ find_mount_point (const char *file, const struct stat *file_stat)
 
       if (chdir (dir) < 0)
 	{
-	  error (0, errno, "cannot change to directory %s", quote (dir));
+	  //error (0, errno, "cannot change to directory %s", quote (dir));
 	  return NULL;
 	}
 
       if (stat (".", &last_stat) < 0)
 	{
-	  error (0, errno, "cannot stat current directory (now %s)",
-		 quote (dir));
+	  //error (0, errno, "cannot stat current directory (now %s)", quote (dir));
 	  goto done;
 	}
     }
@@ -486,7 +515,7 @@ find_mount_point (const char *file, const struct stat *file_stat)
       struct stat st;
       if (stat ("..", &st) < 0)
 	{
-	  error (0, errno, "cannot stat %s", quote (".."));
+	  //error (0, errno, "cannot stat %s", quote (".."));
 	  goto done;
 	}
       if (st.st_dev != last_stat.st_dev || st.st_ino == last_stat.st_ino)
@@ -494,22 +523,23 @@ find_mount_point (const char *file, const struct stat *file_stat)
 	break;
       if (chdir ("..") < 0)
 	{
-	  error (0, errno, "cannot change to directory %s", quote (".."));
+	  //error (0, errno, "cannot change to directory %s", quote (".."));
 	  goto done;
 	}
       last_stat = st;
     }
 
   /* Finally reached a mount point, see what it's called.  */
-  mp = xgetcwd ();
+  mp = getcwd (NULL, 0);
 
 done:
   /* Restore the original cwd.  */
   {
     int save_errno = errno;
     if (restore_cwd (&cwd) != 0)
-      error (EXIT_FAILURE, errno,
-	     "failed to return to initial working directory");
+      {
+        //error (EXIT_FAILURE, errno, "failed to return to initial working directory");
+      }
     free_cwd (&cwd);
     errno = save_errno;
   }
@@ -613,7 +643,7 @@ show_point (const char *point, const struct stat *statp)
 		   can't possibly be on this file system.  */
 		if (errno == EIO)
 		  {
-		    error (0, errno, "%s", quote (me->me_mountdir));
+		    //error (0, errno, "%s", quote (me->me_mountdir));
 		    exit_status = EXIT_FAILURE;
 		  }
 
@@ -670,14 +700,25 @@ show_entry (char const *name, struct stat const *statp)
 /* Show all mounted file systems, except perhaps those that are of
    an unselected type or are empty. */
 
-void
+char *
 show_all_entries (void)
 {
   struct mount_entry *me;
+  char *str_entries = NULL;
+  char *str_dev = NULL;
 
   for (me = mount_list; me; me = me->me_next)
-    show_dev (me->me_devname, me->me_mountdir, NULL, me->me_type,
-	      me->me_dummy, me->me_remote);
+    {
+      str_dev = show_dev (me->me_devname, me->me_mountdir, NULL, me->me_type, me->me_dummy, me->me_remote);
+      if (str_dev)
+        {
+          if (str_entries)
+            str_entries = (char*)realloc (str_entries, strlen (str_entries) + strlen (str_dev));
+          else
+            str_entries = str_dev;
+        }
+    }
+  return str_entries;
 }
 
 /* Add FSTYPE to the list of file system types to display. */
@@ -707,11 +748,12 @@ add_excluded_fs_type (const char *fstype)
 }
 
 
-const char *
+char *
 get_fsusage ()
 {
   int c;
   struct stat *stats IF_LINT (= 0);
+  char *str_usage = NULL;
 
   fs_select_list = NULL;
   fs_exclude_list = NULL;
@@ -776,14 +818,20 @@ get_fsusage ()
       /* Couldn't read the table of mounted file systems.
          Fail, because df was invoked with no file name arguments;
       */
-      return "Cannot read table of mounted file systems";
+      str_usage = (char*)malloc (strlen("Cannot read table of mounted file systems"));
+      strcpy (str_usage, "Cannot read table of mounted file systems");
     }
 
   if (require_sync)
     sync ();
 
-  show_all_entries ();
+  str_usage = show_all_entries ();
 
-  if (! file_systems_processed)
-    return "no file systems processed";
+  if (! file_systems_processed && ! str_usage)
+    {
+      str_usage = (char*)malloc (strlen("no file systems processed"));
+      strcpy (str_usage, "no file systems processed");
+    }
+
+  return str_usage;
 }

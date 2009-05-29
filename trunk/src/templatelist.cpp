@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <limits.h>
 #include <string.h>
+#include <algorithm>
 
 #include "config.h"
 
@@ -30,6 +31,14 @@ bool TemplateList::_loaded = false;
 map<long, Template*> TemplateList::_list;
 DBConn *TemplateList::_conn;                ///< Соединение с БД
 bool TemplateList::_connection_owner;
+
+bool sortByAuthType (Template *a, Template *b)
+{
+  if (!a || !b)
+    return false;
+
+  return (a->getAuth () < b->getAuth ());
+}
 
 bool TemplateList::load ()
 {
@@ -189,7 +198,7 @@ bool TemplateList::reload ()
         s_tpl_id2 = -1;
 
       period_days = -1;
-     
+
       tpl = new Template(s_tpl_id, s_tpl_id2);
       tpl->setAuth (s_auth);
       tpl->setQuote (s_quote);
@@ -314,6 +323,21 @@ vector<long> TemplateList::getIds ()
     {
       lst.push_back((*it).first);
     }
+
+  return lst;
+}
+
+vector<Template*> TemplateList::getList ()
+{
+  load();
+
+  vector<Template*> lst;
+  map <long, Template*>::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      lst.push_back((*it).second);
+    }
+  sort (lst.begin (), lst.end (), sortByAuthType);
   return lst;
 }
 

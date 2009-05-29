@@ -88,7 +88,8 @@ bool SquidConf::defineACL ()
   string current_tag = "unknown";
   vector <string> v;
 
-  vector<long> tpls = TemplateList::getIds();
+  vector<Template *> tpls = TemplateList::getList ();
+  vector<Template *>::iterator tpls_it;
   vector<long> time_ids;
   vector<long> group_ids;
   Template * tpl;
@@ -141,16 +142,16 @@ bool SquidConf::defineACL ()
             {
               // Создаем списки пользователей
               vector<SAMSUser *> users;
-              for (i = 0; i < tpls.size (); i++)
+              for (tpls_it = tpls.begin (); tpls_it != tpls.end (); tpls_it++)
                 {
-                  SAMSUserList::getUsersByTemplate (tpls[i], users);
+                  tpl = *tpls_it;
+                  SAMSUserList::getUsersByTemplate (tpl->getId (), users);
                   if (users.empty ())
                     continue;
 
-                  DEBUG(DEBUG2, "Processing "<<users.size()<<" user[s] in template " << tpls[i]);
+                  DEBUG(DEBUG2, "Processing "<<users.size()<<" user[s] in template " << tpl->getId ());
 
                   string method;
-                  tpl = TemplateList::getTemplate(tpls[i]);
                   authType = tpl->getAuth ();
                   if (authType == Proxy::AUTH_IP)
                     method = "src";
@@ -183,7 +184,7 @@ bool SquidConf::defineACL ()
                         {
                           if ((authType == Proxy::AUTH_NCSA) && (fncsa.is_open ()))
                             fncsa << *(*it) << ":" << (*it)->getPassword () << endl;
-                          fout << "acl Sams2Template" << tpls[i] << " " << method << " " << *(*it) << endl;
+                          fout << "acl Sams2Template" << tpl->getId () << " " << method << " " << *(*it) << endl;
                         }
                     }
 
@@ -213,14 +214,14 @@ bool SquidConf::defineACL ()
                         continue;
                       if (tr->hasMidnight())
                         {
-                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
+                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
                           fout << tr->getStartTimeStr () << "-23:59" << endl;
-                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
+                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
                           fout << "00:00-" << tr->getEndTimeStr () << endl;
                         }
                       else
                         {
-                          fout << "acl Sams2Template" << tpls[i] << "time time " << tr->getDays () << " ";
+                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
                           fout << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
                         }
                     }
@@ -263,15 +264,14 @@ bool SquidConf::defineACL ()
                 fout << "http_access deny Sams2BlockedUsers" << endl;
 
               vector<SAMSUser *> users;
-              for (i = 0; i < tpls.size (); i++)
+              for (tpls_it = tpls.begin (); tpls_it != tpls.end (); tpls_it++)
                 {
-                  SAMSUserList::getUsersByTemplate (tpls[i], users);
+                  tpl = *tpls_it;
+                  SAMSUserList::getUsersByTemplate (tpl->getId (), users);
                   if (users.empty ())
                     continue;
 
-                  DEBUG(DEBUG_DAEMON, "Processing template " << tpls[i]);
-
-                  tpl = TemplateList::getTemplate(tpls[i]);
+                  DEBUG(DEBUG_DAEMON, "Processing template " << tpl->getId ());
 
                   restriction.str("");
 
@@ -285,7 +285,7 @@ bool SquidConf::defineACL ()
                             continue;
                           if (tr->isFullDay())
                             continue;
-                          restriction << " Sams2Template" <<tpls[i] << "time";
+                          restriction << " Sams2Template" << tpl->getId () << "time";
                           break;
                         }
 
@@ -309,8 +309,8 @@ bool SquidConf::defineACL ()
                       //...
                     }
 
-                  if (SAMSUserList::activeUsersInTemplate ( tpls[i]) > 0)
-                    fout << "http_access allow Sams2Template" << tpls[i] << restriction.str() << endl;
+                  if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
+                    fout << "http_access allow Sams2Template" << tpl->getId () << restriction.str() << endl;
                 }
             } //if (current_tag == "http_access")
 
