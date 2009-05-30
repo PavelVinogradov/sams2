@@ -122,10 +122,10 @@ function sams_admin_authentication($username,$passwd)
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
      if($num_rows==0)
-      {
-	echo "ERROR<BR>";
+       {
+	echo "ERROR: Account not found<BR>";
         exit(0);
-      }
+       }
      $row=$DB->samsdb_fetch_array();
      //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
@@ -143,6 +143,9 @@ function sams_admin_authentication($username,$passwd)
 			$SAMSConf->adminname=$username;
 			if( $autherror > 0 )
 				$DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='0'  WHERE s_user='$username' ");	        
+		setcookie("samsadmin","1");
+		setcookie("user","$username");
+		setcookie("passwd","$newpasswd");
 		  }
 		else
 		  {
@@ -150,10 +153,9 @@ function sams_admin_authentication($username,$passwd)
 	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='$time' WHERE s_user='$username'  ");         
 			else
 	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc=s_autherrorc+1,s_autherrort='0'  WHERE s_user='$username'  ");        
+	echo "ERROR: Bad password<BR>";
+        exit(0);
 		  }
-		setcookie("samsadmin","1");
-		setcookie("user","$username");
-		setcookie("passwd","$newpasswd");
 	    }   
          else
            {  

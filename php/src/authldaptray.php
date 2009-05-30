@@ -57,11 +57,14 @@ function LDAPtest()
         	print("<TH width=5%>No");
         	print("<TH >Name");
         	print("<TH >Display name");
-		for($j=0;$j<$userdata['userscount'];$j++)
-		{
-			echo "<TR><TD>$j<TD> ".$userdata['uid'][$j];
-			echo "<TD> ".$userdata['name'][$j];
-		}
+                for($j=0;$j<count($userdata['uid']);$j++)
+                {
+                        echo "<TR>";
+			echo "  <TD>$j</TD>";
+			echo "  <TD> ".$userdata['uid'][$j]."</TD>";
+                        echo "  <TD> ".$userdata['name'][$j]."</TD>";
+                        echo "</TR>";
+                }
 		echo "</TABLE>";
 
 	}    
