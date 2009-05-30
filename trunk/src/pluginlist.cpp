@@ -287,11 +287,10 @@ bool PluginList::updateInfo ()
   vector<Plugin*>::iterator it;
   for (it = _plugins.begin (); it != _plugins.end (); it++)
     {
+
       plug_name = (*((*it)->getName))();
       plug_version = (*((*it)->getVersion))();
-      plug_data = (*((*it)->getInfo))();
       plug_author = (*((*it)->getAuthor))();
-
       now = time (NULL);
       date_time = localtime(&now);
       strftime (sys_date, sizeof (sys_date), "%Y-%m-%d %H:%M:%S", date_time);
@@ -308,11 +307,6 @@ bool PluginList::updateInfo ()
           strcpy (sys_name, plug_name.c_str());
           strcpy (sys_version, plug_version.c_str());
           strcpy (sys_author, plug_author.c_str());
-          strncpy (sys_info, plug_data.c_str(), 1024);
-          if (plug_data.size () >= 1024)
-            sys_info[1023] = 0;
-          //strcpy (sys_info, plug_data.c_str());
-
 
           if (!querySelect->fetch ()) // такой записи еще нет, нужно добавлять
             {
@@ -322,13 +316,13 @@ bool PluginList::updateInfo ()
             {
               if (sys_status == 1) // обновляем если плагин активен
                 {
+                  plug_data = (*((*it)->getInfo))();
+                  strncpy (sys_info, plug_data.c_str(), 1024);
+                  if (plug_data.size () >= 1024)
+                    sys_info[1023] = 0;
                   queryUpdate->sendQuery ();
                 }
             }
-        }
-      else
-        {
-          INFO (plug_name << " " << plug_version << " reports at " << sys_date << " the following: " << plug_data);
         }
     }
 #endif // #if USE_DL
