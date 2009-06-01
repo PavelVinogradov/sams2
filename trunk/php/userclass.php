@@ -122,10 +122,9 @@ function sams_admin_authentication($username,$passwd)
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
      if($num_rows==0)
-       {
-	echo "ERROR: Account not found<BR>";
-        exit(0);
-       }
+      {
+        return $this->sams_user_name_authentication($username,$passwd);
+      }
      $row=$DB->samsdb_fetch_array();
      //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
@@ -242,12 +241,18 @@ function sams_user_name_authentication($username,$passwd)
      global $SAMSConf;
      $DB=new SAMSDB(&$SAMSConf);
 
+     if (is_null($username) || empty($username) || is_null($passwd) || empty($passwd))
+     {
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];
 	if(isset($_POST["user"])) $user=$_POST["user"];
+     }
+     else
+     {
+        $user=$username;
+        $password=$passwd;
+     }
 	require('./authclass.php');
-
-echo "1: sams_user_name_authentication id=$id user=$user password=$password<BR>";
 
      $SQL="SELECT squiduser.s_user_id,shablon.s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_nick='$user';";
 
