@@ -453,11 +453,11 @@ function CacheForm()
 
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_4</B>\n");
-	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"redirect_to\" SIZE=50 VALUE=\"http://ip.addr/sams/icon/classic/blank.gif\">\n");
+	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"redirect_to\" SIZE=50 VALUE=\"http://ip.addr/sams2/icon/classic/blank.gif\">\n");
 
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_5</B>\n");
-	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"denied_to\" SIZE=50 VALUE=\"http://ip.addr/sams/messages\"> \n");
+	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"denied_to\" SIZE=50 VALUE=\"http://ip.addr/sams2\"> \n");
 
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_6</B>\n");
