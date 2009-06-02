@@ -33,6 +33,7 @@ function LoadRedirList()
     {
        $string=fgets($finp, 10000);
        $string=trim($string);
+       $string=addslashes($string);
      //print("INSERT INTO urls SET urls.url=\"$string\",type=\"$id\" <BR> ");
        if(strlen($string)>1)
          $DB->samsdb_query("INSERT INTO url (s_url, s_redirect_id) VALUES ('$string' , '$id') ");
