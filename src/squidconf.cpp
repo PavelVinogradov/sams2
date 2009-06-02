@@ -171,14 +171,13 @@ bool SquidConf::defineACL ()
                   vector<SAMSUser *>::iterator it;
                   for (it = users.begin(); it != users.end(); it++)
                     {
-                      if (((*it)->getEnabled() != SAMSUser::STAT_ACTIVE) && ((*it)->getEnabled() != SAMSUser::STAT_LIMITED))
+                      if ( (redir_type == Proxy::REDIR_NONE) &&
+                           ((*it)->getEnabled() != SAMSUser::STAT_ACTIVE) &&
+                           ((*it)->getEnabled() != SAMSUser::STAT_LIMITED))
                         {
                           // Блокируем пользователей в squid.conf только если никакой редиректор не используется.
-                          if (redir_type == Proxy::REDIR_NONE)
-                            {
-                              haveBlockedUsers = true;
-                              fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
-                            }
+                          haveBlockedUsers = true;
+                          fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
                         }
                       else
                         {
