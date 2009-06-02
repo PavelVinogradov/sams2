@@ -14,6 +14,7 @@ static_docs = \
 	license.html \
 	faq.html \
 	commands.html \
+	notes.html \
 	tables.html \
 	sams2_conf.html \
 	news.html
