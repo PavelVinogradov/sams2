@@ -37,7 +37,7 @@ function AddUsersFromLDAP()
 	$string=$userlist[$i];
 	$i++;
 	$user="$string";
-	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')";
+	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$user', '$enabled', '-1')";
 	$num_rows=$DB->samsdb_query($query);
 
      }
