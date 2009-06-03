@@ -32,9 +32,7 @@
 */
 #include "fsusage_c.h"
 #include "human.h"
-/*
 #include "inttostr.h"
-*/
 #include "mountlist.h"
 /*
 #include "quote.h"
@@ -751,8 +749,6 @@ add_excluded_fs_type (const char *fstype)
 char *
 get_fsusage ()
 {
-  int c;
-  struct stat *stats IF_LINT (= 0);
   char *str_usage = NULL;
 
   fs_select_list = NULL;
@@ -818,7 +814,7 @@ get_fsusage ()
       /* Couldn't read the table of mounted file systems.
          Fail, because df was invoked with no file name arguments;
       */
-      str_usage = (char*)malloc (strlen("Cannot read table of mounted file systems"));
+      str_usage = (char*)malloc (strlen("Cannot read table of mounted file systems")+1);
       strcpy (str_usage, "Cannot read table of mounted file systems");
     }
 
@@ -829,7 +825,7 @@ get_fsusage ()
 
   if (! file_systems_processed && ! str_usage)
     {
-      str_usage = (char*)malloc (strlen("no file systems processed"));
+      str_usage = (char*)malloc (strlen("no file systems processed")+1);
       strcpy (str_usage, "no file systems processed");
     }
 
