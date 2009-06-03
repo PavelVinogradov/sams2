@@ -40,30 +40,30 @@
 #include "save-cwd.h"
 
 /* If true, show inode information. */
-bool inode_format;
+bool inode_format=false;
 
 /* If true, show even file systems with zero size or
    uninteresting types. */
-bool show_all_fs;
+bool show_all_fs=false;
 
 /* If true, show only local file systems.  */
 bool show_local_fs;
 
 /* If true, output data for each file system corresponding to a
    command line argument -- even if it's a dummy (automounter) entry.  */
-bool show_listed_fs;
+bool show_listed_fs=false;
 
 /* Human-readable options for output.  */
-int human_output_opts;
+int human_output_opts=-1;
 
 /* The units to use when printing sizes.  */
 uintmax_t output_block_size;
 
 /* If true, use the POSIX output format.  */
-bool posix_format;
+bool posix_format=false;
 
 /* True if a file system has been processed for output.  */
-bool file_systems_processed;
+bool file_systems_processed=false;
 
 /* If true, invoke the `sync' system call before getting any usage data.
    Using this option can make df very slow, especially with many or very
@@ -94,18 +94,18 @@ struct fs_type_list
    Some file system types:
    4.2 4.3 ufs nfs swap ignore io vm efs dbg */
 
-struct fs_type_list *fs_select_list;
+struct fs_type_list *fs_select_list=NULL;
 
 /* Linked list of file system types to omit.
    If the list is empty, don't exclude any types.  */
 
-struct fs_type_list *fs_exclude_list;
+struct fs_type_list *fs_exclude_list=NULL;
 
 /* Linked list of mounted file systems. */
 struct mount_entry *mount_list;
 
 /* If true, print file system type as well.  */
-bool print_type;
+bool print_type=false;
 
 /* For long options that have no equivalent short option, use a
    non-character as a pseudo short option, starting with CHAR_MAX + 1.  */
@@ -751,15 +751,15 @@ get_fsusage ()
 {
   char *str_usage = NULL;
 
-  fs_select_list = NULL;
-  fs_exclude_list = NULL;
-  inode_format = false;
-  show_all_fs = false;
-  show_listed_fs = false;
-  human_output_opts = -1;
-  print_type = false;
-  file_systems_processed = false;
-  posix_format = false;
+  //fs_select_list = NULL;
+  //fs_exclude_list = NULL;
+  //inode_format = false;
+  //show_all_fs = false;
+  //show_listed_fs = false;
+  //human_output_opts = -1;
+  //print_type = false;
+  //file_systems_processed = false;
+  //posix_format = false;
 
   // Assume -hl command line arguments
   human_output_opts = human_autoscale | human_SI | human_base_1024;

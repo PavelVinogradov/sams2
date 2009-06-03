@@ -56,6 +56,7 @@ function RecalcUsersTraffic()
 	$DB->free_samsdb_query();
 	sort($stime);
 
+	$num_rows=$DB->samsdb_query("TRUNCATE TABLE cachesum");
 	$num_rows=$DB->samsdb_query("INSERT INTO cachesum SELECT s_proxy_id,s_date,s_user,s_domain,sum(s_size),sum(s_hit) FROM squidcache GROUP BY s_date,s_user");
 	$num_rows=$DB->samsdb_query_value("SELECT s_user_id, s_name, s_nick, s_shablon_id FROM squiduser");
 	while($row=$DB->samsdb_fetch_array())
