@@ -67,16 +67,22 @@ function proxybuttom_9_down()
        print("{\n");
        print("   window.location.reload();\n");
        print("}\n");
-       print("function DeleteUser(userid)\n");
+       print("function ShutdownProxyServer(userid)\n");
        print("{\n");
+
+       print("  value=window.confirm(\"$proxybuttom_1_down_proxybuttom_1_down_1 \" );\n");
+       print("  if(value==true) \n");
+       print("     {\n");
        print("        parent.basefrm.location.href=\"main.php?show=exe&function=shutdown_proxy&filename=proxybuttom_9_down.php&id=$id\";\n");
+       print("     }\n");
+
        print("}\n");
        print("</SCRIPT> \n");
        
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/shutdown_32.jpg\" \n ");
        print("TITLE=\"Shutdown proxy server\"  border=0 ");
-       print("onclick=DeleteUser(\"userid\") \n");
+       print("onclick=ShutdownProxyServer(\"userid\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/shutdown_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/shutdown_32.jpg'\" >\n");
     }
