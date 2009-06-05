@@ -3,7 +3,7 @@ using namespace std;
 #include <string>
 #include <stdlib.h>
 
-extern "C" char * get_fsusage ();
+extern char * get_fsusage ();
 
 string information()
 {

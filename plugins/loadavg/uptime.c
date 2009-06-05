@@ -120,7 +120,7 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
   strcat (str_uptime, str_uptime_tmp);
 */
 
-  strcat (str_uptime, "<TABLE WIDTH=100%>\n");
+  strcat (str_uptime, "<TABLE WIDTH=100% CLASS=samstable>\n");
   strcat (str_uptime, "<TH WIDTH=30%>Uptime</TH>\n");
   strcat (str_uptime, "<TH WIDTH=30%>Logged in Users</TH>\n");
   strcat (str_uptime, "<TH WIDTH=40%>Load average</TH>\n");
