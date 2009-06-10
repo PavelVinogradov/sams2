@@ -139,8 +139,27 @@ bool UrlGroup::hasUrl (const string & url) const
 {
   DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "(" << url << ")] type=" << toString (_type));
 
-  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
+  Url u;
+  u.setUrl (url);
+
+  string str;
+
+  if (_type == UrlGroup::ACC_DENY || _type == UrlGroup::ACC_ALLOW || _type == UrlGroup::ACC_REPLACE)
     {
+      str = ((u.getProto ().empty ())?(""):(u.getProto () + "://")) +
+            u.getAddress () +
+            ((u.getPort ().empty ())?(""):(":"+u.getPort ()));
+    }
+  if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REDIR)
+    {
+      str = url;
+    }
+  else if (_type == UrlGroup::ACC_FILEEXT)
+    {
+      str = u.getPath ();
+    }
+
+
 #ifndef WITHOUT_PCRE
 
       uint idx;
@@ -151,61 +170,22 @@ bool UrlGroup::hasUrl (const string & url) const
       for (idx = 0; idx < _patterns.size (); idx++)
         {
 #ifdef USE_PCRECPP
-          if (_patterns[idx]->PartialMatch (url))
+          if (_patterns[idx]->PartialMatch (str))
             {
-              DEBUG (DEBUG4, "[" << this << "] Found rule " << _patterns[idx]->pattern () << " for " << url);
+              DEBUG (DEBUG4, "[" << this << "] Found rule " << _patterns[idx]->pattern () << " for " << str);
               return true;
             }
 #endif
 #ifdef USE_PCRE
-          if (pcre_exec (_patterns[idx], NULL, url.c_str (), url.size (), 0, 0, ovector, 300) >= 0)
+          if (pcre_exec (_patterns[idx], NULL, str.c_str (), str.size (), 0, 0, ovector, 300) >= 0)
             {
-              DEBUG (DEBUG4, "[" << this << "] Found rule " << _list[idx] << " for " << url);
+              DEBUG (DEBUG4, "[" << this << "] Found rule " << _list[idx] << " for " << str);
               return true;
             }
 #endif
         }
 #endif // #ifndef WITHOUT_PCRE
       return false;
-    }
-  else if (_type == UrlGroup::ACC_FILEEXT)
-    {
-      vector<string>::const_iterator it;
-      for (it = _list.begin (); it != _list.end (); it++)
-        {
-          if (endsWith (url, (*it)))
-            {
-              DEBUG (DEBUG4, "[" << this << "] Url " << url << " has file extension " << *it);
-              return true;
-            }
-        }
-      return false;
-    }
-  else
-    {
-      Url u;
-      u.setUrl (url);
-
-      string domain = u.getAddress ();
-
-      vector<string>::const_iterator it;
-      for (it = _list.begin (); it != _list.end (); it++)
-        {
-          if (_type == UrlGroup::ACC_ALLOW || _type == UrlGroup::ACC_DENY)
-            {
-              // Если сеть определена как www.mail.ru, то mail.ru никак не может быть хостом в этой сети
-              if ((*it).size () > domain.size ())
-                continue;
-
-              if (domain.compare (domain.size ()-(*it).size (), (*it).size (), (*it)) == 0)
-                {
-                  DEBUG (DEBUG4, "[" << this << "] Host " << domain << " is part of net " << *it);
-                  return true;
-                }
-            }
-        }
-      return false;
-    }
 }
 
 void UrlGroup::setReplacement (const string & dest)
