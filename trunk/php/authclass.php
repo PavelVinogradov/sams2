@@ -255,12 +255,13 @@ function UserAuthenticate($user, $password)
 	$request="SELECT s_nick,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick='$user' ";
 	$this->LoadUserVariables($request);
 
-	$STR=$this->SAMSConf->WBINFOPATH." ".$this->UserName." \"$password\"";
-	$e = escapeshellcmd( $STR );
+//	$STR=$this->SAMSConf->WBINFOPATH." ".$this->UserName." \"$password\"";
+//	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-
-	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+//	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
+        $aaa=ntlm_auth ($this->UserName,$password,$this->SAMSConf->WBINFOPATH);
+        if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
+//	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	{ 
 		$this->authOk=1;
 		if($SAMSConf->NTLMDOMAIN=="Y")
@@ -287,18 +288,21 @@ function UserAuthenticate($user, $password)
 
  return($this->authOk);
 }
+
+
 function UserIDAuthenticate($userid, $password)
 {
 	$this->userid=$userid;
 	$request="SELECT s_nick, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	$this->LoadUserVariables($request);
 
-	$STR=$this->SAMSConf->WBINFOPATH." ".$this->UserName." \"$password\"";
-	$e = escapeshellcmd( $STR );
+//	$STR=$this->SAMSConf->WBINFOPATH." ".$this->UserName." \"$password\"";
+//	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-
-	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+//	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
+	$aaa=ntlm_auth ($this->UserName,$password,$this->SAMSConf->WBINFOPATH);
+//	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
+	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 	{ 
 		$this->authOk=1;
 		if($SAMSConf->NTLMDOMAIN=="Y")
@@ -393,6 +397,35 @@ $rrr=$USERAUTH->UserAuthenticate("chemerik","qazwsx");
 $USERAUTH->ShowVariables();
 echo "ADLD AUTHENTICATE user chemerik: $rrr\n";
 */
+function ntlm_auth ($login, $password,$path){
+$descriptorspec = array(
+   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+   1 => array("pipe", "w")  // stdout is a pipe that the child will write to
+);
+$ntlm_auth = proc_open("ntlm_auth ".$path, $descriptorspec, $pipes);
+
+if (is_resource($ntlm_auth)) {
+    // $pipes now looks like this:
+    // 0 => writeable handle connected to child stdin
+    // 1 => readable handle connected to child stdout
+    // Any error output will be appended to /tmp/error-output.txt
+
+    fwrite($pipes[0], "$login $password\n");
+    fclose($pipes[0]);
+
+    $ntlm_auth_says =  stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    // It is important that you close any pipes before calling
+    // proc_close in order to avoid a deadlock
+    $return_value = proc_close($ntlm_auth);
+    if ($return_value == 0 ){
+	return $ntlm_auth_says;
+    }
+    else {
+	die ("Something wrong with ntlm...\n");
+    }
+}
+}
 ?>
 
 
