@@ -113,9 +113,10 @@ bool DateFilter::match (struct tm & date)
 
   time_t t = mktime (&date);
 
-  bool inside = ((uintmax_t) _date_start <= (uintmax_t) t) && ((uintmax_t) t <= (uintmax_t) _date_end);
+  bool inside = ((unsigned long) _date_start <= (unsigned long) t) &&
+                ((unsigned long) t <= (unsigned long) _date_end);
 
-  DEBUG (DEBUG9, (uintmax_t) _date_start << " " << (uintmax_t) t << " " << (uintmax_t) _date_end);
+  DEBUG (DEBUG9, (unsigned long) _date_start << " " << (unsigned long) t << " " << (unsigned long) _date_end);
 
   return inside;
 }
