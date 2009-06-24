@@ -196,7 +196,7 @@ function FormattedString($size)
   return($newsize);
 }
 
-function PrintFormattedSize($size) {
+function PrintFormattedSize($size, $align) {
 	global $SAMSConf;
 	$result = "";
 	
@@ -216,12 +216,14 @@ function PrintFormattedSize($size) {
 	if($ksize<100&&$msize>0)
 		$ksize="0$ksize";
    
-	$result .= "  <TD ALIGN=RIGHT>&nbsp;";
+        if (empty($align) || is_null($align))
+          $align="RIGHT";
+	$result .= "  <TD ALIGN=$align>&nbsp;";
 	if($gsize>0)
 		$result .= "<B>". $gsize ."</B>&nbsp;Gb ";
 	if($gsize>0||$msize>0)
 		$result .= "<B>". $msize ."</B>&nbsp;Mb";
-	$result .= "<B>&nbsp;". $ksize ."</B>&nbsp;kb</TD>\n";
+	$result .= "<B>&nbsp;". $ksize ."</B>&nbsp;Kb</TD>\n";
 	
 	return $result;
 }

@@ -43,17 +43,20 @@ function lframe_users()
 	.filetree span.groups { padding: 1px 0 1px 25px; display: block; }\n
 	.filetree span.groups { background: url($SAMSConf->ICONSET/pgroup.gif) 0 0 no-repeat; }\n
 
-	.filetree span.user { padding: 1px 0 1px 25px; display: block; }\n
-	.filetree span.user { background: url($SAMSConf->ICONSET/puser.gif) 0 0 no-repeat; }\n
+	.filetree span.user_active { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.user_active { background: url($SAMSConf->ICONSET/user_active.png) 0 0 no-repeat; }\n
 
-	.filetree span.userd { padding: 1px 0 1px 25px; display: block; }\n
-	.filetree span.userd { background: url($SAMSConf->ICONSET/puserd.gif) 0 0 no-repeat; }\n
+	.filetree span.user_inactive { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.user_inactive { background: url($SAMSConf->ICONSET/user_inactive.png) 0 0 no-repeat; }\n
 
-	.filetree span.userdd { padding: 1px 0 1px 25px; display: block; }\n
-	.filetree span.userdd { background: url($SAMSConf->ICONSET/duserd.gif) 0 0 no-repeat; }\n
+	.filetree span.user_moved { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.user_moved { background: url($SAMSConf->ICONSET/user_moved.png) 0 0 no-repeat; }\n
 
-	.filetree span.usera { padding: 1px 0 1px 25px; display: block; }\n
-	.filetree span.usera { background: url($SAMSConf->ICONSET/quote_alarm.gif) 0 0 no-repeat; }\n
+	.filetree span.user_off { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.user_off { background: url($SAMSConf->ICONSET/user_off.png) 0 0 no-repeat; }\n
+
+	.filetree span.quote_alarm { padding: 1px 0 1px 25px; display: block; }\n
+	.filetree span.quote_alarm { background: url($SAMSConf->ICONSET/quote_alarm.gif) 0 0 no-repeat; }\n
 	</style>\n";
 
 
@@ -85,25 +88,29 @@ function lframe_users()
 /**/
             while($row_=$DB2->samsdb_fetch_array())
                {
-                if($row_['s_enabled']>0)
+                if($row_['s_enabled']==1)
                     {
                       if($SAMSConf->realtraffic=="real")
 		        $traffic=$row_['s_size']-$row_['s_hit'];
                       else
 		        $traffic=$row_['s_size'];
 		      if($row_['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row_['s_quote']<=0)
-                         $class="user";
+                         $class="user_active";
                       else
                         if($row_['s_quote']>0)
-                          $class="usera.gif";
+                          $class="quote_alarm";
                     }
-                 if($row_['s_enabled']==0)
+                 else if($row_['s_enabled']==0)
                     {
-                       $class="userd";
+                       $class="user_inactive";
                     }
-                 if($row_['s_enabled']<0)
+                 else if($row_['s_enabled']==2)
                     {
-                       $class="userdd";
+                       $class="user_moved";
+                    }
+                 else if($row_['s_enabled']<0)
+                    {
+                       $class="user_off";
                     }
                  if($SAMSConf->SHOWNAME=="fam")
                        $name="$row_[s_family]";

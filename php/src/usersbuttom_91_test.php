@@ -141,25 +141,29 @@ function TestTable()
        print("<TR>\n");
 
        //if($)
-       if($row['s_enabled']>0)
-         {
-	    if($SAMSConf->realtraffic=="real")
-	        $traffic=$row['s_size']-$row['s_hit'];
-            else
-	        $traffic=$row['s_size'];
-            if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
-               $gif="puser.gif";
-            else
+        if($row['s_enabled']==2)
+          {
+             $gif="user_moved.png";
+          }
+        else if($row['s_enabled']==0)
+          {
+             $gif="user_inactive.png";
+          }
+        else if($row['s_enabled']<0)
+          {
+              $gif="user_off.png";
+          }
+        else if($row['s_enabled']==1)
+          {
+             if($SAMSConf->realtraffic=="real")
+                $traffic=$row['s_size']-$row['s_hit'];
+             else
+                $traffic=$row['s_size'];
+             if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
+               $gif="user_active.png";
+             else
                if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
-          }
-        if($row['s_enabled']==0)
-          {
-             $gif="puserd.gif";
-          }
-        if($row['s_enabled']<0)
-          {
-              $gif="duserd.gif";
            }
         if($SAMSConf->access>0)
            {
@@ -170,7 +174,7 @@ function TestTable()
          if($SAMSConf->access==2)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[s_user_id]\" ");
-             if($row['s_enabled']==1)
+             if($row['s_enabled']>0)
 	       print(" CHECKED ");
 	     print("> \n ");
              print(" <INPUT TYPE=\"HIDDEN\" NAME=\"dusers\" ID=\"$count\" VALUE=\"$row[s_enabled]\" >");

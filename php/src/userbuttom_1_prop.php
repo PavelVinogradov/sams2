@@ -232,6 +232,10 @@ function UpdateUserForm()
     print("<OPTION VALUE=\"1\" SELECTED> $userbuttom_1_prop_UpdateUserForm_15");
   else
     print("<OPTION VALUE=\"1\"> $userbuttom_1_prop_UpdateUserForm_15"); 
+  if($SquidUSERConf->s_enabled==2)
+    print("<OPTION VALUE=\"2\" SELECTED> $userbuttom_1_prop_UpdateUserForm_25");
+  else
+    print("<OPTION VALUE=\"2\"> $userbuttom_1_prop_UpdateUserForm_25"); 
   if($SquidUSERConf->s_enabled==0)
     print("<OPTION VALUE=\"0\" SELECTED> $userbuttom_1_prop_UpdateUserForm_16");
   else

@@ -144,10 +144,16 @@ function UserForm()
        print("<TD>\n");
        print("<B>$usertray_UserForm_10:\n");
        print("<TD>\n");
-       if($row['s_enabled']>0)
+       if($row['s_enabled']==2)
+          print("$usertray_UserForm_14\n");
+       else if($row['s_enabled']==1)
           print("$usertray_UserForm_13\n");
+       else if($row['s_enabled']==0)
+          print("$usertray_UserForm_15\n");
+       else if($row['s_enabled']==-1)
+          print("$usertray_UserForm_11\n");
        else
-          print("$usertray_UserForm_11 \n");
+          print("Unknown status\n");
 
        $num_rows2=$DB2->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$row[s_shablon_id]' ");
        $row2=$DB2->samsdb_fetch_array();
@@ -165,6 +171,9 @@ function JSUserInfo()
   global $SAMSConf;
   global $USERConf;
   global $SquidUSERConf;
+  //var $SamsTools;
+
+  $tools = new SamsTools();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -175,12 +184,16 @@ function JSUserInfo()
   else
     $quote=" unlimited ";
 
-  if($SquidUSERConf->s_enabled>0)
+  if($SquidUSERConf->s_enabled==2)
+    $enabled="$usertray_UserForm_14";
+  else if($SquidUSERConf->s_enabled==1)
     $enabled="$usertray_UserForm_13";
-  else if($SquidUSERConf->s_enabled<0)
+  else if($SquidUSERConf->s_enabled==0)
+    $enabled="$usertray_UserForm_15";
+  else if($SquidUSERConf->s_enabled==-1)
     $enabled="$usertray_UserForm_11";
   else
-    $enabled="Inactive";
+    $enabled="Unknown status";
 
 
   $htmlcode="<HTML><BODY><CENTER>
@@ -199,7 +212,8 @@ function JSUserInfo()
   <TR><TD><B>$usertray_UserForm_7:<TD>$SquidUSERConf->s_group_name
   <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote 
-	<TR><TD><B>$usertray_UserForm_9:<TD>$SquidUSERConf->s_size";
+	<TR><TD><B>$usertray_UserForm_9:".$tools->PrintFormattedSize($SquidUSERConf->s_size, "LEFT");
+	//<TR><TD><B>$usertray_UserForm_9:<TD>$SquidUSERConf->s_size";
   if($USERConf->ToWebInterfaceAccess("C")==1)
 	{
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_12:<TD>$SquidUSERConf->s_shablon_name";
