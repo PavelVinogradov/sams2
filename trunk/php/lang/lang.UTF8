@@ -165,6 +165,8 @@
   $usertray_UserForm_11="Отключен";
   $usertray_UserForm_12="Шаблон";
   $usertray_UserForm_13="Активен";
+  $usertray_UserForm_14="Перемещен во временный шаблон";
+  $usertray_UserForm_15="Превысил лимит";
   $usertray_UserTray_1="Пользователь";
 
   $userstray_AddUser_1="Добавлен пользователь";
@@ -281,6 +283,19 @@
   $userbuttom_1_prop_UpdateUserForm_12="Шаблон";
   $userbuttom_1_prop_UpdateUserForm_13="Изменить данные";
   $userbuttom_1_prop_UpdateUserForm_14="Имеет право смотреть статистику<BR> пользователей своей группы:";
+  $userbuttom_1_prop_UpdateUserForm_15="Активен";
+  $userbuttom_1_prop_UpdateUserForm_16="Отключен за превышение трафика";
+  $userbuttom_1_prop_UpdateUserForm_17="Отключен";
+  $userbuttom_1_prop_UpdateUserForm_18="Имеет право смотреть свою статистику";
+  $userbuttom_1_prop_UpdateUserForm_19="Имеет право смотреть статистику пользователей своей группы";
+  $userbuttom_1_prop_UpdateUserForm_20="Имеет право смотреть статистику Всех пользователей";
+  $userbuttom_1_prop_UpdateUserForm_21="Имеет право активировать/отключать пользователей";
+  $userbuttom_1_prop_UpdateUserForm_22="Имеет право добавлять пользователей в SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
+  $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
+  $userbuttom_1_prop_UpdateUserForm_25="Перемещен во временный шаблон";
+
+
   
   
   $userbuttom_1_prop_userbuttom_1_prop_1="Изменить данные о пользователе";
@@ -874,10 +889,6 @@
 
   $shablontray_ShablonUsers_4="Шаблон присвоен пользователям";
 
-  $userbuttom_1_prop_UpdateUserForm_15="Активен";
-  $userbuttom_1_prop_UpdateUserForm_16="Отключен за превышение трафика";
-  $userbuttom_1_prop_UpdateUserForm_17="Отключен";
-
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Показать пользователей всех групп домена";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Ввести название группы вручную";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Поле ручного ввода группы";
@@ -898,14 +909,6 @@
   $shablonbuttom_9_delete_DeleteShablon_1="Шаблон присвоен";
   $shablonbuttom_9_delete_DeleteShablon_2="пользователям";
   $shablonbuttom_9_delete_DeleteShablon_3="Ошибка удаления шаблона";
-
-  $userbuttom_1_prop_UpdateUserForm_18="Имеет право смотреть свою статистику";
-  $userbuttom_1_prop_UpdateUserForm_19="Имеет право смотреть статистику пользователей своей группы";
-  $userbuttom_1_prop_UpdateUserForm_20="Имеет право смотреть статистику Всех пользователей";
-  $userbuttom_1_prop_UpdateUserForm_21="Имеет право активировать/отключать пользователей";
-  $userbuttom_1_prop_UpdateUserForm_22="Имеет право добавлять пользователей в SAMS";
-  $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
-  $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
 
   $usersbuttom_2_traffic_UsersTrafficForm_3="Сортировать по:";
   $usersbuttom_2_traffic_UsersTrafficForm_4="размеру полученного трафика";

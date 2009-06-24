@@ -1,5 +1,7 @@
 using namespace std;
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,13 +16,25 @@ using namespace std;
 #include <string.h>
 #include <limits.h>
 
+#if HAVE_SYS_MOUNT_H
+#include <sys/mount.h>
+#endif
+
+#if HAVE_MNTENT_H
 #include <mntent.h>
+#endif
+
+#if HAVE_SYS_STATVFS_H
 #include <sys/statvfs.h>
+#endif
 
 #include "human.h"
 
-struct fs_usage
+struct fs_info
 {
+  char *fs_dev;                 /* FS device */
+  char *fs_type;                /* FS type */
+  char *fs_disk;                /* FS mount point */
   uintmax_t fsu_blocksize;      /* Size of a block.  */
   uintmax_t fsu_blocks;         /* Total blocks. */
   uintmax_t fsu_bfree;          /* Free blocks available to superuser. */
@@ -28,6 +42,8 @@ struct fs_usage
   bool fsu_bavail_top_bit_set;  /* 1 if fsu_bavail represents a value < 0.  */
   uintmax_t fsu_files;          /* Total file nodes. */
   uintmax_t fsu_ffree;          /* Free file nodes. */
+
+  struct fs_info * next;
 };
 
 #ifndef ME_DUMMY
@@ -82,12 +98,27 @@ struct fs_usage
 #define PROPAGATE_TOP_BIT(x) ((x) | ~ (EXTRACT_TOP_BIT (x) - 1))
 
 
-int get_fs_usage (char const *disk, struct fs_usage *fsp)
+void free_fs_info(struct fs_info **ptr)
+{
+  if (!ptr || !*ptr)
+    return;
+
+  if ((*ptr)->fs_dev)
+    free((*ptr)->fs_dev);
+  if ((*ptr)->fs_type)
+    free((*ptr)->fs_type);
+  if ((*ptr)->fs_disk)
+    free((*ptr)->fs_disk);
+
+  free(*ptr);
+}
+
+int get_fs_usage (struct fs_info *fsp)
 {
   struct statvfs fsd;
 
-  //printf ("\n========disk: %s==========\n", disk);
-  if (statvfs (disk, &fsd) < 0)
+  //printf ("\n========disk: %s==========\n", fsp->fs_disk);
+  if (statvfs (fsp->fs_disk, &fsd) < 0)
     return -1;
 
   /* f_frsize isn't guaranteed to be supported.  */
@@ -125,7 +156,7 @@ char * print_header (void)
   return str_header;
 }
 
-char * print_dev (struct mntent *mnt, struct fs_usage & fsu)
+char * print_dev (struct fs_info * fsu)
 {
   uintmax_t input_units;
   uintmax_t output_units;
@@ -143,13 +174,13 @@ char * print_dev (struct mntent *mnt, struct fs_usage & fsu)
 
   uintmax_t output_block_size = 1; // The units to use when printing sizes
 
-  input_units = fsu.fsu_blocksize;
+  input_units = fsu->fsu_blocksize;
   output_units = output_block_size;
-  total = fsu.fsu_blocks;
-  available = fsu.fsu_bavail;
-  negate_available = (fsu.fsu_bavail_top_bit_set
+  total = fsu->fsu_blocks;
+  available = fsu->fsu_bavail;
+  negate_available = (fsu->fsu_bavail_top_bit_set
                       & (available != UINTMAX_MAX));
-  available_to_root = fsu.fsu_bfree;
+  available_to_root = fsu->fsu_bfree;
 
   used = UINTMAX_MAX;
   negate_used = false;
@@ -161,7 +192,7 @@ char * print_dev (struct mntent *mnt, struct fs_usage & fsu)
 
   str_res[0] = '\0';
   strcat (str_res, "<TR>");
-  sprintf (str_tmp, "  <TD>%s</TD>\n", mnt->mnt_fsname);
+  sprintf (str_tmp, "  <TD>%s</TD>\n", fsu->fs_dev);
   strcat (str_res, str_tmp);
 
   sprintf (str_tmp, "  <TD ALIGN=center>%s</TD>\n", df_readable (false, total, buf[0], input_units, output_units));
@@ -215,7 +246,7 @@ char * print_dev (struct mntent *mnt, struct fs_usage & fsu)
   strcat (str_res, str_tmp);
 
 
-  sprintf (str_tmp, "  <TD>%s</TD>\n", mnt->mnt_dir);
+  sprintf (str_tmp, "  <TD>%s</TD>\n", fsu->fs_disk);
   strcat (str_res, str_tmp);
 
   strcat (str_res, "</TR>");
@@ -227,31 +258,99 @@ char * print_dev (struct mntent *mnt, struct fs_usage & fsu)
 
 char * get_fsusage()
 {
-  FILE *fp;
-  struct mntent *mnt;
-  struct fs_usage fsu;
+  struct fs_info *fs_list = NULL;
+  struct fs_info *fs_prev = NULL;
+  struct fs_info *fs_cur = NULL;
   bool file_systems_processed = false;
   char *header = NULL;
   char *res = NULL;
   char *dev = NULL;
   char *footer = NULL;
 
-  fp = setmntent (MOUNTED, "r");
-  if (fp == NULL)
-    exit(1);
 
-  while ((mnt = getmntent (fp)))
+
+#ifdef HAVE_GETMNTENT
+  {
+    struct mntent *mnt = NULL;
+    FILE *fp;
+
+    fp = setmntent (MOUNTED, "r");
+    if (fp == NULL)
+      return NULL;
+
+    while ((mnt = getmntent (fp)))
+      {
+        fs_cur = (struct fs_info *)malloc(sizeof(struct fs_info));
+        if (!fs_list)
+          fs_list = fs_cur;
+
+        fs_cur->fs_dev = strdup(mnt->mnt_fsname);
+        fs_cur->fs_disk = strdup(mnt->mnt_dir);
+        fs_cur->fs_type = strdup(mnt->mnt_type);
+
+        fs_cur->next = NULL;
+        if (fs_prev)
+          fs_prev->next = fs_cur;
+        fs_prev = fs_cur;
+      }
+
+    endmntent (fp);
+  }
+#endif // HAVE_GETMNTENT
+
+
+
+#ifdef HAVE_GETMNTINFO
+  {
+    struct statfs *fsp;
+    int entries;
+
+    entries = getmntinfo (&fsp, MNT_NOWAIT);
+    if (entries < 0)
+      return NULL;
+
+    for (; entries-- > 0; fsp++)
+      {
+        fs_cur = (struct fs_info *)malloc(sizeof(struct fs_info));
+        if (!fs_list)
+          fs_list = fs_cur;
+
+        fs_cur->fs_dev = strdup(fsp->f_mntfromname);
+        fs_cur->fs_disk = strdup(fsp->f_mntonname);
+        fs_cur->fs_type = strdup(fsp->f_fstypename);
+
+        fs_cur->next = NULL;
+        if (fs_prev)
+          fs_prev->next = fs_cur;
+        fs_prev = fs_cur;
+      }
+  }
+#endif // HAVE_GETMNTINFO
+
+
+  if (!fs_list)
+    return NULL;
+
+  while (fs_list)
     {
-      if (ME_DUMMY(mnt->mnt_fsname, mnt->mnt_type) || ME_REMOTE(mnt->mnt_fsname, mnt->mnt_type))
-        continue;
+      fs_cur = fs_list;
+      fs_list = fs_list->next;
 
-      if (get_fs_usage (mnt->mnt_dir, &fsu))
+      if (ME_DUMMY(fs_cur->fs_dev, fs_cur->fs_type) || ME_REMOTE(fs_cur->fs_dev, fs_cur->fs_type))
         {
+          free_fs_info(&fs_cur);
           continue;
         }
-
-      if (fsu.fsu_blocks == 0)
-        continue;
+      if (get_fs_usage (fs_cur))
+        {
+          free_fs_info(&fs_cur);
+          continue;
+        }
+      if (fs_cur->fsu_blocks == 0)
+        {
+          free_fs_info(&fs_cur);
+          continue;
+        }
 
       if (! file_systems_processed)
         {
@@ -264,28 +363,13 @@ char * get_fsusage()
           free (header);
         }
 
-      dev = print_dev (mnt, fsu);
+      dev = print_dev (fs_cur);
 
       res = (char *) realloc (res, strlen (res) + strlen (dev)+1);
       strcat (res, dev);
       free (dev);
-
-/*
-      me = (struct mount_entry *)malloc (sizeof (struct mount_entry));
-      me->me_devname = xstrdup (mnt->mnt_fsname);
-      me->me_mountdir = xstrdup (mnt->mnt_dir);
-      me->me_type = xstrdup (mnt->mnt_type);
-      me->me_type_malloced = 1;
-      me->me_dummy = ME_DUMMY (me->me_devname, me->me_type);
-      me->me_remote = ME_REMOTE (me->me_devname, me->me_type);
-      me->me_dev = dev_from_mount_options (mnt->mnt_opts);
-
-      *mtail = me;
-      mtail = &me->me_next;
-*/
+      free_fs_info(&fs_cur);
     }
-
-  endmntent (fp);
 
   footer = strdup ("</TABLE>\n");
   res = (char *) realloc (res, strlen (res) + strlen (footer)+1);
