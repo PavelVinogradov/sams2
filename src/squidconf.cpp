@@ -308,7 +308,9 @@ bool SquidConf::defineACL ()
                       //...
                     }
 
-                  if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
+                  if (redir_type == Proxy::REDIR_INTERNAL)
+                    fout << "http_access allow Sams2Template" << tpl->getId () << endl;
+                  else if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
                     fout << "http_access allow Sams2Template" << tpl->getId () << restriction.str() << endl;
                 }
             } //if (current_tag == "http_access")

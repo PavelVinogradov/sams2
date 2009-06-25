@@ -96,8 +96,10 @@ void UrlGroup::addUrl (const string & url)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << url << ")]");
 
+/*
   if (_type == UrlGroup::ACC_REGEXP || _type == UrlGroup::ACC_REPLACE || _type == UrlGroup::ACC_REDIR)
     {
+*/
 #ifdef USE_PCRECPP
       pcrecpp::RE *re;
 
@@ -130,9 +132,11 @@ void UrlGroup::addUrl (const string & url)
           _list.push_back (url);
         }
 #endif
+/*
     }
   else
     _list.push_back (url);
+*/
 }
 
 bool UrlGroup::hasUrl (const string & url) const
@@ -169,6 +173,7 @@ bool UrlGroup::hasUrl (const string & url) const
 
       for (idx = 0; idx < _patterns.size (); idx++)
         {
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] Checking rule " << _list[idx]);
 #ifdef USE_PCRECPP
           if (_patterns[idx]->PartialMatch (str))
             {
