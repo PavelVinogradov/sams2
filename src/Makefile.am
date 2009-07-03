@@ -16,7 +16,7 @@ samsparser_SOURCES = \
 	squidlogparser.cpp proxy.cpp dbcleaner.cpp logger.cpp processmanager.cpp mysqlconn.cpp \
 	dbconn.cpp dbquery.cpp mysqlquery.cpp templatelist.cpp template.cpp grouplist.cpp \
 	pgconn.cpp pgquery.cpp timerangelist.cpp timerange.cpp urlgrouplist.cpp urlgroup.cpp \
-	dns.cpp
+	dns.cpp userlist.cpp samsldap.cpp
 samsdaemon_SOURCES = \
 	datefilter.cpp debug.cpp filter.cpp ip.cpp \
 	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
@@ -24,20 +24,22 @@ samsdaemon_SOURCES = \
 	userfilter.cpp samsdaemon.cpp dbconn.cpp dbquery.cpp mysqlconn.cpp mysqlquery.cpp \
 	template.cpp templatelist.cpp squidlogparser.cpp squidlogline.cpp grouplist.cpp \
 	squidconf.cpp timerange.cpp timerangelist.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
-	dbcleaner.cpp urlgrouplist.cpp urlgroup.cpp pluginlist.cpp dns.cpp
+	dbcleaner.cpp urlgrouplist.cpp urlgroup.cpp pluginlist.cpp dns.cpp userlist.cpp \
+	samsldap.cpp
 samsredir_SOURCES = \
 	dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
 	processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsuserlist.cpp template.cpp \
 	templatelist.cpp tools.cpp url.cpp samsredir.cpp grouplist.cpp net.cpp pgconn.cpp \
-	pgquery.cpp urlgrouplist.cpp urlgroup.cpp timerangelist.cpp timerange.cpp dns.cpp
+	pgquery.cpp urlgrouplist.cpp urlgroup.cpp timerangelist.cpp timerange.cpp dns.cpp userlist.cpp \
+	samsldap.cpp
 noinst_HEADERS = \
 	debug.h samsconfig.h tools.h odbcconn.h squidlogline.h \
 	filter.h userfilter.h datefilter.h odbcquery.h samsuserlist.h samsuser.h net.h ip.h \
 	localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
 	mysqlconn.h dbconn.h dbquery.h mysqlquery.h templatelist.h template.h grouplist.h \
 	squidconf.h timerange.h timerangelist.h pgconn.h pgquery.h dbexporter.h \
-	urlgrouplist.h urlgroup.h pluginlist.h dns.h
+	urlgrouplist.h urlgroup.h pluginlist.h dns.h userlist.h samsldap.h
 
 AM_CXXFLAGS = -Wall
 

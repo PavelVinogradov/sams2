@@ -312,6 +312,63 @@ bool SamsConfig::readDB ()
 
   delete query2;
 
+
+
+  DBQuery *query3 = NULL;
+  conn->newQuery (query3);
+  if (!query3)
+    {
+      ERROR("Unable to create query.");
+      delete conn;
+      _internal = false;
+      return false;
+    }
+
+  basic_stringstream < char >s3;
+
+  char s_param[60];
+  char s_value[60];
+  s3 << "select s_param, s_value from auth_param where s_auth='ldap'";
+  if (!query3->bindCol (1, DBQuery::T_CHAR, s_param, sizeof (s_param)))
+    {
+      delete query3;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  if (!query3->bindCol (2, DBQuery::T_CHAR, s_value, sizeof (s_value)))
+    {
+      delete query3;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  if (!query3->sendQueryDirect (s3.str()) )
+    {
+      delete query3;
+      delete conn;
+      _internal = false;
+      return false;
+    }
+  while (query3->fetch ())
+    {
+      if (!strcmp(s_param, "enabled"))
+        setString (defLDAPENABLED, TrimSpaces (s_value) );
+      else if (!strcmp(s_param, "ldapserver"))
+        setString (defLDAPSERVER, TrimSpaces (s_value) );
+      else if (!strcmp(s_param, "basedn"))
+        setString (defLDAPBASEDN, TrimSpaces (s_value) );
+      else if (!strcmp(s_param, "adadmin"))
+        setString (defLDAPBINDDN, TrimSpaces (s_value) );
+      else if (!strcmp(s_param, "adadminpasswd"))
+        setString (defLDAPBINDPW, TrimSpaces (s_value) );
+      else if (!strcmp(s_param, "usersrdn"))
+        setString (defLDAPUSERSRDN, TrimSpaces (s_value) );
+    }
+
+
+  delete query3;
+
   delete conn;
   _internal = false;
   _db_loaded = true;
