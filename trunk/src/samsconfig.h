@@ -44,6 +44,12 @@ using namespace std;
 #define defSLEEPTIME          "s_sleep"
 #define defDAEMONSTEP         "s_parser_time"
 
+#define defLDAPENABLED        "LDAPEnabled"
+#define defLDAPSERVER         "LDAPServer"
+#define defLDAPBASEDN         "LDAPBaseDN"
+#define defLDAPBINDDN         "LDAPBindDN"
+#define defLDAPBINDPW         "LDAPBindPw"
+#define defLDAPUSERSRDN       "LDAPUsersRDN"
 /**
  * @brief Чтение и запись настроек, используя файл и БД
  *

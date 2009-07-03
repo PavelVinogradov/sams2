@@ -53,6 +53,7 @@ gl_FSUSAGE
 #LIBS="$sams_saved_libs"
 #AC_SUBST(LIB_CRYPT)
 
+AC_CHECK_LDAP([use_ldap_dev])
 AC_CHECK_SRC_DOCS
 AC_CHECK_PCRE([which_pcre])
 AC_CHECK_MYSQL([use_mysql_dev])
@@ -93,6 +94,7 @@ echo ""
 echo "Use MySQL API:      $use_mysql_dev"
 echo "Use PostgreSQL API: $use_pq_dev"
 echo "Use unixODBC API:   $use_unixodbc_dev"
+echo "Use LDAP API:       $use_ldap_dev"
 echo "Using pcre:         $which_pcre"
 echo "Use dynamic plugin: $use_dl_dev"
 echo ""

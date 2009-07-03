@@ -8,21 +8,21 @@
 %define squidgroup squid
 %define apacheconf /httpd/conf.d
 %define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
-%define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null&& echo 1 || echo 0)
+%define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
 %define is_Mandriva_2009 %(grep -qi  "mandriva.*2009" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
 %define is_Fedora %(rpm -q filesystem |grep -qi  ".fc9" &>/dev/null && echo 1 || echo 0)
 %define is_CentOS %(rpm -q filesystem |grep -qi "centos"&>/dev/null && echo 1 || echo 0)
 #define is_RHEL %(grep -qi  "^red hat" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
 
-%if %is_Mandriva_2008
+%if %{is_Mandriva_2008}
 %define dist mandriva8
 %define disttag .mdv2008
 %endif
-%if %is_Mandriva_2009
+%if %{is_Mandriva_2009}
 %define dist mandriva9
 %define disttag .mdv2009
 %endif
-%if %is_suse
+%if %{is_suse}
 %define dist suse
 %define disttag .suse
 %define webuser wwwrun
@@ -30,11 +30,11 @@
 %define squidgroup nogroup
 %define apacheconf /apache2/conf.d
 %endif
-%if %is_Fedora
+%if %{is_Fedora}
 %define disttag .fc9
 %define enable_debug_packages %{nil}
 %endif
-%if %is_CentOS
+%if %{is_CentOS}
 %define disttag .centos
 %endif
 
@@ -213,8 +213,8 @@ rm -rf "${RPM_BUILD_ROOT}"
 %{_prefix}/bin/samsredir
 %{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2
-%{_sysconfdir}/sysconfig/sams2
-%{_sysconfdir}/logrotate.d/sams2
+%attr(640,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/sams2
+%attr(640,root,root) %config(noreplace) %{_sysconfdir}/logrotate.d/sams2
 %attr(640,%{webuser},%{squidgroup}) %config(noreplace) %{_sysconfdir}/sams2.conf
 %{_libdir}/sams2/*
 

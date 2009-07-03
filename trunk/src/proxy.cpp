@@ -17,8 +17,7 @@
 #include <vector>
 #include <sstream>
 #include <string.h>
-#include <sys/types.h>
-#include <pwd.h>
+//#include <sys/types.h>
 
 #include "config.h"
 
@@ -27,6 +26,7 @@
 #include "proxy.h"
 #include "debug.h"
 #include "tools.h"
+#include "userlist.h"
 #include "samsuserlist.h"
 #include "samsuser.h"
 #include "samsconfig.h"
@@ -233,8 +233,6 @@ SAMSUser *Proxy::findUser (const string & ip, const string & ident)
   string usrDomain;
   string usrNick;
   vector < string > identTbl;
-  int err;
-  int checkpasswd;
 
   DEBUG (DEBUG_USER, "[" << __FUNCTION__ << "] ip:" << ip << ", ident:" << ident);
 
@@ -284,16 +282,11 @@ SAMSUser *Proxy::findUser (const string & ip, const string & ident)
             }
           else
             {
-              checkpasswd = SamsConfig::getInt (defCHECKPASSWDDB, err);
-              if (err == ERR_OK && checkpasswd == 1)
+              if (!UserList::userExist(tpl->getAuth(), usrDomain, usrNick))
                 {
-                  struct passwd *pwd = getpwnam (usrNick.c_str ());
-                  if (!pwd)
-                    {
-                      DEBUG (DEBUG3, "[" << __FUNCTION__ << "] User " << usrNick << " not found in passwd database.");
-                      delete usr;
-                      return NULL;
-                    }
+                  DEBUG (DEBUG3, "[" << __FUNCTION__ << "] System user " << usrNick << " not found.");
+                  delete usr;
+                  return NULL;
                 }
               usr->setNick (usrNick);
             }

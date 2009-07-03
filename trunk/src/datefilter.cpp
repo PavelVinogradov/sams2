@@ -83,7 +83,7 @@ bool DateFilter::setDateInterval (const string & dateSpec)
   str_date_end += " 23:59:59";
 
 
-  DEBUG (DEBUG9, "Converting date " << str_date_start);
+  DEBUG (DEBUG8, "Converting date " << str_date_start);
   rest = strptime (str_date_start.c_str (), "%Y-%m-%d %H:%M:%S", &date_time);
   if (rest == NULL)
     {
@@ -92,7 +92,7 @@ bool DateFilter::setDateInterval (const string & dateSpec)
     }
   _date_start = mktime (&date_time);
 
-  DEBUG (DEBUG9, "Converting date " << str_date_end);
+  DEBUG (DEBUG8, "Converting date " << str_date_end);
   rest = strptime (str_date_end.c_str (), "%Y-%m-%d %H:%M:%S", &date_time);
   if (rest == NULL)
     {
