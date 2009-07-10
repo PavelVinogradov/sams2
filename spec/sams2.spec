@@ -161,7 +161,7 @@ sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\
 
 install -d "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
 install -m644 ChangeLog AUTHORS COPYING NEWS INSTALL "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
-
+# moving doc to suse specific location
 %if %{dist}=="suse"
 mv -f --target-directory="${RPM_BUILD_ROOT}"%{_docdir}/%{name}-%{version}		\
     "${RPM_BUILD_ROOT}"%{_datadir}/doc/%{name}-%{version}/*
