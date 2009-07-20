@@ -37,7 +37,7 @@ function AddUsersFromLDAP()
 	$string=$userlist[$i];
 	$i++;
 	$user="$string";
-	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$user', '$enabled', '-1')";
+	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')";
 	$num_rows=$DB->samsdb_query($query);
 
      }
@@ -93,20 +93,20 @@ function AddUsersFromLDAPForm()
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authldapbuttom_2_usersadd.php\">\n");
 
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
-			$c=$samsldap->GetUsersData();
+			$a=$samsldap->GetUsersData();
 		else
 		{
 			$a=$samsldap->GetUsersWithPrimaryGroupID($addgroupname);
 			$b=$samsldap->GetUsersWithSecondaryGroupID($addgroupname);
-			$c=$a;
-			for($j=0;$j<count($b['uid']);$j++)
+
+			for($i=0;$i<$a['userscount'];$i++)
 			{
-				if (array_key_exists($b['uid'][$j], $c['keys']))
-					continue;
-				$c['uid'][count($c['uid'])] = $b['uid'][$j];
-				$c['keys'][$b['uid'][$j]] = $b['uid'][$j];
-				$c['name'][count($c['name'])] = $b['name'][$j];
+				$user=$a['uid'][$i];
+				$username=$a['name'][$i];
+
+				print("<B>$user</B> ($username) <BR>\n");
 			}
+
 		}
 		$groupinfo=$samsldap->GetGroupsData();
 
@@ -117,14 +117,18 @@ function AddUsersFromLDAPForm()
                 print("<TH width=5%>No");
                 print("<TH >Name");
                 print("<TH >Common name");
-                for($j=0;$j<count($c['uid']);$j++)
+                for($j=0;$j<$a['userscount'];$j++)
                 {
-                        echo "<TR><TD>$j<TD> ".$c['uid'][$j];
-                        echo "<TD> ".$c['name'][$j];
+                        echo "<TR><TD>$j<TD> ".$a['uid'][$j];
+                        echo "<TD> ".$a['cn'][$j];
+                }
+                for($j=0;$j<$b['userscount'];$j++)
+                {
+                        echo "<TR><TD>$j<TD> ".$b['uid'][$j];
+                        echo "<TD> ".$b['cn'][$j];
                 }
                 echo "</TABLE>";
 */
-
 
 		$SELECTED="";
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
@@ -137,9 +141,9 @@ function AddUsersFromLDAPForm()
 			$groupname=$groupinfo['cn'][$i];
 			$gid=$groupinfo['gidNumber'][$i];
 			$SELECTED="";
-			if ($gid==$addgroupname)
+			if ($groupname==$addgroupname)
 				$SELECTED="SELECTED";
-			print("<OPTION VALUE=\"$gid\" $SELECTED> $groupname \n");
+			print("<OPTION VALUE=\"$groupname\" $SELECTED> $groupname \n");
 		}
 		print("</SELECT>\n");
 		print("</TABLE>\n");
@@ -163,19 +167,37 @@ function AddUsersFromLDAPForm()
 			print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
 
 		print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
-		for($i=0;$i<count($c['uid']);$i++)
+		for($i=0;$i<$a['userscount'];$i++)
 		{
-			$user=$c['uid'][$i];
-			$username=$c['name'][$i];
+			$user=$a['uid'][$i];
+			$username=$a['name'][$i];
 
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
 			{
-				print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
+//				if($addgroupname=="_allgroups_" || $addgroupname=="")
+					print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
+//				else
+//					print("<OPTION VALUE=\"$user\"> <B>$user</B> \n");
 			}
 			$DB->free_samsdb_query();
 		}
 
+		for($i=0;$i<$b['userscount'];$i++)
+		{
+			$user=$b['uid'][$i];
+			$username=$b['name'][$i];
+
+			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
+			if($num_rows==0)  
+			{
+//				if($addgroupname=="_allgroups_" || $addgroupname=="")
+					print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
+//				else
+//					print("<OPTION VALUE=\"$user\"> <B>$user</B> \n");
+			}
+			$DB->free_samsdb_query();
+		}
 		print("</SELECT>\n");
 		print("<P>" );
   

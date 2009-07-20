@@ -65,8 +65,6 @@ function UserGroupForm()
   global $USERConf;
 
   $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
-
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -112,51 +110,31 @@ function UserGroupForm()
   $DB->free_samsdb_query();
 
   $count=0;
-  $num_rows=$DB->samsdb_query_value("SELECT squiduser.*, shablon.s_quote AS s_defquote, shablon.s_shablon_id2 as tpl2 FROM squiduser, shablon WHERE squiduser.s_group_id='$id' AND squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_nick");
+  $num_rows=$DB->samsdb_query_value("SELECT squiduser.*, shablon.s_quote AS s_defquote FROM squiduser, shablon WHERE squiduser.s_group_id='$id' AND squiduser.s_shablon_id=shablon.s_shablon_id ORDER BY squiduser.s_nick");
   while($row=$DB->samsdb_fetch_array())
       {
        print("<TR>\n");
 
-        if($SAMSConf->realtraffic=="real")
-          $traffic=$row['s_size']-$row['s_hit'];
-        else
-          $traffic=$row['s_size'];
-
-        $defaultquote=$row['s_defquote'];
-
-        if($row['s_enabled']==2)
-          {
-             $gif="user_moved.png";
-             if ($row['tpl2'] > 0)
-               {
-                 $num_rows2=$DB2->samsdb_query_value("SELECT shablon.s_quote FROM shablon WHERE shablon.s_shablon_id=$row[tpl2]");
-                 if ($num_rows2 == 1)
-                   {
-                     $row2=$DB2->samsdb_fetch_array();
-                     $defaultquote=$row2['s_quote'];
-                   }
-               }
-          }
-        else if($row['s_enabled']==0)
-          {
-             $gif="user_inactive.png";
-          }
-        else if($row['s_enabled']<0)
-          {
-              $gif="user_off.png";
-          }
-        else if($row['s_enabled']==1)
-          {
-	     if($SAMSConf->realtraffic=="real")
+       if($row['s_enabled']>0)
+         {
+	    if($SAMSConf->realtraffic=="real")
 	        $traffic=$row['s_size']-$row['s_hit'];
-             else
+            else
 	        $traffic=$row['s_size'];
-             if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
-               $gif="user_active.png";
-             else
+            if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
+               $gif="puser.gif";
+            else
                if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
           }
+        if($row['s_enabled']==0)
+          {
+             $gif="puserd.gif";
+          }
+        if($row['s_enabled']<0)
+          {
+              $gif="duserd.gif";
+           }
 	if($USERConf->ToWebInterfaceAccess("CGS")==1)
            {
               print("  <TD WIDTH=\"10%\">");
@@ -165,7 +143,7 @@ function UserGroupForm()
 	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[s_user_id]] ");
-             if($row['s_enabled']>0)
+             if($row['s_enabled']==1)
 	       print(" CHECKED ");
 	     print("></TD>\n");
            }
@@ -177,24 +155,19 @@ function UserGroupForm()
 	   }   
 	 if($USERConf->ToWebInterfaceAccess("C")==1||$ga==1)
            {
-             PrintFormattedSize($traffic);
-
-             $font_start="";
-             $font_end="";
-             if ($row['s_enabled']==2)
-               {
-                 $font_start="<font color=#CFCF00>";
-                 $font_end="</font>";
-               }
-
+	    if($SAMSConf->realtraffic=="real")
+	     	PrintFormattedSize($row['s_size'] - $row['s_hit']);
+	    else
+		PrintFormattedSize($row['s_size']);
+             
              if($row['s_quote']>0)
-               print("<TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>$row[s_quote] Mb</font>");
-             else if ($row['s_quote'] == 0)
-               print("<TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>unlimited</font>");
-             else if ($defaultquote > 0)
-               print("<TD WIDTH=\"15%\" ALIGN=CENTER>$font_start $defaultquote Mb $font_end");
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>$row[s_quote] Mb</font></TD>\n");
+             else if($row['s_quote']==0)
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER><font color=red>unlimited</font></TD>\n");
+             else if($row['s_defquote']>0)
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER>$row[s_defquote] Mb</TD>\n");
              else
-               print("<TD WIDTH=\"15%\" ALIGN=CENTER>$font_start unlimited $font_end");
+               print("  <TD WIDTH=\"15%\" ALIGN=CENTER>unlimited</TD>\n");
 	   }
          print("  <TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]</TD>\n");
 	 

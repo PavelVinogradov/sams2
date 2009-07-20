@@ -39,21 +39,28 @@ function DeleteGroup()
   $count=$row[0];
   $DB->free_samsdb_query();
   if($count>0)
-	{
+  {
         NotEmptyGroupWarning($id);
-	}
+  }
   else
-     {
-        $num_rows=$DB->samsdb_query("DELETE FROM sgroup WHERE s_group_id='$id' ");
-//	if($result!=FALSE)
-//                   UpdateLog("$SAMSConf->adminname","Deleted group  $row[nick] ","02");
+  {
+	$num_rows=$DB->samsdb_query_value("SELECT s_name FROM sgroup WHERE s_group_id='$id' ");
+	$row=$DB->samsdb_fetch_array();
+	$gname=$row['s_name'];
+	$DB->free_samsdb_query();
+
+	$QUERY="DELETE FROM sgroup WHERE s_group_id='$id' ";
+        $num_rows=$DB->samsdb_query($QUERY);
+
+	$QUERY="delete from auth_param where (s_param='adldgroup' OR s_param='ntlmgroup' OR s_param='ldapgroup') AND s_value='$gname'";
+        $num_rows=$DB->samsdb_query($QUERY);
 
         print("<SCRIPT>\n");
         print("  parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
         print("  parent.lframe.location.href=\"lframe.php\"; \n");
         print("</SCRIPT> \n");
 
-     }
+  }
 }
 
 
