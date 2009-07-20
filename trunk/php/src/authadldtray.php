@@ -54,7 +54,7 @@ function ADLDtest()
 	for($i=0;$i<$gcount;$i++)
 	{
 		$groupname = UTF8ToSAMSLang($groups[$i]);
-		echo "<TR><TD>$i:<TD>$groupname<BR>";
+		echo "<TR><TD>$i:<TD>$groupname <BR>";
 	}
 	echo "</TABLE><P>";
 
@@ -77,7 +77,57 @@ function ADLDtest()
 
 }   
 
+function RemoveSyncGroup()
+{
+  global $SAMSConf;
+  global $USERConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+  if(isset($_GET["rmsyncgroupname"])) $rmsyncgroupname=$_GET["rmsyncgroupname"];
+  PageTop("config_48.jpg","$RemoveSyncGroup_authadldtray_1");
+  $i=0;
+  while(strlen($rmsyncgroupname[$i])>0)
+  {
+	$QUERY="DELETE FROM auth_param WHERE s_auth='adld' AND s_param='adldgroup' AND s_value='$rmsyncgroupname[$i]'";
+	$DB->samsdb_query($QUERY);
+
+	echo "<B>$rmsyncgroupname[$i]</B><BR>";
+	$i++;
+  }
+
+}
+
+function AddSyncGroup()
+{
+  global $SAMSConf;
+  global $USERConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+  if(isset($_GET["addsyncgroupname"])) $addsyncgroupname=$_GET["addsyncgroupname"];
+
+  PageTop("config_48.jpg","$AddSyncGroup_authadldtray_1");
+  $i=0;
+  while(strlen($addsyncgroupname[$i])>0)
+  {
+	$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('adld', 'adldgroup', '$addsyncgroupname[$i]') ");
+
+	echo "<B>$addsyncgroupname[$i]</B><BR>";
+	$i++;
+  }
+
+}
 
 
 function AuthADLDValues()
@@ -93,6 +143,7 @@ function AuthADLDValues()
   print("<P>\n");
 
   $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
   $result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='adld' AND s_param='adldgroup'");
   if($result>0)
   {
@@ -141,6 +192,48 @@ function AuthADLDValues()
 
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test adld configurations\">\n");
   print("</FORM>\n");
+
+  $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='adld' AND  s_param='adldgroup';");
+  if($num_rows>0)
+  {
+	print("<FORM NAME=\"rmsyncgroupform\" ACTION=\"main.php\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"removesyncgroup\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authadldtray.php\">\n");
+
+	print("<SELECT NAME=\"rmsyncgroupname[]\" SIZE=3 TABINDEX=30 MULTIPLE>\n");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		print("<OPTION VALUE=\"".$row['s_value']."\"> ".$row['s_value']."");
+	}
+	print("</SELECT>\n");
+
+	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthADLDValues_authadldtray_3 \">\n");
+	print("</FORM>\n");
+  }
+
+  $num_rows=$DB->samsdb_query_value("SELECT sgroup.s_name FROM sgroup ");
+  if($num_rows>0)
+  {
+	print("<FORM NAME=\"addsyncgroupform\" ACTION=\"main.php\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addsyncgroup\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authadldtray.php\">\n");
+
+	print("<SELECT NAME=\"addsyncgroupname[]\" SIZE=3 TABINDEX=30 MULTIPLE>\n");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$QUERY="SELECT * FROM auth_param WHERE s_param='adldgroup' AND s_value='".$row['s_name']."'";
+
+		$num_rows=$DB2->samsdb_query_value($QUERY);
+		if($num_rows==0)
+			print("<OPTION VALUE=\"".$row['s_name']."\"> ".$row['s_name']."");
+	}
+	print("</SELECT>\n");
+
+	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthADLDValues_authadldtray_4 \">\n");
+	print("</FORM>\n");
+  }
 
 }
 

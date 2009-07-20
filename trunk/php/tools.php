@@ -19,7 +19,8 @@ function UTF8ToSAMSLang($inp)
 	}
 	if($SAMSConf->LANG=="EN")
 	{
-		$out=iconv("UTF-8", $charset[0], $inp);
+		return($inp);
+//		$out=iconv("UTF-8", $charset[0], $inp);
 	}
   return($out);
 }

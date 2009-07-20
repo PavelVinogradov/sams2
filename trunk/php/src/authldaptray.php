@@ -35,7 +35,6 @@ function LDAPtest()
 	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
 	if($samsldap != NULL)
 	{
-
 		$groupdata=$samsldap->GetGroupsData();
 		print("<H2>LDAP groups</H2>");
 	        print("<TABLE CLASS=samstable>");
@@ -57,14 +56,11 @@ function LDAPtest()
         	print("<TH width=5%>No");
         	print("<TH >Name");
         	print("<TH >Display name");
-                for($j=0;$j<count($userdata['uid']);$j++)
-                {
-                        echo "<TR>";
-			echo "  <TD>$j</TD>";
-			echo "  <TD> ".$userdata['uid'][$j]."</TD>";
-                        echo "  <TD> ".$userdata['name'][$j]."</TD>";
-                        echo "</TR>";
-                }
+		for($j=0;$j<$userdata['userscount'];$j++)
+		{
+			echo "<TR><TD>$j<TD> ".$userdata['uid'][$j];
+			echo "<TD> ".$userdata['name'][$j];
+		}
 		echo "</TABLE>";
 
 	}    
@@ -74,15 +70,73 @@ function LDAPtest()
 
 
 
+function RemoveSyncGroup()
+{
+  global $SAMSConf;
+  global $USERConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+  if(isset($_GET["rmsyncgroupname"])) $rmsyncgroupname=$_GET["rmsyncgroupname"];
+  PageTop("config_48.jpg","$RemoveSyncGroup_authldaptray_1");
+  $i=0;
+  while(strlen($rmsyncgroupname[$i])>0)
+  {
+	$QUERY="DELETE FROM auth_param WHERE s_auth='ldap' AND s_param='ldapgroup' AND s_value='$rmsyncgroupname[$i]'";
+	$DB->samsdb_query($QUERY);
+	
+	echo "<B>$rmsyncgroupname[$i]</B><BR>";
+	$i++;
+  }
+
+}
+
+function AddSyncGroup()
+{
+  global $SAMSConf;
+  global $USERConf;
+  $DB=new SAMSDB(&$SAMSConf);
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+  if(isset($_GET["addsyncgroupname"])) $addsyncgroupname=$_GET["addsyncgroupname"];
+
+  PageTop("config_48.jpg","$AddSyncGroup_authldaptray_1");
+  $i=0;
+  while(strlen($addsyncgroupname[$i])>0)
+  {
+	$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('ldap', 'ldapgroup', '$addsyncgroupname[$i]') ");
+
+	echo "<B>$addsyncgroupname[$i]</B><BR>";
+	$i++;
+  }
+
+}
 
  
 function AuthLDAPValues()
 {
+  global $SAMSConf;
   global $USERConf;
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
+
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $DB=new SAMSDB(&$SAMSConf);
+  $DB2=new SAMSDB(&$SAMSConf);
 
   PageTop("config_48.jpg","LDAP configuration ");
   print("<P>\n");
@@ -143,6 +197,49 @@ function AuthLDAPValues()
 
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test ldap configurations\">\n");
   print("</FORM>\n");
+
+  $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='ldap' AND  s_param='ldapgroup'");
+  if($num_rows>0)
+  {
+	print("<FORM NAME=\"rmsyncgroupform\" ACTION=\"main.php\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"removesyncgroup\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authldaptray.php\">\n");
+
+	print("<SELECT NAME=\"rmsyncgroupname[]\" SIZE=3 TABINDEX=30 MULTIPLE>\n");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		print("<OPTION VALUE=\"".$row['s_value']."\"> ".$row['s_value']."");
+	}
+	print("</SELECT>\n");
+
+	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthLDAPValues_authldaptray_1 \">\n");
+	print("</FORM>\n");
+  }
+
+  $num_rows=$DB->samsdb_query_value("SELECT sgroup.s_name FROM sgroup ");
+  if($num_rows>0)
+  {
+	print("<FORM NAME=\"addsyncgroupform\" ACTION=\"main.php\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"addsyncgroup\">\n");
+	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authldaptray.php\">\n");
+
+	print("<SELECT NAME=\"addsyncgroupname[]\" SIZE=3 TABINDEX=30 MULTIPLE>\n");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$QUERY="SELECT * FROM auth_param WHERE s_param='ldapgroup' AND s_value='".$row['s_name']."'";
+
+		$num_rows=$DB2->samsdb_query_value($QUERY);
+		if($num_rows==0)
+			print("<OPTION VALUE=\"".$row['s_name']."\"> ".$row['s_name']."");
+	}
+	print("</SELECT>\n");
+
+	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthLDAPValues_authldaptray_2\">\n");
+	print("</FORM>\n");
+  }
+
 }
 
 

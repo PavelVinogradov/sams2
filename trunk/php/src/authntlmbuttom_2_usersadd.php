@@ -48,8 +48,8 @@ function AddUsersFromNTLM()
        if($num_rows==0)
           {
 		$num_rows=$DB->samsdb_query("INSERT INTO squiduser 
-			(s_group_id, s_shablon_id, s_nick, s_domain, s_enabled, s_quote) 
-		VALUES('$usergroup', '$usershablon', '$user', '$domain', '$enabled', '-1')");
+			(s_group_id, s_shablon_id, s_nick, s_domain, s_enabled) 
+		VALUES('$usergroup', '$usershablon', '$user', '$domain', '$enabled')");
 
           }
 
