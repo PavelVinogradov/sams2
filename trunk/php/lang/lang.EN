@@ -902,6 +902,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $AuthADLDValues_authadldtray_1="Active Directory configuration";
   $AuthADLDValues_authadldtray_2="SAMS users synchronize with Active Directory groups";
 
+  $proxybuttom_1_down_proxybuttom_1_down_1="Shutdown proxy server?";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
