@@ -69,7 +69,13 @@ function proxybuttom_9_down()
        print("}\n");
        print("function DeleteUser(userid)\n");
        print("{\n");
+
+       print("  value=window.confirm(\" $proxybuttom_1_down_proxybuttom_1_down_1 \" );\n");
+       print("  if(value==true) \n");
+       print("     {\n");
        print("        parent.basefrm.location.href=\"main.php?show=exe&function=shutdown_proxy&filename=proxybuttom_9_down.php&id=$id\";\n");
+       print("     }\n");
+				   
        print("}\n");
        print("</SCRIPT> \n");
        
