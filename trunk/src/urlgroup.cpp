@@ -163,6 +163,7 @@ bool UrlGroup::hasUrl (const string & url) const
       str = u.getPath ();
     }
 
+  DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] using " << str);
 
 #ifndef WITHOUT_PCRE
 
