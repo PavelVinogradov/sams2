@@ -51,7 +51,7 @@ function proxybuttom_9_delete()
        print("{\n");
        print("   window.location.reload();\n");
        print("}\n");
-       print("function DeleteUser(userid)\n");
+       print("function DeleteProxy()\n");
        print("{\n");
        print("  value=window.confirm(\"Remove proxy $PROXYConf->s_description? \" );\n");
        print("  if(value==true) \n");
@@ -62,9 +62,9 @@ function proxybuttom_9_delete()
        print("</SCRIPT> \n");
 
        print("<TD CLASS=\"samstraytd\">\n");
-       print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
-       print("TITLE=\"remove proxy\"  border=0 ");
-       print("onclick=DeleteUser(\"$id\") \n");
+       print("<IMAGE id=Remove name=\"Remove Proxy\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
+       print("TITLE=\"Remove Proxy\"  border=0 ");
+       print("onclick=DeleteProxy(\"$id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");
     }
