@@ -142,12 +142,12 @@ if($function=="setcookie")
 */
 if($function=="userauth")
   {
-	$USERConf->sams_user_id_authentication();
+	$USERConf->sams_user_id_authentication($username,$userid);
   }  
 
 if($function=="nuserauth")
   {   
-	$USERConf->sams_user_name_authentication();
+	$USERConf->sams_user_name_authentication($username,$userid);
 
   }  
 

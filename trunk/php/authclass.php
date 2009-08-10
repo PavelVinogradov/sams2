@@ -427,13 +427,3 @@ if (is_resource($ntlm_auth)) {
 }
 }
 ?>
-
-
-
-
-
-
-
-
-
-
