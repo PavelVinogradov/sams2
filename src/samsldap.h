@@ -24,6 +24,7 @@ using namespace std;
 
 #include <string>
 
+#include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
 

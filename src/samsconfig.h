@@ -23,6 +23,7 @@ using namespace std;
 
 #include <map>
 #include <string>
+#include <string.h>
 
 #include "dbconn.h"
 
