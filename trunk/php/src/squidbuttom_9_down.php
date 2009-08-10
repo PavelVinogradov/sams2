@@ -8,6 +8,7 @@
 function DownSquid()
 {
   global $SAMSConf;
+  global $USERConf;
  
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
    
@@ -74,6 +75,7 @@ function shutdown_proxy()
 function squidbuttom_9_down()
 {
   global $SAMSConf;
+  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
