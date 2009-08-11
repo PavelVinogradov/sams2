@@ -190,7 +190,7 @@ function AuthADLDValues()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"adldtest\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authadldtray.php\">\n");
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test adld configurations\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test connections to Active Directory\">\n");
   print("</FORM>\n");
 
   $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='adld' AND  s_param='adldgroup';");
@@ -255,7 +255,7 @@ function AuthADLDTray()
 	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
 	print("<TR HEIGHT=60>\n");
 	print("<TD WIDTH=30%>");
-	print("<B>ADLD</B>\n");
+	print("<B>$authtype_AuthTray<BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">ADLD</FONT></B>\n");
 
 	ExecuteFunctions("./src", "authadldbuttom","1");
 	print("<TD> </TD>\n");

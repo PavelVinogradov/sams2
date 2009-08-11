@@ -110,7 +110,7 @@ function AddURLListForm()
 				break;
 	case 'regex':  PageTop("redirect_48.jpg","$urlregex_addform1 ");
 				break;
-	case 'local':  PageTop("redirect_48.jpg","Local Domain ");
+	case 'local':  PageTop("redirect_48.jpg","$redir_openurlbase2 ");
 				break;
 	}
   print("<BR>\n");
@@ -376,6 +376,8 @@ function RedirListForm()
 		$type="$allowlisttray_allowlisttray_1";
 	if($row['s_type']=="files")
 		$type=" $filedeniedlisttray_filedeniedlisttray_1";
+	if($row['s_type']=="local")
+		$type=" $redirlisttray_RedirListTray_2";
 	if($row['s_type']=="regex")
 		$type=" $regexlisttray_regexlisttray_1";
   PageTop("redirect_48.jpg","$type <FONT COLOR=\"BLUE\">$row[s_name]</FONT>");
@@ -540,9 +542,11 @@ function RedirListTray()
 		$type="$deniedlisttray_DeniedListTray_1";
 	if($row['s_type']=="allow")
 		$type="$allowlisttray_allowlisttray_1";
+	if($row['s_type']=="local")
+		$type=" $redirlisttray_RedirListTray_2";
 	if($row['s_type']=="files")
 		$type=" $filedeniedlisttray_filedeniedlisttray_1";
-      print("<B>$type.  <FONT SIZE=\"+1\" COLOR=\"blue\">$row[s_name]</FONT></B>\n");
+      print("<B>$type <FONT SIZE=\"+1\" COLOR=\"blue\">$row[s_name]</FONT></B>\n");
 
       ExecuteFunctions("./src", "redirbuttom","1");
 

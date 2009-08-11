@@ -41,12 +41,16 @@ function AuthEnabled()
 
 function AuthEnabledForm()
 {
+  global $SAMSConf;
   global $USERConf;
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
 
-  PageTop("config_48.jpg","Enabled authorisation type ");
+  PageTop("config_48.jpg","$authtray_AuthEnabledForm_1");
   print("<P>\n");
 echo "";
   print("<FORM NAME=\"authenabledform\" ACTION=\"main.php\">\n");
@@ -57,8 +61,8 @@ echo "";
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TH bgcolor=blanchedalmond> Authorisation\n");
-  print("<TH bgcolor=blanchedalmond> Enabled\n");
+  print("<TH bgcolor=blanchedalmond>$authtray_AuthEnabledForm_2\n");
+  print("<TH bgcolor=blanchedalmond>$authtray_AuthEnabledForm_3\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
   print("<TD><B>IP </B>\n");
@@ -111,7 +115,7 @@ function AuthTray()
       print("<SCRIPT>\n");
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authenabledform&filename=authtray.php\";\n");
       print("</SCRIPT> \n");
-
+/*
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
@@ -121,10 +125,10 @@ function AuthTray()
 
 	ExecuteFunctions("./src", "authbuttom","1");
 
+	print("<TD>\n");
+	print("</TABLE>\n");
      }
-  print("<TD>\n");
-  print("</TABLE>\n");
-
+*/
 
 
 }

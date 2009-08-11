@@ -216,7 +216,7 @@ function AuthNTLMTray()
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");
 	print("<TD WIDTH=25%>");
-	print("<B><FONT SIZE=\"+1\">NTLM</FONT></B>\n");
+	print("<B>$authtype_AuthTray<BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">NTLM</FONT></B>\n");
 
 	ExecuteFunctions("./src", "authntlmbuttom","1");
 

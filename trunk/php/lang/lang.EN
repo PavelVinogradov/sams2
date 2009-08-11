@@ -166,8 +166,6 @@
   $usertray_UserForm_11=" Disabled "; 
   $usertray_UserForm_12=" Template "; 
   $usertray_UserForm_13=" Active ";
-  $usertray_UserForm_14="Moved to temporary template";
-  $usertray_UserForm_15="Exceed limit";
   $usertray_UserTray_1=" User "; 
 
   $userstray_AddUser_1=" The user has been added "; 
@@ -284,19 +282,6 @@
   $userbuttom_1_prop_UpdateUserForm_11=" User is active "; 
   $userbuttom_1_prop_UpdateUserForm_12=" Template "; 
   $userbuttom_1_prop_UpdateUserForm_13=" Change the data ";
-  $userbuttom_1_prop_UpdateUserForm_14="This user see statistic of his group users";
-  $userbuttom_1_prop_UpdateUserForm_15="Enabled";
-  $userbuttom_1_prop_UpdateUserForm_16="traffic Off";
-  $userbuttom_1_prop_UpdateUserForm_17="Disabled";
-  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
-  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
-  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
-  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
-  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
-  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
-  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
-  $userbuttom_1_prop_UpdateUserForm_25="Moved to a temporary template";
-
   
   $userbuttom_1_prop_userbuttom_1_prop_1=" Change the user data "; 
 
@@ -628,6 +613,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_42="Icon set";
   $adminbuttom_1_prop_SamsReConfigForm_43="Not used redirector";
 
+  $userbuttom_1_prop_UpdateUserForm_14="This user see statistic of his group users";
   $usertray_UserTray_1="User";
   $deniedlisttray_DeniedListTray_1="The access is forbidden.  <BR>List";
   $allowlisttray_allowlisttray_1="The access is allowed.  <BR>List";
@@ -865,6 +851,9 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_8="Retype new passwd";
   $shablontray_ShablonUsers_4="Users";
+  $userbuttom_1_prop_UpdateUserForm_15="Enabled";
+  $userbuttom_1_prop_UpdateUserForm_16="traffic Off";
+  $userbuttom_1_prop_UpdateUserForm_17="Disabled";
 
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Show all domain users";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Enter name of AD group manually";
@@ -895,6 +884,14 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablonbuttom_9_delete_DeleteShablon_2="users";
   $shablonbuttom_9_delete_DeleteShablon_3="Error of removal a template";
 
+  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
+  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
+  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
+  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
+  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
+  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
+  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
+
   $usersbuttom_2_traffic_UsersTrafficForm_3="select sorting method";
   $usersbuttom_2_traffic_UsersTrafficForm_4="The size of the received traffic";
   $usersbuttom_2_traffic_UsersTrafficForm_5="Names of users";
@@ -902,7 +899,33 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $AuthADLDValues_authadldtray_1="Active Directory configuration";
   $AuthADLDValues_authadldtray_2="SAMS users synchronize with Active Directory groups";
 
-  $proxybuttom_1_down_proxybuttom_1_down_1="Shutdown proxy server?";
+  $AuthLDAPValues_authldaptray_1="To remove the chosen groups of synchronisation with domain LDAP";
+  $AuthLDAPValues_authldaptray_2="To add the chosen groups in synchronisation with domain LDAP";
+  $AddSyncGroup_authldaptray_1="In synchronisation with domain LDAP groups are added:";
+  $RemoveSyncGroup_authldaptray_1="In synchronisation with domain LDAP groups are added:";
+
+  $AuthADLDValues_authadldtray_3="To remove the chosen groups of synchronisation with domain AD";
+  $AuthADLDValues_authadldtray_4="To add the chosen groups in synchronisation with domain AD";
+  $AddSyncGroup_authadldtray_1="In synchronisation with domain AD groups are added:";
+  $RemoveSyncGroup_authadldtray_1="In synchronisation with domain AD groups are added:";
+
+  $AuthNTLMValues_authntlmtray_1="To remove the chosen groups of synchronisation with Windows domain";
+  $AuthNTLMValues_authntlmtray_2="To add the chosen groups in synchronisation with Windows domain";
+  $AddSyncGroup_authntlmtray_1="In synchronisation with Windows domain groups are added:";
+  $RemoveSyncGroup_authntlmtray_1="In synchronisation with Windows domain groups are added:";
+
+  $lffolder_5_z0_trange_lfforder_5_z0_trange_1="Time range";
+  $AddTRangeForm_trangetray_1="Time range";
+  $JSTRangeInfo_trangetray_1="Time range";
+  $TRangeTray_trangetray_1="Time range";
+  $redirlisttray_RedirListTray_2=" Local domains <BR> List ";
+  $authtray_AuthEnabledForm_1="Enabled authorisation type";
+  $authtray_AuthEnabledForm_2="Authorisation type";
+  $authtray_AuthEnabledForm_3="Enabled";
+  $authadldbuttom_1_AuthADLDReConfigForm_1="Active Directory connection";
+
+
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

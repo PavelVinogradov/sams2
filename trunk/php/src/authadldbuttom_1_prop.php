@@ -19,6 +19,10 @@ function AuthADLDReConfig()
   UpdateAuthParameter("adld","adadminpasswd");
   UpdateAuthParameter("adld","usergroup");
 
+  print("<SCRIPT>\n");
+  print("  parent.tray.location.href=\"tray.php?show=exe&function=authadldtray&filename=authadldtray.php\";\n");
+  print("</SCRIPT> \n");
+
 }
 
 function AuthADLDReConfigForm()
@@ -37,7 +41,7 @@ function AuthADLDReConfigForm()
 	exit;
   
 
-  PageTop("config_48.jpg","ADLD Configuration ");
+  PageTop("config_48.jpg","$authadldbuttom_1_AuthADLDReConfigForm_1");
   print("<P>\n");
 
 
