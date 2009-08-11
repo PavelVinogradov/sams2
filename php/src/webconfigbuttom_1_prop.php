@@ -175,7 +175,7 @@ function WebInterfaceReConfigForm()
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"$row[s_mbsize]\">\n");
   
   print("<TR>\n");
-  print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_9 $row[s_showgraph]</B>\n");
+  print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_9</B>\n");
   if($row['s_showgraph']==1)
             print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"showgraph\" CHECKED> \n");
   else

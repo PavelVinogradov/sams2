@@ -89,30 +89,26 @@ function ShablonUsers()
       {
        print("<TR>\n");
        print("<TD>");
-        if($row['s_enabled']==2)
-          {
-             $gif="user_moved.png";
-          }
-        else if($row['s_enabled']==0)
-          {
-             $gif="user_inactive.png";
-          }
-        else if($row['s_enabled']<0)
-          {
-              $gif="user_off.png";
-          }
-        else if($row['s_enabled']==1)
-          {
-             if($SAMSConf->realtraffic=="real")
-                $traffic=$row['s_size']-$row['s_hit'];
-             else
-                $traffic=$row['s_size'];
-             if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
-               $gif="user_active.png";
-             else
-               if($row['s_quote']>0)
+       if($row['s_enabled']>0)
+         {
+           if($SAMSConf->realtraffic=="real")
+	     $traffic=$row['s_size']-$row['s_hit'];
+           else
+	     $traffic=$row['s_size'];
+	   if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
+              $gif="puser.gif";
+           else
+              if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
-           }
+         }
+       if($row['s_enabled']==0)
+         {
+            $gif="puserd.gif";
+         }
+       if($row['s_enabled']<0)
+         {
+            $gif="duserd.gif";
+         }
        print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\" TITLE=\"\"> ");
        print("<TD> <B>$row[s_nick] </B>");
        print("<TD> $row[s_family] ");

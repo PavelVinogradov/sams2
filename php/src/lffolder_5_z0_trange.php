@@ -20,7 +20,7 @@
 		"icon" => "clock.gif",
 		"target"=> "basefrm",
 		"url"=> "main.php?show=exe&filename=trangetray.php&function=addtrangeform",
-		"text"=> "Time Range");
+		"text"=> "$lffolder_5_z0_trange_lfforder_5_z0_trange_1");
 	treeFolder($item);
 
 	$num_rows=$DB->samsdb_query_value("SELECT * FROM timerange");

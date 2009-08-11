@@ -195,7 +195,7 @@ function AuthLDAPValues()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"ldaptest\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authldaptray.php\">\n");
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test ldap configurations\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test connections to LDAP\">\n");
   print("</FORM>\n");
 
   $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='ldap' AND  s_param='ldapgroup'");
@@ -262,7 +262,7 @@ function AuthLDAPTray()
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");
 	print("<TD WIDTH=25%>");
-	print("<B><FONT SIZE=\"+1\">LDAP</FONT></B>\n");
+	print("<B>$authtype_AuthTray<BR><FONT SIZE=\"+1\" COLOR=\"BLUE\">LDAP</FONT></B>\n");
 
 	ExecuteFunctions("./src", "authldapbuttom","1");
 

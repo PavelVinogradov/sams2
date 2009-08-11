@@ -40,48 +40,16 @@ class sams_ldap {
 	return $result;
     }
 
-    function FindFullUserDN($username)
-    {
-	if (!empty($this->usersrdn))
-	    $basedn="$this->usersrdn,$this->base_dn";
-        else
-	    $basedn="$this->base_dn";
-
-	if (is_null($this->usersfilter) || empty($this->usersfilter))
-	    $filter="(uid=$username)";
-	else
-	    $filter="(&$this->usersfilter(uid=$username))";
-
-        $full_dn="";
-        $array=array('uid');
-        if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
-        {
-            if ($entry = $sr->firstEntry())
-            {
-                $full_dn=$entry->getDN();
-            }
-        }
-        return($full_dn);
-    }
-
     function Authenticate($user, $passwd)
     {
-	$user_dn=$this->FindFullUserDN($user);
-	if (empty($user_dn))
-	    return NULL;
-
-	$ldbind=$this->ld->bind("$user_dn","$passwd");
+	$ldbind=$this->ld->bind("uid=$user,$this->usersrdn,$this->base_dn","$passwd");
 	return($ldbind);
-    }
+    }	
 
     function GetUsersData()
     {
 	$userdata = array();
-	if (!empty($this->usersrdn))
-	    $basedn="$this->usersrdn,$this->base_dn";
-        else
-	    $basedn="$this->base_dn";
-
+	$basedn="$this->usersrdn,$this->base_dn";
 	$filter="$this->usersfilter";
 	if (is_null($filter) || empty($filter)) {
 		$filter = "(cn=*)";
@@ -113,15 +81,11 @@ class sams_ldap {
     function GetUserInfo($username)
     {
 	$userdata = array();
-	if (!empty($this->usersrdn))
-	    $basedn="uid=$username,$this->usersrdn,$this->base_dn";
-	else
-	    $basedn="$this->base_dn";
-
-	if (is_null($this->usersfilter) || empty($this->usersfilter))
-	    $filter="(uid=$username)";
-	else
-	    $filter="(&$this->usersfilter(uid=$username))";
+	$basedn="uid=$username,$this->usersrdn,$this->base_dn";
+	$filter="(&$this->usersfilter(uid=$username))";
+	if (is_null($filter) || empty($filter)) {
+		$filter = "(cn=*)";
+	}
 
 	$array=array($this->usernameattr,'uid');
         if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
@@ -178,10 +142,7 @@ class sams_ldap {
     function GetUsersWithPrimaryGroupID($gid)
     {
 	$userdata = array();
-	if (!empty($this->usersrdn))
-	    $basedn="$this->usersrdn,$this->base_dn";
-	else
-	    $basedn="$this->base_dn";
+	$basedn="$this->usersrdn,$this->base_dn";
 	$array=array($this->usernameattr,'uid','gidNumber');
 
         if($sr = $this->ld->searchSubtree($basedn,"(gidNumber=$gid)",$array))

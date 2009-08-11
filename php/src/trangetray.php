@@ -65,7 +65,7 @@ function AddTRangeForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  PageTop("clock_48.jpg","Time Range ");
+  PageTop("clock_48.jpg","$AddTRangeForm_trangetray_1");
   print("<BR>\n");
  
        print("<SCRIPT language=JAVASCRIPT>\n");
@@ -159,8 +159,8 @@ function JSTRangeInfo()
   $code="<HTML><BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/clock_48.jpg\" align=\"RIGHT\" valign=\"middle\" >
-  <TD  valign=\"middle\"><h2  align=\"CENTER\">Time Range <FONT COLR=\"BLUE\">$TRANGEConf->s_name</h2>
-  </TABLE><TABLE>";
+  <TD  valign=\"middle\"><h2  align=\"CENTER\">".$JSTRangeInfo_trangetray_1." <FONT COLOR=\"BLUE\">$TRANGEConf->s_name</h2>
+  </FONT></TABLE><TABLE>";
   for($i=1;$i<8;$i++)
      {
 	if($TRANGEConf->s_days[$i]=="CHECKED")
@@ -203,7 +203,7 @@ function TRangeTray()
   print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
   print("<TR HEIGHT=60>\n");
   print("<TD WIDTH=25%>");
-  print("<B>Time Range<BR><FONT COLOR=\"BLUE\">$TRANGEConf->s_name</FONT></B>\n");
+  print("<B>$TRangeTray_trangetray_1<BR><FONT COLOR=\"BLUE\">$TRANGEConf->s_name</FONT></B>\n");
 
   ExecuteFunctions("./src", "trangebuttom","1");
   
