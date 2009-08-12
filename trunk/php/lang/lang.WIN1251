@@ -939,6 +939,9 @@
   $authtray_AuthEnabledForm_3="Активирован";
   $authtype_AuthTray="Тип авторизации";
   $authadldbuttom_1_AuthADLDReConfigForm_1="Настройка подключения к серверу Active Directory";
+  $shablonbuttom_1_prop_UpdateShablonForm_29="Добавить временной диапазон";
+
+
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
