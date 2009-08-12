@@ -923,7 +923,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $authtray_AuthEnabledForm_2="Authorisation type";
   $authtray_AuthEnabledForm_3="Enabled";
   $authadldbuttom_1_AuthADLDReConfigForm_1="Active Directory connection";
-
+  $shablonbuttom_1_prop_UpdateShablonForm_29="Add a time range";
 
 
 //  global $LANG;

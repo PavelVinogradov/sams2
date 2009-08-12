@@ -490,7 +490,7 @@ function UpdateShablonForm()
        print("}\n");
        print("</SCRIPT> \n");
 
-  print("<P><B>Shablon Time Range: </B>\n");
+  print("<P><B>$AddTRangeForm_trangetray_1: </B>\n");
   print("<TABLE>\n");
   print("<FORM NAME=\"REMOVETRANGE2shablon\" ACTION=\"main.php\">\n");
   $num_rows=$DB2->samsdb_query_value("SELECT sconfig_time.*, timerange.s_name, timerange.s_timestart, s_timeend FROM sconfig_time LEFT JOIN timerange ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$id' ");
@@ -508,7 +508,7 @@ function UpdateShablonForm()
   //$DB->free_samsdb_query();
 
 
-  print("<P><B>ADD Time Range: </B>\n");
+  print("<P><B>$shablonbuttom_1_prop_UpdateShablonForm_29: </B>\n");
   print("<TABLE>\n");
   print("<FORM NAME=\"ADDTRANGE2shablon\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");

@@ -257,7 +257,7 @@ function NewShablonForm()
   
   print("<P>\n");
   print("<TABLE>\n");
-  print("<TR><TD><B>Time Range:</B><TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
+  print("<TR><TD><B>$JSTRangeInfo_trangetray_1:</B><TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
   $num_rows=$DB->samsdb_query_value("SELECT * FROM timerange ");
   while($row=$DB->samsdb_fetch_array())
 	{
