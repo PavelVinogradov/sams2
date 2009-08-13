@@ -299,9 +299,8 @@ function importdataform()
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
-  PageTop("shablon.jpg","Import database from SAMS 1 ");
+  PageTop("shablon.jpg","$configbuttom_3_import_importdataform_1 ");
 
-			print("<H2 ALIGN=\"CENTER\">Import  data</H2>");
 			print("<FORM NAME=\"createdatabase\" ACTION=\"main.php\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"importdata\">\n");
@@ -312,12 +311,12 @@ function importdataform()
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
 //			print("<TR><TD ALIGN=RIGHT>SAMS 1 group : <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importgroups\">\n");
 //			print("<TR><TD ALIGN=RIGHT>SAMS 1 shablon : <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importshablons\">\n");
-			print("<TR><TD ALIGN=RIGHT>SAMS 1 templates, groups, users : <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\">\n");
-			print("<TR><TD ALIGN=RIGHT>SAMS 1 url access lists : <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\">\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\">\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\">\n");
 			print("</TABLE>\n");
 
 			printf("<BR><CENTER>");
-			print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Import data\">\n");
+			print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$configbuttom_3_import_importdataform_5\">\n");
 			print("</FORM>\n");
 }
 
