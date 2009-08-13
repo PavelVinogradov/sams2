@@ -940,7 +940,10 @@
   $authtype_AuthTray="Тип авторизации";
   $authadldbuttom_1_AuthADLDReConfigForm_1="Настройка подключения к серверу Active Directory";
   $shablonbuttom_1_prop_UpdateShablonForm_29="Добавить временной диапазон";
-
+  $configbuttom_3_import_importdataform_1="Импорт данных из SAMS версии 1.0.x";
+  $configbuttom_3_import_importdataform_2="Импортировать пользователей, группы пользователей и шаблоны из SAMS версии 1.0.x";
+  $configbuttom_3_import_importdataform_3="Импортировать списки запрета доступа из SAMS версии 1.0.x";
+  $configbuttom_3_import_importdataform_5="Импортировать";
 
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";

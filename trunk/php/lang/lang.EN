@@ -924,6 +924,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $authtray_AuthEnabledForm_3="Enabled";
   $authadldbuttom_1_AuthADLDReConfigForm_1="Active Directory connection";
   $shablonbuttom_1_prop_UpdateShablonForm_29="Add a time range";
+  $configbuttom_3_import_importdataform_1="Import database from SAMS 1";
+  $configbuttom_3_import_importdataform_2="SAMS 1 templates, groups, users";
+  $configbuttom_3_import_importdataform_3="SAMS 1 url access lists";
+  $configbuttom_3_import_importdataform_5="Import data";
 
 
 //  global $LANG;
