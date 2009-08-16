@@ -117,27 +117,27 @@ function AuthNTLMValues()
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain server</B>\n");
+  print("<TD><B>$ntlm_server</B>\n");
   $value=GetAuthParameter("ntlm","ntlmserver");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain</B>\n");
+  print("<TD><B>$ntlm_domain</B>\n");
   $value=GetAuthParameter("ntlm","ntlmdomain");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain administrator</B>\n");
+  print("<TD><B>$ntlm_admin</B>\n");
   $value=GetAuthParameter("ntlm","ntlmadmin");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain administrator password</B>\n");
+  print("<TD><B>$ntlm_passwd</B>\n");
   $value=GetAuthParameter("ntlm","ntlmadminpasswd");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain user group</B>\n");
+  print("<TD><B>$ntlm_group</B>\n");
   $value=GetAuthParameter("ntlm","ntlmusergroup");
   print("<TD>$value \n");
 

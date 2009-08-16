@@ -246,7 +246,7 @@ function ImportFromADForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);  
 
-  PageTop("user.jpg"," Import from Active Directory ");
+  PageTop("importfromad-48.jpg"," $authadldbuttom_3_importfromad_ImportFromADForm_1 ");
   
 	require_once("src/adldap.php");
 
@@ -283,7 +283,7 @@ function ImportFromADForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authadldbuttom_3_importfromad.php\">\n"); 
 /* */
 	echo "<TABLE WIDTH=90%>";
-	print("<TR><TD WIDTH=30%><B>Select imported AD groups:\n");
+	print("<TR><TD WIDTH=30%><B>$authadldbuttom_3_importfromad_ImportFromADForm_2:\n");
 	print("<TD WIDTH=70%><SELECT NAME=\"addgroupname[]\" SIZE=15 TABINDEX=30 MULTIPLE>\n");
 	for($i=0;$i<$gcount;$i++)
 	{
@@ -435,7 +435,7 @@ function authadldbuttom_3_importfromad()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=importfromadform&filename=authadldbuttom_3_importfromad.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_usersbuttom_1_domain_1 Active Directory");
+       GraphButton("main.php?show=exe&function=importfromadform&filename=authadldbuttom_3_importfromad.php","basefrm","importfromad-32.jpg","importfromad-48.jpg","$authadldbuttom_3_importfromad_ImportFromADForm_1");
 	}
 
 }

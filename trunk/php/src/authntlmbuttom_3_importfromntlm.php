@@ -271,7 +271,7 @@ function ImportFromNTLMForm()
 
   $DB=new SAMSDB(&$SAMSConf);
 
-  PageTop("user.jpg"," Import from Windows Domain ");
+  PageTop("importfromad-48.jpg"," $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1 ");
 
   	$ntlmserver=GetAuthParameter("ntlm","ntlmserver");
 	$ntlmadmin=GetAuthParameter("ntlm","ntlmadmin");
@@ -290,7 +290,7 @@ function ImportFromNTLMForm()
 	$aflag=0;
 
 	echo "<TABLE WIDTH=90%>";
-	print("<TR><TD WIDTH=30%><B>Select imported Windows domain groups:\n");
+	print("<TR><TD WIDTH=30%><B>$authadldbuttom_3_importfromntlm_ImportFromNTLMForm_2:\n");
 	print("<TD WIDTH=70%><SELECT NAME=\"addgroupname[]\" SIZE=15 TABINDEX=30 MULTIPLE>\n");
 	for($i=0;$i<$acount;$i++)
 	{
@@ -444,7 +444,7 @@ function authntlmbuttom_3_importfromntlm()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=importfromntlmform&filename=authntlmbuttom_3_importfromntlm.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_usersbuttom_1_domain_1 Active Directory");
+       GraphButton("main.php?show=exe&function=importfromntlmform&filename=authntlmbuttom_3_importfromntlm.php","basefrm","importfromad-32.jpg","importfromad-48.jpg","$authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1");
 	}
 
 }

@@ -45,7 +45,7 @@ function AuthLDAPReConfigForm()
 	exit;
   
 
-  PageTop("config_48.jpg","LDAP Configuration ");
+  PageTop("config_48.jpg","$authadldbuttom_1_prop_AuthLDAPReConfigForm_1 ");
   print("<P>\n");
 
 
@@ -122,7 +122,7 @@ function authldapbuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=authldapreconfigform&filename=authldapbuttom_1_prop.php",
-	               "basefrm","config_32.jpg","config_48.jpg","LDAP authorization configure");
+	               "basefrm","config_32.jpg","config_48.jpg","$authadldbuttom_1_prop_AuthLDAPReConfigForm_1");
     }
 
 }

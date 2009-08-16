@@ -39,7 +39,7 @@ function AuthNTLMReConfigForm()
 	exit;
   
 
-  PageTop("config_48.jpg","NTLM Configuration ");
+  PageTop("config_48.jpg","$authntlmbuttom_1_prop_AuthNTLMReConfigForm_1 ");
   print("<P>\n");
 
 
@@ -53,27 +53,27 @@ function AuthNTLMReConfigForm()
 
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain server</B>\n");
+  print("<TD><B>$ntlm_server</B>\n");
   $value=GetAuthParameter("ntlm","ntlmserver");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ntlmserver\" VALUE=\"$value\" >\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain</B>\n");
+  print("<TD><B>$ntlm_domain</B>\n");
   $value=GetAuthParameter("ntlm","ntlmdomain");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ntlmdomain\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain administrator</B>\n");
+  print("<TD><B>$ntlm_admin</B>\n");
   $value=GetAuthParameter("ntlm","ntlmadmin");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ntlmadmin\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain administrator password</B>\n");
+  print("<TD><B>$ntlm_passwd</B>\n");
   $value=GetAuthParameter("ntlm","ntlmadminpasswd");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ntlmadminpasswd\" VALUE=\"$value\">\n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Windows domain user group</B>\n");
+  print("<TD><B>$ntlm_group</B>\n");
   $value=GetAuthParameter("ntlm","ntlmusergroup");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"ntlmusergroup\" VALUE=\"$value\">\n");
 
@@ -97,7 +97,7 @@ function authntlmbuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=authntlmreconfigform&filename=authntlmbuttom_1_prop.php",
-	               "basefrm","config_32.jpg","config_48.jpg","NTLM authorisation configure");
+	               "basefrm","config_32.jpg","config_48.jpg","$authntlmbuttom_1_prop_AuthNTLMReConfigForm_1");
     }
 
 }

@@ -159,27 +159,27 @@ function AuthADLDValues()
 
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Active Directory server</B>\n");
+  print("<TD><B>$ad_server</B>\n");
   $value=GetAuthParameter("adld","adldserver");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>Base DN</B>\n");
+  print("<TD><B>$ad_domain</B>\n");
   $value=GetAuthParameter("adld","basedn");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>AD administrator</B>\n");
+  print("<TD><B>$ad_admin</B>\n");
   $value=GetAuthParameter("adld","adadmin");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>AD administrator password</B>\n");
+  print("<TD><B>$ad_passwd</B>\n");
   $value=GetAuthParameter("adld","adadminpasswd");
   print("<TD>$value \n");
 
   print("<TR bgcolor=blanchedalmond>\n");
-  print("<TD><B>AD user group</B>\n");
+  print("<TD><B>$ad_group</B>\n");
   $value=GetAuthParameter("adld","usergroup");
   print("<TD>$value \n");
 
