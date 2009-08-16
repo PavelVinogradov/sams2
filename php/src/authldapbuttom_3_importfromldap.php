@@ -247,7 +247,7 @@ function ImportFromLDAPForm()
 
   $DB=new SAMSDB(&$SAMSConf);
 
-  PageTop("user.jpg"," Import from LDAP ");
+  PageTop("importfromldap-48.jpg"," $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1 ");
   
 	require_once("src/ldap.php");
 
@@ -274,7 +274,7 @@ function ImportFromLDAPForm()
 	$groupinfo=$samsldap->GetGroupsData();
 
 	echo "<TABLE WIDTH=90%>";
-	print("<TR><TD WIDTH=30%><B>Select imported AD groups:\n");
+	print("<TR><TD WIDTH=30%><B>$authadldbuttom_3_importfromldap_ImportFromLDAPForm_2:\n");
 	print("<TD WIDTH=70%><SELECT NAME=\"addgroupname[]\" SIZE=15 TABINDEX=30 MULTIPLE>\n");
 
 	for($i=0;$i<$groupinfo['groupscount'];$i++)
@@ -426,7 +426,7 @@ function authldapbuttom_3_importfromldap()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=importfromldapform&filename=authldapbuttom_3_importfromldap.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_usersbuttom_1_domain_1 LDAP");
+       GraphButton("main.php?show=exe&function=importfromldapform&filename=authldapbuttom_3_importfromldap.php","basefrm","importfromldap-32.jpg","importfromldap-48.jpg","$authadldbuttom_3_importfromldap_ImportFromLDAPForm_1");
 	}
 
 }

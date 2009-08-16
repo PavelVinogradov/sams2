@@ -81,7 +81,7 @@ function proxybuttom_9_down()
        
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Shutdown name=\"Shutdown\" src=\"$SAMSConf->ICONSET/shutdown_32.jpg\" \n ");
-       print("TITLE=\"Shutdown proxy server\"  border=0 ");
+       print("TITLE=\"$proxybuttom_1_down_proxybuttom_1_down_2\"  border=0 ");
        print("onclick=StopProxy() \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/shutdown_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/shutdown_32.jpg'\" >\n");

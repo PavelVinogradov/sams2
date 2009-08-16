@@ -53,7 +53,7 @@ function proxybuttom_9_delete()
        print("}\n");
        print("function DeleteProxy()\n");
        print("{\n");
-       print("  value=window.confirm(\"Remove proxy $PROXYConf->s_description? \" );\n");
+       print("  value=window.confirm(\"$proxybuttom_9_delete_proxybuttom_9_delete_1 '$PROXYConf->s_description'? \" );\n");
        print("  if(value==true) \n");
        print("     {\n");
        print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteproxy&filename=proxybuttom_9_delete.php&&id=$id\";\n");
@@ -63,7 +63,7 @@ function proxybuttom_9_delete()
 
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Remove name=\"Remove Proxy\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
-       print("TITLE=\"Remove Proxy\"  border=0 ");
+       print("TITLE=\"$proxybuttom_9_delete_proxybuttom_9_delete_1\"  border=0 ");
        print("onclick=DeleteProxy(\"$id\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");

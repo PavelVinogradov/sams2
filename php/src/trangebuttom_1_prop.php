@@ -71,7 +71,7 @@ function UpdateTRangeForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
-  PageTop("clock_48.jpg","Time Range ");
+  PageTop("clock_48.jpg","$trangebuttom_1_prop_trangebuttom_1_prop_1<BR><FONT COLOR=\"BLUE\">$TRANGEConf->s_name</FONT>");
   print("<BR>\n");
  
        print("<SCRIPT language=JAVASCRIPT>\n");
@@ -172,7 +172,7 @@ function trangebuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=updatetrangeform&filename=trangebuttom_1_prop.php&id=$TRANGEConf->s_trange_id",
-	               "basefrm","config_32.jpg","config_48.jpg","$shablonbuttom_1_prop_shablonbuttom_1_prop_1");
+	               "basefrm","config_32.jpg","config_48.jpg","$trangebuttom_1_prop_trangebuttom_1_prop_1");
     }
 }
 

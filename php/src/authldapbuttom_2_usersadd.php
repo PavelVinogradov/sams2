@@ -337,7 +337,7 @@ function authldapbuttom_2_usersadd()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=addusersfromldapform&filename=authldapbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_usersbuttom_1_domain_1 LDAP");
+       GraphButton("main.php?show=exe&function=addusersfromldapform&filename=authldapbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
 	}
 
 }

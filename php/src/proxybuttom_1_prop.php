@@ -550,7 +550,7 @@ function proxybuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=proxyreconfigform&filename=proxybuttom_1_prop.php&id=$id",
-	               "basefrm","config_32.jpg","config_48.jpg","$adminbuttom_1_prop_adminbuttom_1_propadmintray_1");
+	               "basefrm","config_32.jpg","config_48.jpg","$proxybuttom_1_prop_proxybuttom_1_prop_1");
     }
 
 }

@@ -54,7 +54,7 @@ function trangebuttom_9_delete()
        print("}\n");
        print("function DeleteUser()\n");
        print("{\n");
-       print("  value=window.confirm(\"Delete Time Range $TRANGEConf->s_name? \" );\n");
+       print("  value=window.confirm(\"$trangebuttom_9_delete_trangebuttom_9_delete_2 $TRANGEConf->s_name? \" );\n");
        print("  if(value==true) \n");
        print("     {\n");
        print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletetrange&filename=trangebuttom_9_delete.php&id=$TRANGEConf->s_trange_id\";\n");
@@ -64,7 +64,7 @@ function trangebuttom_9_delete()
 
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
-       print("TITLE=\"Delete Time Range '$TRANGEConf->s_name'\"  border=0 ");
+       print("TITLE=\"$trangebuttom_9_delete_trangebuttom_9_delete_1 '$TRANGEConf->s_name'\"  border=0 ");
        print("onclick=DeleteUser() \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");
