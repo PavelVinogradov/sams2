@@ -127,7 +127,7 @@ function SysInfo()
   $edate="$syea-$smon-$eday";
   $stime="0:00:00";
   $etime="0:00:00";
-  
+//  echo "SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate'<BR>";
    print("<P><TABLE CLASS=samstable>\n");
    print("<TH>\n");
    print("<TH width=\"33%\" >All traffic\n");
