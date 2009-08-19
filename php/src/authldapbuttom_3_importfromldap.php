@@ -121,6 +121,9 @@ echo "ImportFrom LDAP<BR>";
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
+	$addgroups="on";
+	$addtemplates="on";
+
 	if($period=="A")
 	{
 		$period=$newperiod;
@@ -155,7 +158,9 @@ echo " add template: $addgroupname[$i]<BR>";
 			if($result == 0) 
 			{
 				
-				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$addgroupname[$i]', '$shablonpool', '$userpool', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0' ) ");
+				if($clrdate=="")
+					$clrdate="1980-01-01";
+				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$shablonpool', '$userpool', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0', '-1' ) ");
 				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
 				$row=$DB->samsdb_fetch_array();
 				$sid=$row['s_shablon_id'];
@@ -191,7 +196,10 @@ echo "ADD USERS:<BR>";
 				$user=$b['uid'][$j];
 				$username=$b['name'][$j];
 
-				$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+				if($enabled=="")
+					$enabled=0;
+
+				$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
 				echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
 
 				$DB->samsdb_query($QUERY);
@@ -287,6 +295,7 @@ function ImportFromLDAPForm()
 	}
 
 	print("</SELECT>\n");
+/*
 	print("<TR><TD WIDTH=30%><B>Create SAMS templates with LDAP groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");
 
@@ -317,7 +326,7 @@ function ImportFromLDAPForm()
            print("    }\n");
            print("}\n");
            print("</SCRIPT> \n");
-
+*/
 	print("<TR>\n");
 	print("<TD>\n");
 	print("$shablonnew_NewShablonForm_3:\n");
@@ -394,7 +403,7 @@ function ImportFromLDAPForm()
 	print("<INPUT TYPE=\"TEXT\" NAME=\"clrmonth\" SIZE=2 DISABLED VALUE=\"$MCLRVALUE\">:\n");
 	print("<INPUT TYPE=\"TEXT\" NAME=\"clrday\" SIZE=2 DISABLED VALUE=\"$DCLRVALUE\">\n");
 
-	print("<TR><TD>Time Range:<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
+	print("<TR><TD>$AddTRangeForm_trangetray_1:<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
 	$num_rows=$DB->samsdb_query_value("SELECT * FROM timerange ");
 	while($row=$DB->samsdb_fetch_array())
 	{
@@ -405,9 +414,10 @@ function ImportFromLDAPForm()
 
 
 
-
+/*
 	print("<TR><TD WIDTH=30%><B>Create SAMS groups with AD groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addgroups\" CHECKED>");
+*/
 	echo "</TABLE>";
 	print("<INPUT TYPE=\"SUBMIT\" value=\"Import\">\n");
 	print("</FORM>\n");

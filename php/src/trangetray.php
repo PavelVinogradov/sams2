@@ -45,6 +45,7 @@ function AddTRange()
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
+  print(" parent.basefrm.location.href = \"main.php?show=exe&filename=trangetray.php&function=addtrangeform\"; \n");
   print("</SCRIPT> \n");
 }
 

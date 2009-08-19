@@ -72,7 +72,9 @@ function AddShablon()
      }  
   
 //  $DB->samsdb_query("INSERT INTO shablon SET s_name='$snick', s_shablonpool='$shablonpool', s_userpool='$userpool', s_quote='$defaulttraf', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_alldenied='0' ");
-  $DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' ) ");
+  $QUERY="INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' ) ";
+echo "$QUERY<BR>";
+  $DB->samsdb_query($QUERY);
   $DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$snick' ");
   $row=$DB->samsdb_fetch_array();
   $sid=$row['s_shablon_id'];
@@ -121,6 +123,10 @@ echo "ImportFromAD<BR>";
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
+	$addgroups="on";
+	$addtemplates="on";
+echo "defaulttraf=$defaulttraf<BR>";
+//exit(0);
 	if($period=="A")
 	{
 		$period=$newperiod;
@@ -163,8 +169,10 @@ echo " add template: $addgroupname[$i]<BR>";
 			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
-				
-				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$addgroupname[$i]', '$shablonpool', '$userpool', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0' ) ");
+				if($clrdate=="")
+					$clrdate="1980-01-01";
+
+				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$shablonpool', '$userpool', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0', '-1' ) ");
 				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
 				$row=$DB->samsdb_fetch_array();
 				$sid=$row['s_shablon_id'];
@@ -177,7 +185,6 @@ echo " add template: $addgroupname[$i]<BR>";
 		if($addgroups=="on")
 		{
 echo " add group: $addgroupname[$i]<BR>";
-
 			$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
@@ -212,17 +219,15 @@ echo " add group: $addgroupname[$i]<BR>";
 		$name=explode(" ",$displayname);
 		$cname=count($name);
 		echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
-		$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
 
+		if($enabled=="")
+			$enabled=1;
+
+		$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
 		$DB->samsdb_query($QUERY);
 //      $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote', '0', '$enabled', $groupid, '$usersoname', '$userip', '$pass', '0', '0', '0') ");
 
 	}
-
-
-
-
-
 
 		}
 		print(" <BR>");
@@ -292,6 +297,7 @@ function ImportFromADForm()
 			print("<OPTION VALUE=\"$groupname\"> $groupname \n");
 	}
 	print("</SELECT>\n");
+/*
 	print("<TR><TD WIDTH=30%><B>Create SAMS templates with AD groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");
 
@@ -326,7 +332,7 @@ function ImportFromADForm()
            print("    }\n");
            print("}\n");
            print("</SCRIPT> \n");
-
+*/
 	print("<TR>\n");
 	print("<TD>\n");
 	print("$shablonnew_NewShablonForm_3:\n");
@@ -403,7 +409,7 @@ function ImportFromADForm()
 	print("<INPUT TYPE=\"TEXT\" NAME=\"clrmonth\" SIZE=2 DISABLED VALUE=\"$MCLRVALUE\">:\n");
 	print("<INPUT TYPE=\"TEXT\" NAME=\"clrday\" SIZE=2 DISABLED VALUE=\"$DCLRVALUE\">\n");
 
-	print("<TR><TD>Time Range:<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
+	print("<TR><TD>$AddTRangeForm_trangetray_1:<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
 	$num_rows=$DB->samsdb_query_value("SELECT * FROM timerange ");
 	while($row=$DB->samsdb_fetch_array())
 	{
@@ -414,9 +420,10 @@ function ImportFromADForm()
 
 
 
-
+/*
 	print("<TR><TD WIDTH=30%><B>Create SAMS groups with AD groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addgroups\" CHECKED>");
+*/
 	echo "</TABLE>";
 	print("<INPUT TYPE=\"SUBMIT\" value=\"Import\">\n");
 	print("</FORM>\n");
