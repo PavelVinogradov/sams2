@@ -551,9 +551,11 @@ $pgdb[24] = "CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_proxy_id, s_date, 
 $pgdb[25] = "CREATE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id )";
 $pgdb[26] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[27] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
-$pgdb[28] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
-s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date DATETIME NOT NULL ,
-s_status INT NOT NULL)";
+//$pgdb[28] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL ,
+//s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date DATETIME NOT NULL ,
+//s_status INT NOT NULL)";
+$pgdb[28] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL , 
+s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date TIMESTAMP, s_status INT NOT NULL)";
 
 $pgdb[29] = "create table auth_param (s_auth varchar(4) default '', s_param varchar(50) default '', s_value varchar(50) default '')";
 $pgdb[30] = "INSERT INTO auth_param VALUES('ntlm', 'enabled', '0')";
