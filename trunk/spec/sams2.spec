@@ -41,7 +41,7 @@
 
 Name:          sams2
 Version:       2.0.0
-Epoch:         631
+Epoch:         667
 Release:       a2.%{epoch}%{disttag}
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
@@ -153,12 +153,12 @@ install -m644 etc/doc_sams2_conf			\
     "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
 sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-%{version},g'	\
 	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
-
 sed -i -e 's,^SQUIDCACHEDIR=.*$,SQUIDCACHEDIR=/var/spool/squid,g'	\
 	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
 sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\
 	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
-
+sed -i -e 's,^WBINFOPATH=.*$,WBINFOPATH=%{_prefix}/bin,g'	\
+	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
 install -d "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
 install -m644 ChangeLog AUTHORS COPYING NEWS INSTALL "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
 # moving doc to suse specific location
