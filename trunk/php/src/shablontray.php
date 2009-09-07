@@ -67,6 +67,7 @@ function ShablonUsers()
 		 print("<TR><TD>$shablonbuttom_1_prop_UpdateShablonForm_18:<TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_clrdate</FONT>");
 	}
   $second_template="NONE";
+
   if ($SHABLONConf->s_shablon_id2 != -1)
     {
       $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$SHABLONConf->s_shablon_id2'");

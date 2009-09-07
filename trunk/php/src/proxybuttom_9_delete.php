@@ -10,7 +10,8 @@ function DeleteProxy()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB("$SAMSConf->DB_ENGINE", $SAMSConf->ODBC, $SAMSConf->MYSQLHOSTNAME, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
+  $DB=new SAMSDB(&$SAMSConf);
+
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -20,15 +21,14 @@ function DeleteProxy()
   
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  print("<SCRIPT>\n");
-  print("        parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
-  print("        parent.lframe.location.href=\"lframe.php\";\n");
-  print("</SCRIPT> \n");
   
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM proxy WHERE s_proxy_id='$id' ");
-  $row=$DB->samsdb_fetch_array();
-  $DB->samsdb_query("DELETE FROM proxy WHERE s_proxy_id='$id' ");
-  //UpdateLog("$SAMSConf->adminname","Deleted user $row[nick] ","01");
+	$QUERY="DELETE FROM proxy WHERE s_proxy_id='$id'";
+	$DB->samsdb_query($QUERY);
+
+	print("<SCRIPT>\n");
+	print("  parent.lframe.location.href=\"lframe.php\";\n");
+	print("  parent.basefrm.location.href = \"main.php?show=exe&function=cacheform&filename=squidtray.php&function=squidtray\"; \n");
+	print("</SCRIPT> \n");
 
 }
 

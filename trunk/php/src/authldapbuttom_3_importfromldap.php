@@ -103,7 +103,7 @@ function ImportFromLDAP()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
 
-echo "ImportFrom LDAP<BR>";
+  PageTop("importfromldap-48.jpg"," $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1 ");
  
   if(isset($_GET["addtemplates"])) $addtemplates=$_GET["addtemplates"];
   if(isset($_GET["addgroups"])) $addgroups=$_GET["addgroups"];
@@ -121,9 +121,15 @@ echo "ImportFrom LDAP<BR>";
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
+  if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
+
 	$addgroups="on";
 	$addtemplates="on";
 
+	if($enabled=="on")
+		$enabled=1;
+	else  
+		$enabled=0;
 	if($period=="A")
 	{
 		$period=$newperiod;
@@ -148,11 +154,9 @@ echo "ImportFrom LDAP<BR>";
 	$i=0;
 	while(strlen($addgroupname[$i])>0)
 	{
-echo "$i: $addgroupname[$i]<BR>";
 		if($addtemplates=="on")
 		{
-echo " add template: $addgroupname[$i]<BR>";
-
+			echo "<B>ADD TEMPLATE:</B> $addgroupname[$i]";
 
 			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
@@ -166,21 +170,23 @@ echo " add template: $addgroupname[$i]<BR>";
 				$sid=$row['s_shablon_id'];
 				$DB->free_samsdb_query();
 				$DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-				echo "create template $addgroupname[$i] "; 
+				echo " Ok"; 
 			}
+			echo "<BR>"; 
 
 		}
 		if($addgroups=="on")
 		{
-echo " add group: $addgroupname[$i]<BR>";
+			echo "<B>ADD GROUP:</B> $addgroupname[$i]";
 
 			$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
 				$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$addgroupname[$i]') ");
-				echo "create group $addgroupname[$i] "; 
 				$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('ldap', 'ldapgroup', '$addgroupname[$i]') ");
+				echo " Ok "; 
 			}
+			echo "<BR>"; 
 
 			$result=$DB->samsdb_query_value("SELECT s_name, s_group_id FROM sgroup where s_name = '$addgroupname[$i]'");
 			$row=$DB->samsdb_fetch_array();
@@ -189,7 +195,8 @@ echo " add group: $addgroupname[$i]<BR>";
 			$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
 			$row=$DB->samsdb_fetch_array();
 			$shablonid=$row['s_shablon_id'];
-echo "ADD USERS:<BR>";
+
+			echo "<B>ADD USERS:</B><BR>";
 			$b=$samsldap->GetUsersWithSecondaryGroupID($addgroupname[$i]);
 			for($j=0;$j<$b['userscount'];$j++)
 			{
@@ -200,36 +207,10 @@ echo "ADD USERS:<BR>";
 					$enabled=0;
 
 				$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
-				echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
 
 				$DB->samsdb_query($QUERY);
+				echo " $user<BR>";
 			}
-
-
-/*
-	$a=$ldap->group_users($addgroupname[$i]);
-	$acount=count($a);
-	for($j=0;$j<$acount;$j++)
-	{
-		$user=$a[$j];
-		$username=$a[$j];
-
-		$userinfo=$ldap->user_info( $user, $fields=NULL);
-		$username2 = UTF8ToSAMSLang($user);
-		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-		$name=explode(" ",$displayname);
-		$cname=count($name);
-		echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
-		$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
-
-		$DB->samsdb_query($QUERY);
-
-	}
-*/
-
-
-
-
 
 		}
 		print(" <BR>");
@@ -295,6 +276,10 @@ function ImportFromLDAPForm()
 	}
 
 	print("</SELECT>\n");
+
+	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
+	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
+
 /*
 	print("<TR><TD WIDTH=30%><B>Create SAMS templates with LDAP groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");

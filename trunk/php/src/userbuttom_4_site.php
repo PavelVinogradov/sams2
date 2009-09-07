@@ -202,7 +202,7 @@ function UserSitesPeriod()
 //	}
 	   
 	if($USERConf->ToWebInterfaceAccess("C")==1)
-           	TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$SquidUSERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A>");
+           	TableCell("<A TARGET=\"BLANK\" HREF=\"main.php?show=exe&function=siteuserlist&filename=userbuttom_4_site.php&site=$row[norm_url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea&id=$SquidUSERConf->s_user_id\" ><FONT COLOR=\"BLACK\">$row[norm_url]</FONT></A> 1.1");
 	else
 		if($USERConf->ToWebInterfaceAccess("WAUS")==1 || $USERConf->ToGroupStatAccess("G", $SquidUSERConf->s_group_id))
 			TableCell("<A HREF=\"http://$row[norm_url]\" TARGET=\"BLANK\">$row[norm_url]</A> 2.2\n");

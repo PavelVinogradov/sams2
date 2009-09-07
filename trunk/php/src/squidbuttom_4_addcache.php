@@ -103,7 +103,8 @@ $adminaddr="root@localhost";
 
      //    UpdateLog("$SAMSConf->adminname","Added SQUID-cache $description ","01");
   print("<SCRIPT>\n");
-  print("  parent.basefrm.location.href=\"main.php?show=exe&function=cacheform&filename=squidbuttom_4_addcache.php\"; \n");
+  print("  parent.lframe.location.href=\"lframe.php\";\n");
+  print("  parent.basefrm.location.href = \"main.php?show=exe&function=cacheform&filename=squidbuttom_4_addcache.php\"; \n");
   print("</SCRIPT> \n");
 }
 
@@ -120,27 +121,7 @@ function CacheForm()
 
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-      PageTop("proxyes_48.jpg","$CacheForm_squidbuttom_4_addcache_1");
-      //print("<H2>$CacheForm_squidbuttom_4_addcache_1</H2>\n");
-/*
-      print("<FORM NAME=\"cacheform\" ACTION=\"main.php\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"removecache\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"squidbuttom_4_addcache.php\">\n");
-      print("<TABLE CLASS=samstable WIDTH=\"80%\">");
-      print("<TH width=20%>$CacheForm_squidbuttom_4_addcache_2");
-      print("<TH width=60%>$CacheForm_squidbuttom_4_addcache_3");
-      print("<TH width=20%>$CacheForm_squidbuttom_4_addcache_4");
-      $num_rows=$DB->samsdb_query_value("SELECT s_proxy_id,s_description FROM proxy ORDER BY s_proxy_id");
-       while($row=$DB->samsdb_fetch_array())
-           {
-             print("<TR><TD>$row[s_proxy_id]<TD> $row[s_description]");
-              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=cache[$row[s_proxy_id]]> \n");
-           }
-      print("</TABLE>");
-      print("<INPUT TYPE=\"SUBMIT\" value=\"$CacheForm_squidbuttom_4_addcache_5\" >\n");
-      print("</FORM>\n");
-*/  
+      PageTop("proxyes_48.jpg","$CacheForm_squidbuttom_4_addcache_6");
 
            print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
            print("function EnableCheckBox(formname)\n");
@@ -183,7 +164,7 @@ function CacheForm()
 
 
      print("<P>\n");
-      print("<H2>$CacheForm_squidbuttom_4_addcache_6</H2>\n");
+//      print("<H2>$CacheForm_squidbuttom_4_addcache_6</H2>\n");
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function TestName(formname)\n");
        print("{\n");
