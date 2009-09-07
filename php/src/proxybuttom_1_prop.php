@@ -102,7 +102,7 @@ function ProxyReConfigForm()
 	exit;
   
 
-  PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfigForm_1 ");
+  PageTop("config_48.jpg","Proxy server<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT> ");
   print("<P>\n");
 
   print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");

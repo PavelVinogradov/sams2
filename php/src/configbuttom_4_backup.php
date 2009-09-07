@@ -20,23 +20,25 @@ function SaveBackUp()
 	$samsdb=array('auth_param', 'passwd', 'proxy', 'redirect',
 	'sconfig', 'sconfig_time', 'sgroup', 'shablon', 'squiduser',
 	'sysinfo', 'timerange', 'url', 'websettings');
-	$filename=strftime("samsdb-%d%b%Y-%H-%M-%S.sql.gz");
+	$filename=strftime("sams2-%d%b%Y-%H-%M-%S.sql.gz");
 
+	PageTop("backup_48.jpg","$backupbuttom_1_savebase_SaveBackUpForm_1");
 
 	if(($fout=gzopen("data/$filename","w9"))!=NULL)
 	{
 		gzwrite($fout,"# ".$SAMSConf->SAMSDB." DUMP FOR ".$SAMSConf->DB_ENGINE." DATABASE\n");
-		gzwrite($fout,"USE ".$SAMSConf->SAMSDB.";\n");
+//		gzwrite($fout,"USE ".$SAMSConf->SAMSDB.";\n");
 		for($tcount=0;$tcount<count($samsdb);$tcount++)
 		{
-			gzwrite($fout,"DROP TABLE IF EXISTS `".$samsdb[$tcount]."`;\n");
-			gzwrite($fout,"CREATE TABLE `".$samsdb[$tcount]."`;\n");
+			echo "export table: ".$samsdb[$tcount]."<BR>";
+			gzwrite($fout,"DELETE FROM ".$samsdb[$tcount].";\n");
 			$QUERY="SELECT * FROM ".$samsdb[$tcount];
 			$num_rows=$DB->samsdb_query_value($QUERY);
 			while($row=$DB->samsdb_fetch_array())
 			{
 				$export = "INSERT INTO ".$samsdb[$tcount]." VALUES(";
-				$a=count($row);
+				$a=0;
+				$a=ceil(count($row)/2);
 				for($i=0;$i<$a;$i++)
 				{
 					$export=$export."'".$row[$i]."'";
@@ -76,7 +78,7 @@ function SaveBackUp()
 		fclose($fout);
 	}
   print("<P><A HREF=\"data/$filename\">\n");
-  print("<BR>$backupbuttom_1_savebase_SaveBackUp_1 <B>$filename</B>\n");
+  print("<BR><FONT COLOR=\"BLUE\">$backupbuttom_1_savebase_SaveBackUp_1 <B>$filename</B></FONT>\n");
   print("</A>\n");
 
 }

@@ -123,10 +123,16 @@ echo "ImportFromAD<BR>";
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
+  if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
+
 	$addgroups="on";
 	$addtemplates="on";
-echo "defaulttraf=$defaulttraf<BR>";
-//exit(0);
+
+	if($enabled=="on")
+		$enabled=1;
+	else  
+		$enabled=0;
+
 	if($period=="A")
 	{
 		$period=$newperiod;
@@ -297,6 +303,10 @@ function ImportFromADForm()
 			print("<OPTION VALUE=\"$groupname\"> $groupname \n");
 	}
 	print("</SELECT>\n");
+
+	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
+	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
+
 /*
 	print("<TR><TD WIDTH=30%><B>Create SAMS templates with AD groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");

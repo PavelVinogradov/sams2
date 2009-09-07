@@ -4,6 +4,9 @@
  * Author: Dmitry Chemerik chemerik@mail.ru
  * (see the file 'main.php' for license details)
  */
+// SHOW TABLE STATUS WHERE name='squidusers';
+//SHOW VARIABLES where variable_name='character_set_database';
+//show server_encoding;
 class IMPORTUSERS
 {
   var $sams1charset;
@@ -26,6 +29,8 @@ class IMPORTUSERS
   var $shabloncount2;
   var $DB;
   var $oldDB;
+  var $DBcharset;
+  var $oldDBcharset;
 
 function importurllists()
 {
@@ -101,11 +106,41 @@ function importgroups()
 		print($this->groupcount.":  ".$this->groupname[$this->groupcount]." ".$this->groupid[$this->groupcount]."<BR>");
 		if($row['nick']!="Administrators"&&$row['nick']!="Users")
 		{
-			echo "INSERT INTO sgroup ( s_name ) VALUES ('".$this->groupname[$this->groupcount]."') <BR>";
+//phpinfo();
 
-			echo "add SAMS 1.x group <B>".$this->groupname[$this->groupcount]."</B>";
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$this->groupname[$this->groupcount]."') ");
+			$GROUPNAME=$this->groupname[$this->groupcount];
+//			iconv($this->oldDBcharset, $this->DBcharset, $GROUPNAME);
+echo "$GROUPNAME: strlen ".strlen($GROUPNAME)."<BR>";
+//			iconv("UTF-8", "CP1251", $GROUPNAME);
+//			iconv("CP1251", "UTF-8", $GROUPNAME);
+
+			echo "add SAMS 1.x group <B>".$GROUPNAME."</B><BR>";
+
+$GROUPNAME5=$GROUPNAME;
+//$DBNAME2=$DBNAME;
+//$DBNAME2=$DBNAME;
+//$DBNAME2=$DBNAME;
+//$DBNAME2=$DBNAME;
+//$DBNAME2=$DBNAME;
+$GROUPNAME5 = substr_replace ( $GROUPNAME, "", 1 );
+echo "name: $GROUPNAME5<BR>";
+
+$QUERY="INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$GROUPNAME5."') ";
+
+echo $QUERY."<BR>";
+
+$this->DB->samsdb_query($QUERY);
+
+exit(0);
+
+//			echo "charset: ".mb_detect_encode($GROUPNAME)."<BR>";			
+			$QUERY="INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$GROUPNAME."') ";
+
+			echo $QUERY."<BR>";
+
+			$this->DB->samsdb_query($QUERY);
 			echo " added<BR>";
+exit(0);
 		}
 		$this->groupcount++;
 	}
@@ -234,8 +269,22 @@ function IMPORTUSERS($hostname, $username, $pass)
 
  $this->oldDB->samsdb_query_value("SELECT lang FROM globalsettings");
  $row=$this->oldDB->samsdb_fetch_array();
- $this->sams1charset=$row[0];
+
+
+// SHOW TABLE STATUS WHERE name='squidusers';
+//SHOW VARIABLES where variable_name='character_set_database';
+//show server_encoding;
+
+
+ $this->oldDB->samsdb_query_value("SHOW VARIABLES WHERE variable_name='character_set_database'");
+ $row=$this->oldDB->samsdb_fetch_array();
+ $this->oldDBcharset=$row[0];
  $this->oldDB->free_samsdb_query();
+
+ $this->DB->samsdb_query_value("show server_encoding");
+ $row=$this->DB->samsdb_fetch_array();
+ $this->DBcharset=$row[0];
+ $this->DB->free_samsdb_query();
 
  $this->pgcharset=pg_client_encoding($this->DB->link);
 

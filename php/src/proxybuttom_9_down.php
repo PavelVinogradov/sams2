@@ -38,16 +38,20 @@ function shutdown_proxy()
 {
   global $SAMSConf;
   global $USERConf;
-  if(isset($_GET["id"])) $id=$_GET["id"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
+  if(isset($_GET["id"])) $id=$_GET["id"];
+
   if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
-      $DB=new SAMSDB(&$SAMSConf);
-      PageTop("reconfig_48.jpg","Send command '$SAMSConf->SHUTDOWN' to proxy server");
-      $num_rows=$DB->samsdb_query("INSERT INTO reconfig SET s_proxy_id='$id',s_service='proxy',s_action='shutdown' ");
+	$DB=new SAMSDB(&$SAMSConf);
+	PageTop("reconfig_48.jpg","Send command '$SAMSConf->SHUTDOWN' to proxy server");
+
+	$QUERY="INSERT INTO reconfig (s_proxy_id, s_service, s_action)  VALUES('$id', 'squid', 'shutdown'); ";
+	$result=$DB->samsdb_query($QUERY);
+
   } 
 }
 

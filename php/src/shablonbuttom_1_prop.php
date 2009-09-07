@@ -344,7 +344,7 @@ function UpdateShablonForm()
   print("<TD><B>$shablonbuttom_1_prop_UpdateShablonForm_28</B>\n");
   print("<TD><SELECT NAME=\"shablon2\" ID=\"shablon2\" SIZE=1>\n");
   print("<OPTION VALUE=\"-1\" SELECTED> NONE");
-  $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon");
+  $num_rows=$DB->samsdb_query_value("SELECT s_shablon_id,s_name FROM shablon WHERE s_shablon_id!=$id");
   while($row=$DB->samsdb_fetch_array())
       {
        if($row['s_shablon_id']==$SHABLONConf->s_shablon_id2)
@@ -472,6 +472,8 @@ function UpdateShablonForm()
   print("<BR><INPUT TYPE=\"TEXT\" NAME=\"clryear\" SIZE=4 $ADISABLED VALUE=\"$YCLRVALUE\">:\n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"clrmonth\" SIZE=2 $ADISABLED VALUE=\"$MCLRVALUE\">:\n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"clrday\" SIZE=2 $ADISABLED VALUE=\"$DCLRVALUE\">\n");
+
+
 
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$shablonbuttom_1_prop_UpdateShablonForm_7\">\n");

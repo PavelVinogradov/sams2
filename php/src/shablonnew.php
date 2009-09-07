@@ -38,9 +38,8 @@ function AddShablon()
        $period=$newperiod;
        $clrdate="$clryear-$clrmonth-$clrday";  
      }  
-  
-//  $DB->samsdb_query("INSERT INTO shablon SET s_name='$snick', s_shablonpool='$shablonpool', s_userpool='$userpool', s_quote='$defaulttraf', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_alldenied='0' ");
-  $DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' ) ");
+  $QUERY="INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied, s_shablon_id2 ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0', '-1' ) ";
+  $DB->samsdb_query($QUERY);
   $DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$snick' ");
   $row=$DB->samsdb_fetch_array();
   $sid=$row['s_shablon_id'];
@@ -52,6 +51,7 @@ function AddShablon()
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
+  print("  parent.basefrm.location.href =\"tray.php?show=exe&function=shablontray&filename=shablontray.php&id=$sid\";\n");  
   print("</SCRIPT> \n");
 }
 

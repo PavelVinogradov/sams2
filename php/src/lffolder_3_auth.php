@@ -46,6 +46,14 @@
 				"text"=> "LDAP");
 			treeFolderItem($item);
 		}
+		if(GetAuthParameter("ncsa","enabled")>0)
+		{
+			$item=array("classname"=> "samsauth",
+				"target"=> "tray",
+				"url"=> "tray.php?show=exe&function=authncsatray&filename=authncsatray.php",
+				"text"=> "NCSA");
+			treeFolderItem($item);
+		}
 		treeFolderClose();
 	}
   }
