@@ -161,7 +161,7 @@ function LoadFileForm()
    if($USERConf->ToWebInterfaceAccess("CL")!=1 )
 	exit;
   
-  PageTop("import_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
+  PageTop("loadusers_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
   print("<FORM NAME=\"LOADFILE\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=usersimportfromfileform&filename=authncsabuttom_1_usersimport.php\" METHOD=POST>\n");
   print("    <INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");
   print("<BR><INPUT TYPE=\"FILE\" NAME=\"userfile\" value=\"$redir_importurllistform1\">\n");
@@ -181,7 +181,7 @@ function authncsabuttom_1_usersimport()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=loadfileform&filename=authncsabuttom_1_usersimport.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
+       GraphButton("main.php?show=exe&function=loadfileform&filename=authncsabuttom_1_usersimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
 	}
 
 }
