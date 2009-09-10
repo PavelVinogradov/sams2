@@ -11,6 +11,7 @@ var $autherrorc;
 var $autherrort;
 var $userid;
 var $accessdenied;
+var $salt;
 
 function SAMSAuthenticate()
 {
@@ -64,6 +65,7 @@ function LoadUserVariables($request)
 	$this->autherrorc=$row['s_autherrorc'];
 	$this->autherrort=$row['s_autherrort'];
 	$this->userid=$row['s_user_id'];
+	$this->salt=substr($row['s_passwd'],0,2);
 	return(1);
     }
     else
@@ -87,6 +89,7 @@ function LoadUndefinedUserVariables($request)
 	$this->autherrorc=$row['s_autherrorc'];
 	$this->autherrort=$row['s_autherrort'];
 	$this->userid=$row['s_user_id'];
+	$this->salt=substr($row['s_passwd'],0,2);
 	return(1);
     }
     else
@@ -140,6 +143,7 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
+echo "UserIDAuthenticate: $userid, $password<BR>";
 	$this->userid=$userid;
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	if($this->LoadUserVariables($request)>0)
@@ -252,7 +256,6 @@ function UserIDAuthenticate($userid, $password)
 class NTLMAuthenticate extends SAMSAuthenticate {
 function UserAuthenticate($user, $password)
 {
-	global $SAMSConf;
 	$request="SELECT s_nick,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick='$user' ";
 	$this->LoadUserVariables($request);
 
@@ -260,7 +263,7 @@ function UserAuthenticate($user, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-        $aaa=ntlm_auth ($this->UserName,$password,$SAMSConf->WBINFOPATH);
+        $aaa=ntlm_auth ($this->UserName,$password,$this->SAMSConf->WBINFOPATH);
         if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	{ 
@@ -293,7 +296,6 @@ function UserAuthenticate($user, $password)
 
 function UserIDAuthenticate($userid, $password)
 {
-	global $SAMSConf;
 	$this->userid=$userid;
 	$request="SELECT s_nick, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	$this->LoadUserVariables($request);
@@ -302,7 +304,7 @@ function UserIDAuthenticate($userid, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ntlm_auth ($this->UserName,$password,$SAMSConf->WBINFOPATH);
+	$aaa=ntlm_auth ($this->UserName,$password,$this->SAMSConf->WBINFOPATH);
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 	{ 
@@ -340,7 +342,10 @@ class NCSAAuthenticate extends SAMSAuthenticate {
 function UserAuthenticate($user, $password)
 {
     $this->UserName=$user;
-    $passwd=crypt($password, substr($password, 0, 2));
+    $request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+    $this->LoadUndefinedUserVariables($request);
+    $passwd=crypt($password, $this->salt);
+
     $request=("SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick='$user'&&s_passwd='$passwd' ");
     if($this->LoadUserVariables($request)>0)
 	$this->authOk=1;
@@ -356,7 +361,10 @@ function UserAuthenticate($user, $password)
 function UserIDAuthenticate($userid, $password)
 {
 	$this->userid=$userid;
-	$passwd=crypt($password, substr($password, 0, 2));
+	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+	$this->LoadUndefinedUserVariables($request);
+	$passwd=crypt($password, $this->salt);
+
 	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'&&s_passwd='$passwd'";
 	if($this->LoadUserVariables($request)>0)
 	{
@@ -404,8 +412,7 @@ $descriptorspec = array(
    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
    1 => array("pipe", "w")  // stdout is a pipe that the child will write to
 );
-
-$ntlm_auth = proc_open("bin/ntlm_auth ".$path, $descriptorspec, $pipes);
+$ntlm_auth = proc_open("ntlm_auth ".$path, $descriptorspec, $pipes);
 
 if (is_resource($ntlm_auth)) {
     // $pipes now looks like this:
