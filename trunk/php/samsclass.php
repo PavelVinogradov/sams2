@@ -106,7 +106,6 @@ $this->USERWEBACCESS="W";
   function ReadSAMSSettings()
     {
       $dbadmin="root";
-
 //	echo "BD CONFIG: $this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->ODBC_DRIVER<BR>";
 
 	if($this->ODBC == "1" )
@@ -133,7 +132,8 @@ $this->USERWEBACCESS="W";
 	}
 	if($this->DB_ENGINE == "PostgreSQL" && $this->ODBC == "0" )
 	{
-		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->ODBC_DRIVER);
+		$DB=new SAMSDB(&$this);
+//		$DB=new SAMSDB($this->DB_ENGINE, $this->ODBC, $this->DB_SERVER, $this->DB_USER, $this->DB_PASSWORD, $this->SAMSDB, $this->ODBC_DRIVER);
 		if($DB->dberror != '1')
 			{
 				$num_rows=$DB->samsdb_query_value("select count(tablename) from pg_tables where tablename LIKE 'squiduser' ");         
@@ -288,9 +288,6 @@ $this->USERWEBACCESS="W";
          if(!strcasecmp($str2,"SQUIDLOGDIR" ))           $this->SQUIDLOGDIR=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDGUARDLOGPATH" ))     $this->SGUARDLOGPATH=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDGUARDDBPATH" ))      $this->SGUARDDBPATH=trim(strtok("="));
-
-         if(!strcasecmp($str2,"WBINFOPATH" ))            $this->WBINFOPATH=trim(strtok("="));
-
          if(!strcasecmp($str2,"ININT" ))                 $this->ININT=trim(strtok("="));
          if(!strcasecmp($str2,"EXINT" ))                 $this->EXINT=trim(strtok("="));
          if(!strcasecmp($str2,"EXIP" ))                  $this->EXIP=trim(strtok("="));
