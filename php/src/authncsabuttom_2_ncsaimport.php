@@ -5,7 +5,7 @@
  * (see the file 'main.php' for license details)
  */
 
-function UsersImportFromFile()
+function UsersImportFromNCSAFile()
 {
   global $SAMSConf;
   global $USERConf;
@@ -31,7 +31,7 @@ function UsersImportFromFile()
 
   $i=0;
 
-  $finp=fopen("data/userslist.txt","r");
+  $finp=fopen("data/ncsauserslist.txt","r");
   if($finp==FALSE)
     {
       echo "can't open file data/userslist.txt<BR>";
@@ -53,12 +53,13 @@ function UsersImportFromFile()
     {
        $string=fgets($finp, 10000);
        $string=trim($string);
+	$user=strtok($string,":");
+	$passwd=strtok(":");
 	if(strlen($string)>1)
 	{
-		echo "user $string ";
-		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled,s_quote) VALUES('$usergroup', '$usershablon', '$string', '', '$enabled','$userquote')";
+		echo "user $user $passwd<BR>";
+		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled,s_quote, s_passwd) VALUES('$usergroup', '$usershablon', '$user', '', '$enabled','$userquote','$passwd')";
 		$DB->samsdb_query($QUERY);
-//		echo "$QUERY<BR>";
 		echo "added<BR>";
 	}
     }
@@ -72,7 +73,7 @@ function UsersImportFromFile()
 
 
 
-function UsersImportFromFileForm()
+function UsersImportFromNCSAFileForm()
 {
   global $SAMSConf;
   global $USERConf;
@@ -94,13 +95,13 @@ function UsersImportFromFileForm()
 //echo "filename: ".$_FILES["userfile"]["name"]."<BR>";
 //echo "filename: ".$_FILES["userfile"]["tmp_name"]."<BR>";
  
-	$aaa=copy($_FILES["userfile"]["tmp_name"], "data/userslist.txt");
+	$aaa=copy($_FILES["userfile"]["tmp_name"], "data/ncsauserslist.txt");
 
 		print("<FORM NAME=\"AddUsersFromFile\" ACTION=\"main.php\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"domain\" id=Show value=\"$domain\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersimportfromfile\">\n");
-		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authncsabuttom_1_usersimport.php\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersimportfromncsafile\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authncsabuttom_2_ncsaimport.php\">\n");
 
 
 		print("<TABLE>\n");
@@ -147,7 +148,7 @@ function UsersImportFromFileForm()
 exit(0);
 }
 
-function LoadFileForm()
+function LoadNCSAFileForm()
 {
   global $SAMSConf;
   global $USERConf;
@@ -160,7 +161,7 @@ function LoadFileForm()
 	exit;
   
   PageTop("loadusers_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
-  print("<FORM NAME=\"LOADFILE\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=usersimportfromfileform&filename=authncsabuttom_1_usersimport.php\" METHOD=POST>\n");
+  print("<FORM NAME=\"LOADFILE\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=usersimportfromncsafileform&filename=authncsabuttom_2_ncsaimport.php\" METHOD=POST>\n");
   print("    <INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");
   print("<BR><INPUT TYPE=\"FILE\" NAME=\"userfile\" value=\"$redir_importurllistform1\">\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Load file\">\n");
@@ -169,7 +170,7 @@ function LoadFileForm()
 }
 
 
-function authncsabuttom_1_usersimport()
+function authncsabuttom_2_ncsaimport()
 {
   global $SAMSConf;
   global $USERConf;
@@ -179,7 +180,7 @@ function authncsabuttom_1_usersimport()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=loadfileform&filename=authncsabuttom_1_usersimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
+       GraphButton("main.php?show=exe&function=loadncsafileform&filename=authncsabuttom_2_ncsaimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
 	}
 
 }

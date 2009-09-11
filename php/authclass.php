@@ -211,6 +211,7 @@ function UserIDAuthenticate($userid, $password)
 {
 	$this->userid=$userid;
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
+
 	if($this->LoadUserVariables($request)>0)
 	{
 		require_once("src/adldap.php");
@@ -343,10 +344,11 @@ function UserAuthenticate($user, $password)
 {
     $this->UserName=$user;
     $request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+
     $this->LoadUndefinedUserVariables($request);
     $passwd=crypt($password, $this->salt);
 
-    $request=("SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick='$user'&&s_passwd='$passwd' ");
+    $request=("SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_nick='$user' AND s_passwd='$passwd' ");
     if($this->LoadUserVariables($request)>0)
 	$this->authOk=1;
 
@@ -362,10 +364,12 @@ function UserIDAuthenticate($userid, $password)
 {
 	$this->userid=$userid;
 	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+
 	$this->LoadUndefinedUserVariables($request);
 	$passwd=crypt($password, $this->salt);
 
-	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'&&s_passwd='$passwd'";
+	$request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid' AND s_passwd='$passwd'";
+
 	if($this->LoadUserVariables($request)>0)
 	{
 		$this->authOk=1;

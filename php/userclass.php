@@ -122,9 +122,10 @@ function sams_admin_authentication($username,$passwd)
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
      if($num_rows==0)
-      {
-        return $this->sams_user_name_authentication($username,$passwd);
-      }
+     {
+	echo "<H2><FONT COLOR=\"RED\">Authorisation ERROR</FONT></H2>";
+	exit;
+     }
      $row=$DB->samsdb_fetch_array();
      //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
@@ -142,31 +143,40 @@ function sams_admin_authentication($username,$passwd)
 			$SAMSConf->adminname=$username;
 			if( $autherror > 0 )
 				$DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='0'  WHERE s_user='$username' ");	        
-		setcookie("samsadmin","1");
-		setcookie("user","$username");
-		setcookie("passwd","$newpasswd");
+			setcookie("samsadmin","1");
+			setcookie("user","$username");
+			setcookie("passwd","$newpasswd");
 		  }
 		else
 		  {
+			echo "<H2><FONT COLOR=\"RED\">Authorisation ERROR</FONT></H2>";
 			if($autherrorc>=2)
-	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='$time' WHERE s_user='$username'  ");         
+			{
+	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='$time' WHERE s_user='$username'  ");
+			    print("<h2>next logon after 60 second</h2> \n");
+			}
 			else
 	                    $DB->samsdb_query("UPDATE passwd SET s_autherrorc=s_autherrorc+1,s_autherrort='0'  WHERE s_user='$username'  ");        
-	echo "ERROR: Bad password<BR>";
-        exit(0);
+			exit;
 		  }
 	    }   
          else
            {  
-               $user="";
-               $function="autherror";
+		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+		$time2 = 60 - ($time - $autherrort);
+		print("<h2>next logon after $time2 second</h2> \n");
+		exit(0);
+		$user="";
+		$function="autherror";
            }
        }
+//exit;
+
   }   
 
 
 
-function sams_user_id_authentication($username,$passwd)
+function sams_user_id_authentication()
   {   
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];
@@ -175,14 +185,18 @@ function sams_user_id_authentication($username,$passwd)
 	require('./authclass.php');
 
 	$time=time();
-	if($auth=="ntlm")
-		$USERAUTH = new NTLMAuthenticate();
-	else if($auth=="adld")
+	if(strtolower($auth)=="ntlm")
+		$USERAUTH = new NTLNAuthenticate();
+	else if(strtolower($auth)=="adld")
+	{
 		$USERAUTH = new ADLDAuthenticate();
-	else if($auth=="ldap")
+	}
+	else if(strtolower($auth)=="ldap")
 		$USERAUTH = new LDAPAuthenticate();
 	else 
+	{
 		$USERAUTH = new NCSAAuthenticate();
+	}
 	if($USERAUTH->UserIDAuthenticate($id, $password)==1)
 	{
 		if($USERAUTH->authOk==1)
@@ -241,17 +255,9 @@ function sams_user_name_authentication($username,$passwd)
      global $SAMSConf;
      $DB=new SAMSDB(&$SAMSConf);
 
-     if (is_null($username) || empty($username) || is_null($passwd) || empty($passwd))
-     {
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];
 	if(isset($_POST["user"])) $user=$_POST["user"];
-     }
-     else
-     {
-        $user=$username;
-        $password=$passwd;
-     }
 	require('./authclass.php');
 
      $SQL="SELECT squiduser.s_user_id,shablon.s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_nick='$user';";
@@ -263,7 +269,7 @@ function sams_user_name_authentication($username,$passwd)
 	$row=$DB->samsdb_fetch_array();
 
 	if($row['s_auth']=="ntlm")
-		$USERAUTH = new NTLMAuthenticate();
+		$USERAUTH = new NTLNAuthenticate();
 	else if($row['s_auth']=="adld")
 		$USERAUTH = new ADLDAuthenticate();
 	else if($row['s_auth']=="ldap")
