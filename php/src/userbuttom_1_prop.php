@@ -273,14 +273,6 @@ function UpdateUserForm()
       }
   print("</SELECT>\n");
 
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$userbuttom_1_prop_UpdateUserForm_14  \n");
-  print("<TD>\n");
-  if($SquidUSERConf->gauditor==1)
-     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"gauditor\" CHECKED> \n");
-  else
-     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"gauditor\" > \n");
 /* *************************************************** */
   print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_18 (W)\n");
   print("<TD>\n");
