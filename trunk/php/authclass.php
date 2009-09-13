@@ -143,7 +143,6 @@ function UserAuthenticate($user, $password)
 }
 function UserIDAuthenticate($userid, $password)
 {
-echo "UserIDAuthenticate: $userid, $password<BR>";
 	$this->userid=$userid;
         $request="SELECT s_nick,s_passwd,s_domain,s_gauditor,squiduser.s_group_id,s_autherrorc,s_autherrort,s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	if($this->LoadUserVariables($request)>0)
@@ -166,7 +165,6 @@ echo "UserIDAuthenticate: $userid, $password<BR>";
 	}
 	return($this->authOk);
 }
-
 }
 
 

@@ -105,8 +105,10 @@ function userbuttom_6_chpasswd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($USERConf->ToWebInterfaceAccess("AUC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ) )
+	if(	$USERConf->ToWebInterfaceAccess("AUC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ))
 	{
+		if(strtolower($USERConf->s_auth)=='adld' || strtolower($USERConf->s_auth)=='ldap') 
+			return(0);
 		GraphButton("main.php?show=exe&function=chuserpasswdform&filename=userbuttom_6_chpasswd.php&id=$SquidUSERConf->s_user_id","basefrm","userpasswd_32.jpg","userpasswd_48.jpg"," $userbuttom_6_chpasswd_userbuttom_6_chpasswd_1");
 	}
 }
