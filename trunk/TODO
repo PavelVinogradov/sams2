@@ -140,6 +140,7 @@ o 3.5) Определять директорию pid файлов на этап�
        SUSE
        Ubuntu
        ...
+  1.2) отсутствует importfromsams1.html, authorization.html, syncwithntlm.html, usergroups.html
 
 5) Разное
   4.1) В sams2.conf изменить MYSQLHOSTNAME на DB_SERVER, а DBNAME на DB_ENGINE
