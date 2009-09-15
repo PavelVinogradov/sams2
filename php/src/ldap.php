@@ -103,7 +103,7 @@ class sams_ldap {
     function GetUsersWithSecondaryGroupID($group)
     {
 	$userdata = array();
-	$basedn="cn=$group,$this->groupsrdn,dc=chemerik,dc=ru";
+	$basedn="cn=$group,$this->groupsrdn,$this->base_dn";
 
 	$filter="(memberUid=*)";
 	if (is_null($filter) || empty($filter)) {
