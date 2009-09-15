@@ -11,6 +11,8 @@
   $mas2 = explode(",", $mas1[0]);
   $charset=$mas2[0];
 
+  if (empty($charset)) $charset='utf-8';
+
   $SAMSConf=new SAMSCONFIG();
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["action"])) $action=$_GET["action"];
