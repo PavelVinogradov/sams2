@@ -157,7 +157,7 @@ void SAMSUser::deactivate ()
       else
         _enabled = STAT_INACTIVE;
     }
-  else if (_enabled == STAT_LIMITED)
+  else if (_enabled == STAT_LIMITED && _quote == -1) // отключать от вторичного шаблона только если не индивидуальный лимит
     {
       _enabled = STAT_INACTIVE;
     }

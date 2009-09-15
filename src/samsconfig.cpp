@@ -388,7 +388,7 @@ string SamsConfig::getString (const string & attrname, int &err)
       return "";
     }
 
-  if (attrname == defDBPASSWORD)
+  if (attrname == defDBPASSWORD || attrname == defLDAPBINDPW)
     {
       DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ")] = *hidden*");
     }
@@ -456,7 +456,7 @@ bool SamsConfig::getBool (const string & attrname, int &err)
 
 void SamsConfig::setString (const string & attrname, const string & value)
 {
-  if (attrname == defDBPASSWORD)
+  if (attrname == defDBPASSWORD || attrname == defLDAPBINDPW)
     {
       DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << attrname << ", *hidden*)]");
     }
