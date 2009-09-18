@@ -485,6 +485,7 @@ int main (int argc, char *argv[])
 
       if (seconds_to_reconnect <= 0)
         {
+          DEBUG (DEBUG_DAEMON, "Reconnecting to database (timeout " << reconnect_timeout << " reached)");
           delete query;
           query = NULL;
           conn->disconnect();
@@ -533,6 +534,7 @@ int main (int argc, char *argv[])
       // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
       if (Proxy::needClearCounters() && (time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
         {
+          DEBUG (DEBUG_DAEMON, "New day detected");
           DBCleaner *cleaner = NULL;
           DBExporter *exporter = NULL;
           bool need_reconfig = false;

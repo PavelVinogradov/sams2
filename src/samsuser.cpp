@@ -36,6 +36,9 @@ string SAMSUser::toString (usrStatus s)
     case STAT_ACTIVE:
       res = "active";
       break;
+    case STAT_LIMITED:
+      res = "limited";
+      break;
     default:
       res = "unknown";
       break;
