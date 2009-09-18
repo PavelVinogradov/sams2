@@ -106,6 +106,31 @@ string Proxy::toString (usrAuthType t)
   return res;
 }
 
+Proxy::usrAuthType Proxy::toAuthType(const string & s)
+{
+  usrAuthType res = AUTH_NONE;
+  string auth = ToLower (s);
+
+  if (auth == "ip")
+    res = AUTH_IP;
+  else if (auth == "ncsa")
+    res = AUTH_NCSA;
+  else if (auth == "ntlm")
+    res = AUTH_NTLM;
+  else if (auth == "adld")
+    res = AUTH_ADLD;
+  else if (auth == "ldap")
+    res = AUTH_LDAP;
+  else if (auth == "host")
+    res = AUTH_HOST;
+  else
+    {
+      ERROR ("Unknown authentication scheme: " << auth);
+    }
+
+  return res;
+}
+
 string Proxy::toString (RedirType t)
 {
   string res;
@@ -566,22 +591,7 @@ bool Proxy::reload ()
       return false;
     }
 
-  if (strcmp (s_auth, "ip") == 0)
-    _auth = AUTH_IP;
-  else if (strcmp (s_auth, "ncsa") == 0)
-    _auth = AUTH_NCSA;
-  else if (strcmp (s_auth, "ntlm") == 0)
-    _auth = AUTH_NTLM;
-  else if (strcmp (s_auth, "adld") == 0)
-    _auth = AUTH_ADLD;
-  else if (strcmp (s_auth, "ldap") == 0)
-    _auth = AUTH_LDAP;
-  else if (strcmp (s_auth, "host") == 0)
-    _auth = AUTH_HOST;
-  else
-    {
-      ERROR ("Unknown authentication scheme: " << s_auth);
-    }
+  _auth = toAuthType (s_auth);
 
   if (s_checkdns > 0)
     _needResolve = true;
@@ -630,6 +640,7 @@ bool Proxy::reload ()
   else
     _auto_clean_counters = false;
 
+  DEBUG (DEBUG3, "Clear counters: " << ((_auto_clean_counters) ? ("true") : ("false")));
   DEBUG (DEBUG3, "Authentication: " << toString (_auth));
   DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
   DEBUG (DEBUG3, "Traffic type: " << toString (_trafType));

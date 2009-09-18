@@ -70,6 +70,13 @@ public:
   static string toString (usrAuthType t);
 
   /**
+   * @brief Преобразование строки в способ авторизации
+   * @param s Способ авторизации в виде строки
+   * @return Способ авторизации
+   */
+  static usrAuthType toAuthType(const string & s);
+
+  /**
    * @brief Используемый редиректор
    *
    * Используется тип "перечисление" только для гипотетической возможности

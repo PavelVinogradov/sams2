@@ -19,6 +19,7 @@
 #include "timerange.h"
 #include "urlgrouplist.h"
 #include "urlgroup.h"
+#include "proxy.h"
 
 #include "debug.h"
 
@@ -56,20 +57,7 @@ void Template::setAuth (const string & auth)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << auth << ")]");
 
-  if (auth == "ip")
-    _auth = Proxy::AUTH_IP;
-  else if (auth == "ncsa")
-    _auth = Proxy::AUTH_NCSA;
-  else if (auth == "ntlm")
-    _auth = Proxy::AUTH_NTLM;
-  else if (auth == "adld")
-    _auth = Proxy::AUTH_ADLD;
-  else if (auth == "ldap")
-    _auth = Proxy::AUTH_LDAP;
-  else
-    {
-      ERROR ("Unknown authentication scheme: " << auth);
-    }
+  _auth = Proxy::toAuthType(auth);
 }
 
 void Template::setAuth (const Proxy::usrAuthType & auth)
