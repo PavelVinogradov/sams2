@@ -10,7 +10,7 @@
 %define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
 %define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
 %define is_Mandriva_2009 %(grep -qi  "mandriva.*2009" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
-%define is_Fedora %(rpm -q filesystem |grep -qi  ".fc9" &>/dev/null && echo 1 || echo 0)
+%define is_Fedora %(rpm -q filesystem |grep -qiE "fc[0-9]" &>/dev/null && echo 1 || echo 0)
 %define is_CentOS %(rpm -q filesystem |grep -qi "centos"&>/dev/null && echo 1 || echo 0)
 #define is_RHEL %(grep -qi  "^red hat" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
 
@@ -31,7 +31,7 @@
 %define apacheconf /apache2/conf.d
 %endif
 %if %{is_Fedora}
-%define disttag .fc9
+%define disttag .%(rpm -q filesystem |egrep -oi "fc[0-9]+")
 %define enable_debug_packages %{nil}
 %endif
 %if %{is_CentOS}
