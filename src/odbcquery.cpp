@@ -289,7 +289,7 @@ bool ODBCQuery::fetch ()
 long ODBCQuery::affectedRows ()
 {
   long err;
-  SQLINTEGER count;
+  SQLLEN count;
 
   DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] ");
 
@@ -316,7 +316,7 @@ long ODBCQuery::affectedRows ()
       count = 0;
     }
   DEBUG (DEBUG_DB, "[" << this << "] Result is " << count);
-  return count;
+  return (long) count;
 }
 
 bool ODBCQuery::createStatement ()
