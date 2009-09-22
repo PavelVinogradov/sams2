@@ -69,7 +69,7 @@ function UsersChartGB()
    if(isset($_GET["desc"])) $desc=$_GET["desc"];
 
 
-	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>=\"$sdate\"&&s_date<=\"$edate\" group by s_user";
+	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' group by s_user,s_domain,s_size,s_hit";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	$count=0;
 	$sum_size=0;
@@ -133,7 +133,7 @@ function UsersChart()
 	printf("<P><IMG SRC=\"main.php?show=exe&function=userschartgb&filename=usersbuttom_4_percent.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
   
 
-	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>=\"$sdate\"&&s_date<=\"$edate\" group by s_user";
+	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' group by s_user,s_domain,s_size,s_hit";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	$count=0;
 	$sum_size=0;

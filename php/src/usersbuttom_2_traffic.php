@@ -117,7 +117,7 @@ function UsersTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by $sort $desc";
+	$QUERY="SELECT sum(cachesum.s_size),sum(cachesum.s_hit),cachesum.s_user,cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE cachesum.s_date>='$sdate'AND cachesum.s_date<='$edate' GROUP BY cachesum.s_user,cachesum.s_domain,squiduser.s_nick,squiduser.s_family, squiduser.s_name, squiduser.s_user_id  order by sum(cachesum.s_size) desc";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 
 //  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as all_sum,sum(s_hit),s_user,s_domain FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by all_sum desc");
@@ -241,7 +241,8 @@ function UsersTrafficPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
 
-	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by $sort $desc";
+	$QUERY="SELECT sum(cachesum.s_size),sum(cachesum.s_hit),cachesum.s_user,cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE cachesum.s_date>='$sdate'AND cachesum.s_date<='$edate' GROUP BY cachesum.s_user,cachesum.s_domain,squiduser.s_nick,squiduser.s_family, squiduser.s_name, squiduser.s_user_id  order by sum(cachesum.s_size) desc";
+
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	while($row=$DB->samsdb_fetch_array())
 	{
