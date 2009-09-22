@@ -27,7 +27,7 @@ else
 doc_list = $(static_docs)
 endif
 
-doc_DATA = $(doc_list)
+#doc_DATA = $(doc_list)
 
 EXTRA_DIST = $(doc_list)
 
