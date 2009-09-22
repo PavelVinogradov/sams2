@@ -302,7 +302,8 @@ function ProxyReConfigForm()
   print("<TD ROWSPAN=3>\n");
 
   print("<BR><SELECT NAME=\"authtype\" ID=\"authtype\" onchange=ChangeAuthScheme(samsreconfigform)>\n");
-  $num_rows=$DB->samsdb_query_value("SELECT s_auth FROM auth_param WHERE s_param='enabled' AND s_value=1");
+  $QUERY="SELECT s_auth FROM auth_param WHERE s_param='enabled' AND s_value='1'";
+  $num_rows=$DB->samsdb_query_value($QUERY);
   $row_num=0;
   $selected_auth="";
   while($row=$DB->samsdb_fetch_array())
