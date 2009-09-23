@@ -118,7 +118,7 @@ function GroupTrafficPeriodGB()
   $bdate=$DATE->BeginDate();
   $eddate=$DATE->EndDate();
 
-	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate'&&s_group_id='$id' group by s_user,s_domain order by $sort $desc";
+	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate' AND s_date<='$edate' AND s_group_id='$id' group by cachesum.s_user,cachesum.s_domain,cachesum.s_size,cachesum.s_hit,squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id order by all_sum desc";
 
 	$num_rows=$DB->samsdb_query_value($QUERY);
 
@@ -262,7 +262,7 @@ function GroupTrafficPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
 
-	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate'&&s_date<='$edate'&&s_group_id='$id' group by s_user,s_domain order by $sort $desc";
+	$QUERY="SELECT sum(cachesum.s_size) as all_sum, sum(cachesum.s_hit), cachesum.s_user, cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE s_date>='$sdate' AND s_date<='$edate' AND s_group_id='$id' group by cachesum.s_user,cachesum.s_domain,cachesum.s_size,cachesum.s_hit,squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id order by all_sum desc";
 
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	while($row=$DB->samsdb_fetch_array())
