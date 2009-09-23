@@ -44,7 +44,7 @@ function UserTrafficPeriodGB()
       $data1[$i]=0;
       $data2[$i]=0;
     }
-  $num_rows=$DB->samsdb_query_value("SELECT SUM(s_size), SUM(s_hit), MONTH(s_date), DAYOFMONTH(s_date), YEAR(s_date) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick'&&s_date>='$sdate'&&s_date<='$edate'  GROUP BY s_date");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
   while($row=$DB->samsdb_fetch_array())
      {
         $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
