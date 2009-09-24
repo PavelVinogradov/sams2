@@ -517,7 +517,7 @@ s_autogrp int DEFAULT '0')";
 
 //'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
 //$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
-$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
+$pgdb[3] = "INSERT INTO proxy VALUES ('1', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
 , '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '0', '0' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
