@@ -400,7 +400,7 @@ int main (int argc, char *argv[])
           return 2;
         }
       basic_stringstream < char >cmd_stop;
-      cmd_stop << "insert into reconfig values(" << proxyid << ", '" << service_daemon << "', '" << action_shutdown << "'";
+      cmd_stop << "insert into reconfig (s_proxy_id, s_service, s_action) values (" << proxyid << ", '" << service_daemon << "', '" << action_shutdown << "')";
       bool res = q->sendQueryDirect (cmd_stop.str());
 
       delete q;
