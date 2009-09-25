@@ -17,7 +17,17 @@ static_docs = \
 	notes.html \
 	tables.html \
 	sams2_conf.html \
-	news.html
+	news.html \
+	squid.html \
+	synchronization.html \
+	syncwithad.html \
+	syncwithldap.html \
+	template.html \
+	templates.html \
+	timerange.html \
+	webinterface.html \
+	samsbackup.html \
+	accesslists.html
 
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
