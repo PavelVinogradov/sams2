@@ -93,7 +93,7 @@ bool SquidConf::defineACL ()
   vector<long> time_ids;
   vector<long> group_ids;
   Template * tpl;
-  uint i, j;
+  uint j;
   bool haveBlockedUsers = false;
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
 
@@ -228,26 +228,30 @@ bool SquidConf::defineACL ()
 
               if (redir_type != Proxy::REDIR_INTERNAL)
                 {
-                  // Создаем списки запретных адресов
-                  group_ids = UrlGroupList::getAllowGroupIds();
-                  for (i = 0; i < group_ids.size (); i++)
+                  vector<UrlGroup *>::iterator grp_it;
+                  vector<UrlGroup *> grps = UrlGroupList::getAllGroups ();
+                  for (grp_it = grps.begin (); grp_it != grps.end (); grp_it++)
                     {
-                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
-                      if (!grp)
-                        continue;
-                      else
-                        fout << "acl Sams2Allow" << group_ids[i] << " dstdom_regex " << *grp << endl;
-                    }
-
-                  // Создаем списки разрешенных адресов
-                  group_ids = UrlGroupList::getDenyGroupIds();
-                  for (i = 0; i < group_ids.size (); i++)
-                    {
-                      UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[i]);
-                      if (!grp)
-                        continue;
-                      else
-                        fout << "acl Sams2Deny" << group_ids[i] << " dstdom_regex " << *grp << endl;
+                      long grp_id = (*grp_it)->getId ();
+                      switch ( (*grp_it)->getAccessType () )
+                        {
+                          case UrlGroup::ACC_DENY:
+                            fout << "acl Sams2Deny" << grp_id << " dstdom_regex " << *(*grp_it) << endl;
+                            break;
+                          case UrlGroup::ACC_ALLOW:
+                            fout << "acl Sams2Allow" << grp_id << " dstdom_regex " << *(*grp_it) << endl;
+                            break;
+                          case UrlGroup::ACC_REGEXP:
+                            fout << "acl Sams2Regexp" << grp_id << " url_regex " << *(*grp_it) << endl;
+                            break;
+                          case UrlGroup::ACC_REDIR:
+                            break;
+                          case UrlGroup::ACC_REPLACE:
+                            break;
+                          case UrlGroup::ACC_FILEEXT:
+                            fout << "acl Sams2Fileext" << grp_id << " urlpath_regex " << *(*grp_it) << endl;
+                            break;
+                        }
                     }
                 }
 
@@ -288,24 +292,33 @@ bool SquidConf::defineACL ()
                           break;
                         }
 
-                      //Определяем разрешенные и запретные адреса для текущего шаблона
+                      //Определяем разрешающие и запрещающие правила для текущего шаблона
                       group_ids = tpl->getUrlGroupIds ();
                       for (j = 0; j < group_ids.size(); j++)
                         {
                           UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
                           if (!grp)
                             continue;
-                          if (grp->getAccessType () == UrlGroup::ACC_ALLOW)
-                            restriction << " Sams2Allow" << group_ids[j];
-                          else if (grp->getAccessType () == UrlGroup::ACC_DENY)
-                            restriction << " !Sams2Deny" << group_ids[j];
+                          switch (grp->getAccessType ())
+                            {
+                              case UrlGroup::ACC_DENY:
+                                restriction << " !Sams2Deny" << group_ids[j];
+                                break;
+                              case UrlGroup::ACC_ALLOW:
+                                restriction << " Sams2Allow" << group_ids[j];
+                                break;
+                              case UrlGroup::ACC_REGEXP:
+                                restriction << " !Sams2Regexp" << group_ids[j];
+                                break;
+                              case UrlGroup::ACC_REDIR:
+                                break;
+                              case UrlGroup::ACC_REPLACE:
+                                break;
+                              case UrlGroup::ACC_FILEEXT:
+                                restriction << " !Sams2Fileext" << group_ids[j];
+                                break;
+                            }
                         }
-
-                      //Определяем запретные типы файлов для текущего шаблона
-                      //...
-
-                      //Определяем запретные регулярные выражения для текущего шаблона
-                      //...
                     }
 
                   if (redir_type == Proxy::REDIR_INTERNAL)

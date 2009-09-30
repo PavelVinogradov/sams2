@@ -229,7 +229,8 @@ char * print_dev (struct fs_info * fsu)
       double nonroot_total = u + a;
       if (nonroot_total)
         {
-          long int lipct = pct = (u * 100 / nonroot_total);
+          pct = (u * 100 / nonroot_total);
+          long int lipct = (long int) pct;
           double ipct = lipct;
 
           /* Like `pct = ceil (dpct);', but avoid ceil so that

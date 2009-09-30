@@ -182,6 +182,7 @@ bool SAMSUserList::reload()
   bool usedomain = Proxy::useDomain ();
   while (query->fetch ())
     {
+      s_tmp_domain = "";
       usr = new SAMSUser ();
 
       if (usedomain)
@@ -408,7 +409,8 @@ long SAMSUserList::activeUsersInTemplate (long template_id)
     {
       if ((*it).second->getCurrentTemplateId () == template_id)
         {
-          if ((*it).second->getEnabled () == SAMSUser::STAT_ACTIVE || (*it).second->getEnabled () == SAMSUser::STAT_LIMITED)
+          SAMSUser::usrStatus usr_stat = (*it).second->getEnabled ();
+          if (usr_stat == SAMSUser::STAT_ACTIVE || usr_stat == SAMSUser::STAT_LIMITED)
             cnt++;
         }
     }
