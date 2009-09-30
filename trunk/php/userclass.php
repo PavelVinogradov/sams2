@@ -189,7 +189,7 @@ function sams_user_id_authentication()
 
 	$time=time();
 	if(strtolower($auth)=="ntlm")
-		$USERAUTH = new NTLNAuthenticate();
+		$USERAUTH = new NTLMAuthenticate();
 	else if(strtolower($auth)=="adld")
 	{
 		$USERAUTH = new ADLDAuthenticate();
@@ -272,7 +272,7 @@ function sams_user_name_authentication()
 	$row=$DB->samsdb_fetch_array();
 
 	if($row['s_auth']=="ntlm")
-		$USERAUTH = new NTLNAuthenticate();
+		$USERAUTH = new NTLMAuthenticate();
 	else if($row['s_auth']=="adld")
 		$USERAUTH = new ADLDAuthenticate();
 	else if($row['s_auth']=="ldap")
