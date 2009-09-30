@@ -189,32 +189,9 @@ void UrlGroupList::destroy()
   _groups.clear();
 }
 
-vector<long> UrlGroupList::getAllowGroupIds ()
+vector < UrlGroup * > UrlGroupList::getAllGroups ()
 {
-  load();
-
-  vector<long> lst;
-  vector < UrlGroup * >::iterator it;
-  for (it = _groups.begin (); it != _groups.end (); it++)
-    {
-      if ( (*it)->getAccessType () == UrlGroup::ACC_ALLOW)
-        lst.push_back((*it)->getId ());
-    }
-  return lst;
-}
-
-vector<long> UrlGroupList::getDenyGroupIds ()
-{
-  load();
-
-  vector<long> lst;
-  vector < UrlGroup * >::iterator it;
-  for (it = _groups.begin (); it != _groups.end (); it++)
-    {
-      if ( (*it)->getAccessType () == UrlGroup::ACC_DENY)
-        lst.push_back((*it)->getId ());
-    }
-  return lst;
+  return _groups;
 }
 
 UrlGroup* UrlGroupList::getUrlGroup (long id)

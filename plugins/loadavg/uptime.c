@@ -37,7 +37,7 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
   long int updays;
   int uphours;
   int upmins;
-  struct tm *tmn;
+  /*struct tm *tmn;*/
   double avg[3];
   int loads;
   char *str_uptime = (char*)malloc(1024);

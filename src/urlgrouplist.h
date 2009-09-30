@@ -57,19 +57,11 @@ public:
   static void destroy();
 
   /**
-   * @brief Возвращает список идентификаторов групп url с разрешенными адресами
+   * @brief Возвращает список всех групп
    *
-   * @return Список идентификаторов групп url
+   * @return Список групп
    */
-  static vector<long> getAllowGroupIds ();
-
-  /**
-   * @brief Возвращает список идентификаторов групп url с запрещенными адресами
-   *
-   * @return Список идентификаторов групп url
-   */
-  static vector<long> getDenyGroupIds ();
-
+  static vector < UrlGroup * > getAllGroups ();
   /**
    * @brief Возвращает группу url по заданному идентификатору
    *
