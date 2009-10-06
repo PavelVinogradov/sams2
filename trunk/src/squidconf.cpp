@@ -30,6 +30,8 @@
 #include "template.h"
 #include "timerangelist.h"
 #include "timerange.h"
+#include "delaypoollist.h"
+#include "delaypool.h"
 #include "tools.h"
 
 SquidConf::SquidConf()
@@ -88,11 +90,14 @@ bool SquidConf::defineACL ()
   string current_tag = "unknown";
   vector <string> v;
 
-  vector<Template *> tpls = TemplateList::getList ();
-  vector<Template *>::iterator tpls_it;
-  vector<long> time_ids;
-  vector<long> group_ids;
+  vector <Template *> tpls = TemplateList::getList ();
+  vector <Template *>::iterator tpls_it;
+  vector <TimeRange*> times = TimeRangeList::getList ();
+  vector <TimeRange*>::const_iterator time_it;
+  vector <long> time_ids;
+  vector <long> group_ids;
   Template * tpl;
+  TimeRange * trange;
   uint j;
   bool haveBlockedUsers = false;
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
@@ -113,6 +118,10 @@ bool SquidConf::defineACL ()
 
       // Строка от нашей старой конфигурации - игнорируем ее
       if (line.find ("Sams2") != string::npos)
+        continue;
+
+      //Ограничение скорости настраивается демоном
+      if (line.find ("delay_") == 0 && Proxy::useDelayPools())
         continue;
 
       if (line[0] == '#' && line.find ("TAG:") != string::npos)
@@ -137,9 +146,41 @@ bool SquidConf::defineACL ()
               current_tag = v[2];
               DEBUG (DEBUG2, "Found TAG: " << current_tag);
             }
+          else if (v[2] == "delay_pools")
+            {
+              current_tag = v[2];
+              DEBUG (DEBUG2, "Found TAG: " << current_tag);
+            }
+          else if (v[2] == "delay_class")
+            {
+              current_tag = v[2];
+              DEBUG (DEBUG2, "Found TAG: " << current_tag);
+            }
+          else if (v[2] == "delay_access")
+            {
+              current_tag = v[2];
+              DEBUG (DEBUG2, "Found TAG: " << current_tag);
+            }
+          else if (v[2] == "delay_parameters")
+            {
+              current_tag = v[2];
+              DEBUG (DEBUG2, "Found TAG: " << current_tag);
+            }
 
           if (current_tag == "acl")
             {
+              // Создаем списки временных границ
+              for (time_it = times.begin (); time_it != times.end (); time_it++)
+                {
+                      if ((*time_it)->isFullDay ())
+                        continue;
+                      fout << "acl Sams2Time" << (*time_it)->getId () << " time " << (*time_it)->getDays () << " ";
+                      if ((*time_it)->hasMidnight ())
+                        fout << (*time_it)->getEndTimeStr () << "-" << (*time_it)->getStartTimeStr () << endl;
+                      else
+                        fout << (*time_it)->getStartTimeStr () << "-" << (*time_it)->getEndTimeStr () << endl;
+                }
+
               // Создаем списки пользователей
               vector<SAMSUser *> users;
               for (tpls_it = tpls.begin (); tpls_it != tpls.end (); tpls_it++)
@@ -199,31 +240,9 @@ bool SquidConf::defineACL ()
 */
                     }
 
-                  if (redir_type == Proxy::REDIR_INTERNAL)
-                    continue;
+//                  if (redir_type == Proxy::REDIR_INTERNAL)
+//                    continue;
 
-                  //Определяем временные границы для текущего шаблона
-                  time_ids = tpl->getTimeRangeIds ();
-                  for (j = 0; j < time_ids.size(); j++)
-                    {
-                      TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
-                      if (!tr)
-                        continue;
-                      if (tr->isFullDay())
-                        continue;
-                      if (tr->hasMidnight())
-                        {
-                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
-                          fout << tr->getStartTimeStr () << "-23:59" << endl;
-                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
-                          fout << "00:00-" << tr->getEndTimeStr () << endl;
-                        }
-                      else
-                        {
-                          fout << "acl Sams2Template" << tpl->getId () << "time time " << tr->getDays () << " ";
-                          fout << tr->getStartTimeStr () << "-" << tr->getEndTimeStr () << endl;
-                        }
-                    }
                 }
 
               if (redir_type != Proxy::REDIR_INTERNAL)
@@ -283,13 +302,15 @@ bool SquidConf::defineACL ()
                       time_ids = tpl->getTimeRangeIds ();
                       for (j = 0; j < time_ids.size(); j++)
                         {
-                          TimeRange * tr = TimeRangeList::getTimeRange(time_ids[j]);
-                          if (!tr)
+                          trange = TimeRangeList::getTimeRange(time_ids[j]);
+                          if (!trange)
                             continue;
-                          if (tr->isFullDay())
+                          if (trange->isFullDay ())
                             continue;
-                          restriction << " Sams2Template" << tpl->getId () << "time";
-                          break;
+                          if (trange->hasMidnight ())
+                            restriction << " !Sams2Time" << time_ids[j];
+                          else
+                            restriction << " Sams2Time" << time_ids[j];
                         }
 
                       //Определяем разрешающие и запрещающие правила для текущего шаблона
@@ -343,6 +364,88 @@ bool SquidConf::defineACL ()
                   WARNING ("Unable to identify proxy address");
                 }
             }
+
+          if (current_tag == "delay_pools" && Proxy::useDelayPools())
+            {
+              fout << "delay_pools " << DelayPoolList::count () << endl;
+            }
+
+          if (current_tag == "delay_class" && Proxy::useDelayPools())
+            {
+              vector<DelayPool*> pools = DelayPoolList::getList ();
+              for (unsigned int i=0; i < pools.size (); i++)
+                {
+                  fout << "delay_class " << i+1 << " " << pools[i]->getClass () << endl;
+                }
+            }
+
+          if (current_tag == "delay_access" && Proxy::useDelayPools())
+            {
+              vector<DelayPool*> pools = DelayPoolList::getList ();
+              map <long, bool> link;
+              map <long, bool>::const_iterator it;
+              for (unsigned int i=0; i < pools.size (); i++)
+                {
+                  link = pools[i]->getTemplates ();
+                  for (it = link.begin (); it != link.end (); it++)
+                    {
+                      if (SAMSUserList::activeUsersInTemplate (it->first) > 0)
+                        fout << "delay_access " << i+1 << " " << ((it->second==true)?"deny":"allow") << " Sams2Template" << it->first << endl;
+                    }
+
+                  link = pools[i]->getTimeRanges ();
+                  for (it = link.begin (); it != link.end (); it++)
+                    {
+                      trange = TimeRangeList::getTimeRange(it->first);
+                      if (!trange)
+                        continue;
+                      if (trange->isFullDay ())
+                        continue;
+
+                      fout << "delay_access " << i+1 << " " << ((it->second==true)?"deny":"allow");
+                      if (trange->hasMidnight ())
+                        fout << " !Sams2Time" << it->first;
+                      else
+                        fout << " Sams2Time" << it->first;
+                      fout << endl;
+                    }
+
+                  fout << "delay_access " << i+1 << " deny all" << endl;
+                }
+            }
+
+          if (current_tag == "delay_parameters" && Proxy::useDelayPools())
+            {
+              vector<DelayPool*> pools = DelayPoolList::getList ();
+              long agg1, agg2;
+              long net1, net2;
+              long ind1, ind2;
+              for (unsigned int i=0; i < pools.size (); i++)
+                {
+                  pools[i]->getAggregateParams (agg1, agg2);
+                  pools[i]->getNetworkParams (net1, net2);
+                  pools[i]->getIndividualParams (ind1, ind2);
+
+                  fout << "delay_parameters " << i+1 << " ";
+                  switch (pools[i]->getClass ())
+                    {
+                      case 1:
+                        fout << agg1 << "/" << agg2 << endl;
+                        break;
+                      case 2:
+                        fout << agg1 << "/" << agg2 << " " << ind1 << "/" << ind2 << endl;
+                        break;
+                      case 3:
+                        fout << agg1 << "/" << agg2 << " " << net1 << "/" << net2 << " " << ind1 << "/" << ind2 << endl;
+                        break;
+                      default:
+                        break;
+                    }
+                }
+            }
+
+          if (nextline.find ("delay_") == 0 && Proxy::useDelayPools())
+            continue;
 
           fout << nextline << endl;
         }

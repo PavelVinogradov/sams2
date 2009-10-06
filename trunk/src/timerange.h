@@ -33,9 +33,8 @@ public:
    * @brief Конструктор
    *
    * @param id Идентификатор временного интервала
-   * @param name Имя временного интервала
    */
-  TimeRange(long id, const string &name);
+  TimeRange(long id);
 
   /**
    * @brief Деструктор

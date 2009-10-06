@@ -9,6 +9,7 @@
   global $USERConf;
   global $SquidUSERConf;
   global $TRANGEConf;
+  global $POOLConf;
   global $SHABLONConf;
   require('./dbclass.php');
   require('./samsclass.php');
@@ -102,6 +103,12 @@ if(isset($_POST["filename"])) $filename=$_POST["filename"];
 	{
 	require('./trangeclass.php');
 	$TRANGEConf=new SAMSTRANGE($proxy_id);
+	//$PROXYConf->PrintProxyClass();
+	}
+  if(strstr($filename,"pool"))
+	{
+	require('./poolclass.php');
+	$POOLConf=new SAMSPOOL($proxy_id);
 	//$PROXYConf->PrintProxyClass();
 	}
   if(strstr($filename,"shablon"))

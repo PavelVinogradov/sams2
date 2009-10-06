@@ -18,7 +18,7 @@
 
 #include "debug.h"
 
-TimeRange::TimeRange(long id, const string &name)
+TimeRange::TimeRange(long id)
 {
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "]");
 

@@ -26,7 +26,7 @@
 bool TimeRangeList::_loaded = false;
 DBConn *TimeRangeList::_conn;                ///< Соединение с БД
 bool TimeRangeList::_connection_owner;
-map<string, TimeRange*> TimeRangeList::_list;
+map<long, TimeRange*> TimeRangeList::_list;
 
 bool TimeRangeList::load()
 {
@@ -74,7 +74,6 @@ bool TimeRangeList::reload()
     }
 
   long s_trange_id;
-  char s_name[25];
   char s_days[10];
   char s_timestart[20];
   char s_timeend[20];
@@ -84,28 +83,23 @@ bool TimeRangeList::reload()
       delete query;
       return false;
     }
-  if (!query->bindCol (2, DBQuery::T_CHAR,  s_name, sizeof(s_name)))
+  if (!query->bindCol (2, DBQuery::T_CHAR,  s_days, sizeof(s_days)))
     {
       delete query;
       return false;
     }
-  if (!query->bindCol (3, DBQuery::T_CHAR,  s_days, sizeof(s_days)))
+  if (!query->bindCol (3, DBQuery::T_CHAR,  s_timestart, sizeof(s_timestart)))
     {
       delete query;
       return false;
     }
-  if (!query->bindCol (4, DBQuery::T_CHAR,  s_timestart, sizeof(s_timestart)))
-    {
-      delete query;
-      return false;
-    }
-  if (!query->bindCol (5, DBQuery::T_CHAR,  s_timeend, sizeof(s_timeend)))
+  if (!query->bindCol (4, DBQuery::T_CHAR,  s_timeend, sizeof(s_timeend)))
     {
       delete query;
       return false;
     }
 
-  if (!query->sendQueryDirect ("select s_trange_id, s_name, s_days, s_timestart, s_timeend from timerange"))
+  if (!query->sendQueryDirect ("select s_trange_id, s_days, s_timestart, s_timeend from timerange"))
     {
       delete query;
       return false;
@@ -117,9 +111,9 @@ bool TimeRangeList::reload()
   _list.clear();
   while (query->fetch())
     {
-      trange = new TimeRange (s_trange_id, s_name);
+      trange = new TimeRange (s_trange_id);
       trange->setTimeRange (s_days, s_timestart, s_timeend);
-      _list[s_name] = trange;
+      _list[s_trange_id] = trange;
 
       DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found Time Interval: " <<
         "id=" << s_trange_id << " " <<
@@ -168,15 +162,15 @@ void TimeRangeList::destroy()
     }
 }
 
-vector<long> TimeRangeList::getIds()
+vector <TimeRange*> TimeRangeList::getList ()
 {
-  load();
+  load ();
 
-  vector<long> lst;
-  map <string, TimeRange*>::iterator it;
+  vector <TimeRange*> lst;
+  map <long, TimeRange*>::const_iterator it;
   for (it = _list.begin (); it != _list.end (); it++)
     {
-      lst.push_back((*it).second->getId ());
+      lst.push_back (it->second);
     }
   return lst;
 }
@@ -185,12 +179,10 @@ TimeRange * TimeRangeList::getTimeRange (long id)
 {
   load();
 
-  map < string, TimeRange* >::iterator it;
-  for (it = _list.begin (); it != _list.end (); it++)
-    {
-      if (id == (*it).second->getId ())
-        return (*it).second;
-    }
-  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] " << id << " not found");
+  map < long, TimeRange* >::iterator it = _list.find(id);
+  if (it != _list.end ())
+    return it->second;
+
+  WARNING ( "Time interval " << id << " not found.");
   return NULL;
 }
