@@ -287,6 +287,13 @@ public:
    */
   static bool needClearCounters ();
 
+  /**
+   * @brief Необходимость использования ограничения скорости
+   *
+   * @return true, если необходимо ограничивать скорость и false в противном случае
+   */
+  static bool useDelayPools ();
+
   static string createUserHash (const string &auth, const string &ip, const string &domain, const string &nick);
 protected:
   /**
@@ -322,6 +329,7 @@ protected:
   static DBConn *_conn;                ///< Используемое подключение к БД
   static bool _connection_owner;       ///< true если владельцем подключения является экземпляр класса
   static bool _auto_clean_counters;    ///< Очищать или нет счетчики пользователей после окончания периода ограничения
+  static bool _use_delay_pools;        ///< Использовать или нет ограничение скорости
 };
 
 #endif

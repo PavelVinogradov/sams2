@@ -24,6 +24,7 @@
   global $PROXYConf;
   global $USERConf;
   global $TRANGEConf;
+  global $POOLConf;
   global $SHABLONConf;
 
   require('./dateclass.php');
@@ -227,6 +228,13 @@ if($gb!=1)
 	 if(isset($_GET["id"])) $id=$_GET["id"];
 	$TRANGEConf=new SAMSTRANGE($id);
 	//$PROXYConf->PrintProxyClass();
+	}
+
+  if(strstr($filename,"pool")&&$function!="addpoolform"&&$function!="addpool")
+	{
+	require('./poolclass.php');
+	 if(isset($_GET["id"])) $id=$_GET["id"];
+	$POOLConf=new SAMSPOOL($id);
 	}
 
   if(strstr($filename,"shablon")&&$function!="newshablonform"&&$function!="addshablon")

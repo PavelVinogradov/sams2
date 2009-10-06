@@ -14,8 +14,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TIMERANGELIST_H
-#define TIMERANGELIST_H
+#ifndef DELAYPOOLLIST_H
+#define DELAYPOOLLIST_H
 
 using namespace std;
 
@@ -23,13 +23,13 @@ using namespace std;
 #include <vector>
 #include <string>
 
+class DelayPool;
 class DBConn;
-class TimeRange;
 
 /**
- * @brief Список временных интервалов
+ * @brief Список классов ограничения скорости
  */
-class TimeRangeList
+class DelayPoolList
 {
 public:
   /**
@@ -37,7 +37,7 @@ public:
    *
    * @return true при успешном завершении и false в противном случае
    */
-  static bool reload ();
+  static bool reload();
 
   /**
    * @brief Устанавливает использование существующего подключения к БД
@@ -47,7 +47,7 @@ public:
    *
    * @param conn Существующее подключение к БД
    */
-  static void useConnection (DBConn *conn);
+  static void useConnection(DBConn *conn);
 
   /**
    * @brief Освобождает все ресурсы, выделенные во время работы экземпляра класса
@@ -55,26 +55,39 @@ public:
    * Используется для сброса всех переменных в начальное значение
    * без уничтожения экземпляра класса
    */
-  static void destroy ();
+  static void destroy();
 
   /**
-   * @brief Возвращает список временных интервалов
+   * @brief Возвращает класс по заданному идентификатору
    *
-   * @return Список временных интервалов
+   * @param id Идентификатор класса
+   * @return Указатель на экземпляр класса или NULL если класс с таким идентификатором не найден
    */
-  static vector <TimeRange*> getList ();
+  static DelayPool * getDelayPool(long id);
 
   /**
-   * @brief Возвращает временной интервал по его идентификатору
+   * @brief Возвращает список идентификаторов всех классов
    *
-   * @param id Идентификатор временного интервала
-   * @return Временной интервал или NULL если такой не найден.
+   * @return Список идентификаторов классов
    */
-  static TimeRange * getTimeRange (long id);
+  static vector<long> getIds();
 
+  /**
+   * @brief Возвращает список всех классов
+   *
+   * @return Список классов
+   */
+  static vector<DelayPool*> getList ();
+
+  /**
+   * @brief Возвращает количество классов
+   *
+   * @return Количество классов
+   */
+  static long count ();
 private:
   /**
-   * @brief Загружает список временных интервалов из БД
+   * @brief Загружает список классов из БД
    *
    * Если список уже был загружен, то ничего не делает.
    *
@@ -83,9 +96,9 @@ private:
   static bool load();
 
   static bool _loaded;                  ///< Был ли загружен список из БД
+  static map<long, DelayPool*> _list;  ///< Cписок классов
   static DBConn *_conn;                 ///< Используемое подключение к БД
   static bool _connection_owner;        ///< true если владельцем подключения является экземпляр класса
-  static map<long, TimeRange*> _list; ///< Список временных интервалов
 };
 
 #endif

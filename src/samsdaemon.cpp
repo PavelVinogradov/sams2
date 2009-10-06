@@ -43,6 +43,7 @@ using namespace std;
 #include "templatelist.h"
 #include "template.h"
 #include "timerangelist.h"
+#include "delaypoollist.h"
 #include "tools.h"
 #include "squidconf.h"
 #include "dbcleaner.h"
@@ -125,7 +126,8 @@ void reload (int signal_number)
   LocalNetworks::reload();
   GroupList::reload ();
   SAMSUserList::reload ();
-  UrlGroupList::reload();
+  UrlGroupList::reload ();
+  DelayPoolList::reload ();
   PluginList::reload ();
 
   int err;
@@ -420,6 +422,7 @@ int main (int argc, char *argv[])
   TimeRangeList::useConnection (conn);
   Logger::useConnection (conn);
   UrlGroupList::useConnection (conn);
+  DelayPoolList::useConnection (conn);
   PluginList::useConnection (conn);
 
   ProcessManager process;

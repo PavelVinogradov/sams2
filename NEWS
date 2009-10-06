@@ -159,3 +159,13 @@
   В документации добавлен раздел "Списки доступа".
 090927
   Добавлено определение запретов в squid.conf по расширению файла и регулярным выражениям.
+091006
+  Добавлено использование шейпера. Изменена структура БД.
+  CREATE TABLE delaypool (s_pool_id SERIAL PRIMARY KEY, s_name varchar(50), s_class int NOT NULL,
+    s_agg1 int NOT NULL default '-1', s_agg2 int NOT NULL default '-1',
+    s_net1 int NOT NULL default '-1', s_net2 int NOT NULL default '-1',
+    s_ind1 int NOT NULL default '-1', s_ind2 int NOT NULL default '-1');
+  CREATE TABLE d_link_s (s_pool_id int NOT NULL, s_shablon_id int NOT NULL, s_negative int);
+  CREATE TABLE d_link_t (s_pool_id int NOT NULL, s_trange_id int NOT NULL, s_negative int);
+  CREATE TABLE d_link_r (s_pool_id int NOT NULL, s_redirect_id int NOT NULL, s_negative int);
+

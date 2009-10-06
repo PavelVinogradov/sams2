@@ -57,6 +57,7 @@ Proxy::CharCase Proxy::_username_case = Proxy::CASE_ORIGINAL;
 DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
 bool Proxy::_auto_clean_counters = true;
+bool Proxy::_use_delay_pools = false;
 
 string Proxy::toString (TrafficType t)
 {
@@ -354,6 +355,11 @@ bool Proxy::needClearCounters ()
   return _auto_clean_counters;
 }
 
+bool Proxy::useDelayPools ()
+{
+  return _use_delay_pools;
+}
+
 string Proxy::createUserHash (const string &auth, const string &ip, const string &domain, const string &nick)
 {
   string hash = "";
@@ -459,6 +465,7 @@ bool Proxy::reload ()
   long s_autogrp;
   char s_redirect_to[105];
   long s_count_clean;
+  long s_delaypool;
 
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
@@ -570,6 +577,11 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (21, DBQuery::T_LONG, &s_delaypool, 0))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
@@ -577,7 +589,7 @@ bool Proxy::reload ()
   sqlcmd << ", s_squidbase, s_redirector";
   sqlcmd << ", s_denied_to, s_redirect_to, s_adminaddr";
   sqlcmd << ", s_bigd, s_bigu";
-  sqlcmd << ", s_count_clean";
+  sqlcmd << ", s_count_clean, s_delaypool";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -640,7 +652,13 @@ bool Proxy::reload ()
   else
     _auto_clean_counters = false;
 
+  if (s_delaypool > 0)
+    _use_delay_pools = true;
+  else
+    _use_delay_pools = false;
+
   DEBUG (DEBUG3, "Clear counters: " << ((_auto_clean_counters) ? ("true") : ("false")));
+  DEBUG (DEBUG3, "Use delay pool: " << ((_use_delay_pools) ? ("true") : ("false")));
   DEBUG (DEBUG3, "Authentication: " << toString (_auth));
   DEBUG (DEBUG3, "DNS Resolving: " << ((_needResolve) ? ("true") : ("false")));
   DEBUG (DEBUG3, "Traffic type: " << toString (_trafType));

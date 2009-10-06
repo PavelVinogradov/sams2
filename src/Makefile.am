@@ -25,7 +25,7 @@ samsdaemon_SOURCES = \
 	template.cpp templatelist.cpp squidlogparser.cpp squidlogline.cpp grouplist.cpp \
 	squidconf.cpp timerange.cpp timerangelist.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
 	dbcleaner.cpp urlgrouplist.cpp urlgroup.cpp pluginlist.cpp dns.cpp userlist.cpp \
-	samsldap.cpp
+	samsldap.cpp delaypool.cpp delaypoollist.cpp
 samsredir_SOURCES = \
 	dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
@@ -39,7 +39,8 @@ noinst_HEADERS = \
 	localnetworks.h url.h squidlogparser.h proxy.h dbcleaner.h logger.h processmanager.h \
 	mysqlconn.h dbconn.h dbquery.h mysqlquery.h templatelist.h template.h grouplist.h \
 	squidconf.h timerange.h timerangelist.h pgconn.h pgquery.h dbexporter.h \
-	urlgrouplist.h urlgroup.h pluginlist.h dns.h userlist.h samsldap.h
+	urlgrouplist.h urlgroup.h pluginlist.h dns.h userlist.h samsldap.h delaypool.h \
+	delaypoollist.h
 
 AM_CXXFLAGS = -Wall
 

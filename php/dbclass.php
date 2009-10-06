@@ -577,6 +577,13 @@ $pgdb[31] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
 $pgdb[32] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
 $pgdb[33] = "INSERT INTO auth_param VALUES('ncsa', 'enabled', '0')";
 $pgdb[34] = "INSERT INTO auth_param VALUES('ip', 'enabled', '1')";
+$pgdb[35] = "CREATE TABLE delaypool (s_pool_id SERIAL PRIMARY KEY, s_name varchar(50), s_class int NOT NULL,
+s_agg1 int NOT NULL default '-1', s_agg2 int NOT NULL default '-1',
+s_net1 int NOT NULL default '-1', s_net2 int NOT NULL default '-1',
+s_ind1 int NOT NULL default '-1', s_ind2 int NOT NULL default '-1')";
+$pgdb[36] = "CREATE TABLE d_link_s (s_pool_id int NOT NULL, s_shablon_id int NOT NULL, s_negative int)";
+$pgdb[37] = "CREATE TABLE d_link_t (s_pool_id int NOT NULL, s_trange_id int NOT NULL, s_negative int)";
+$pgdb[38] = "CREATE TABLE d_link_r (s_pool_id int NOT NULL, s_redirect_id int NOT NULL, s_negative int)";
 
 
 
