@@ -432,7 +432,6 @@ if (is_resource($ntlm_auth)) {
     // proc_close in order to avoid a deadlock
     $return_value = proc_close($ntlm_auth);
     if ($return_value == 0 ){
-	die ("Error talking to ntlm_auth: ".$ntlm_auth_says.".\n");
 	return $ntlm_auth_says;
     }
     else {

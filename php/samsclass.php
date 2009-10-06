@@ -288,6 +288,7 @@ $this->USERWEBACCESS="W";
          if(!strcasecmp($str2,"SQUIDLOGDIR" ))           $this->SQUIDLOGDIR=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDGUARDLOGPATH" ))     $this->SGUARDLOGPATH=trim(strtok("="));
          if(!strcasecmp($str2,"SQUIDGUARDDBPATH" ))      $this->SGUARDDBPATH=trim(strtok("="));
+	 if(!strcasecmp($str2,"WBINFOPATH" ))            $this->WBINFOPATH=trim(strtok("="));
          if(!strcasecmp($str2,"ININT" ))                 $this->ININT=trim(strtok("="));
          if(!strcasecmp($str2,"EXINT" ))                 $this->EXINT=trim(strtok("="));
          if(!strcasecmp($str2,"EXIP" ))                  $this->EXIP=trim(strtok("="));
