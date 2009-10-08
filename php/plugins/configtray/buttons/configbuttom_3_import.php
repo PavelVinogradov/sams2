@@ -135,7 +135,7 @@ function importshablons()
 		if($row['name']!="default")
 			{
 			echo "template <B>$row[nick]</B> added<BR>";
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_shablonpool, s_userpool, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[shablonpool]', '$row[userpool]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
 			}
 		$this->shabloncount++;
 		}

@@ -21,8 +21,6 @@ function AddShablon()
   $clrdate="1980-01-01";
   if(isset($_GET["groupnick"])) $snick=$_GET["groupnick"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
-  if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
-  if(isset($_GET["userip"])) $userpool=$_GET["userip"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
 
   if(isset($_GET["period"])) $period=$_GET["period"];
@@ -38,15 +36,13 @@ function AddShablon()
        $period=$newperiod;
        $clrdate="$clryear-$clrmonth-$clrday";  
      }  
-  $QUERY="INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied, s_shablon_id2 ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0', '-1' ) ";
+  $QUERY="INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, s_shablon_id2 ) VALUES ( '$snick', '$defaulttraf', '$auth', '$period', '$clrdate', '0', '-1' ) ";
   $DB->samsdb_query($QUERY);
   $DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$snick' ");
   $row=$DB->samsdb_fetch_array();
   $sid=$row['s_shablon_id'];
   $DB->free_samsdb_query();
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-// ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied )
-//( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' )
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
@@ -103,17 +99,6 @@ function NewShablonForm()
   print("<B>$shablonnew_NewShablonForm_3:\n");
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"defaulttraf\" SIZE=6 VALUE=\"100\"> <B> 0 - unlimited traffic\n" );
-
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$shablonnew_NewShablonForm_4:\n");
-  print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"userid\" SIZE=6 VALUE=\"524288\"> \n" );
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$shablonnew_NewShablonForm_5:\n");
-  print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=6 VALUE=\"524288\"> \n" );
 
   print("<TR>\n");
   print("<TD>\n");

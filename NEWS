@@ -168,4 +168,7 @@
   CREATE TABLE d_link_s (s_pool_id int NOT NULL, s_shablon_id int NOT NULL, s_negative int);
   CREATE TABLE d_link_t (s_pool_id int NOT NULL, s_trange_id int NOT NULL, s_negative int);
   CREATE TABLE d_link_r (s_pool_id int NOT NULL, s_redirect_id int NOT NULL, s_negative int);
-
+091008
+  Удалены из таблицы shablon поля shablonpool и userpool.
+  Удалено редактирование этих полей в веб интерфейсе.
+  Обновлен скрипт импорта из sams 1.x (перенос пулов) 

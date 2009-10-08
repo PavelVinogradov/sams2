@@ -10,8 +10,6 @@ class SAMSSHABLON
   var $s_shablon_id;
   var $s_shablon_id2;
   var $s_name;
-  var $s_shablonpool;
-  var $s_userpool;
   var $s_auth;
   var $s_quote;
   var $s_period;
@@ -28,8 +26,6 @@ function SAMSSHABLON($shablonid)
   $this->s_shablon_id=$row['s_shablon_id'];
   $this->s_shablon_id2=$row['s_shablon_id2'];
   $this->s_name=$row['s_name'];
-  $this->s_shablonpool=$row['s_shablonpool'];
-  $this->s_userpool=$row['s_userpool'];
   $this->s_auth=$row['s_auth'];
   $this->s_quote=$row['s_quote'];
   $this->s_period=$row['s_period'];

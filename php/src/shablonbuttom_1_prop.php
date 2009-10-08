@@ -22,8 +22,6 @@ function UpdateShablon()
   if(isset($_GET["id"])) $sname=$_GET["id"];
   if(isset($_GET["shablon2"])) $shablon2=$_GET["shablon2"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
-  if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
-  if(isset($_GET["userip"])) $userpool=$_GET["userip"];
 
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   if(isset($_GET["period"])) $period=$_GET["period"];
@@ -67,8 +65,7 @@ for($i=0;$i<$tc;$i++)
             $num_rows=$DB2->samsdb_query("INSERT INTO sconfig VALUES('$sname','$row[s_redirect_id]') ");
           }
      }
-//echo "UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate'  WHERE s_shablon_id='$sname'";
-  $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_shablonpool='$shablonpool', s_userpool='$userpool', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_shablon_id2='$shablon2'  WHERE s_shablon_id='$sname' ");
+  $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_shablon_id2='$shablon2'  WHERE s_shablon_id='$sname' ");
 
   print("<SCRIPT>\n");
   print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$sname\"; \n");
@@ -328,18 +325,6 @@ function UpdateShablonForm()
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"defaulttraf\" SIZE=6 VALUE=\"$SHABLONConf->s_quote\"> <B> 0 - unlimited traffic \n" );
 
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$shablonbuttom_1_prop_UpdateShablonForm_5:\n");
-  print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"userid\" SIZE=6 VALUE=\"$SHABLONConf->s_shablonpool\"> \n" );
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$shablonbuttom_1_prop_UpdateShablonForm_6:\n");
-  print("<TD>\n");
-  print("<INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=6 VALUE=\"$SHABLONConf->s_userpool\"> \n" );
-  
-  
   print("<TR>\n");
   print("<TD><B>$shablonbuttom_1_prop_UpdateShablonForm_28</B>\n");
   print("<TD><SELECT NAME=\"shablon2\" ID=\"shablon2\" SIZE=1>\n");

@@ -53,8 +53,6 @@ function AddShablon()
   $clrdate="1980-01-01";
   if(isset($_GET["groupnick"])) $snick=$_GET["groupnick"];
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
-  if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
-  if(isset($_GET["userip"])) $userpool=$_GET["userip"];
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
 
   if(isset($_GET["period"])) $period=$_GET["period"];
@@ -71,15 +69,12 @@ function AddShablon()
        $clrdate="$clryear-$clrmonth-$clrday";  
      }  
   
-//  $DB->samsdb_query("INSERT INTO shablon SET s_name='$snick', s_shablonpool='$shablonpool', s_userpool='$userpool', s_quote='$defaulttraf', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_alldenied='0' ");
-  $DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' ) ");
+  $DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied ) VALUES ( '$snick', '$defaulttraf', '$auth', '$period', '$clrdate', '0' ) ");
   $DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$snick' ");
   $row=$DB->samsdb_fetch_array();
   $sid=$row['s_shablon_id'];
   $DB->free_samsdb_query();
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-// ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied )
-//( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' )
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
@@ -110,8 +105,6 @@ function ImportFromLDAP()
   if(isset($_GET["addgroupname"])) $addgroupname=$_GET["addgroupname"];
 
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
-  if(isset($_GET["userid"])) $shablonpool=$_GET["userid"];
-  if(isset($_GET["userip"])) $userpool=$_GET["userip"];
 
   if(isset($_GET["period"])) $period=$_GET["period"];
   if(isset($_GET["newperiod"])) $newperiod=$_GET["newperiod"];
@@ -164,7 +157,7 @@ function ImportFromLDAP()
 				
 				if($clrdate=="")
 					$clrdate="1980-01-01";
-				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$shablonpool', '$userpool', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0', '-1' ) ");
+				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0', '-1' ) ");
 				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
 				$row=$DB->samsdb_fetch_array();
 				$sid=$row['s_shablon_id'];
@@ -290,8 +283,6 @@ function ImportFromLDAPForm()
            print("  if(formname.addtemplates.checked==true) \n");
            print("    {\n");
            print("      formname.defaulttraf.disabled=false;  \n");
-           print("      formname.userid.disabled=false;  \n");
-           print("      formname.userip.disabled=false;  \n");
            print("      formname.period.disabled=false;  \n");
 	   print("      EnterPeriod(formname);  \n");
            print("      formname.trange.disabled=false;  \n");
@@ -299,8 +290,6 @@ function ImportFromLDAPForm()
            print("  else \n");
            print("    {\n");
            print("      formname.defaulttraf.disabled=true;  \n");
-           print("      formname.userid.disabled=true;  \n");
-           print("      formname.userip.disabled=true;  \n");
            print("      formname.period.disabled=true;  \n");
 //	   print("      EnterPeriod(formname);  \n");
            print("      formname.newperiod.disabled=true;  \n");
@@ -317,17 +306,6 @@ function ImportFromLDAPForm()
 	print("$shablonnew_NewShablonForm_3:\n");
 	print("<TD>\n");
 	print("<INPUT TYPE=\"TEXT\" NAME=\"defaulttraf\" SIZE=6 VALUE=\"100\"> <B> 0 - unlimited traffic\n" );
-
-	print("<TR>\n");
-	print("<TD>\n");
-	print("$shablonnew_NewShablonForm_4:\n");
-	print("<TD>\n");
-	print("<INPUT TYPE=\"TEXT\" NAME=\"userid\" SIZE=6 VALUE=\"524288\"> \n" );
-	print("<TR>\n");
-	print("<TD>\n");
-	print("$shablonnew_NewShablonForm_5:\n");
-	print("<TD>\n");
-	print("<INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=6 VALUE=\"524288\"> \n" );
 
 	print("<TR>\n");
 	print("<TD>\n");
