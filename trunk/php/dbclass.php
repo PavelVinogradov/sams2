@@ -523,10 +523,10 @@ $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
 $pgdb[6] = "INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1','0','' )";
 $pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(25),
-s_shablonpool bigint default '0', s_userpool bigint default '0', s_auth varchar(4) default 'ip', 
+s_auth varchar(4) default 'ip', 
 s_quote int default '100',s_period varchar(3) NOT NULL default 'M', s_clrdate date NOT NULL default '1980-01-01',
 s_alldenied smallint NOT NULL default '0', s_shablon_id2 int NULL)";
-$pgdb[8] = "INSERT INTO shablon VALUES('0','Default','64000','64000','ip','100','M','1980-01-01','0', '-1')";
+$pgdb[8] = "INSERT INTO shablon VALUES('0','Default','ip','100','M','1980-01-01','0', '-1')";
 $pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varchar(25), 
 s_days varchar(14), 
 s_timestart time default '00:00:00', 

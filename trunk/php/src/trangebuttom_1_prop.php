@@ -42,11 +42,7 @@ function UpdateTRange()
    $days="$day1$day2$day3$day4$day5$day6$day7";  
    $timestart="$shour:$smin:00";  
    $timeend="$ehour:$emin:59";  
-//  $DB->samsdb_query("INSERT INTO shablon SET s_name='$snick', s_shablonpool='$shablonpool', s_userpool='$userpool', s_quote='$defaulttraf', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_alldenied='0' ");
-//echo "INSERT INTO timerange ( s_name, s_days, s_timestart, s_timeend ) VALUES ( '$name', '$days', '$timestart', '$timeend' )";
   $DB->samsdb_query("UPDATE timerange  SET  s_name='$name', s_days='$days', s_timestart='$timestart' , s_timeend='$timeend' WHERE s_trange_id='$id' ");
-// ( s_name, s_shablonpool, s_userpool, s_quote, s_auth, s_period, s_clrdate, s_alldenied )
-//( '$snick', '$shablonpool', '$userpool', '$defaulttraf', '$auth', '$period', '$clrdate', '0' )
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");

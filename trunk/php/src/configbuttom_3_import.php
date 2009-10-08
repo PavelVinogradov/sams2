@@ -174,7 +174,24 @@ function importshablons()
 		if($row['name']!="default")
 			{
 			echo "template <B>$row[nick]</B> added<BR>";
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_shablonpool, s_userpool, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[shablonpool]', '$row[userpool]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+
+
+			$this->DB->samsdb_query_value("SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row[nick]'");
+	                while($row2=$this->DB->samsdb_fetch_array())
+                          $new_shablon_id=$row2['s_shablon_id'];
+
+			echo "delaypool <B>$row[nick]</B> added<BR>";
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row[nick]', '2', '$row[shablonpool]', '$row[userpool]' ) ");
+
+
+			$this->DB->samsdb_query_value("SELECT s_pool_id FROM ".$DBNAME."delaypool WHERE s_name='$row[nick]'");
+	                while($row2=$this->DB->samsdb_fetch_array())
+                          $new_pool_id=$row2['s_shablon_id'];
+
+			echo "template and delaypool <B>$row[nick]</B> are linked<BR>";
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
+
 			}
 		$this->shabloncount++;
 		}
