@@ -584,8 +584,15 @@ s_ind1 int NOT NULL default '-1', s_ind2 int NOT NULL default '-1')";
 $pgdb[36] = "CREATE TABLE d_link_s (s_pool_id int NOT NULL, s_shablon_id int NOT NULL, s_negative int)";
 $pgdb[37] = "CREATE TABLE d_link_t (s_pool_id int NOT NULL, s_trange_id int NOT NULL, s_negative int)";
 $pgdb[38] = "CREATE TABLE d_link_r (s_pool_id int NOT NULL, s_redirect_id int NOT NULL, s_negative int)";
-
-
+$pgdb[39] = "INSERT INTO auth_param VALUES('ldap','ldapserver','127.0.0.1')";
+$pgdb[40] = "INSERT INTO auth_param VALUES('ldap','basedn','dc=example,dc=com')";
+$pgdb[41] = "INSERT INTO auth_param VALUES('ldap','adadmin','cn=Manager,dc=example,dc=com')";
+$pgdb[42] = "INSERT INTO auth_param VALUES('ldap','adadminpasswd','secret')";
+$pgdb[43] = "INSERT INTO auth_param VALUES('ldap','usersrdn','ou=People')";
+$pgdb[44] = "INSERT INTO auth_param VALUES('ldap','usersfilter','(objectClass=Person)')";
+$pgdb[45] = "INSERT INTO auth_param VALUES('ldap','usernameattr','gecos')";
+$pgdb[46] = "INSERT INTO auth_param VALUES('ldap','groupsrdn','ou=Group')";
+$pgdb[47] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=posixGroup)')";
 
     $crpasswd=crypt("qwerty","00");
     if($db=="unixODBC")
