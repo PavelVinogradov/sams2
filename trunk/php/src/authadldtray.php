@@ -140,6 +140,9 @@ function AuthADLDValues()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   PageTop("config_48.jpg","$AuthADLDValues_authadldtray_1 ");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/syncwithad.html\">$documentation</A>");
+  print("<P>\n");
   print("<P>\n");
 
   $DB=new SAMSDB(&$SAMSConf);

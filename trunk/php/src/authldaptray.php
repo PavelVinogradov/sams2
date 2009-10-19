@@ -139,6 +139,8 @@ function AuthLDAPValues()
   $DB2=new SAMSDB(&$SAMSConf);
 
   PageTop("config_48.jpg","LDAP configuration ");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/syncwithldap.html\">$documentation</A>");
   print("<P>\n");
 
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
@@ -239,6 +241,7 @@ function AuthLDAPValues()
 	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthLDAPValues_authldaptray_2\">\n");
 	print("</FORM>\n");
   }
+
 
 }
 

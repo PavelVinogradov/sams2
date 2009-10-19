@@ -973,7 +973,7 @@
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
-
+   $documentation="Документация";
 
 
 
