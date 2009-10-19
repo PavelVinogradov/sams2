@@ -956,6 +956,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $trangebuttom_9_delete_trangebuttom_9_delete_2="Delete time range";
   $shablonbuttom_1_prop_UpdateShablonForm_28="Second template";
   $authbuttom_1_usersimport_LoadFileForm_1="Loading of the list of users from a file";
+  $documentation="Documentation";
 //  global $LANG;
 //  $lang="./lang/lang.$LANG";
 //  require($lang);

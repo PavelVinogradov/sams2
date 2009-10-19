@@ -70,6 +70,9 @@ function WebInterfaceReConfigForm()
   $aaa = strtolower($SAMSConf->adminname);  
   
   PageTop("config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/webinterface.html\">$documentation</A>");
+  print("<P>\n");
   print("<P>\n");
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM websettings");
