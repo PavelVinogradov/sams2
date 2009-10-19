@@ -24,7 +24,8 @@ function ChangeAdminPasswd()
 
   	$passwd=crypt($newpasswd,"00");
 	$oldpasswd2=crypt($oldpasswd,"00");
-	$QUERY="SELECT s_pass FROM passwd WHERE s_user='$username'&&s_pass='$oldpasswd2' ";
+	$QUERY="SELECT s_pass FROM passwd WHERE s_user='$username' AND s_pass='$oldpasswd2' ";
+
 	$num_rows=$DB->samsdb_query_value($QUERY);
 
 	if($num_rows!=1)
@@ -33,7 +34,7 @@ function ChangeAdminPasswd()
 		}
 	else
 		{
-				$QUERY="UPDATE passwd SET s_pass='$passwd' WHERE s_user='$username'&&s_pass='$oldpasswd2' ";
+				$QUERY="UPDATE passwd SET s_pass='$passwd' WHERE s_user='$username' AND s_pass='$oldpasswd2' ";
 				$num_rows=$DB->samsdb_query($QUERY);
 				PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
 		}
