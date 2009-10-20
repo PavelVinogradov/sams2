@@ -64,6 +64,9 @@ function NewShablonForm()
 	exit;
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablonnew_NewShablonForm_1");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
+  print("<P>\n");
 
   print("<SCRIPT>\n");
   print("        parent.tray.location.href=\"tray.php\";\n");

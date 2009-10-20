@@ -105,6 +105,9 @@ function UpdateShablonForm()
 //  $row=$DB->samsdb_fetch_array($result2);
 //  $alldenied=$row2['alldenied'];
   PageTop("shablon.jpg","$shablon_1<BR>$shablonbuttom_1_prop_UpdateShablonForm_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
+  print("<P>\n");
 //  $result=mysql_query("SELECT name,filename,type FROM redirect ORDER BY type DESC");
   print("<FORM NAME=\"UPDATESHABLON\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");

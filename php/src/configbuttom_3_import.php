@@ -366,6 +366,9 @@ function importdataform()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
   PageTop("shablon.jpg","$configbuttom_3_import_importdataform_1 ");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/importfromsams1.html\">$documentation</A>");
+  print("<P>\n");
 
 			print("<FORM NAME=\"createdatabase\" ACTION=\"main.php\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");

@@ -72,6 +72,7 @@ function JSProxyInfo()
   <img src=\"$SAMSConf->ICONSET/user.jpg\" align=\"RIGHT\" valign=\"middle\" >
   <TD  valign=\"middle\"><h2  align=\"CENTER\">Proxy server <BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></h2>
   </TABLE>
+
   <TABLE>
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2<TD>$auth
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_38<TD>$parser
@@ -81,7 +82,11 @@ function JSProxyInfo()
 
   $htmlcode=$htmlcode.$extrainfo;
 
-  $htmlcode=$htmlcode."</CENTER></BODY></HTML>";
+  $htmlcode=$htmlcode."
+  <IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">
+  <A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/squid.html\">$documentation</A>
+  <P>
+  </CENTER></BODY></HTML>";
   $htmlcode=str_replace("\"","\\\"",$htmlcode);
   $htmlcode=str_replace("\n","",$htmlcode);
   print(" parent.basefrm.document.write(\"$htmlcode\");\n");
