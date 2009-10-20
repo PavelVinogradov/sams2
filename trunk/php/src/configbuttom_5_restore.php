@@ -50,6 +50,9 @@ function LoadBackUpForm()
 		exit;
   
   PageTop("reark_48.jpg","$backupbuttom_2_loadbase_LoadBackUpForm_1");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/samsbackup.html\">$documentation</A>");
+  print("<P>\n");
   print("<BR>$backupbuttom_2_loadbase_LoadBackUpForm_4\n");
   print("<FORM NAME=\"LOADBACKUP\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadbackup&filename=configbuttom_5_restore.php\" METHOD=POST>\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");

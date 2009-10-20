@@ -48,6 +48,9 @@ function ShablonUsers()
 	exit;
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
+  print("<P>\n");
 
   print("<TABLE>\n");
   print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_19</B><TD><FONT COLOR=\"BLUE\">$SHABLONConf->s_auth</FONT>\n");

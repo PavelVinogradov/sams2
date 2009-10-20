@@ -103,6 +103,9 @@ function ProxyReConfigForm()
   
 
   PageTop("config_48.jpg","Proxy server<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT> ");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/squid.html\">$documentation</A>");
+  print("<P>\n");
   print("<P>\n");
 
   print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");

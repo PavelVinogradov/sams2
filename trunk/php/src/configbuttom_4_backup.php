@@ -96,7 +96,10 @@ function SaveBackUpForm()
 		exit;
   
 	PageTop("backup_48.jpg","$backupbuttom_1_savebase_SaveBackUpForm_1");
-	print("<BR>\n");
+	print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+	print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/samsbackup.html\">$documentation</A>");
+	print("<P>\n");
+
 	print("<FORM NAME=\"BACKUP\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"savebackup\">\n");

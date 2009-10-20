@@ -113,6 +113,9 @@ function AddURLListForm()
 	case 'local':  PageTop("redirect_48.jpg","$redir_openurlbase2 ");
 				break;
 	}
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/accesslists.html\">$documentation</A>");
+  print("<P>\n");
   print("<BR>\n");
  
        print("<SCRIPT language=JAVASCRIPT>\n");
@@ -169,7 +172,6 @@ function AddRedirListForm()
 	exit;
   
   PageTop("redirect_48.jpg","$redirlisttray_AddRedirListForm_1 ");
-  print("<BR>\n");
  
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function TestName(formname)\n");
@@ -381,6 +383,10 @@ function RedirListForm()
 	if($row['s_type']=="regex")
 		$type=" $regexlisttray_regexlisttray_1";
   PageTop("redirect_48.jpg","$type <FONT COLOR=\"BLUE\">$row[s_name]</FONT>");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/accesslists.html#fileext\">$documentation</A>");
+  print("<P>\n");
+
   print("<FORM NAME=\"destination\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"savedestination\">\n");
