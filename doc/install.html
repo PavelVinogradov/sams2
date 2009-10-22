@@ -179,20 +179,31 @@
       </TR>
     </TABLE>
   </LI>
-  <LI>Создание базы данных</LI>
-	<P>
-	Создание базы данных SAMS2 в MySQL:
-	<BR>База данных SAMS2 для MySQL создается автоматически при  первом запуске WEB интерфейса.
-	</P>
-	<P>
-	Создание базы данных SAMS2 в PostgreSQL:
-	<BR>shell> psql -U <username>
-	<BR>psql> create database samsdb;
-	<BR>psql> \q
-	</P>
-  <LI>Теперь можно приступить к этапу <A HREF="setup.html">настройки</A>.</LI>
 </OL>
 </P>
+
+<H2><A NAME="createdb">3.5 Создание базы данных SAMS</A></H2>
+
+   <H3>Создание базы данных SAMS в СУБД MySQL</H3>
+   База данных SAMS для MySQL создается автоматически при  первом запуске WEB интерфейса.
+
+
+   <H3>Создание базы данных SAMS в СУБД PostgreSQL</H3>
+
+   <P><B>1. Создание пользователя</B>
+
+   <P>Вы должны создать пользователя только для базы данных SAMS. 
+   <BR>Следующая команда создает нового пользователя "username" и запрашиваетпвроль этого пользователя:
+   <P>createuser --pwprompt --encrypted --no-adduser --no-createdb username
+
+   <P><B>2. Создание базы данных SAMS</B>
+
+
+   <P>Вы должны создать базу данных только для использования с SAMS. 
+
+   <BR>Следующая команда создает новую базу данных "databasename", принадлежащую пользователю "username":
+   <P>createdb --owner=username databasename
+
 
 <HR ALIGN="LEFT" WIDTH="100%">
 <TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">

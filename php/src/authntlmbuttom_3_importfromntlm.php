@@ -117,8 +117,15 @@ echo "$z1 = $z2 = $z3<BR>";
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
+  if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
+
 	$addgroups="on";
 	$addtemplates="on";
+
+	if($enabled=="on")
+		$enabled=1;
+	else  
+		$enabled=0;
 
 	if($period=="A")
 	{
@@ -134,7 +141,7 @@ echo "$z1 = $z2 = $z3<BR>";
 
 
 	$e = escapeshellcmd("$ntlmadmin $ntlmadminpasswd");
-	$value=ExecuteShellScript("ntlm_users.sh", $e);
+	$value=ExecuteShellScript("importntlmusers", $e);
 	$a=explode("|",$value);
 	$acount=count($a);
 	$aflag=0;
@@ -145,7 +152,6 @@ echo "$z1 = $z2 = $z3<BR>";
 echo "$i: $addgroupname[$i]<BR>";
 		if($addtemplates=="on")
 		{
-echo " add template: $addgroupname[$i]<BR>";
 
 
 			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
@@ -160,18 +166,17 @@ echo " add template: $addgroupname[$i]<BR>";
 				$sid=$row['s_shablon_id'];
 				$DB->free_samsdb_query();
 				$DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-				echo "create template $addgroupname[$i] "; 
+				echo "create template $addgroupname[$i] <BR>"; 
 			}
 
 		}
 		if($addgroups=="on")
 		{
-echo " add group: $addgroupname[$i]<BR>";
 			$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
 				$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$addgroupname[$i]') ");
-				echo "create group $addgroupname[$i] "; 
+				echo "create group $addgroupname[$i] <BR>"; 
 				$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('ntlm', 'ntlmgroup', '$addgroupname[$i]') ");
 			}
 
@@ -192,15 +197,15 @@ echo " add group: $addgroupname[$i]<BR>";
 				{
 $qqq=str_replace ( "\\", "%", $g[$j] );
 $www=urldecode($qqq, "UTF-8");
-echo "$g[$j] = $qqq = $www<BR>";
 					if($g[$j] == $addgroupname[$i])
 					{
+echo "user $g[0] added <BR>";
 						$gflag=1;
 						$QUERY="SELECT s_nick FROM squiduser WHERE s_nick='$g[0]' ";
 						$result=$DB->samsdb_query_value($QUERY);
 						if($result==0)
 						{
-							print("<B>$g[0]</B> group: $g[$j]: Ok <BR>");
+//print("<B>$g[0]</B> group: $g[$j]: Ok <BR>");
 							if($enabled=="")
 								$enabled=0;
 							$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$g[0]', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
@@ -212,42 +217,8 @@ echo "$g[$j] = $qqq = $www<BR>";
 			}
 
 
-/*
-
-//	$groupid=1;
-//	$shablonid=1;
-
-			$result=$DB->samsdb_query_value("SELECT s_name, s_group_id FROM sgroup where s_name = '$addgroupname[$i]'");
-			$row=$DB->samsdb_fetch_array();
-			$groupid=$row['s_group_id'];
-
-			$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
-			$row=$DB->samsdb_fetch_array();
-			$shablonid=$row['s_shablon_id'];
-
-			$a=$ldap->group_users($addgroupname[$i]);
-			$acount=count($a);
-			for($j=0;$j<$acount;$j++)
-			{
-				$user=$a[$j];
-				$username=$a[$j];
-
-				$userinfo=$ldap->user_info( $user, $fields=NULL);
-				$username2 = UTF8ToSAMSLang($user);
-				$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-				$name=explode(" ",$displayname);
-				$cname=count($name);
-				echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
-				$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
-
-				$DB->samsdb_query($QUERY);
-				//      $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote', '0', '$enabled', $groupid, '$usersoname', '$userip', '$pass', '0', '0', '0') ");
-
-			}
-
-*/
 		}
-		print(" <BR>");
+		print(" <BR><BR>");
 		$i++;
 	}
 
@@ -283,9 +254,12 @@ function ImportFromNTLMForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"importfromntlm\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authntlmbuttom_3_importfromntlm.php\">\n"); 
 /* */
-	$e = escapeshellcmd("$ntlmadmin $ntlmadminpasswd");
-	$value=ExecuteShellScript("ntlm_groups.sh", $e);
-	$a=explode(";",$value);
+//	$e = escapeshellcmd("$ntlmadmin $ntlmadminpasswd");
+//	$value=ExecuteShellScript("ntlm_groups.sh", $e);
+//	$a=explode(";",$value);
+	$users=ExecuteShellScript("getntlmgroups","$ntlmserver $ntlmadmin $ntlmadminpasswd");
+	$a=explode("|",$users);
+//  $acount=count($a);
 	$acount=count($a);
 	$aflag=0;
 
@@ -301,6 +275,10 @@ function ImportFromNTLMForm()
 
 	}
 	print("</SELECT>\n");
+
+	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
+	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
+
 /*
 	print("<TR><TD WIDTH=30%><B>Create SAMS templates with AD groups name:\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");

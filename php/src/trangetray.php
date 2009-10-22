@@ -67,7 +67,9 @@ function AddTRangeForm()
 	exit;
 
   PageTop("clock_48.jpg","$AddTRangeForm_trangetray_1");
-  print("<BR>\n");
+  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/timerange.html\">$documentation</A>");
+  print("<P>\n");
  
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function TestName(formname)\n");
@@ -157,11 +159,16 @@ function JSTRangeInfo()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  $code="<HTML><BODY><CENTER>
+  $code="<HTML><HEAD>
+  <link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">
+  </HEAD>
+  <BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/clock_48.jpg\" align=\"RIGHT\" valign=\"middle\" >
   <TD  valign=\"middle\"><h2  align=\"CENTER\">".$JSTRangeInfo_trangetray_1." <FONT COLOR=\"BLUE\">$TRANGEConf->s_name</h2>
-  </FONT></TABLE><TABLE>";
+  </FONT></TABLE>
+  <P>
+  <TABLE>";
   for($i=1;$i<8;$i++)
      {
 	if($TRANGEConf->s_days[$i]=="CHECKED")
@@ -171,6 +178,10 @@ function JSTRangeInfo()
      }  
   
   $code=$code."</TABLE><B>$TRANGEConf->s_timestart - $TRANGEConf->s_timeend</B>
+  <P>
+  <IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">
+  <A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>
+  <P>
   </CENTER>
   </BODY></HTML>";
   $code=str_replace("\"","\\\"",$code);

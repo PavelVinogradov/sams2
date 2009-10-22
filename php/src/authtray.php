@@ -52,7 +52,7 @@ function AuthEnabledForm()
 
   PageTop("config_48.jpg","$authtray_AuthEnabledForm_1");
   print("<P>\n");
-echo "";
+
   print("<FORM NAME=\"authenabledform\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"authenabled\">\n");
@@ -97,6 +97,8 @@ echo "";
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Configure\">\n");
   print("</FORM>\n");
+  print("<P><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/authorization.html\">$documentation</A>");
 
 } 
 

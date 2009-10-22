@@ -11,15 +11,16 @@ function AuthNTLMReConfig()
 {
   global $USERConf;
 
-echo "1 ";
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
-echo "2 ";
   UpdateAuthParameter("ntlm","ntlmserver");
   UpdateAuthParameter("ntlm","ntlmdomain");
   UpdateAuthParameter("ntlm","ntlmadmin");
   UpdateAuthParameter("ntlm","ntlmadminpasswd");
   UpdateAuthParameter("ntlm","ntlmusergroup");
+  print("<SCRIPT>\n");
+  print("        parent.basefrm.location.href=\"main.php?show=exe&function=authntlmvalues&filename=authntlmtray.php\";\n");
+  print("</SCRIPT> \n");
 
 }
 
