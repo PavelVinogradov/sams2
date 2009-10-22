@@ -67,7 +67,10 @@ function JSProxyInfo()
 
   $DB->free_samsdb_query();
 
-  $htmlcode="<HTML><BODY><CENTER>
+  $htmlcode="<HTML><HEAD>
+  <link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">
+  </HEAD>
+  <BODY><CENTER>
   <TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">
   <img src=\"$SAMSConf->ICONSET/user.jpg\" align=\"RIGHT\" valign=\"middle\" >
   <TD  valign=\"middle\"><h2  align=\"CENTER\">Proxy server <BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT></h2>

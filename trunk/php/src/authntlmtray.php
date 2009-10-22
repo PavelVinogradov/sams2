@@ -112,6 +112,9 @@ function AuthNTLMValues()
   $DB2=new SAMSDB(&$SAMSConf);
 
   PageTop("config_48.jpg","NTLM configuration ");
+//  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+//  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/syncwithntlm.html\">Documentation</A>");
+//  print("<P>\n");
   print("<P>\n");
 
   print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");

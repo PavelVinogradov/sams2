@@ -117,7 +117,7 @@ function UpdateTRangeForm()
   print("</TABLE>\n");
   print("<P>\n");
   
-  print("<B>$shablonbuttom_1_prop_UpdateShablonForm_13\n");
+  print("<B>$shablonbuttom_1_prop_UpdateShablonForm_13</B>\n");
   print("<P>\n");
   print("     <SELECT NAME=\"shour\"> \n");
   for($i=0;$i<24;$i++)
@@ -143,16 +143,12 @@ function UpdateTRangeForm()
   print("</TABLE>\n");
 /* calendar */  
 
-
-
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Change\">\n");
   print("</FORM>\n");
 
+  print("</B><P><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
+  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
 
-
-       print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
-       print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
-       print("<TD>$redirlisttray_AddRedirListForm_4");
 
 }
 
