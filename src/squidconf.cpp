@@ -116,6 +116,13 @@ bool SquidConf::defineACL ()
           continue;
         }
 
+      // Не меняем некоторые параметры, даже если есть подстрока 'Sams2'
+      if (line.find ("deny_info") == 0)
+        {
+          fout << line << endl;
+          continue;
+        }
+
       // Строка от нашей старой конфигурации - игнорируем ее
       if (line.find ("Sams2") != string::npos)
         continue;
