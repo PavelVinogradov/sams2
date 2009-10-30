@@ -272,6 +272,9 @@ bool SquidConf::defineACL ()
               fout << "# Setup Sams2 HTTP Access here" << endl;
               vector <long> times;
               basic_stringstream < char >restriction;
+              vector <string> restriction_time;
+              vector <string> restriction_allow;
+              vector <string> restriction_deny;
 
               if (haveBlockedUsers)
                 fout << "http_access deny Sams2BlockedUsers" << endl;
@@ -286,9 +289,9 @@ bool SquidConf::defineACL ()
 
                   DEBUG(DEBUG_DAEMON, "Processing template " << tpl->getId ());
 
-                  restriction_time.str("");
-                  restriction_allow.str("");
-                  restriction_deny.str("");
+                  restriction_time.clear();
+                  restriction_allow.clear();
+                  restriction_deny.clear();
 
                   if (redir_type == Proxy::REDIR_NONE)
                     {
@@ -300,10 +303,12 @@ bool SquidConf::defineACL ()
                             continue;
                           if (trange->isFullDay ())
                             continue;
+                          restriction.str("");
                           if (trange->hasMidnight ())
-                            restriction_time << " !Sams2Time" << time_ids[j];
+                            restriction << "!Sams2Time" << time_ids[j];
                           else
-                            restriction_time << " Sams2Time" << time_ids[j];
+                            restriction << "Sams2Time" << time_ids[j];
+                          restriction_time.push_back(restriction.str());
                         }
 
                       //Определяем разрешающие и запрещающие правила для текущего шаблона
@@ -313,23 +318,28 @@ bool SquidConf::defineACL ()
                           UrlGroup * grp = UrlGroupList::getUrlGroup(group_ids[j]);
                           if (!grp)
                             continue;
+                          restriction.str("");
                           switch (grp->getAccessType ())
                             {
                               case UrlGroup::ACC_DENY:
-                                restriction_deny << " !Sams2Deny" << group_ids[j];
+                                restriction << "Sams2Deny" << group_ids[j];
+                                restriction_deny.push_back(restriction.str());
                                 break;
                               case UrlGroup::ACC_ALLOW:
-                                restriction_allow << " Sams2Allow" << group_ids[j];
+                                restriction << "Sams2Allow" << group_ids[j];
+                                restriction_allow.push_back(restriction.str());
                                 break;
                               case UrlGroup::ACC_REGEXP:
-                                restriction_deny << " !Sams2Regexp" << group_ids[j];
+                                restriction << "Sams2Regexp" << group_ids[j];
+                                restriction_deny.push_back(restriction.str());
                                 break;
                               case UrlGroup::ACC_REDIR:
                                 break;
                               case UrlGroup::ACC_REPLACE:
                                 break;
                               case UrlGroup::ACC_FILEEXT:
-                                restriction_deny << " !Sams2Fileext" << group_ids[j];
+                                restriction << "Sams2Fileext" << group_ids[j];
+                                restriction_deny.push_back(restriction.str());
                                 break;
                             }
                         }
@@ -339,10 +349,14 @@ bool SquidConf::defineACL ()
                     fout << "http_access allow Sams2Template" << tpl->getId () << endl;
                   else if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
                     {
-                      //TODO отдельная строка 'http_access deny' для restriction_deny
-                      //TODO для каждого значения в restriction_allow - отдельная строка (с повторением restriction_time в каждой)
-                      fout << "http_access allow Sams2Template" << tpl->getId ()
-                        << restriction_time.str() << restriction_deny.str() << restriction_allow.str() << endl;
+                      uint idx;
+                      for (idx=0; idx<restriction_deny.size(); idx++)
+                          fout << "http_access deny Sams2Template" << tpl->getId () << " " << restriction_deny[idx] << endl;
+
+                      for (idx=0; idx<restriction_allow.size(); idx++)
+                          fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
+                      for (idx=0; idx<restriction_time.size(); idx++)
+                          fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_time[idx] << endl;
                     }
                 }
             } //if (current_tag == "http_access")
