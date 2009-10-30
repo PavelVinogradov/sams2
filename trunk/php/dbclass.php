@@ -522,12 +522,12 @@ $pgdb[3] = "INSERT INTO proxy VALUES ('1', 'Proxy server','0','http://your.ip.ad
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
 $pgdb[6] = "INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1','0','' )";
-$pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(25),
+$pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(50),
 s_auth varchar(4) default 'ip', 
 s_quote int default '100',s_period varchar(3) NOT NULL default 'M', s_clrdate date NOT NULL default '1980-01-01',
 s_alldenied smallint NOT NULL default '0', s_shablon_id2 int NULL)";
 $pgdb[8] = "INSERT INTO shablon VALUES('0','Default','ip','100','M','1980-01-01','0', '-1')";
-$pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varchar(25), 
+$pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varchar(50), 
 s_days varchar(14), 
 s_timestart time default '00:00:00', 
 s_timeend time default '23:59:59')";
@@ -535,7 +535,7 @@ s_timeend time default '23:59:59')";
 $pgdb[10] = "INSERT INTO timerange VALUES('0','Full day','MTWHFAS','00:00:00','00:00:00')";
 $pgdb[11] = "CREATE TABLE sconfig_time ( s_shablon_id int, s_trange_id int )";
 $pgdb[12] = "CREATE TABLE sconfig ( s_shablon_id int, s_redirect_id int )";
-$pgdb[13] = "CREATE TABLE redirect ( s_redirect_id SERIAL PRIMARY KEY, s_name varchar(25), s_type varchar(25), s_dest varchar(128) NULL )";
+$pgdb[13] = "CREATE TABLE redirect ( s_redirect_id SERIAL PRIMARY KEY, s_name varchar(50), s_type varchar(25), s_dest varchar(128) NULL )";
 $pgdb[14] = "CREATE TABLE samslog ( s_log_id SERIAL PRIMARY KEY, s_issuer varchar(50) NOT NULL , s_date date NOT NULL, s_time time NOT NULL, s_value varchar(60) NOT NULL, s_code char(2) )";
 $pgdb[15] = "CREATE TABLE sgroup ( s_group_id SERIAL PRIMARY KEY, s_name varchar(50) )";
 $pgdb[16] = "INSERT INTO sgroup ( s_name ) VALUES( 'Administrators' )";

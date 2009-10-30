@@ -87,7 +87,8 @@ public:
   enum RedirType
   {
     REDIR_NONE,                 ///< Не используется встроенный (sams) редиректор
-    REDIR_INTERNAL              ///< Используется встроенный (sams) редиректор
+    REDIR_INTERNAL,             ///< Используется встроенный (sams) редиректор
+    REDIR_EXTERNAL              ///< Используется сторонний редиректор
   };
 
   /**
