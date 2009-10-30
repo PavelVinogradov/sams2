@@ -44,6 +44,7 @@ using namespace std;
 #define defCHECKPASSWDDB      "CHECKPASSWDDB"
 #define defSLEEPTIME          "s_sleep"
 #define defDAEMONSTEP         "s_parser_time"
+#define defSAMSHOME           "SAMSPATH"
 
 #define defLDAPENABLED        "LDAPEnabled"
 #define defLDAPSERVER         "LDAPServer"

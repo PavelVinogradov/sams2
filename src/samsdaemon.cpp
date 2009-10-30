@@ -39,7 +39,7 @@ using namespace std;
 #include "urlgrouplist.h"
 #include "proxy.h"
 #include "localnetworks.h"
-#include "grouplist.h"
+//#include "grouplist.h"
 #include "templatelist.h"
 #include "template.h"
 #include "timerangelist.h"
@@ -124,7 +124,7 @@ void reload (int signal_number)
   TemplateList::reload ();
   Proxy::reload ();
   LocalNetworks::reload();
-  GroupList::reload ();
+  //GroupList::reload (); // not used anywhere
   SAMSUserList::reload ();
   UrlGroupList::reload ();
   DelayPoolList::reload ();
@@ -416,7 +416,7 @@ int main (int argc, char *argv[])
 
   SAMSUserList::useConnection (conn);
   LocalNetworks::useConnection (conn);
-  GroupList::useConnection (conn);
+  //GroupList::useConnection (conn); // not used anywhere
   Proxy::useConnection (conn);
   TemplateList::useConnection (conn);
   TimeRangeList::useConnection (conn);

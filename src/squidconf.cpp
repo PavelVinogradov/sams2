@@ -127,9 +127,18 @@ bool SquidConf::defineACL ()
       if (line.find ("Sams2") != string::npos)
         continue;
 
-      //Ограничение скорости настраивается демоном
+      // Ограничение скорости настраивается демоном, поэтому стираем текущие настройки
       if (line.find ("delay_") == 0 && Proxy::useDelayPools())
         continue;
+
+      // Используется встроенный редиректор, и какой-то редиректор уже определен
+      if ( (line.find ("url_rewrite_program") == 0 || line.find ("redirect_program") == 0) &&
+          Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
+        {
+          if (line.find("/samsredir") != string::npos) // определен встроенный редиректор - не меняем ничего
+            fout << line << endl;
+          continue; // определен сторонний редиректор, хотя нужно встроенный - стираем настройки
+        }
 
       if (line[0] == '#' && line.find ("TAG:") != string::npos)
         {
@@ -138,37 +147,13 @@ bool SquidConf::defineACL ()
 
           Split(line, " \t\n", v);
           current_tag = "unknown";
-          if (v[2] == "acl")
-            {
-              current_tag = "acl";
-              DEBUG (DEBUG2, "Found TAG: acl");
-            }
-          else if (v[2] == "http_access")
-            {
-              current_tag = "http_access";
-              DEBUG (DEBUG2, "Found TAG: http_access");
-            }
-          else if ((v[2] == "url_rewrite_access") || (v[2] == "redirector_access"))
-            {
-              current_tag = v[2];
-              DEBUG (DEBUG2, "Found TAG: " << current_tag);
-            }
-          else if (v[2] == "delay_pools")
-            {
-              current_tag = v[2];
-              DEBUG (DEBUG2, "Found TAG: " << current_tag);
-            }
-          else if (v[2] == "delay_class")
-            {
-              current_tag = v[2];
-              DEBUG (DEBUG2, "Found TAG: " << current_tag);
-            }
-          else if (v[2] == "delay_access")
-            {
-              current_tag = v[2];
-              DEBUG (DEBUG2, "Found TAG: " << current_tag);
-            }
-          else if (v[2] == "delay_parameters")
+          if (  (v[2] == "acl") || (v[2] == "http_access") ||
+                (v[2] == "url_rewrite_access") || (v[2] == "redirector_access") ||
+                (v[2] == "url_rewrite_program") || (v[2] == "redirector_program") ||
+                (v[2] == "url_rewrite_children") || (v[2] == "redirector_children") ||
+                (v[2] == "delay_pools") || (v[2] == "delay_class") ||
+                (v[2] == "delay_access") || (v[2] == "delay_parameters")
+             )
             {
               current_tag = v[2];
               DEBUG (DEBUG2, "Found TAG: " << current_tag);
@@ -252,7 +237,7 @@ bool SquidConf::defineACL ()
 
                 }
 
-              if (redir_type != Proxy::REDIR_INTERNAL)
+              if (redir_type == Proxy::REDIR_NONE)
                 {
                   vector<UrlGroup *>::iterator grp_it;
                   vector<UrlGroup *> grps = UrlGroupList::getAllGroups ();
@@ -282,8 +267,7 @@ bool SquidConf::defineACL ()
                 }
 
             } // if (current_tag == "acl")
-
-          if (current_tag == "http_access")
+          else if (current_tag == "http_access")
             {
               fout << "# Setup Sams2 HTTP Access here" << endl;
               vector <long> times;
@@ -302,9 +286,11 @@ bool SquidConf::defineACL ()
 
                   DEBUG(DEBUG_DAEMON, "Processing template " << tpl->getId ());
 
-                  restriction.str("");
+                  restriction_time.str("");
+                  restriction_allow.str("");
+                  restriction_deny.str("");
 
-                  if (redir_type != Proxy::REDIR_INTERNAL)
+                  if (redir_type == Proxy::REDIR_NONE)
                     {
                       time_ids = tpl->getTimeRangeIds ();
                       for (j = 0; j < time_ids.size(); j++)
@@ -315,9 +301,9 @@ bool SquidConf::defineACL ()
                           if (trange->isFullDay ())
                             continue;
                           if (trange->hasMidnight ())
-                            restriction << " !Sams2Time" << time_ids[j];
+                            restriction_time << " !Sams2Time" << time_ids[j];
                           else
-                            restriction << " Sams2Time" << time_ids[j];
+                            restriction_time << " Sams2Time" << time_ids[j];
                         }
 
                       //Определяем разрешающие и запрещающие правила для текущего шаблона
@@ -330,33 +316,37 @@ bool SquidConf::defineACL ()
                           switch (grp->getAccessType ())
                             {
                               case UrlGroup::ACC_DENY:
-                                restriction << " !Sams2Deny" << group_ids[j];
+                                restriction_deny << " !Sams2Deny" << group_ids[j];
                                 break;
                               case UrlGroup::ACC_ALLOW:
-                                restriction << " Sams2Allow" << group_ids[j];
+                                restriction_allow << " Sams2Allow" << group_ids[j];
                                 break;
                               case UrlGroup::ACC_REGEXP:
-                                restriction << " !Sams2Regexp" << group_ids[j];
+                                restriction_deny << " !Sams2Regexp" << group_ids[j];
                                 break;
                               case UrlGroup::ACC_REDIR:
                                 break;
                               case UrlGroup::ACC_REPLACE:
                                 break;
                               case UrlGroup::ACC_FILEEXT:
-                                restriction << " !Sams2Fileext" << group_ids[j];
+                                restriction_deny << " !Sams2Fileext" << group_ids[j];
                                 break;
                             }
                         }
                     }
 
-                  if (redir_type == Proxy::REDIR_INTERNAL)
+                  if (redir_type != Proxy::REDIR_NONE)
                     fout << "http_access allow Sams2Template" << tpl->getId () << endl;
                   else if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
-                    fout << "http_access allow Sams2Template" << tpl->getId () << restriction.str() << endl;
+                    {
+                      //TODO отдельная строка 'http_access deny' для restriction_deny
+                      //TODO для каждого значения в restriction_allow - отдельная строка (с повторением restriction_time в каждой)
+                      fout << "http_access allow Sams2Template" << tpl->getId ()
+                        << restriction_time.str() << restriction_deny.str() << restriction_allow.str() << endl;
+                    }
                 }
             } //if (current_tag == "http_access")
-
-          if (current_tag == "url_rewrite_access" || current_tag == "redirector_access")
+          else if (current_tag == "url_rewrite_access" || current_tag == "redirector_access")
             {
               Url proxy_url;
               proxy_url.setUrl (Proxy::getDenyAddr ());
@@ -371,13 +361,51 @@ bool SquidConf::defineACL ()
                   WARNING ("Unable to identify proxy address");
                 }
             }
+          else if ( (current_tag == "url_rewrite_program" || current_tag == "redirector_program") &&
+                Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
+            {
+              // в следующей строке определен нужный редиректор, не меняем настройки
+              if (nextline.find (current_tag) == 0 && nextline.find("/samsredir") != string::npos)
+                {
+                  fout << nextline << endl;
+                  continue;
+                }
+              else
+                {
+                  string samspath = SamsConfig::getString (defSAMSHOME, err);
 
-          if (current_tag == "delay_pools" && Proxy::useDelayPools())
+                  if (samspath.empty ())
+                    {
+                      ERROR (defSAMSHOME << " not defined. Check config file.");
+                      continue;
+                    }
+                  if (!fileExist(samspath+"/bin/samsredir"))
+                    {
+                      ERROR (samspath << "/bin/samsredir" << " not found. (Wrong " << defSAMSHOME << " value in config file?).");
+                      continue;
+                    }
+                  fout << current_tag << " " << samspath << "/bin/samsredir" << endl;
+                }
+            }
+          else if ( (current_tag == "url_rewrite_children" || current_tag == "redirector_children") &&
+                Proxy::getRedirectType() != Proxy::REDIR_NONE)
+            {
+              // в следующей строке уже определено количество редиректоров, не меняем настройки
+              if (nextline.find (current_tag) == 0)
+                {
+                  fout << nextline << endl;
+                  continue;
+                }
+              else
+                {
+                  fout << current_tag  << " 5" << endl;
+                }
+            }
+          else if (current_tag == "delay_pools" && Proxy::useDelayPools())
             {
               fout << "delay_pools " << DelayPoolList::count () << endl;
             }
-
-          if (current_tag == "delay_class" && Proxy::useDelayPools())
+          else if (current_tag == "delay_class" && Proxy::useDelayPools())
             {
               vector<DelayPool*> pools = DelayPoolList::getList ();
               for (unsigned int i=0; i < pools.size (); i++)
@@ -385,8 +413,7 @@ bool SquidConf::defineACL ()
                   fout << "delay_class " << i+1 << " " << pools[i]->getClass () << endl;
                 }
             }
-
-          if (current_tag == "delay_access" && Proxy::useDelayPools())
+          else if (current_tag == "delay_access" && Proxy::useDelayPools())
             {
               vector<DelayPool*> pools = DelayPoolList::getList ();
               map <long, bool> link;
@@ -420,8 +447,7 @@ bool SquidConf::defineACL ()
                   fout << "delay_access " << i+1 << " deny all" << endl;
                 }
             }
-
-          if (current_tag == "delay_parameters" && Proxy::useDelayPools())
+          else if (current_tag == "delay_parameters" && Proxy::useDelayPools())
             {
               vector<DelayPool*> pools = DelayPoolList::getList ();
               long agg1, agg2;
@@ -451,7 +477,22 @@ bool SquidConf::defineACL ()
                 }
             }
 
+          // Ограничение скорости настраивается демоном, поэтому стираем текущие настройки
           if (nextline.find ("delay_") == 0 && Proxy::useDelayPools())
+            continue;
+
+          // Используется встроенный редиректор, и какой-то редиректор уже определен
+          if (nextline.find ("url_rewrite_program") == 0 && Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
+            {
+              if (nextline.find("/samsredir") != string::npos) // определен встроенный редиректор - не меняем ничего
+                fout << nextline << endl;
+              continue; // определен сторонний редиректор, стираем настройки
+            }
+
+          if ( Proxy::getRedirectType() == Proxy::REDIR_NONE &&
+                (nextline.find ("url_rewrite_program") == 0 || nextline.find ("redirector_program") == 0 ||
+                nextline.find ("url_rewrite_children") == 0 || nextline.find ("redirector_children") == 0)
+              )
             continue;
 
           fout << nextline << endl;

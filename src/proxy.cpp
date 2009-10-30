@@ -143,6 +143,9 @@ string Proxy::toString (RedirType t)
     case REDIR_INTERNAL:
       res = "internal";
       break;
+    case REDIR_EXTERNAL:
+      res = "external";
+      break;
     default:
       res = "unknown";
       break;
@@ -640,7 +643,7 @@ bool Proxy::reload ()
     _redir_type = REDIR_INTERNAL;
   else
     {
-      ERROR ("Unsupported redirector type: " << s_redirector);
+      _redir_type = REDIR_EXTERNAL;
     }
 
   _deny_addr = s_denied_to;
