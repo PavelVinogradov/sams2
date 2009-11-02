@@ -74,6 +74,12 @@ public:
    */
   static bool isLocalUrl (const string & url);
 
+  /**
+   * @brief Возвращает список всех сетей
+   *
+   * @return Список сетей
+   */
+  static vector < Net * > getAllNetworks ();
 protected:
   /**
    * @brief Загружает список локальных сетей из БД

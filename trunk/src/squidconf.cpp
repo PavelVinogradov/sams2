@@ -25,6 +25,8 @@
 #include "urlgrouplist.h"
 #include "urlgroup.h"
 #include "url.h"
+#include "localnetworks.h"
+#include "net.h"
 #include "proxy.h"
 #include "templatelist.h"
 #include "template.h"
@@ -100,6 +102,8 @@ bool SquidConf::defineACL ()
   TimeRange * trange;
   uint j;
   bool haveBlockedUsers = false;
+  bool haveLocalName = false;
+  bool haveLocalAddr = false;
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
 
   ofstream fncsa;
@@ -264,6 +268,23 @@ bool SquidConf::defineACL ()
                             break;
                         }
                     }
+                  vector<Net *>::iterator net_it;
+                  vector<Net *> nets = LocalNetworks::getAllNetworks ();
+                  for (net_it = nets.begin (); net_it != nets.end (); net_it++)
+                    {
+                      fout << "acl Sams2Local";// << net_it->getId ();
+                      if ((*net_it)->isDomain())
+                        {
+                          haveLocalName = true;
+                          fout << "Name dstdomain ";
+                        }
+                      else
+                        {
+                          haveLocalAddr = true;
+                          fout << "Addr dst ";
+                        }
+                      fout << (*net_it)->asString () << endl;
+                    }
                 }
 
             } // if (current_tag == "acl")
@@ -275,6 +296,12 @@ bool SquidConf::defineACL ()
               vector <string> restriction_time;
               vector <string> restriction_allow;
               vector <string> restriction_deny;
+
+              if (haveLocalName)
+                fout << "http_access allow Sams2LocalName" << endl;
+
+              if (haveLocalAddr)
+                fout << "http_access allow Sams2LocalAddr" << endl;
 
               if (haveBlockedUsers)
                 fout << "http_access deny Sams2BlockedUsers" << endl;

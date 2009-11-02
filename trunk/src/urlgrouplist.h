@@ -62,6 +62,7 @@ public:
    * @return Список групп
    */
   static vector < UrlGroup * > getAllGroups ();
+
   /**
    * @brief Возвращает группу url по заданному идентификатору
    *

@@ -77,11 +77,12 @@ bool LocalNetworks::reload ()
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Using old connection " << _conn);
     }
 
+  long s_url_id;
   char s_url[1024];
   Net *net;
   DBQuery *query = NULL;
 
-  string sqlcmd = "select s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
+  string sqlcmd = "select s_url_id, s_url from url u, redirect r where u.s_redirect_id=r.s_redirect_id and r.s_type='local'";
 
   _conn->newQuery (query);
   if (!query)
@@ -90,7 +91,12 @@ bool LocalNetworks::reload ()
       return false;
     }
 
-  if (!query->bindCol (1, DBQuery::T_CHAR, s_url, sizeof (s_url)))
+  if (!query->bindCol (1, DBQuery::T_LONG, &s_url_id, 0))
+    {
+      delete query;
+      return false;
+    }
+  if (!query->bindCol (2, DBQuery::T_CHAR, s_url, sizeof (s_url)))
     {
       delete query;
       return false;
@@ -106,6 +112,7 @@ bool LocalNetworks::reload ()
     {
       str_tmp = s_url;
       net = Net::fromString (str_tmp);
+      net->setId (s_url_id);
       _nets.push_back (net);
     }
 
@@ -173,4 +180,9 @@ bool LocalNetworks::isLocalUrl (const string & url)
   addr = u.getAddress ();
 
   return isLocalHost (addr);
+}
+
+vector < Net * > LocalNetworks::getAllNetworks ()
+{
+  return _nets;
 }
