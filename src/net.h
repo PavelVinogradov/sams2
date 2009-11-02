@@ -38,6 +38,10 @@ public:
    */
   ~Net ();
 
+  void setId(long id);
+
+  long getId() const;
+
   /* @brief Устанавливает определение сети.
    *
    *  Сеть может быть определена двумя способами:
@@ -82,6 +86,13 @@ public:
    */
   static bool isDomain (const string & host);
 
+  /** @brief Определяет тип указания сети
+   *
+   *  @retval true Если сеть определена доменным именем
+   *  @retval false Если сеть определена ip адресом с маской подсети
+   */
+  bool isDomain ();
+
   /** @brief Возвращает содержимое экземпляра класса в виде строки
    *
    *  @return Строку с данными
@@ -99,6 +110,7 @@ public:
   static Net *fromString (const string & str);
 
 protected:
+  long _id;                     ///< Идентификатор сети
   string _net;                  ///< Исходное определение сети
   bool _domain;                 ///< Тип указания сети (true-доменным именем, false-IP адресом)
   IP *_ip;                      ///< Адрес сети

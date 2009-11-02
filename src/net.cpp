@@ -30,6 +30,7 @@ Net::Net ()
   _domain = false;
   _net = "";
   _ip = NULL;
+  _id = -1;
 }
 
 Net::~Net ()
@@ -39,6 +40,16 @@ Net::~Net ()
   if (_ip)
     delete _ip;
   _ip = NULL;
+}
+
+void Net::setId(long id)
+{
+  _id = id;
+}
+
+long Net::getId() const
+{
+  return _id;
 }
 
 bool Net::hasHost (const string & host)
@@ -237,6 +248,11 @@ bool Net::isDomain (const string & host)
 
   DEBUG (DEBUG9, host << " is " << ((res) ? "IP address" : "domain name"));
   return !res;
+}
+
+bool Net::isDomain ()
+{
+  return _domain;
 }
 
 /*
