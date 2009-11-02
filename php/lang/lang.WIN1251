@@ -974,6 +974,7 @@
 //  $lang="./lang/lang.$LANG";
 //  require($lang);
    $documentation="Документация";
+   $blocked_php_14="Время доступа к прокси серверу:";
 
 
 

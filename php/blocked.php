@@ -23,16 +23,16 @@
   switch($charset)
     {
       case "windows-1251":
-	$LANG="WIN1251";
+        $LANG="WIN1251";
         break;
       case "koi8-r":
-	$LANG="KOI8-R";
+        $LANG="KOI8-R";
         break;
       case "utf-8":
-	$LANG="UTF8";
+        $LANG="UTF8";
         break;
       case "iso-8859-1":
-	$LANG="EN";
+        $LANG="EN";
         break;
       default:
         $LANG="KOI8-R";
@@ -43,7 +43,7 @@
   require($langfile);
 
   $DB=new SAMSDB(&$SAMSConf);
-  $QUERY="SELECT s_nick, s_family, s_name FROM squiduser WHERE s_ip='$id' OR s_nick='$id'";
+  $QUERY="SELECT s_nick, s_family, s_name, s_shablon_id FROM squiduser WHERE s_ip='$id' OR s_nick='$id'";
 
   $result=$DB->samsdb_query_value($QUERY);
   $row=$DB->samsdb_fetch_array();
@@ -70,16 +70,26 @@
   print("<TD WIDTH=120><IMG SRC=\"http://$img\">\n");
   print("<TD><H1>Access denied</H1>\n");
 
-  
+
   if($action=="urldenied")
     {
        print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_3 $blocked_php_4</H3></FONT> ");
     }
   if($action=="timedenied")
     {
-       print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9"); 
-       print("  <BR>$blocked_php_10</H3></FONT> ");
-       print("  <P>$row[shour]:$row[smin] - $row[ehour]:$row[emin] ");
+        print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9");
+        print("  <BR>$blocked_php_10</H3></FONT> ");
+        print("  <P>access time:");
+
+        $DB2=new SAMSDB(&$SAMSConf);
+        $QUERY2="SELECT sconfig_time.s_shablon_id,timerange.s_timestart,timerange.s_timeend FROM sconfig_time LEFT JOIN timerange
+        ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$row[s_shablon_id]'";
+        $result2=$DB2->samsdb_query_value($QUERY2);
+        while($row2=$DB2->samsdb_fetch_array())
+        {
+            print("  <P>$row2[s_timestart] - $row2[s_timeend] ");
+
+        }
     }
   if($action=="usernotfound")
     {
