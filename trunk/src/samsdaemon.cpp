@@ -189,7 +189,7 @@ int main (int argc, char *argv[])
   int parse_errors = 0;
   int c;
   int err;
-  int reconnect_timeout = 3600;
+  int reconnect_timeout = 1800;
   string optname = "";
   bool must_fork = true;
   bool use_must_fork = false;
@@ -253,7 +253,7 @@ int main (int argc, char *argv[])
           break;
         case 't':
           if (sscanf (optarg, "%d", &reconnect_timeout) != 1)
-            reconnect_timeout = 3600;
+            reconnect_timeout = 1800;
           break;
         case 'l':
           log_engine = optarg;
@@ -365,6 +365,7 @@ int main (int argc, char *argv[])
 
   DBConn *conn = NULL;
   DBQuery *query = NULL;
+  DBQuery *query2 = NULL;
 
   conn = SamsConfig::newConnection ();
 
@@ -486,38 +487,75 @@ int main (int argc, char *argv[])
         }
       seconds_to_reconnect -= (looptime + sleeptime);
 
+      loop_start = time (NULL);
+      time_now = localtime (&loop_start);
+
       if (seconds_to_reconnect <= 0)
         {
-          DEBUG (DEBUG_DAEMON, "Reconnecting to database (timeout " << reconnect_timeout << " reached)");
-          delete query;
-          query = NULL;
+          DEBUG (DEBUG_DAEMON, "Reconnecting to database");
+
           conn->disconnect();
+
           if (!conn->connect ())
             {
+              seconds_to_reconnect = 60;
+              loop_end = time (NULL);
               continue;
             }
+
           seconds_to_reconnect = reconnect_timeout;
         }
 
-      if (!query)
+      if (conn->isConnected () && (!query || !query2))
         {
-          conn->newQuery (query);
-
           if (!query)
+            conn->newQuery (query);
+
+          if (!query2)
+            conn->newQuery (query2);
+
+          if (!query || !query2)
+          {
+            loop_end = time (NULL);
             continue;
+          }
 
           if (!query->bindCol (1, DBQuery::T_CHAR, s_service, sizeof (s_service)))
             {
               delete query;
               query = NULL;
+              loop_end = time (NULL);
               continue;
             }
           if (!query->bindCol (2, DBQuery::T_CHAR, s_action, sizeof (s_action)))
             {
               delete query;
               query = NULL;
+              loop_end = time (NULL);
               continue;
             }
+        }
+
+      if (!conn->isConnected () || !query || !query2)
+        {
+          loop_end = time (NULL);
+          continue;
+        }
+
+      if (!query->sendQueryDirect (cmd_check.str()) )
+        {
+          delete query;
+          delete query2;
+          query = NULL;
+          query2 = NULL;
+
+          conn->disconnect();
+
+          if (seconds_to_reconnect > 60)
+            seconds_to_reconnect = 60;
+          DEBUG (DEBUG_DAEMON, "Reconnect in " << seconds_to_reconnect << " second[s]");
+          loop_end = time (NULL);
+          continue;
         }
 
       if (parserType == Proxy::PARSE_DISCRET)
@@ -525,14 +563,6 @@ int main (int argc, char *argv[])
           DEBUG (DEBUG_DAEMON, "Process " << squidcachefile << " in " << seconds_to_parse << " second[s]");
         }
 
-      if (!query->sendQueryDirect (cmd_check.str()) )
-        {
-          DEBUG (DEBUG_DAEMON, "Reconnect in " << seconds_to_reconnect << " second[s]");
-          continue;
-        }
-
-      loop_start = time (NULL);
-      time_now = localtime (&loop_start);
 
       // Если начался новый день, то, возможно, нужно очищать счетчики пользователей
       if (Proxy::needClearCounters() && (time_was.tm_mday != -1) && (time_was.tm_mday != time_now->tm_mday))
@@ -611,7 +641,9 @@ int main (int argc, char *argv[])
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_proxy << "'";
               cmd_del << " and s_action='" << action_shutdown << "'";
-              query->sendQueryDirect (cmd_del.str());
+              if (!query2->sendQueryDirect (cmd_del.str()))
+                continue;
+
               DEBUG (DEBUG_DAEMON, "Shutdown proxy server");
 
               shutdown_cmd = SamsConfig::getString (defSHUTDOWNCMD, err);
@@ -633,7 +665,9 @@ int main (int argc, char *argv[])
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_daemon << "'";
               cmd_del << " and s_action='" << action_shutdown << "'";
-              query->sendQueryDirect (cmd_del.str());
+              if (!query2->sendQueryDirect (cmd_del.str()))
+                continue;
+
               DEBUG (DEBUG_DAEMON, "Shutdown");
               process.stop();
               Proxy::destroy();
@@ -643,7 +677,7 @@ int main (int argc, char *argv[])
               UrlGroupList::destroy ();
               PluginList::destroy ();
               Logger::destroy (); // всегда уничтожаем его последним
-              delete query;
+              //delete query;
               delete conn;
               exit(0);
             }
@@ -653,7 +687,8 @@ int main (int argc, char *argv[])
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_daemon << "'";
               cmd_del << " and s_action='" << action_reload << "'";
-              query->sendQueryDirect (cmd_del.str());
+              if (!query2->sendQueryDirect (cmd_del.str()))
+                continue;
               reload (-1);
             }
           if (s_service == service_squid && s_action == action_reconfig)
@@ -662,7 +697,8 @@ int main (int argc, char *argv[])
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_squid << "'";
               cmd_del << " and s_action='" << action_reconfig << "'";
-              query->sendQueryDirect (cmd_del.str());
+              if (!query2->sendQueryDirect (cmd_del.str()))
+                continue;
 
               Logger::addLog (Logger::LK_DAEMON, "Got request to reconfigure SQUID");
 
@@ -674,7 +710,9 @@ int main (int argc, char *argv[])
               cmd_del << "delete from reconfig where s_proxy_id=" << proxyid;
               cmd_del << " and s_service='" << service_dbase << "'";
               cmd_del << " and s_action='" << action_export << "'";
-              query->sendQueryDirect (cmd_del.str());
+              if (!query2->sendQueryDirect (cmd_del.str()))
+                continue;
+
               DBExporter *exporter = new DBExporter ();
               exporter->setDateFilter ("2007-10-22");
               exporter->exportToFile ("/tmp/sams-2007-10-22.txt");

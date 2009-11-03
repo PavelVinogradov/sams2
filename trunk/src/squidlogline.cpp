@@ -119,6 +119,8 @@ SquidLogLine::logCacheResult SquidLogLine::parseCacheResult (const string & cr)
     res = TCP_IMS_MISS;
   else if (cr == "TCP_SWAPFAIL")
     res = TCP_SWAPFAIL;
+  else if (cr == "TCP_SWAPFAIL_MISS")
+    res = TCP_SWAPFAIL_MISS;
   else if (cr == "TCP_DENIED")
     res = TCP_DENIED;
   else if (cr == "UDP_HIT")
@@ -142,7 +144,10 @@ SquidLogLine::logCacheResult SquidLogLine::parseCacheResult (const string & cr)
   else if (cr == "ERR_CONNECT_FAIL")
     res = ERR_CONNECT_FAIL;
   else
-    res = CR_UNKNOWN;
+    {
+      WARNING ("Unknown cache result " << cr);
+      res = CR_UNKNOWN;
+    }
 
   return res;
 }
@@ -314,6 +319,8 @@ string SquidLogLine::toString (logCacheResult cr)
     res = "TCP_IMS_MISS";
   else if (cr == TCP_SWAPFAIL)
     res = "TCP_SWAPFAIL";
+  else if (cr == TCP_SWAPFAIL_MISS)
+    res = "TCP_SWAPFAIL_MISS";
   else if (cr == TCP_DENIED)
     res = "TCP_DENIED";
   else if (cr == UDP_HIT)
