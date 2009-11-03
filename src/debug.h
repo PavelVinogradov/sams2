@@ -85,7 +85,7 @@ using namespace std;
 #define ERROR(arg) \
   { \
     basic_stringstream < char >s; \
-    s << ERROR_PREFIX << arg; \
+    s << ERROR_PREFIX << __FILE__<<":"<<__LINE__<< " " << arg; \
     Logger::sendError(s.str()); \
   }
 

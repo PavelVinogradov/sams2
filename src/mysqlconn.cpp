@@ -67,12 +67,15 @@ bool MYSQLConn::connect ()
 
 void MYSQLConn::newQuery (DBQuery *& query)
 {
-  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
-
   query = NULL;
 
   if (!_connected)
     return;
+
+  if (mysql_errno(_mysql) != 0)
+    return;
+
+  DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "]");
 
   query = new MYSQLQuery( this );
 

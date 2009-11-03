@@ -201,8 +201,8 @@ bool SamsConfig::readDB ()
 
   if (!conn->connect ())
     {
-      delete conn;
       _internal = false;
+      delete conn;
       return false;
     }
 
@@ -211,8 +211,8 @@ bool SamsConfig::readDB ()
   if (!query)
     {
       ERROR("Unable to create query.");
-      delete conn;
       _internal = false;
+      delete conn;
       return false;
     }
 
@@ -228,40 +228,40 @@ bool SamsConfig::readDB ()
 
   if (!query->bindCol (1, DBQuery::T_LONG, &s_sleep, 0))
     {
+      _internal = false;
       delete query;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query->bindCol (2, DBQuery::T_LONG, &s_parser_time, 0))
     {
+      _internal = false;
       delete query;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query->bindCol (3, DBQuery::T_LONG, &s_debuglevel, 0))
     {
+      _internal = false;
       delete query;
       delete conn;
-      _internal = false;
       return false;
     }
 
   if (!query->sendQueryDirect (s.str ()))
     {
+      _internal = false;
       delete query;
       delete conn;
-      _internal = false;
       return false;
     }
 
   if (!query->fetch ())
     {
       WARNING ("No settings for proxy " << proxyid << ". Somethig wrong?");
+      _internal = false;
       delete query;
       delete conn;
-      _internal = false;
       return false;
     }
 
@@ -276,8 +276,8 @@ bool SamsConfig::readDB ()
   if (!query2)
     {
       ERROR("Unable to create query.");
-      delete conn;
       _internal = false;
+      delete conn;
       return false;
     }
 
@@ -288,23 +288,23 @@ bool SamsConfig::readDB ()
 
   if (!query2->bindCol (1, DBQuery::T_CHAR, s_version, sizeof (s_version)))
     {
+      _internal = false;
       delete query2;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query2->sendQueryDirect (s2.str()) )
     {
+      _internal = false;
       delete query2;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query2->fetch ())
     {
+      _internal = false;
       delete query2;
       delete conn;
-      _internal = false;
       return false;
     }
 
@@ -319,8 +319,8 @@ bool SamsConfig::readDB ()
   if (!query3)
     {
       ERROR("Unable to create query.");
-      delete conn;
       _internal = false;
+      delete conn;
       return false;
     }
 
@@ -331,23 +331,23 @@ bool SamsConfig::readDB ()
   s3 << "select s_param, s_value from auth_param where s_auth='ldap'";
   if (!query3->bindCol (1, DBQuery::T_CHAR, s_param, sizeof (s_param)))
     {
+      _internal = false;
       delete query3;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query3->bindCol (2, DBQuery::T_CHAR, s_value, sizeof (s_value)))
     {
+      _internal = false;
       delete query3;
       delete conn;
-      _internal = false;
       return false;
     }
   if (!query3->sendQueryDirect (s3.str()) )
     {
+      _internal = false;
       delete query3;
       delete conn;
-      _internal = false;
       return false;
     }
   while (query3->fetch ())
@@ -369,9 +369,10 @@ bool SamsConfig::readDB ()
 
   delete query3;
 
-  delete conn;
   _internal = false;
   _db_loaded = true;
+
+  delete conn;
 
   return true;
 }

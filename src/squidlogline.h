@@ -76,6 +76,7 @@ public:
     TCP_IMS_HIT,                ///< The client issued an If-Modified-Since request and the object was in the cache and still fresh
     TCP_IMS_MISS,               ///< The client issued an If-Modified-Since request for a stale object
     TCP_SWAPFAIL,               ///< The object was believed to be in the cache, but could not be accessed
+    TCP_SWAPFAIL_MISS,          ///<
     TCP_DENIED,                 ///< Access was denied for this request
     UDP_HIT,                    ///< A valid copy of the requested object was in the cache
     UDP_HIT_OBJ,                ///< Same as UDP_HIT

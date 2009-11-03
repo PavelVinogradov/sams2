@@ -345,6 +345,7 @@ bool MYSQLQuery::sendQuery ()
   if (mysql_stmt_execute(_statement))
   {
     ERROR ("[" << this << "->" << __FUNCTION__ << "] " << mysql_stmt_error(_statement));
+    _res = NULL; // Might be wrong
     return false;
   }
 
@@ -488,9 +489,15 @@ void MYSQLQuery::destroy ()
   DEBUG (DEBUG7, "[" << this << "->" << __FUNCTION__ << "] ");
 
   if (_res)
-    mysql_free_result (_res);
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] mysql_free_result(" << _res << ")");
+      mysql_free_result (_res);
+    }
   if (_statement)
-    mysql_stmt_close (_statement);
+    {
+      DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] mysql_stmt_close(" << _statement << ")");
+      mysql_stmt_close (_statement);
+    }
   if (_bind_param)
     free (_bind_param);
   if (_bind_column)
@@ -503,6 +510,7 @@ void MYSQLQuery::destroy ()
   _columns.clear ();
   _params.clear ();
 
+  _res = NULL;
   _statement = NULL;
   _bind_param = NULL;
   _param_real_len = NULL;

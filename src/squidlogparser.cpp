@@ -389,7 +389,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         {
           fpos = in.tellg ();
           DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Store file position: " << fpos);
-          updProxyQuery->sendQuery ();
+          if (!updProxyQuery->sendQuery ())
+            break;
           Proxy::setEndValue(fpos);
         }
 
@@ -458,6 +459,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         case SquidLogLine::TCP_CLIENT_REFRESH_MISS:
         case SquidLogLine::TCP_IMS_MISS:
         case SquidLogLine::TCP_SWAPFAIL:
+        case SquidLogLine::TCP_SWAPFAIL_MISS:
         case SquidLogLine::UDP_HIT_OBJ:
         case SquidLogLine::UDP_MISS:
         case SquidLogLine::UDP_INVALID:
@@ -482,7 +484,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
 
       // Обновляем squidcache
       if (!updCacheQuery->sendQuery ())
-        continue;
+        break;
 
 
       // Обновляем cachesum
@@ -491,14 +493,15 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       cachesum_select_cmd << "select s_size, s_hit from cachesum where s_proxy_id=" << _proxyid;
       cachesum_select_cmd << " and s_date='" << s_date <<"' and s_domain='" << s_domain << "' and s_user='" << s_user << "'";
       if (!selCachesumQuery->sendQueryDirect (cachesum_select_cmd.str ()))
-        continue;
+        break;
 
       if (!selCachesumQuery->fetch ()) // такой записи еще нет, нужно добавлять
         {
           cachesum_size = s_size;
           cachesum_hit = s_hit;
           DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Set cachesum for "<<s_user<<": cachesum_size=" << cachesum_size << ", cachesum_hit=" << cachesum_hit);
-          insCachesumQuery->sendQuery ();
+          if (!insCachesumQuery->sendQuery ())
+            break;
         }
       else //такая запись существует, нужно обновлять
         {
@@ -506,7 +509,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
           cachesum_size += s_size;
           cachesum_hit += s_hit;
           DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "Update cachesum for "<<s_user<<": cachesum_size=" << cachesum_size << ", cachesum_hit=" << cachesum_hit);
-          updCachesumQuery->sendQuery ();
+          if (!updCachesumQuery->sendQuery ())
+            break;
         }
 
 
@@ -565,7 +569,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
             }
         }
       s_enabled = (long)usr->getEnabled();
-      updUserQuery->sendQuery ();
+      if (!updUserQuery->sendQuery ())
+        break;
     }
   in.close ();
 
