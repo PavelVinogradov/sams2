@@ -142,14 +142,12 @@ char * print_header (void)
   char str_res[1024];
 
   str_res[0] = '\0';
-  //strcpy (str_res, "<TR>\n");
-  strcpy (str_res, "  <TH >Filesystem</TH>\n");
-  strcat (str_res, "  <TH >Size</TH>\n");
-  strcat (str_res, "  <TH >Used</TH>\n");
-  strcat (str_res, "  <TH >Avail</TH>\n");
-  strcat (str_res, "  <TH >Use%</TH>\n");
-  strcat (str_res, "  <TH >Mounted on</TH>\n");
-  //strcpy (str_res, "</TR>\n");
+  strcpy (str_res, "  <th>Filesystem</th>\n");
+  strcat (str_res, "  <th>Size</th>\n");
+  strcat (str_res, "  <th>Used</th>\n");
+  strcat (str_res, "  <th>Avail</th>\n");
+  strcat (str_res, "  <th>Use%</th>\n");
+  strcat (str_res, "  <th>Mounted on</th>\n");
 
   str_header = (char*) malloc(strlen(str_res)+1);
   strcpy (str_header, str_res);
@@ -191,17 +189,17 @@ char * print_dev (struct fs_info * fsu)
     }
 
   str_res[0] = '\0';
-  strcat (str_res, "<TR>");
-  sprintf (str_tmp, "  <TD>%s</TD>\n", fsu->fs_dev);
+  strcat (str_res, "<tr>");
+  sprintf (str_tmp, "  <td>%s</td>\n", fsu->fs_dev);
   strcat (str_res, str_tmp);
 
-  sprintf (str_tmp, "  <TD ALIGN=center>%s</TD>\n", df_readable (false, total, buf[0], input_units, output_units));
+  sprintf (str_tmp, "  <td align=\"center\">%s</td>\n", df_readable (false, total, buf[0], input_units, output_units));
   strcat (str_res, str_tmp);
 
-  sprintf (str_tmp, "  <TD ALIGN=center>%s</TD>\n", df_readable (negate_used, used, buf[1], input_units, output_units));
+  sprintf (str_tmp, "  <td align=\"center\">%s</td>\n", df_readable (negate_used, used, buf[1], input_units, output_units));
   strcat (str_res, str_tmp);
 
-  sprintf (str_tmp, "  <TD ALIGN=center>%s</TD>\n", df_readable (negate_available, available, buf[2], input_units, output_units));
+  sprintf (str_tmp, "  <td align=\"center\">%s</td>\n", df_readable (negate_available, available, buf[2], input_units, output_units));
   strcat (str_res, str_tmp);
 
 
@@ -241,16 +239,16 @@ char * print_dev (struct fs_info * fsu)
     }
 
   if (0 <= pct)
-    sprintf (str_tmp, "  <TD ALIGN=center>%.0f%%</TD>\n", pct);
+    sprintf (str_tmp, "  <td align=\"center\">%.0f%%</td>\n", pct);
   else
-    sprintf (str_tmp, "  <TD ALIGN=center>%s</TD>\n", "- ");
+    sprintf (str_tmp, "  <td align=\"center\">%s</td>\n", "- ");
   strcat (str_res, str_tmp);
 
 
-  sprintf (str_tmp, "  <TD>%s</TD>\n", fsu->fs_disk);
+  sprintf (str_tmp, "  <td>%s</td>\n", fsu->fs_disk);
   strcat (str_res, str_tmp);
 
-  strcat (str_res, "</TR>");
+  strcat (str_res, "</tr>");
 
   str_dev = (char*) malloc(strlen(str_res)+1);
   strcpy (str_dev, str_res);
@@ -355,7 +353,7 @@ char * get_fsusage()
 
       if (! file_systems_processed)
         {
-          res = strdup ("<TABLE WIDTH=100% CLASS=samstable>\n");
+          res = strdup ("<table width=100% class=sysplugtable>\n");
 
           file_systems_processed = true;
           header = print_header ();
@@ -372,7 +370,7 @@ char * get_fsusage()
       free_fs_info(&fs_cur);
     }
 
-  footer = strdup ("</TABLE>\n");
+  footer = strdup ("</table>\n");
   res = (char *) realloc (res, strlen (res) + strlen (footer)+1);
   strcat (res, footer);
   free (footer);

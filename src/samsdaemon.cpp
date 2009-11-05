@@ -494,6 +494,17 @@ int main (int argc, char *argv[])
         {
           DEBUG (DEBUG_DAEMON, "Reconnecting to database");
 
+          if (query)
+            {
+              delete query;
+              query = NULL;
+            }
+          if (query2)
+            {
+              delete query2;
+              query2 = NULL;
+            }
+
           conn->disconnect();
 
           if (!conn->connect ())
@@ -645,6 +656,7 @@ int main (int argc, char *argv[])
                 continue;
 
               DEBUG (DEBUG_DAEMON, "Shutdown proxy server");
+              Logger::addLog (Logger::LK_DAEMON, "Got request to execute " + shutdown_cmd);
 
               shutdown_cmd = SamsConfig::getString (defSHUTDOWNCMD, err);
               if (err != ERR_OK)
@@ -669,6 +681,7 @@ int main (int argc, char *argv[])
                 continue;
 
               DEBUG (DEBUG_DAEMON, "Shutdown");
+
               process.stop();
               Proxy::destroy();
               LocalNetworks::destroy ();
@@ -689,6 +702,9 @@ int main (int argc, char *argv[])
               cmd_del << " and s_action='" << action_reload << "'";
               if (!query2->sendQueryDirect (cmd_del.str()))
                 continue;
+
+              Logger::addLog (Logger::LK_DAEMON, "Got request to reload daemon");
+
               reload (-1);
             }
           if (s_service == service_squid && s_action == action_reconfig)

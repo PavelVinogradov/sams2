@@ -50,7 +50,9 @@ bool TemplateList::load ()
 
 bool TemplateList::reload ()
 {
-  DEBUG (DEBUG_TPL, "[" << __FUNCTION__ << "] ");
+  DEBUG (DEBUG2, "[" << __FUNCTION__ << "] ");
+
+  destroy ();
 
   if (!_conn)
     {
@@ -189,7 +191,7 @@ bool TemplateList::reload ()
   basic_stringstream < char >sqlcmd;
 
   Template *tpl = NULL;
-  _list.clear();
+  //_list.clear();
   string str_period;
   long period_days;
   while (query->fetch())

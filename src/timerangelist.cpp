@@ -40,6 +40,7 @@ bool TimeRangeList::reload()
 {
   DEBUG (DEBUG2, "[" << __FUNCTION__ << "] ");
 
+  destroy ();
   if (!_conn)
     {
       _conn = SamsConfig::newConnection ();
@@ -108,7 +109,7 @@ bool TimeRangeList::reload()
   basic_stringstream < char >sql_cmd;
 
   TimeRange *trange = NULL;
-  _list.clear();
+  //_list.clear();
   while (query->fetch())
     {
       trange = new TimeRange (s_trange_id);
@@ -160,6 +161,14 @@ void TimeRangeList::destroy()
     {
       DEBUG (DEBUG6, "[" << __FUNCTION__ << "] Not connected");
     }
+
+  map <long, TimeRange*>::iterator it;
+  for (it = _list.begin (); it != _list.end (); it++)
+    {
+      delete it->second;
+    }
+
+  _list.clear ();
 }
 
 vector <TimeRange*> TimeRangeList::getList ()

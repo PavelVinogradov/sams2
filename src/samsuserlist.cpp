@@ -67,6 +67,10 @@ bool SAMSUserList::reload()
   char s_auth[10];
   DBQuery *query = NULL;
 
+  DEBUG (DEBUG2, "[" << __FUNCTION__ << "] ");
+
+  destroy ();
+
   if (!_conn)
     {
       _conn = SamsConfig::newConnection ();
@@ -171,7 +175,7 @@ bool SAMSUserList::reload()
       delete query;
       return false;
     }
-  _users.clear();
+  //_users.clear();
 
   // Используется только для предотвращения утечки памяти
   string s_tmp_ip;
