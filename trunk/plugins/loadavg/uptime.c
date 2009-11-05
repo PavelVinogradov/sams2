@@ -120,14 +120,14 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
   strcat (str_uptime, str_uptime_tmp);
 */
 
-  strcat (str_uptime, "<TABLE WIDTH=100% CLASS=samstable>\n");
-  strcat (str_uptime, "<TH WIDTH=30%>Uptime</TH>\n");
-  strcat (str_uptime, "<TH WIDTH=30%>Logged in Users</TH>\n");
-  strcat (str_uptime, "<TH WIDTH=40%>Load average</TH>\n");
-  strcat (str_uptime, "<TR>\n");
+  strcat (str_uptime, "<table width=100% class=sysplugtable>\n");
+  strcat (str_uptime, "<th width=30%>Uptime</th>\n");
+  strcat (str_uptime, "<th width=30%>Logged in Users</th>\n");
+  strcat (str_uptime, "<th width=40%>Load average</th>\n");
+  strcat (str_uptime, "<tr>\n");
 
   // Print uptime
-  strcat (str_uptime, "  <TD ALIGN=\"CENTER\">");
+  strcat (str_uptime, "  <td align=\"center\">");
   if (uptime == (time_t) -1)
     strcat (str_uptime, "???? days ??:??");
   else
@@ -140,13 +140,13 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
       sprintf (str_uptime_tmp, "%2d:%02d", uphours, upmins);
       strcat (str_uptime, str_uptime_tmp);
     }
-  strcat (str_uptime, "</TD>\n");
+  strcat (str_uptime, "</td>\n");
 
   // Print count of logged in users
-  strcat (str_uptime, "  <TD ALIGN=\"CENTER\">");
+  strcat (str_uptime, "  <td align=\"center\">");
   sprintf (str_uptime_tmp, "%lu", (unsigned long int) entries);
   strcat (str_uptime, str_uptime_tmp);
-  strcat (str_uptime, "</TD>\n");
+  strcat (str_uptime, "</td>\n");
 
 #if defined HAVE_GETLOADAVG || defined C_GETLOADAVG
   loads = getloadavg (avg, 3);
@@ -155,7 +155,7 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
 #endif
 
   // Print load average
-  strcat (str_uptime, "  <TD ALIGN=\"CENTER\">");
+  strcat (str_uptime, "  <td align=\"center\">");
   if (loads > 0)
     {
       sprintf (str_uptime_tmp, "%.2f", avg[0]);
@@ -171,9 +171,9 @@ print_uptime (size_t n, const STRUCT_UTMP *this)
       sprintf (str_uptime_tmp, ", %.2f", avg[2]);
       strcat (str_uptime, str_uptime_tmp);
     }
-  strcat (str_uptime, "</TD>\n");
-  strcat (str_uptime, "</TR>\n");
-  strcat (str_uptime, "</TABLE>\n");
+  strcat (str_uptime, "</td>\n");
+  strcat (str_uptime, "</tr>\n");
+  strcat (str_uptime, "</table>\n");
 
   return str_uptime;
 }

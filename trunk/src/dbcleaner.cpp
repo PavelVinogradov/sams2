@@ -140,10 +140,16 @@ void DBCleaner::clearCounters ()
 
   // Составляем sql команду
   basic_stringstream < char > sqlcmd;
+  basic_stringstream < char > message;
   sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled>=0";
 
   if (_tpl_id != -1)
-    sqlcmd << " and (s_shablon_id=" << _tpl_id << ")";
+    {
+      message.str("");
+      message << "Clear counters for users in template with id=" << _tpl_id;
+      Logger::addLog(Logger::LK_USER, message.str());
+      sqlcmd << " and (s_shablon_id=" << _tpl_id << ")";
+    }
 
   if (!strUserFilter.str ().empty ())
     sqlcmd << " and (" << strUserFilter.str () << ")";
@@ -230,10 +236,17 @@ void DBCleaner::clearCache ()
     }
 
   basic_stringstream < char >sqlcmd;
+  basic_stringstream < char >message;
 
   sqlcmd << "delete from squidcache where s_proxy_id=" << proxy_id;
   if (!strDateFilter.str ().empty ())
-    sqlcmd << " and (" << strDateFilter.str () << ")";
+    {
+      message.str("");
+      message << "Delete from cache records between " << _date_filter->getStartDateAsString () <<
+                 " and " << _date_filter->getEndDateAsString ();
+      Logger::addLog(Logger::LK_CACHE, message.str());
+      sqlcmd << " and (" << strDateFilter.str () << ")";
+    }
   if (!strUserFilter.str ().empty ())
     sqlcmd << " and (" << strUserFilter.str () << ")";
 
@@ -334,9 +347,14 @@ void DBCleaner::clearOldCache (int nmonth)
   char strbuf[15];
   strftime (strbuf, sizeof (strbuf), "%Y-%m-%d", time_now);
   basic_stringstream < char >sqlcmd;
+  basic_stringstream < char >message;
 
   sqlcmd << "delete from squidcache where s_proxy_id=" << proxy_id;
   sqlcmd << " and s_date<='" << strbuf << "'";
+
+  message.str("");
+  message << "Delete from cache records earlier than " << strbuf;
+  Logger::addLog(Logger::LK_CACHE, message.str());
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
     {

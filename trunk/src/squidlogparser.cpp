@@ -587,6 +587,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
       reconfig_cmd << "insert into reconfig (s_proxy_id, s_service, s_action)";
       reconfig_cmd << " VALUES ("<<_proxyid<<", 'squid', 'reconfig')";
       reconfigQuery->sendQueryDirect (reconfig_cmd.str());
+      Logger::addLog(Logger::LK_DAEMON, "Send request to reconfigure SQUID (a user state changed).");
       delete reconfigQuery;
     }
 
