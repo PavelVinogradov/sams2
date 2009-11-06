@@ -7,12 +7,14 @@
 
 function UserTrafficPeriodGB()
 {
-  require('lib/chart.php');
+  require('lib/charts.class.php');
   
   global $SAMSConf;
   global $DATE;
   global $USERConf;
   global $SquidUSERConf;
+  $elemx = Array();
+  $elemy = Array();
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   $SquidUSERConf=new SAMSUSER();
@@ -23,46 +25,73 @@ function UserTrafficPeriodGB()
 		exit(0);
 	}
 
-  $DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB(&$SAMSConf);
+	$g = new chart;
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
 
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-  $sdate=$DATE->sdate();
-  $edate=$DATE->edate();
-  $bdate=$DATE->BeginDate();
-  $eddate=$DATE->EndDate();
+	$sdate=$DATE->sdate();
+	$edate=$DATE->edate();
+	$bdate=$DATE->BeginDate();
+	$eddate=$DATE->EndDate();
   
-  if(isset($_GET["username"])) $username=$_GET["username"];
-  if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
 
-  $stime=gmmktime (0, 0, 1, $DATE->smon, $DATE->sday, $DATE->syea);
-  $etime=gmmktime (23, 59, 59, $DATE->emon, $DATE->eday, $DATE->eyea);
-  $days=ceil(($etime-$stime)/(60*60*24));
-  for($i=0;$i<$days+1;$i++)
-    {
-      $data1[$i]=0;
-      $data2[$i]=0;
-    }
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
-  while($row=$DB->samsdb_fetch_array())
-     {
-        $time=gmmktime (23, 59, 59, $row[2], $row[3], $row[4]);
-        $day=ceil(($time-$stime)/(60*60*24));
-        if($SAMSConf->realtraffic=="real")
-	  $data1[$day]=$row['0']-$row['1'];
-        else
-	  $data1[$day]=$row['0'];
-     }
+	$num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as s_size,s_date,s_user,s_domain,sum(s_hit) as s_hit FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$elemx[0][]=$row['s_date'];
+		$elemx[1][]=$row['s_date'];
+		$elemy[0][]=$row['s_size'];
+		$elemy[1][]=$row['s_hit'];
+	}
+	$xcount = 0;
+	foreach ($elemx as $v)
+		$xcount = max($xcount, count($v));
 
-  $chart = new chart(400, 200, "");
-  //$chart->plot($data1);
-  $chart->plot($data1, false, "MidnightBlue", "lines");
-  
-  $chart->set_background_color("white", "white");
-  $chart->set_title("Traffic of user $USERConf->s_nick");
-  $chart->set_labels("", "Mb");
-  $chart->stroke(); 
+	$ymax = 0;
+	foreach ($elemy as $v)
+		$ymax = max($ymax, ceil(max($v)));
+
+	$diff = array_sum($elemy[0]) - array_sum($elemy[1]);
+
+	foreach ($elemy as $k => $v)
+        	foreach ($v as $kk => $vv)
+        	{
+        		$g->xValue[$k][] = $elemx[$k][$kk];
+        		$g->DataValue[$k][] = $vv;
+        	}
+
+	$g->Title = "";
+	$g->SubTitle = " ";
+	$g->Width = ($xcount*45) + 75;
+	$g->Height = 300;
+	$g->ShowBullets = TRUE;
+
+	$g->LineShowCaption = FALSE; // TO BE FIXED YET
+	$g->LineShowTotal = FALSE;   // DEPENDS ON LineShowCaption to be TRUE
+	$g->LineCaption[0] = "Period 1";
+	$g->LineCaption[1] = "Period 2";
+	$g->LineCount = 2;
+
+	$g->xCount = $xcount;
+	$g->xCaption = " ";
+	$g->xShowValue = TRUE;
+	$g->xShowGrid = TRUE;
+
+	$g->yCount = 10;
+	$g->yCaption = "Daily traffic (bytes)";
+	$g->yShowValue = TRUE;
+	$g->yShowGrid = TRUE;
+
+	$g->DataDecimalPlaces = 0;
+	$g->DataMax = $ymax;
+	$g->DataMin = 0;
+	$g->DataShowValue = FALSE;
+// #################################################
+
+// #ITS DRAWING TIME################################
+	$g->MakeLinePointChart();
+// #################################################
 }
 
 
@@ -117,7 +146,7 @@ function UserTrafficPeriod()
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
 //  if($SAMSConf->SHOWGRAPH=="Y")
-    printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate \"><P>");
+    printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate\"><P>");
   $count=1;
   $cache=0;
   print("\n<script src=\"lib/sorttable.js\" type=\"text/javascript\"></script>\n");
@@ -134,7 +163,7 @@ function UserTrafficPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
   $size=0;
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date");
 
 
   while($row=$DB->samsdb_fetch_array())
