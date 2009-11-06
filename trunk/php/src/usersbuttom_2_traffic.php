@@ -160,8 +160,6 @@ function UsersTrafficPeriod()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	$a = array(array($usersbuttom_2_traffic_UsersTrafficForm_4,'all_sum','desc','CHECKED' ), array($usersbuttom_2_traffic_UsersTrafficForm_5,'s_nick','',''));
-
   PageTop("usergroup_48.jpg","$usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
   print("<BR>\n");
 
@@ -170,7 +168,7 @@ function UsersTrafficPeriod()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
-  $dateselect->SetPeriod2("$usersbuttom_2_traffic_UsersTrafficForm_3", $a);
+  $dateselect->SetPeriod();
  
  print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
@@ -274,10 +272,10 @@ function UsersTrafficPeriod()
 		if($USERConf->ToWebInterfaceAccess("C")==1)
 		{
 			$aaa=FormattedString("$row[0]");
-			RTableCell("$aaa",15);
+			LTableCell("$aaa",15);
 //			echo "<TD> ".$row[0]." </TD>";
 			$aaa=FormattedString("$row[1]");
-			RTableCell("$aaa",15);
+			LTableCell("$aaa",15);
 //			echo "<TD> ".$row[1]." </TD>";
 		}   
 		if($SAMSConf->realtraffic=="real")
@@ -330,16 +328,13 @@ function UsersTrafficForm()
 	require($lang);
 	if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-
-	$a = array(array($usersbuttom_2_traffic_UsersTrafficForm_4,'all_sum','desc','CHECKED' ), array($usersbuttom_2_traffic_UsersTrafficForm_5,'s_nick','',''));
-
 	PageTop("traffic_48.jpg","$alltraffic_1<BR>$usersbuttom_2_traffic_UsersTrafficForm_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userstrafficperiod\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
-	$dateselect->SetPeriod2("$usersbuttom_2_traffic_UsersTrafficForm_3", $a);
+	$dateselect->SetPeriod();
 	print("</FORM>\n");
 
 
