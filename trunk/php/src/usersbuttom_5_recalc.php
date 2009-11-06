@@ -56,18 +56,26 @@ function RecalcUsersTraffic()
 	$DB->free_samsdb_query();
 	sort($stime);
 
-	$num_rows=$DB->samsdb_query("TRUNCATE TABLE cachesum");
-	$num_rows=$DB->samsdb_query("INSERT INTO cachesum SELECT s_proxy_id,s_date,s_user,s_domain,sum(s_size),sum(s_hit) FROM squidcache GROUP BY s_date,s_user");
-	$num_rows=$DB->samsdb_query_value("SELECT s_user_id, s_name, s_nick, s_shablon_id FROM squiduser");
+	$QUERY="TRUNCATE TABLE cachesum";
+	$num_rows=$DB->samsdb_query($QUERY);
+
+	$QUERY="INSERT INTO cachesum SELECT s_proxy_id,s_date,s_user,s_domain,sum(s_size),sum(s_hit) FROM squidcache GROUP BY s_date,s_user,s_domain,s_proxy_id";
+	$num_rows=$DB->samsdb_query($QUERY);
+
+	$QUERY="SELECT s_user_id, s_name, s_nick, s_shablon_id FROM squiduser";	
+	$num_rows=$DB->samsdb_query_value($QUERY);
 	while($row=$DB->samsdb_fetch_array())
 	{
 		$key = array_search($row['s_shablon_id'], $shablonid);
-		$DB2->samsdb_query("SELECT sum(s_size) as size, sum(s_hit) as hit FROM cachesum WHERE s_user='$row[s_nick]' and s_date >='$sdate[$key]' and s_date <'$edate[$key]' ");
+		$QUERY="SELECT sum(s_size) as size, sum(s_hit) as hit FROM cachesum WHERE s_user='$row[s_nick]' and s_date >='$sdate[$key]' and s_date <'$edate[$key]' ";
+		$DB2->samsdb_query($QUERY);
 		$row2=$DB2->samsdb_fetch_array();
-		$sumsize=$row2['size'];
-		$sumhit=$row2['hit'];
+		$sumsize=$row2['size']+0;
+		$sumhit=$row2['hit']+0;
 		$DB2->free_samsdb_query();
-		$DB2->samsdb_query("UPDATE squiduser SET s_size='$sumsize', s_hit='$sumhit' WHERE s_user_id=$row[s_user_id] ");
+
+		$QUERY="UPDATE squiduser SET s_size='$sumsize', s_hit='$sumhit' WHERE s_user_id=$row[s_user_id]";
+		$DB2->samsdb_query($QUERY);
 	}
 	$DB->free_samsdb_query();
 	PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1  $usersbuttom_5_recalc_RecalcUsersTraffic_2");

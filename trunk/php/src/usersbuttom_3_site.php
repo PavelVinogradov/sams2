@@ -79,7 +79,7 @@ function SiteUsersList()
   print("<B>$userbuttom_4_site_SiteUserList_3:\n");
   print("<TD>\n");
   print("<SELECT NAME=\"type\" >\n");
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect");
+  $num_rows=$DB->samsdb_query_value("SELECT s_redirect_id,s_name FROM redirect");
   while($row2=$DB->samsdb_fetch_array())
       {
        print("<OPTION VALUE=$row2[s_redirect_id]> $row2[s_name]");
@@ -178,7 +178,7 @@ function UsersSitesPeriod()
       print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_4");
    }   
   print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_5");
-
+echo "1<BR>";
   $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_date>='$sdate'AND s_date<='$edate' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
 
   $num_rows=$DB->samsdb_query_value("$query");
@@ -241,7 +241,8 @@ function UsersSitesPeriod()
 		else
 		{
 			print("<TD colspan=2>\n");
-			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);			RTableCell(FormattedString($URL["url_size"][$key],15));
+			RTableCell("<A HREF=\"main.php?show=exe&filename=usersbuttom_3_site.php&function=siteuserslist&SDay=$sday&SMon=$smon&SYea=$syea&EDay=$eday&EMon=$emon&EYea=$eyea&site=".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);
+			RTableCell(FormattedString($URL["url_size"][$key],15));
 			RTableCell(FormattedString($URL["hit_size"][$key],15));
 			RTableCell(FormattedString($URL["sum_size"][$key],15));
 			$url_size_value+=$URL["url_size"][$key];
@@ -266,11 +267,6 @@ function UsersSitesForm()
   global $SAMSConf;
   global $USERConf;
   global $SquidUSERConf;
-
-  if(isset($_GET["id"])) $id=$_GET["id"];
-  $SquidUSERConf=new SAMSUSER();
-  $SquidUSERConf->sams_user($id);
-
 
   require("reportsclass.php");
   $dateselect=new DATESELECT("","");
