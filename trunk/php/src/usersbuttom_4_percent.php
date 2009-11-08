@@ -68,24 +68,44 @@ function UsersChartGB()
    if(isset($_GET["sort"])) $sort=$_GET["sort"];
    if(isset($_GET["desc"])) $desc=$_GET["desc"];
 
+	$QUERY="SELECT sum(s_size) as user_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate'";
+	$num_rows=$DB->samsdb_query_value($QUERY);
+	$row=$DB->samsdb_fetch_array();
+	$full_utraffic_size=$row['user_size'];
+	$DB->free_samsdb_query();
 
-	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' group by s_user,s_domain,s_size,s_hit";
+
+	if($sort=="users")
+		$QUERY="SELECT c.s_user,sum(c.s_size) as user_size,sum(c.s_hit) as hit_size, s.s_user_id as s_id FROM cachesum c, squiduser s WHERE c.s_user=s.s_nick AND c.s_date>='$sdate' AND c.s_date<='$edate' GROUP BY c.s_user, s.s_user_id ORDER BY user_size DESC;";
+	else
+		$QUERY="SELECT sum(sum.sum_size) as user_size, sum(sum.sum_hit) as hit_size, sum.sum_name as s_user, sum.sum_group_id as s_id FROM ( SELECT sum(c.s_size) as sum_size, sum(c.s_hit) as sum_hit, c.s_user as sum_user, s.s_group_id as sum_group_id, g.s_name as sum_name  FROM cachesum c, squiduser s, sgroup g WHERE c.s_user=s.s_nick AND s.s_group_id=g.s_group_id AND s_date>='$sdate' AND s_date<='$edate' GROUP BY c.s_user, s.s_group_id, g.s_name ORDER BY g.s_name ) as sum GROUP BY s_user, sum.sum_group_id;";
+
+
+//	$QUERY="SELECT s_user,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' GROUP BY s_user ORDER BY user_size DESC";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	$count=0;
 	$sum_size=0;
 	$sum_hit=0;
 	$sum_pc=0;
+	$another_utraffic_size=0;
 	while($row=$DB->samsdb_fetch_array())
 	{
-		$user[$count]=$row['s_user'];
-		$size[$count]=$row['user_size'];
-		$sum_size+=$size[$count];
-		$hit[$count]=$row['hit_size'];
-		$sum_hit+=$hit[$count];
-		$count++;
+		if($row['user_size']>=($full_utraffic_size/100))
+		{
+			$user[$count]=$row['s_user']." ( ".round($row['user_size']/($full_utraffic_size/100),2)."% )";
+			$size[$count]=$row['user_size'];
+			$count++;
+		}
+		else
+		{
+			$another_utraffic_size+=$row['user_size'];
+		}
 	}
+	$user[$count]="another users ( ".round($another_utraffic_size/($full_utraffic_size/100),2)."% )";
+	$size[$count]=$another_utraffic_size;
+	$count++;
 
-
+//round($size[$i]/($sum_size/100),2)
   $circle=new CIRCLE3D(500, $count*15, $size, $count, $user);
   $circle->ShowCircle();
 }
@@ -115,7 +135,7 @@ function UsersChart()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $a = array(array('users','all_sum','desc','CHECKED' ), array('groups','s_nick','',''));
+  $a = array(array('users','users','desc','CHECKED' ), array('groups','groups','',''));
 
   
   PageTop("persent_48.jpg","$usersbuttom_4_percent_UsersPercentTraffic_1<BR>$usersbuttom_4_percent_UsersPercentTraffic_2");
@@ -130,10 +150,13 @@ function UsersChart()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-	printf("<P><IMG SRC=\"main.php?show=exe&function=userschartgb&filename=usersbuttom_4_percent.php&gb=1&sdate=$sdate&edate=$edate \"><P>");
+	printf("<P><IMG SRC=\"main.php?show=exe&function=userschartgb&filename=usersbuttom_4_percent.php&gb=1&sdate=$sdate&edate=$edate&sort=$sort \"><P>");
   
-
-	$QUERY="SELECT s_user,s_domain,sum(s_size) as user_size,sum(s_hit) as hit_size FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' group by s_user,s_domain,s_size,s_hit";
+	if($sort=="users")
+		$QUERY="SELECT c.s_user,sum(c.s_size) as user_size,sum(c.s_hit) as hit_size, s.s_user_id as s_id FROM cachesum c, squiduser s WHERE c.s_user=s.s_nick AND c.s_date>='$sdate' AND c.s_date<='$edate' GROUP BY c.s_user, s.s_user_id ORDER BY user_size DESC;";
+	else
+		$QUERY="SELECT sum(sum.sum_size) as user_size, sum(sum.sum_hit) as hit_size, sum.sum_name as s_user, sum.sum_group_id as s_id FROM ( SELECT sum(c.s_size) as sum_size, sum(c.s_hit) as sum_hit, c.s_user as sum_user, s.s_group_id as sum_group_id, g.s_name as sum_name  FROM cachesum c, squiduser s, sgroup g WHERE c.s_user=s.s_nick AND s.s_group_id=g.s_group_id AND s_date>='$sdate' AND s_date<='$edate' GROUP BY c.s_user, s.s_group_id, g.s_name ORDER BY g.s_name ) as sum GROUP BY s_user, sum.sum_group_id;";
+		
 	$num_rows=$DB->samsdb_query_value($QUERY);
 	$count=0;
 	$sum_size=0;
@@ -143,6 +166,7 @@ function UsersChart()
 	{
 		$user[$count]=$row['s_user'];
 		$size[$count]=$row['user_size'];
+		$userid[$count]=$row['s_id'];
 		$sum_size+=$size[$count];
 		$hit[$count]=$row['hit_size'];
 		$sum_hit+=$hit[$count];
@@ -152,23 +176,30 @@ function UsersChart()
 	print("<TABLE CLASS=samstable>");
 	print("<TH width=8%>No");
 	print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_4");
+	print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_6");
+	print("<TH width=16%>$usersbuttom_2_traffic_UsersTrafficPeriod_5");
+	print("<TH width=16%>%");
 
 	for($i=0;$i<$count;$i++)
 	{
 		print("<TR>");
 		LTableCell($i,8);
-		LTableCell($user[$i],16);
-		LTableCell($size[$i],16);
-		LTableCell($hit[$i],16);
+		if($sort=="users")
+			LTableCell("<A HREF=\"http://localhost/sams2/tray.php?show=exe&filename=usertray.php&function=usertray&auth=adld&id=".$userid[$i]."\" TARGET=\"tray\" >".$user[$i]."</A>",16);
+		else
+			LTableCell("<A HREF=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=".$userid[$i]."\" TARGET=\"tray\" >".$user[$i]."</A>",16);
+
+		RTableCell(FormattedString($size[$i]),16);
+		RTableCell(FormattedString($hit[$i]),16);
 		$pc[$i]=round($size[$i]/($sum_size/100),2);
 		$sum_pc+=$pc[$i];
-		LTableCell($pc[$i],16);
+		RTableCell($pc[$i],16);
 
 	}	
 	print("<TR><TD><TD>");
-	LTableCell($sum_size,16);
-	LTableCell($sum_hit,16);
-	LTableCell($sum_pc,16);
+	RBTableCell(FormattedString($sum_size),16);
+	RBTableCell(FormattedString($sum_hit),16);
+	print("<TD>");
 	print("</TABLE>");
 
 }
@@ -187,7 +218,7 @@ function UsersPercentTrafficForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $a = array(array('users','all_sum','desc','CHECKED' ), array('groups','s_nick','',''));
+  $a = array(array('users','users','desc','CHECKED' ), array('groups','groups','',''));
 
   PageTop("persent_48.jpg","$usersbuttom_4_percent_UsersPercentTrafficForm_1<BR>$usersbuttom_4_percent_UsersPercentTrafficForm_2");
 
