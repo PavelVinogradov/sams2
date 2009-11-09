@@ -28,6 +28,8 @@
 #include "squidlogline.h"
 #include "localnetworks.h"
 #include "samsuser.h"
+#include "template.h"
+#include "templatelist.h"
 #include "proxy.h"
 #include "samsconfig.h"
 #include "datefilter.h"
@@ -412,6 +414,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         {
             continue;
         }
+
       // Применяем различные фильтры
       date_time = sll.getTime ();
       strftime (s_date, sizeof (s_date), "%Y-%m-%d", &date_time);
@@ -513,6 +516,16 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
             break;
         }
 
+      // Данные считываются из нестандартного внешнего файла, поэтому желательно проверить
+      // попадают ли они в текущий временной период шаблона пользователя
+      if (from_begin)
+        {
+          Template *tpl = TemplateList::getTemplate(usr->getCurrentTemplateId ());
+          if (!tpl) // нарушена целостность базы
+            continue;
+          if (!tpl->insidePeriod(date_time))
+            continue;
+        }
 
       // Обновляем счетчики пользователя
       allowed_limit = usr->getQuote();

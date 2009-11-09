@@ -20,6 +20,7 @@
 #include "urlgrouplist.h"
 #include "urlgroup.h"
 #include "proxy.h"
+#include "tools.h"
 
 #include "debug.h"
 
@@ -182,6 +183,102 @@ void Template::adjustClearDate()
   _clear_date += " 00:00:00";
 
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "] new date: " << _clear_date);
+}
+
+bool Template::insidePeriod(struct tm &date_time) const
+{
+  string str_start;
+  string str_end;
+  string str_tmp2;
+  char str_tmp[15];
+  time_t start;
+  time_t end;
+  time_t to_test;
+  time_t now = time (NULL);
+  struct tm *now_tm = localtime (&now);
+  struct tm tmp_tm;
+  char *rest;
+
+  int days_before;
+
+  switch (_period_type)
+    {
+      case PERIOD_MONTH:
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-01", now_tm);
+        str_start = str_tmp;
+        switch (now_tm->tm_mon)
+          {
+            case 0:   // Январь
+            case 2:   // Март
+            case 4:   // Май
+            case 6:   // Июль
+            case 7:   // Август
+            case 9:   // Октябрь
+            case 11:  // Декабрь
+              now_tm->tm_mday = 31;
+              break;
+            case 3:   // Апрель
+            case 5:   // Июнь
+            case 8:   // Сентябрь
+            case 10:  // Ноябрь
+              now_tm->tm_mday = 30;
+              break;
+            case 1:   // Февраль
+              if (now_tm->tm_year % 4 == 0)
+                now_tm->tm_mday = 29;
+              else
+                now_tm->tm_mday = 28;
+              break;
+          }
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", now_tm);
+        str_end = str_tmp;
+        break;
+      case PERIOD_WEEK:
+        days_before = now_tm->tm_wday - 1;
+        if (days_before<0)
+          days_before = 6;
+
+        timeSubstractDays(*now_tm, days_before);
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", now_tm);
+        str_start = str_tmp;
+
+        timeSubstractDays(*now_tm, -6);
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", now_tm);
+        str_end = str_tmp;
+        break;
+      case PERIOD_DAY:
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", now_tm);
+        str_start = str_tmp;
+        str_end = str_tmp;
+        break;
+      case PERIOD_CUSTOM:
+        str_tmp2 = _clear_date + " 00:00:00";
+        rest = strptime (str_tmp2.c_str (), "%Y-%m-%d %H:%M:%S", &tmp_tm);
+        timeSubstractDays(tmp_tm, _period_days+1);
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", &tmp_tm);
+        str_start = str_tmp;
+
+        str_tmp2 = _clear_date + " 23:59:59";
+        rest = strptime (str_tmp2.c_str (), "%Y-%m-%d %H:%M:%S", &tmp_tm);
+        timeSubstractDays(tmp_tm, 1);
+        strftime (str_tmp, sizeof (str_tmp), "%Y-%m-%d", &tmp_tm);
+        str_end = str_tmp;
+        break;
+    }
+
+  str_start += " 00:00:00";
+  str_end += " 23:59:59";
+
+  rest = strptime (str_start.c_str (), "%Y-%m-%d %H:%M:%S", &tmp_tm);
+  start = mktime (&tmp_tm);
+  rest = strptime (str_end.c_str (), "%Y-%m-%d %H:%M:%S", &tmp_tm);
+  end = mktime (&tmp_tm);
+  to_test = mktime (&date_time);
+
+  bool inside = ((unsigned long) start <= (unsigned long) to_test) &&
+                ((unsigned long) to_test <= (unsigned long) end);
+
+  return inside;
 }
 
 void Template::setAllDeny (const bool & alldeny)

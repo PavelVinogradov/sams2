@@ -441,7 +441,7 @@ int main (int argc, char *argv[])
   basic_stringstream < char >cmd_del;
   basic_stringstream < char >msg;
 
-  cmd_check << "select s_service, s_action from reconfig where s_proxy_id=" << proxyid;
+  cmd_check << "select distinct s_service, s_action from reconfig where s_proxy_id=" << proxyid;
 
   SquidLogParser *parser = NULL;
   int seconds_to_parse = 0;
@@ -644,8 +644,11 @@ int main (int argc, char *argv[])
       memcpy (&time_was, time_now, sizeof (struct tm));
 
       // обрабатываем команды, поступившие извне (если они есть)
-      while (query->fetch ())
+      bool has_cmd;
+      while ( (has_cmd=query->fetch ()) )
         {
+          DEBUG (DEBUG_DAEMON, "Has got some command");
+
           if (s_service == service_proxy && s_action == action_shutdown)
             {
               cmd_del.str("");
@@ -690,7 +693,6 @@ int main (int argc, char *argv[])
               UrlGroupList::destroy ();
               PluginList::destroy ();
               Logger::destroy (); // всегда уничтожаем его последним
-              //delete query;
               delete conn;
               exit(0);
             }

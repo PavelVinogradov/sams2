@@ -143,6 +143,13 @@ void DBCleaner::clearCounters ()
   basic_stringstream < char > message;
   sqlcmd << "update squiduser set s_size=0, s_hit=0, s_enabled=1 where s_enabled>=0";
 
+  if ( (_tpl_id == -1) && strUserFilter.str ().empty ())
+  {
+      message.str("");
+      message << "Clear counters for all not disabled users";
+      Logger::addLog(Logger::LK_USER, message.str());
+  }
+
   if (_tpl_id != -1)
     {
       message.str("");
