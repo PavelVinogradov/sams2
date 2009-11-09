@@ -379,7 +379,6 @@ bool SquidConf::defineACL ()
                       uint idx;
                       for (idx=0; idx<restriction_deny.size(); idx++)
                           fout << "http_access deny Sams2Template" << tpl->getId () << " " << restriction_deny[idx] << endl;
-
                       for (idx=0; idx<restriction_allow.size(); idx++)
                           fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
                       for (idx=0; idx<restriction_time.size(); idx++)

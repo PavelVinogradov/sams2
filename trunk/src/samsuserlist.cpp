@@ -25,6 +25,7 @@
 #include "samsuser.h"
 #include "samsconfig.h"
 #include "proxy.h"
+#include "tools.h"
 #include "debug.h"
 
 bool SAMSUserList::_loaded = false;
@@ -177,7 +178,6 @@ bool SAMSUserList::reload()
     }
   //_users.clear();
 
-  // Используется только для предотвращения утечки памяти
   string s_tmp_ip;
   string s_tmp_domain;
   string s_tmp_nick;
@@ -191,14 +191,14 @@ bool SAMSUserList::reload()
 
       if (usedomain)
         {
-          s_tmp_domain = s_domain;
+          s_tmp_domain = TrimSpaces(s_domain);
           usr->setDomain (s_tmp_domain);
         }
-      s_tmp_nick = s_nick;
+      s_tmp_nick = TrimSpaces(s_nick);
       usr->setNick (s_tmp_nick);
-      s_tmp_ip = s_ip;
+      s_tmp_ip = TrimSpaces(s_ip);
       usr->setIP (s_tmp_ip);
-      s_tmp_auth = s_auth;
+      s_tmp_auth = TrimSpaces(s_auth);
 
       string hash = Proxy::createUserHash (s_tmp_auth, s_tmp_ip, s_tmp_domain, s_tmp_nick);
 
@@ -212,7 +212,7 @@ bool SAMSUserList::reload()
       usr->setSize (s_size);
       usr->setHit (s_hit);
       usr->setEnabled (s_enabled);
-      s_tmp_passwd = s_passwd;
+      s_tmp_passwd = TrimSpaces(s_passwd);
       usr->setPassword (s_tmp_passwd);
 
       _users[hash] = usr;

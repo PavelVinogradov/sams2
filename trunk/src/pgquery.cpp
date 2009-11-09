@@ -250,7 +250,7 @@ bool PgQuery::fetch ()
 
       if (status != PGRES_TUPLES_OK)
         {
-          DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No results");
+          DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] No results");
           return false;
         }
     }
@@ -259,8 +259,9 @@ bool PgQuery::fetch ()
 
   if (_current_row >= num_rows)
     {
-      DEBUG (DEBUG_DB, "[" << this << "->" << __FUNCTION__ << "] " << "failed: No rows");
+      DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] = No rows");
       DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] PQclear(" << _res << ")");
+      _current_row = 0;
       PQclear (_res);
       _res = NULL;
       return false;
