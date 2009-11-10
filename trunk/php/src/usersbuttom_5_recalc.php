@@ -81,6 +81,7 @@ function RecalcUsersTraffic()
 	PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1  $usersbuttom_5_recalc_RecalcUsersTraffic_2");
 	print("<SCRIPT>\n");
 	print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
+	print("        parent.lframe.location.href=\"lframe.php\";\n");
 	print("</SCRIPT> \n");
 
 }
