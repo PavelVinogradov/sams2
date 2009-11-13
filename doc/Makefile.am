@@ -22,8 +22,8 @@ static_docs = \
 	synchronization.html \
 	syncwithad.html \
 	syncwithldap.html \
-	template.html \
 	templates.html \
+	delaypools.html \
 	timerange.html \
 	webinterface.html \
 	samsbackup.html \

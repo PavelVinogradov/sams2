@@ -408,7 +408,7 @@ string Proxy::createUserHash (const string &auth, const string &ip, const string
         break;
     }
 
-  hash = usrDomain + usrNick;
+  hash = usrDomain + "#" + usrNick;
 
   DEBUG (DEBUG8, "[" << __FUNCTION__ << "(" << auth << ", " << ip << ", " << domain << ", " << nick << ")] = " << hash);
 
