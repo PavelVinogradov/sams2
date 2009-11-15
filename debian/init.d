@@ -53,7 +53,7 @@ case "$1" in
 			[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
 			log_end_msg $RETVAL
 		else
-			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams/README.Debian."
+			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams2/README.Debian"
 		fi
 	;;
 
