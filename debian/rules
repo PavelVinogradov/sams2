@@ -60,17 +60,11 @@ build-indep-stamp:  config.status
 clean: unpatch
 	dh_testdir
 	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
+	#rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
 
 	# Add here commands to clean up after the build process.
-	$(MAKE) distclean
-ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-	cp -f /usr/share/misc/config.sub config.sub
-endif
-ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-	cp -f /usr/share/misc/config.guess config.guess
-endif
-	dh_clean 
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_clean build-stamp
 
 install: install-indep install-arch
 install-indep:
