@@ -1,13 +1,15 @@
 --- sams-2.0.0/etc/sams2.conf	2008-08-23 22:10:09.000000000 +0500
 +++ sams-build/etc/sams2.conf	2008-08-25 23:25:30.000000000 +0500
-@@ -31,12 +31,12 @@
+@@ -32,13 +32,13 @@
  SQUIDCACHEFILE=access.log
  SQUIDROOTDIR=/etc/squid
  SQUIDLOGDIR=/var/log/squid
 -SQUIDCACHEDIR=/usr/local/apache2
 +SQUIDCACHEDIR=/var/spool/squid
  
+-WBINFOPATH=/usr/local
 -SAMSPATH=/usr/local
++WBINFOPATH=/usr/bin
 +SAMSPATH=/usr
  SQUIDPATH=/usr/sbin
  SQUIDGUARDLOGPATH=/var/log
