@@ -160,7 +160,7 @@ echo "$i: $addgroupname[$i]<BR>";
 				
 				if($clrdate=="")
 					$clrdate="1980-01-01";
-				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'ADLD', '$period', '$clrdate', '0', '-1' ) ");
+				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'ntlm', '$period', '$clrdate', '0', '-1' ) ");
 				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
 				$row=$DB->samsdb_fetch_array();
 				$sid=$row['s_shablon_id'];
@@ -271,7 +271,7 @@ function ImportFromNTLMForm()
 		$QUERY="SELECT * FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup' AND s_value='$a[$i]'";
 		$num_rows=$DB->samsdb_query_value($QUERY);
 		if($num_rows==0)
-			print("<OPTION VALUE=\"$a[$i]\"> $a[$i] $num_rows\n");
+			print("<OPTION VALUE=\"$a[$i]\"> $a[$i]\n");
 
 	}
 	print("</SELECT>\n");

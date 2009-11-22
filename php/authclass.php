@@ -305,7 +305,7 @@ function UserIDAuthenticate($userid, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ntlm_auth ($this->UserName,$password,$SAMSConf->WBINFOPATH);
+	$aaa=ntlm_auth($this->UserName,$password,$SAMSConf->WBINFOPATH);
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 	{ 
@@ -416,7 +416,8 @@ $descriptorspec = array(
    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
    1 => array("pipe", "w")  // stdout is a pipe that the child will write to
 );
-$ntlm_auth = proc_open("bin/ntlm_auth ".$path, $descriptorspec, $pipes);
+//$ntlm_auth = proc_open("bin/ntlm_auth ".$path, $descriptorspec, $pipes);
+$ntlm_auth = proc_open("bin/testwbinfopasswd ".$path, $descriptorspec, $pipes);
 if (is_resource($ntlm_auth)) {
     // $pipes now looks like this:
     // 0 => writeable handle connected to child stdin

@@ -122,7 +122,7 @@ function UserGroupForm()
             else
 	        $traffic=$row['s_size'];
             if($row['s_quote']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['s_quote']<=0)
-               $gif="puser.gif";
+               $gif="user_active.png";
             else
                if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
