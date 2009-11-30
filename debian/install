@@ -1,6 +1,0 @@
-etc/sams2.conf etc
-src/samsdaemon src/samsparser usr/bin
-php/* usr/share/sams2
-#doc/* usr/share/doc/sams/html
-#mysql usr/share/sams/data
-debian/etc/apache.sams2.conf etc/apache2/conf.d
