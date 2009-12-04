@@ -305,14 +305,17 @@ function IMPORTUSERS($hostname, $username, $pass)
 
  $this->pgcharset=pg_client_encoding($this->DB->link);
 
- if($SAMSConf->DB_ENGINE=="PostgreSQL"&&$this->sams1charset!=$this->pgcharset)
+ if($SAMSConf->DB_ENGINE=="PostgreSQL")
  {
-	if($this->sams1charset=="KOI8-R")
+	$this->pgcharset=pg_client_encoding($this->DB->link);
+	if($this->sams1charset!=$this->pgcharset)
 	{
-		pg_set_client_encoding("KOI8");
+		if($this->sams1charset=="KOI8-R")
+		{
+			pg_set_client_encoding("KOI8");
+		}
 	}
  }
-
 }
 
 }
