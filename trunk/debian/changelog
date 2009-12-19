@@ -1,6 +1,7 @@
 sams2 (2.0.0-b2) unstable; urgency=low
 
   * Fix sams2-doc and sams2-web packages.
+  * Move html documentation to /usr/share/sams2-doc/html
   * Update standard version to 3.8.3 (No changes)
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Mon, 30 Nov 2009 22:37:38 +0400
