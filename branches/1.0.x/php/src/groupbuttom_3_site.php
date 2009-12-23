@@ -161,7 +161,7 @@ function GroupSitesPeriod()
          if($SAMSConf->access==2)
            TableCell("<A TARGET=BLANK HREF=\"main.php?show=exe&function=sitegrouplist&filename=groupbuttom_3_site.php&site=$row[url]&SDay=$sday&EDay=$eday&SMon=$smon&EMon=$emon&SYea=$syea&EYea=$eyea \">$row[url]</A>\n");
          if($SAMSConf->access!=2)
-           TableCell("<A HREF=\"http://$row[url]\">$row[url]</A>\n");
+           TableCell("<A HREF=\"$row[url]\">$row[url]</A>\n");
          $count++;
 	 $size=$size+$row['sum_size'];
        }
