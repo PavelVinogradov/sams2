@@ -103,7 +103,7 @@ function about()
   print("<TR><TD ALIGN=CENTER><IMG SRC=\"$SAMSConf->ICONSET/proxy_big.gif\">");
   print("<TD ALIGN=CENTER><P><H1>SAMS v. 1.0.4 </H1>");
   print("<H2>Squid Account Management System</H2>");
-  print("Copyright (C) 2003 - 2008 Dmitry Chemerik");
+  print("Copyright (C) 2003 - 2010 Dmitry Chemerik");
   print("<BR>http://sams.perm.ru");
   print("<P>email: chemerik@mail.ru <P></TABLE>");
  
@@ -481,7 +481,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2010;$i++)
+for($i=2001;$i<2015;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -557,7 +557,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2010;$i++)
+for($i=2001;$i<2015;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -591,7 +591,7 @@ for($i=1;$i<13;$i++)
    }
 print("              </SELECT> \n");
 print("          <SELECT NAME=\"EYea\" size=1 > \n");
-for($i=2001;$i<2010;$i++)
+for($i=2001;$i<2015;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -673,7 +673,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2010;$i++)
+for($i=2001;$i<2015;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -706,7 +706,7 @@ for($i=1;$i<13;$i++)
    }
 print("              </SELECT> \n");
 print("          <SELECT NAME=\"EYea\" size=1 > \n");
-for($i=2001;$i<2010;$i++)
+for($i=2001;$i<2015;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");

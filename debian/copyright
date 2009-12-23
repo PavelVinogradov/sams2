@@ -6,7 +6,7 @@ It was downloaded from http://sams.perm.ru/ http://nixdev.net/release/sams/
 Upstream Author: Dmitry Chemerik
 
 Copyright: 
-        Copyright (C) 2004-2008 Dmitry Chemerik
+        Copyright (C) 2004-2010 Dmitry Chemerik
 
 License:
 
@@ -17,6 +17,6 @@ On Debian systems, the complete text of the GNU General Public
 License can be found in the file `/usr/share/common-licenses/GPL-2'.
 
 
-The Debian packaging is (C) 2007-2008, Pavel Vinogradov
+The Debian packaging is (C) 2007-2010, Pavel Vinogradov
 <Pavel.Vinogradov@nixdev.net> and is licensed under the GPL,
 see `/usr/share/common-licenses/GPL'.
