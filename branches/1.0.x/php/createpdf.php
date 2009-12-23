@@ -319,7 +319,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
 	 if($ycount==40)
 	   {
              PDF_setfont($pdfFile, $font, 9);
-             pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2008", 250, 20);  
+             pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2010", 250, 20);  
              pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
 	     pdf_end_page($pdfFile);
 	     $ycount=700;
@@ -329,7 +329,7 @@ function UsersTrafficPeriodPDFlib($pdfFile)
        }
   PDF_close_image($pdfFile, $image);
   PDF_setfont($pdfFile, $font, 9);
-  pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2008", 250, 20);  
+  pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2010", 250, 20);  
   pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
   pdf_end_page($pdfFile);
   $PAGE+=1;
@@ -424,7 +424,7 @@ function AllUsersTrafficPDFlib()
 	           if($ycount==40)
 	             {
                        PDF_setfont($pdfFile, $font, 9);
-                       pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2008", 250, 20);  
+                       pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2010", 250, 20);  
                        pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
 	               pdf_end_page($pdfFile);
                        pdf_begin_page($pdfFile, 595, 842);
@@ -436,7 +436,7 @@ function AllUsersTrafficPDFlib()
 	                    
 	     //if($ycount!=500)
               PDF_setfont($pdfFile, $font, 9);
-              pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2008", 250, 20);  
+              pdf_show_xy($pdfFile, "Created by SAMS (C) 2003-2010", 250, 20);  
               pdf_show_xy($pdfFile, "page $PAGE", 500, 10);  
               pdf_end_page($pdfFile);
               $PAGE+=1;
