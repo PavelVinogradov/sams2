@@ -1,8 +1,10 @@
-sams (1.0.5-1) unstable; urgency=low
+sams (1.0.5) unstable; urgency=low
 
   * Official 1.0.5 release
   * Package sams-web now depends on sams package
   * Remove /etc/sams.conf from sams-web package
+  * Upgrade to standards version 3.8.3 (no changes)
+  * Fix lintian warnings
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 26 Dec 2009 19:05:44 +0500
 
