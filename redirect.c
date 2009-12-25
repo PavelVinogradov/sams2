@@ -323,9 +323,11 @@ void trim(char *string)
   for(i=0;i<strlen(string);i++)
      {
         if(iscntrl(string[i])==0)
-           sprintf(&strim[0],"%s%c",&strim[0],string[i]);
+        {
+           sprintf(&strim[i],"%c",string[i]);
+	}
      }
-  strncpy(string,&strim[0],254);
+  strncpy(string,&strim[0],BUFFER_SIZE-1);
 } 
 
 
@@ -781,7 +783,6 @@ int main (int argc, char *argv[])
         URLALLOW=0;
         ALLOW=0;
         trim(&str[0]);
-
         if(strlen(&str[0])>0)
            {
              strncpy(&str1[0],strtok(&str[0]," "),BUFFER_SIZE-1);
