@@ -56,8 +56,8 @@ Epoch: 736
 Release: %{epoch}%{disttag}
 Group: Applications/Internet
 License: GPL
-#Source: http://nixdev.net/release/sams/sams-%{version}.tar.bz2
-Source: http://nixdev.net/release/sams/sams-%{version}-%{epoch}.tar.bz2
+Source: http://nixdev.net/release/sams/sams-%{version}.tar.bz2
+#Source: http://nixdev.net/release/sams/sams-%{version}-%{epoch}.tar.bz2
 Patch0: sams-1.0.4.rpm.patch
 Patch1: credit-0.1-sams-1.0.4.patch
 Vendor: Sams community
@@ -123,7 +123,8 @@ The sams-doc package includes the HTML versions of the "Using SAMS".
 
 %prep
 echo Building for %{dist}
-%setup -q -n sams-%{version}-%{epoch}
+#%setup -q -n sams-%{version}-%{epoch}
+%setup -q -n sams-%{version}
 %patch0 -p1
 %if "%{samsrelease}" == "credit"
 %patch1 -p0
@@ -293,7 +294,7 @@ exit 0
 exit 0
 
 %changelog
-* Sun 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
+* Sun Dec 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
 Added compatibility wirh sams2.spec.
 Package split into three packages: sams sams-web sams-doc
 Lot of build bugs fixed
