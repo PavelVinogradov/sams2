@@ -60,7 +60,6 @@ License: GPL
 Source: http://nixdev.net/release/sams/sams-%{version}-%{epoch}.tar.bz2
 Patch0: sams-1.0.4.rpm.patch
 Patch1: credit-0.1-sams-1.0.4.patch
-#Patch2: sams.conf.d_doc.patch
 Vendor: Sams community
 Packager: SAMS Development Group
 URL: http://sams.perm.ru
@@ -100,7 +99,7 @@ Requires:      apache-base, php, php-mysql, php-gd, php-ldap, php-zlib, squid,  
 Requires:      apache-base, php, php-mysql, php-gd, php-ldap, php-zlib, squid,  /usr/bin/wbinfo
 %endif
 %if %{dist} == "suse"
-Requires: apache2, apache2-mod_php5, php, php-mysql, php-gd, php-ldap, php-zlib, squid, /usr/bin/wbinfo
+Requires: apache2, apache2-mod_php5, php5, php5-mysql, php5-gd, php5-ldap, php5-zlib, squid, /usr/bin/wbinfo
 %endif
 %if %{dist} == "redhat"
 Requires: httpd, php, php-mysql, php-gd, php-ldap, php-zlib, squid,  /usr/bin/wbinfo
@@ -124,7 +123,6 @@ The sams-doc package includes the HTML versions of the "Using SAMS".
 
 %prep
 echo Building for %{dist}
-#setup -q -n sams-%{version}
 %setup -q -n sams-%{version}-%{epoch}
 %patch0 -p1
 %if "%{samsrelease}" == "credit"
@@ -139,18 +137,17 @@ echo Building for %{dist}
         --with-mysql-libpath=%{mysqllib64path} \
     %endif
     --with-configfile=%{_sysconfdir}/sams.conf \
-    --with-rcd-locations=%{_sysconfdir}/rc.d/init.d \
+    --with-rcd-locations=%{_initrddir} \
     --with-httpd-locations=%{_var}/www/html
                                                             
 make
-
 ###############################################################################
 %install
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{apacheconf}
-mkdir -p $RPM_BUILD_ROOT%{_var}/www/html
+#mkdir -p $RPM_BUILD_ROOT%{_var}/www/html
 
 %makeinstall \
     RCDPATH=$RPM_BUILD_ROOT%{_initrddir} \
@@ -171,9 +168,29 @@ install -m 644 $RPM_BUILD_DIR/sams-%{version}-%{epoch}/debian/etc/apache.sams.co
 #############################################################################
 install -m644 etc/doc_sams_conf			\
     "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams.conf
-sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-doc-%{version}/EN,g'	\
+#if suse just remove redhat init script and replace it by lsb script
+%if %{dist} == "suse"
+    rm -f $RPM_BUILD_ROOT%{_initrddir}/sams
+    install -m 755 $RPM_SOURCE_DIR/sams-%{version}-%{epoch}/etc/sams.suse \
+    $RPM_BUILD_ROOT%{_initrddir}/sams
+    sed -i -e 's,__PREFIX,%{_prefix}/bin,g' \
+	    -e 's,__CONFDIR,%{_sysconfdir},g' \
+	    "$RPM_BUILD_ROOT%{_initrddir}"/sams
+    sed -i -e 's,/usr/bin/php,/usr/bin/php5,g' \
+	    "$RPM_BUILD_ROOT%{_datadir}"/sams/data/upgrade_mysql_table.php
+    sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-doc,g'	\
 	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams.conf
-
+%else
+    %define samsdoc %{name}-doc-%{version}
+    %if %{dist} == "mandriva8"
+	%define samsdoc %{name}-doc
+    %endif
+    %if %{dist} == "mandriva9"
+	%define samsdoc %{name}-doc
+    %endif
+    sed -i -e 's,__DOCPREFIX,%{_docdir}/%{samsdoc},g'	\
+	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams.conf
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT        
@@ -202,6 +219,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(775,root,%{webgroup}) %dir %{_datadir}/sams/data
 %{_datadir}/sams
 
+
 %pre  
 if [ "$1" = 2 ] ; then  
     /sbin/service samsd stop || /sbin/service sams stop  
@@ -224,68 +242,64 @@ fi
 exit 0
 
 %post web
-/sbin/service httpd reload
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
+%{_initrddir}/httpd reload
+%endif
 exit 0
 
 %post doc
-/sbin/service httpd reload
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
+%{_initrddir}/httpd reload
+%endif
 exit 0
 
 %preun  
-if [ "$1" = 0 ] ; then   
-    /sbin/service sams stop  
-    /sbin/chkconfig sams off
-fi  
+%if %{dist} == "suse"
+    %stop_on_removal sams
+%else
+    if [ $1 = 0 ] ; then
+	/sbin/service sams stop >/dev/null 2>&1
+	/sbin/chkconfig --del sams
+    fi
+%endif
 exit 0  
   
 %postun  
 
+%if %{dist} == "suse"
+%insserv_cleanup sams
+%endif
+
+exit 0
+
 %postun doc
-/sbin/service httpd reload
-exit 0  
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
+%{_initrddir}/httpd reload
+%endif
+exit 0
 
 %postun web
-/sbin/service httpd reload
-exit 0  
-
-#%if %{dist}=="suse"
-#install -m755 "suse/init.d" 					\
-#    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-#%else
-#install -m755 "redhat/init.d" 					\
-#    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-#%endif
-#sed -i -e 's,__PREFIX,%{_prefix}/bin,g'				\
-#	    -e 's,__CONFDIR,%{_sysconfdir},g'		\
-#	    "${RPM_BUILD_ROOT}%{_initrddir}"/sams2
-#install -m644 "redhat/sysconfig"				\
-#	"${RPM_BUILD_ROOT}%{_sysconfdir}"/sysconfig/sams2
-#install -m644 "redhat/logrotate"				\
-#	"${RPM_BUILD_ROOT}%{_sysconfdir}"/logrotate.d/sams2
-#install -m644 "etc/httpd_conf"				\
-#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
-#sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name},g'	\
-#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
-#install -m644 etc/doc_sams2_conf			\
-#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
-#sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-%{version},g'	\
-#	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
-#sed -i -e 's,^SQUIDCACHEDIR=.*$,SQUIDCACHEDIR=/var/spool/squid,g'	\
-#	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
-#sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\
-#	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
-#sed -i -e 's,^WBINFOPATH=.*$,WBINFOPATH=%{_prefix}/bin,g'	\
-#	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
-#install -d "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
-#install -m644 ChangeLog AUTHORS COPYING NEWS INSTALL "${RPM_BUILD_ROOT}%{_docdir}/%{name}-%{version}"
-# moving doc to suse specific location
-###%if %{dist}=="suse"
-###mv -f --target-directory="${RPM_BUILD_ROOT}"%{_docdir}/%{name}-%{version}		\
-###    "${RPM_BUILD_ROOT}"%{_datadir}/doc/%{name}-%{version}/*
-###%endif
+%if %{dist}=="suse"
+%{_initrddir}/apache2 reload
+%else
+%{_initrddir}/httpd reload
+%endif
+exit 0
 
 %changelog
-* Thu Nov 20 2008 Denis Zagirov <foomail@yandex.ru> 1.0.4  
+* Sun 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
+Added compatibility wirh sams2.spec.
+Package split into three packages: sams sams-web sams-doc
+Lot of build bugs fixed
+New upstream version 1.0.5
+
+* Thu Nov 20 2008 Denis Zagirov <foomail@yandex.ru> 1.0.4
 Credit patch by cj_nik for version 1.0.4 added.  
 Credit patch filename changed according to sams version.  
 Packages added to Requires section: mysql-server. php-ldap, php-gd , php-mysql  
@@ -314,4 +328,3 @@ build on host with working sams. (Makefile.am lines 200-203 out)
   
 * Thu Jun 16 2005 Dmitry Chemerik <chemerik@mail.ru>  
 New version  
-  
