@@ -52,7 +52,7 @@ Name: sams-credit
 Name: sams
 %endif
 Version: 1.0.5
-Epoch: 736
+Epoch:		742
 Release: %{epoch}%{disttag}
 Group: Applications/Internet
 License: GPL
@@ -158,13 +158,13 @@ rm -f $RPM_BUILD_ROOT%{_var}/www/html/sams
 #Remove duplicate files in /usr/share/sams/doc. We shall symlink it in post stage
 rm -fr $RPM_BUILD_ROOT%{_datadir}/sams/doc
 #httpd/conf.d alias for location /sams/doc files
-install -m 644 $RPM_BUILD_DIR/sams-%{version}-%{epoch}/debian/etc/apache.sams.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{apacheconf}/sams.conf
+install -m 644 debian/etc/apache.sams.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{apacheconf}/sams.conf
 
 #sams-credit addon
 %if "%{samsrelease}" == "credit"
-    install -m 644 $RPM_SOURCE_DIR/sams-%{version}-%{epoch}/contribs/credit/credit_alarm.gif $RPM_BUILD_ROOT%{_datadir}/sams/icon/classic/credit_alarm.gif
-    install -m 644 $RPM_SOURCE_DIR/sams-%{version}-%{epoch}/contribs/credit/credit_alarm.gif $RPM_BUILD_ROOT%{_datadir}/sams/icon/bumper/credit_alarm.gif
-    install -m 644 $RPM_SOURCE_DIR/sams-%{version}-%{epoch}/contribs/credit/credit-change.sql $RPM_BUILD_ROOT%{_datadir}/sams/data/credit-change.sql
+    install -m 644 contribs/credit/credit_alarm.gif $RPM_BUILD_ROOT%{_datadir}/sams/icon/classic/credit_alarm.gif
+    install -m 644 contribs/credit/credit_alarm.gif $RPM_BUILD_ROOT%{_datadir}/sams/icon/bumper/credit_alarm.gif
+    install -m 644 contribs/credit/credit-change.sql $RPM_BUILD_ROOT%{_datadir}/sams/data/credit-change.sql
 %endif
 #############################################################################
 install -m644 etc/doc_sams_conf			\
@@ -172,7 +172,7 @@ install -m644 etc/doc_sams_conf			\
 #if suse just remove redhat init script and replace it by lsb script
 %if %{dist} == "suse"
     rm -f $RPM_BUILD_ROOT%{_initrddir}/sams
-    install -m 755 $RPM_SOURCE_DIR/sams-%{version}-%{epoch}/etc/sams.suse \
+    install -m 755 etc/sams.suse \
     $RPM_BUILD_ROOT%{_initrddir}/sams
     sed -i -e 's,__PREFIX,%{_prefix}/bin,g' \
 	    -e 's,__CONFDIR,%{_sysconfdir},g' \
