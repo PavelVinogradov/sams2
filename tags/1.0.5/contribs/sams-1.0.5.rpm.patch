@@ -1,0 +1,43 @@
+--- sams-1.0.3/Makefile.in	2008-10-30 14:09:25.000000000 +0300
++++ sams-1.0.3/Makefile.in.fix	2008-07-25 10:11:14.000000000 +0400
+@@ -30,11 +30,11 @@
+ prefix = @prefix@
+ exec_prefix = @exec_prefix@
+ # host_os = @host_os@
+-bindir = @bindir@
++bindir = $(DESTDIR)@bindir@
+ sbindir = @sbindir@
+ libexecdir = @libexecdir@
+-datadir = @datadir@
+-sysconfdir = @sysconfdir@
++datadir = $(DESTDIR)@datadir@
++sysconfdir = $(DESTDIR)@sysconfdir@
+ sharedstatedir = @sharedstatedir@
+ localstatedir = @localstatedir@
+ libdir = @libdir@
+@@ -197,10 +197,10 @@
+ 		mkdir /tmp/sams; \
+ 		chmod  777 /tmp/sams; \
+ 	fi
+-	-@if test -f /etc/sams.conf; then \
+-		echo "move old sams.conf to sams.conf.old"; \
+-		mv /etc/sams.conf /etc/sams.conf.old; \
+-	fi
++#	-@if test -f /etc/sams.conf; then \
++#		echo "move old sams.conf to sams.conf.old"; \
++#		mv /etc/sams.conf /etc/sams.conf.old; \
++#	fi
+ 	cp ./etc/sams.conf $(sysconfdir);
+ 	cp ./sams $(bindir);
+ 	cp ./samsf $(bindir);
+--- sams-1.0.3/etc/sams.conf.orig	2007-08-16 04:05:54.000000000 +0400
++++ sams-1.0.3/etc/sams.conf	2008-10-30 14:44:50.000000000 +0300
+@@ -9,7 +9,7 @@
+ SQUIDROOTDIR=/etc/squid
+ SQUIDLOGDIR=/var/log/squid
+ SQUIDCACHEDIR=/var/spool/squid
+-SAMSPATH=/usr/local
++SAMSPATH=/usr
+ SQUIDPATH=/usr/sbin
+ SQUIDGUARDLOGPATH=/var/log
+ SQUIDGUARDDBPATH=/var/db/squidguard

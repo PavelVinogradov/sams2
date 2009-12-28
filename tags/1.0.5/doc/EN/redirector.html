@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+ <H2>SQUID redirector settings</H2>
+
+<P>Squid has the ability to rewrite requested URLs. Implemented as an external process (similar to a dnsserver), 
+Squid can be configured to pass every incoming URL through a redirector process that returns either a new URL, 
+or a blank line to indicate no change.
+<BR>SAMS may be used a several redirectors, but SAMS doesn't insert redirector support to squid.conf. You must insert a support 
+string for your redirector to squid.conf. 
+<P>The SAMS may use next redirectors:
+<LI> SQUID perl redirector
+<LI> samsredir - the SAMS redirector
+<LI> SquidGuard
+
+<P><B>SQUID perl redirector</B>
+<P>Description of this redirector is written of the SQUID documentation.
+<BR>Insert next string of the squid.conf file:
+<BR>redirect_program /etc/squid/redirect.sams
+
+<P><B>SAMS redirector</B>
+<P>This redirector is designed for SAMS and sends requests to the MySQL database.
+This redirector can use different URL lists for different users. 
+<BR>Insert next string of the squid.conf file:
+<BR>redirect_program /usr/local/bin/samsredir
+
+<P><B>Редиректор SquidGuard</B>
+<BR>Insert next string of the squid.conf file:
+<BR>redirect_program /путь/к/squidguard
+</BODY>
+</HTML>
