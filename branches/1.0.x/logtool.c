@@ -529,7 +529,7 @@ void trim(char *string)
   for(i=0;i<strlen(string);i++)
      {
         if(iscntrl(string[i])==0)
-           sprintf(&strim[i],"%c",string[i]);
+           sprintf(&strim[0],"%s%c",&strim[0],string[i]);
      }
   strncpy(string,&strim[0],255);
 }
