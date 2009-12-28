@@ -8,35 +8,24 @@
 function DeleteShablon()
 {
   global $SAMSConf;
-  global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
-	exit;
+   $SAMSConf->access=UserAccess();
+   if($SAMSConf->access!=2)     {       exit;     }
   
   if($sname!="default")
     {
-        $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_shablon_id='$id' ");
-	$DB->free_samsdb_query();
-	if($num_rows==0)
-		{
-        		$DB->samsdb_query("DELETE FROM shablon WHERE s_shablon_id='$id' ");
-		}
-	else
-		{
-			PageTop("denied.gif","<FONT SIZE=+3 COLOR=\"RED\"> $shablonbuttom_9_delete_DeleteShablon_3 </FONT>");
-			echo "<FONT  SIZE=+1>$shablonbuttom_9_delete_DeleteShablon_1 $num_rows $shablonbuttom_9_delete_DeleteShablon_2</FONT>";
-			exit(0);
-		}
-        //$result=mysql_query("DELETE FROM sconfig WHERE sname=\"$id\" ");
-        //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
+        $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
+        $row=mysql_fetch_array($result);
+        $result=mysql_query("DELETE FROM shablons WHERE name=\"$id\" ");
+        $result=mysql_query("DELETE FROM sconfig WHERE sname=\"$id\" ");
+        UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
     }
-  //$result=mysql_query("UPDATE squidusers SET shablon=\"default\" WHERE shablon=\"$id\" ");
+  $result=mysql_query("UPDATE squidusers SET shablon=\"default\" WHERE shablon=\"$id\" ");
   print("OK<BR>");
 
   print("<SCRIPT>\n");
@@ -49,13 +38,15 @@ function DeleteShablon()
 function shablonbuttom_9_delete()
 {
   global $SAMSConf;
-  global $SHABLONConf;
-  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $result=mysql_query("SELECT * FROM shablons WHERE name=\"$id\" ");
+  $row=mysql_fetch_array($result);
+
+  if($SAMSConf->access==2)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");
@@ -64,17 +55,17 @@ function shablonbuttom_9_delete()
        print("}\n");
        print("function DeleteUser()\n");
        print("{\n");
-       print("  value=window.confirm(\"$shablonbuttom_9_delete_shablonbuttom_9_delete_1 $SHABLONConf->s_name? \" );\n");
+       print("  value=window.confirm(\"$shablonbuttom_9_delete_shablonbuttom_9_delete_1 $row[nick]? \" );\n");
        print("  if(value==true) \n");
        print("     {\n");
-       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteshablon&filename=shablonbuttom_9_delete.php&id=$SHABLONConf->s_shablon_id\";\n");
+       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteshablon&filename=shablonbuttom_9_delete.php&id=$id\";\n");
        print("     }\n");
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD CLASS=\"samstraytd\">\n");
+       print("<TD VALIGN=\"TOP\" WIDTH=\"10%\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
-       print("TITLE=\"$shablonbuttom_9_delete_shablonbuttom_9_delete_1 '$SHABLONConf->s_name'\"  border=0 ");
+       print("TITLE=\"$shablonbuttom_9_delete_shablonbuttom_9_delete_1 '$row[nick]'\"  border=0 ");
        print("onclick=DeleteUser() \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");

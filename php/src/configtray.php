@@ -95,15 +95,13 @@ function FileSystemUsage()
 function SysInfo()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
-
    PageTop("stat_48.jpg","System Information");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
 
-   $uptime=ExecuteShellScript("uptime","");
+   $uptime=ExecuteShellScript("getuptime","");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
    print("<TD WIDTH=\"25%\"><B>Hostname</B>");
@@ -127,15 +125,15 @@ function SysInfo()
   $edate="$syea-$smon-$eday";
   $stime="0:00:00";
   $etime="0:00:00";
-//  echo "SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate'<BR>";
+  
    print("<P><TABLE CLASS=samstable>\n");
    print("<TH>\n");
    print("<TH width=\"33%\" >All traffic\n");
    print("<TH width=\"33%\" >From cache\n");
    print("<TH width=\"33%\" >Traffic\n");
-
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' ");
-  $row=$DB->samsdb_fetch_array();
+   
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This month\n");
    $aaa=FormattedString("$row[0]");
@@ -146,8 +144,8 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date=\"$edate\" ");
-  $row=$DB->samsdb_fetch_array();
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
+  $row=mysql_fetch_array($result);
    print("<TR>\n");
    print("<TD > This day\n");
    $aaa=FormattedString("$row[0]");
@@ -183,33 +181,27 @@ function CUserDoc()
 function ConfigTray()
 {
   global $SAMSConf;
-  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
-  {
-	print("<SCRIPT>\n");
-	print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    
-	print("</SCRIPT> \n");
-	print("<TABLE WIDTH=\"95%\" BORDER=0>\n");
-	print("<TR HEIGHT=60>\n");
-	print("<TD WIDTH=\"25%\"\">");
-	print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
-
-	ExecuteFunctions("./src", "configbuttom","1");
-
-	print("<TD>\n");
-	print("</TABLE>\n");
-  }
+  print("<SCRIPT>\n");
+  if($SAMSConf->access==2)
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
   else
-  {
-	print("<SCRIPT>\n");
-	 print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    
-	print("</SCRIPT> \n");
-  }
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }
+ print("</SCRIPT> \n");
 
+  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
+  print("<TR>\n");
+  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+  //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
+  print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
+
+    ExecuteFunctions("./src", "configbuttom","1");
+
+  print("<TD>\n");
+  print("</TABLE>\n");
 
 
 }

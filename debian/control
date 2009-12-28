@@ -1,17 +1,17 @@
-Source: sams2
+Source: sams
 Section: net
 Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
-Build-Depends: debhelper (>= 5), automake, autotools-dev, libtool, libmysqlclient15-dev, libpcre3-dev, quilt
+Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev, libpcre3-dev, quilt
 Standards-Version: 3.8.3
 Homepage: http://sams.nixdev.net
 Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
 Vcs-Browser: http://sams.nixdev.net/browser/trunk
 
-Package: sams2
+Package: sams
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: sams2-web, sams2-doc, mysql-server, squid
+Depends: debconf | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
+Recommends: sams-web, mysql-server, squid
 Suggests: squidguard
 Description: Squid Account Management System (SAMS) - Deamons
  This program basically used for administrative purposes of squid proxy.
@@ -21,12 +21,12 @@ Description: Squid Account Management System (SAMS) - Deamons
  This package contain deamons program to parse squid log files and 
  generate squid conf-files.
 
-Package: sams2-web
+Package: sams-web
 Section: web
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql
-Recommends: sams2-doc
-Suggests: php5-gd, php5-ldap
+Depends: ${shlibs:Depends}, ${misc:Depends}, sams, apache2 | httpd, php5, php5-mysql
+Recommends: sams-doc
+Suggests: php5-gd, php5-ldap, php-fpdf
 Description: Squid Account Management System (SAMS) - Web interface
  This program basically used for administrative purposes of squid proxy.
  There are access control for users by ntlm, ncsa, basic or ip
@@ -35,8 +35,13 @@ Description: Squid Account Management System (SAMS) - Web interface
  This package contain web-interface to access collected statistic and
  manage user access to proxy server
 
-Package: sams2-doc
+Package: sams-doc
+Section: doc
 Architecture: all
-Depends: doxygen
-Description: Squid Account Management System 2 (SAMS) - Documentation
- The sams2-doc package includes the HTML versions of the "Using SAMS2".
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Squid Account Management System (SAMS) - Web interface
+ This program basically used for administrative purposes of squid proxy.
+ There are access control for users by ntlm, ncsa, basic or ip
+ authorization mode.
+ .
+ This package contain documentation.

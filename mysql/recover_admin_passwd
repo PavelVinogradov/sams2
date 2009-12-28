@@ -1,0 +1,5 @@
+#!/bin/sh
+
+USER=`cat /etc/sams.conf | grep MYSQLUSER | tr "MYSQLUSER=" "\0"`
+echo "Create MySQL database sams_db"
+mysql -u $USER -p  < recover_admin_passwd.sql

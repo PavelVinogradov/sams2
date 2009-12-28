@@ -15,9 +15,9 @@
 #
 # Author:	Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 #
-# /etc/init.d/sams2: start and stop the sams daemon
+# /etc/init.d/sams: start and stop the sams daemon
 
-SAMSPATH=`cat /etc/sams2.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
+SAMSPATH=`cat /etc/sams.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
 DAEMON=$SAMSPATH/bin/samsdaemon
 LOCKFILE=/var/lock/samsd
@@ -34,7 +34,7 @@ else
 	exit 1
 fi
 
-. /etc/default/rcS
+test -f /etc/default/rcS && . /etc/default/rcS
 
 case "$1" in 
 	start)
@@ -53,7 +53,7 @@ case "$1" in
 			[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
 			log_end_msg $RETVAL
 		else
-			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams2/README.Debian"
+			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams/README.Debian."
 		fi
 	;;
 
@@ -71,8 +71,8 @@ case "$1" in
 	;;
 
 	restart|force-reload)
-		/etc/init.d/sams2 stop
-		/etc/init.d/sams2 start
+		/etc/init.d/sams stop
+		/etc/init.d/sams start
 	;;
 	
 	*)

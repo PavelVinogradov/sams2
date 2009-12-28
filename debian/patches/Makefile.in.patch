@@ -1,0 +1,19 @@
+--- sams-1.0.0.orig/Makefile.in
++++ sams-1.0.0/Makefile.in
+@@ -34,7 +34,7 @@
+ sbindir = @sbindir@
+ libexecdir = @libexecdir@
+ datadir = @datadir@
+-sysconfdir = @sysconfdir@
++sysconfdir = $(prefix)/@sysconfdir@
+ sharedstatedir = @sharedstatedir@
+ localstatedir = @localstatedir@
+ libdir = @libdir@
+@@ -206,7 +206,6 @@
+ 	cp ./samsf $(bindir);
+ 	cp ./samsredir $(bindir);
+ 	cp ./samsdaemon $(bindir);
+-	cp ./etc/sams $(RCDPATH);
+ 	cp ./mysql/recover_admin_passwd $(bindir);
+ 	-@if test ! -d $(datadir); then \
+ 		echo "creating $(datadir)"; \

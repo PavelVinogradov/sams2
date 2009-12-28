@@ -9,36 +9,42 @@ function DeleteUser()
 {
 
   global $SAMSConf;
-  global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("UC")!=1)
-	exit(0);
+   $SAMSConf->access=UserAccess();
+   if($SAMSConf->access!=2)     {       exit;     }
   
-  if(isset($_GET["id"])) $userid=$_GET["id"];
+  if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-  $query="DELETE FROM squiduser WHERE s_user_id='$userid'";
-  $num_rows=$DB->samsdb_query_value($query);
   print("<SCRIPT>\n");
   print("        parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
+  
+  db_connect($SAMSConf->SAMSDB) or exit();
+  mysql_select_db($SAMSConf->SAMSDB);
+  $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
+  $row=mysql_fetch_array($result);
+  $result=mysql_query("DELETE FROM squidusers WHERE id=\"$userid\" ");
+  UpdateLog("$SAMSConf->adminname","Deleted user $row[nick] ","01");
+
 }
 
 
 
-function userbuttom_9_delete()
+function userbuttom_9_delete($userid)
 {
   global $SAMSConf;
-  global $USERConf;
-  global $SquidUSERConf;
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if(isset($_GET["id"])) $id=$_GET["id"];
 
-  if($USERConf->ToWebInterfaceAccess("UC")==1)
+  $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
+  $row=mysql_fetch_array($result);
+
+  if($SAMSConf->access==2)
     {
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function ReloadBaseFrame()\n");
@@ -47,18 +53,18 @@ function userbuttom_9_delete()
        print("}\n");
        print("function DeleteUser(userid)\n");
        print("{\n");
-       print("  value=window.confirm(\"$userbuttom_1_delete_userbuttom_9_delete $SquidUSERConf->s_nick? \" );\n");
+       print("  value=window.confirm(\"$userbuttom_1_delete_userbuttom_9_delete $row[nick]? \" );\n");
        print("  if(value==true) \n");
        print("     {\n");
-       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteuser&filename=userbuttom_9_delete.php&&id=$SquidUSERConf->s_user_id\";\n");
+       print("        parent.basefrm.location.href=\"main.php?show=exe&function=deleteuser&filename=userbuttom_9_delete.php&&userid=$userid\";\n");
        print("     }\n");
        print("}\n");
        print("</SCRIPT> \n");
 
-       print("<TD CLASS=\"samstraytd\" >\n");
+       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
        print("TITLE=\"$user_usertray8\"  border=0 ");
-       print("onclick=DeleteUser(\"$SquidUSERConf->s_user_id\") \n");
+       print("onclick=DeleteUser(\"$userid\") \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");
     }
