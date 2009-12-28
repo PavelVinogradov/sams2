@@ -45,15 +45,13 @@ int disabled_ip, disabled_id;
 
 sig_atomic_t child_exit_status;
 static char str[BUFFER_SIZE];
-char outstr[BUFFER_SIZE];
-
 static char squiduser[128];
 //int week;
 
 
 
 /*************************************************************
-               О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - SquidGuard       
+               Если редиректор - SquidGuard       
 **************************************************************/
 
 int chSquidGuardConf(MYSQL *conn)
@@ -67,7 +65,7 @@ int chSquidGuardConf(MYSQL *conn)
   FILE *fout,*finp;
   
   deny=0;
-  /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ SquidGuard squidguard.conf      */
+  /* создаем SquidGuard squidguard.conf      */
   if(RGUARD==1)
     {
 
@@ -244,7 +242,7 @@ int chSquidGuardConf(MYSQL *conn)
                 fprintf(fout,"}  %30s#sams\n"," ");
                 mysql_free_result(res2);
 	      }
-	    else //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫
+	    else //если период времени задан с вечера до утра
 	      {
                 fprintf(fout,"sams_%s  within sams_%s_time_1 {  %30s#sams\n pass ", row[0], row[0]," ");
                 sprintf(&str[0],"SELECT redirect.filename,shablons.alldenied,redirect.type FROM %s.sconfig LEFT JOIN %s.redirect ON sconfig.set = redirect.filename LEFT JOIN %s.shablons ON sconfig.sname=shablons.name WHERE sname = '%s'\n",conf.samsdb,conf.samsdb,conf.samsdb,row[0]);
@@ -322,16 +320,16 @@ int chSquidGuardConf(MYSQL *conn)
 
       fclose(fout);
     }
-  /* END    О©╫О©╫О©╫О©╫О©╫О©╫О©╫ SquidGuard squidguard.conf      */
+  /* END    создаем SquidGuard squidguard.conf      */
  return(0);
 }
 /*************************************************************
-    END           О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - SquidGuard       
+    END           Если редиректор - SquidGuard       
 **************************************************************/
 
 
 /*************************************************************
-               О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - REJIK       
+               Если редиректор - REJIK       
 **************************************************************/
 
 int chRejikConf(MYSQL *conn)
@@ -348,7 +346,7 @@ int chRejikConf(MYSQL *conn)
 
   if(RREJIK==1)
     {
- /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ REJIK redirector.conf      */
+ /* создаем REJIK redirector.conf      */
  
       sprintf(&shablonname[0],"%s/redirector.bak",conf.rejikpath);
       sprintf(&redirect_to[0],"cp %s/redirector.conf %s", conf.rejikpath, &shablonname[0]);
@@ -476,7 +474,7 @@ int chRejikConf(MYSQL *conn)
 }
 
 /*************************************************************
-    END           О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - REJIK       
+    END           Если редиректор - REJIK       
 **************************************************************/
 
 
@@ -646,7 +644,7 @@ void clean_up_child_process(int signal_number)
 
 int ChangeSQUIDconf(MYSQL *conn)
 {
-//  char outstr[BUFFER_SIZE];
+  char outstr[BUFFER_SIZE];
   char filefrom[256];
   char fileto[256];
   char method[128];
@@ -836,7 +834,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ 
+           // списки расширений файлов 
            sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set GROUP BY filename",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
@@ -858,7 +856,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ 
+           // списки запрета доступа 
            sprintf(&str[0],"SELECT redirect.* FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE (redirect.type='denied'||redirect.type='regex')&&redirect.filename=sconfig.set GROUP BY filename",conf.samsdb,conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
@@ -905,7 +903,7 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+           // списки разрешения доступа
            sprintf(&str[0],"SELECT * FROM %s.redirect WHERE type='allow'",conf.samsdb);
            flag=send_mysql_query(conn,&str[0]);
            res=mysql_store_result(conn);
@@ -928,19 +926,19 @@ int ChangeSQUIDconf(MYSQL *conn)
 	     }
            mysql_free_result(res);
            
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ IP
+           // списки отключенных пользователей IP
 	   if(disabled_ip>0&&(RSQUID!=0||RNONE!=0))
              fprintf(fout,"acl _sams_disabled_ip src \"%s/disabled_ip.sams\"\n",conf.squidrootdir);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ IP
+           // списки локальных доменов IP
 	   if(local_ip>0&&(RSQUID!=0||RNONE!=0))
              fprintf(fout,"acl _sams_local_ip dst \"%s/local_ip.sams\"\n",conf.squidrootdir);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ NTLM, NCSA
+           // списки отключенных пользователей NTLM, NCSA
            if(disabled_id>0&&(RSQUID!=0||RNONE!=0))
              fprintf(fout,"acl _sams_disabled_id proxy_auth \"%s/disabled_id.sams\"\n",conf.squidrootdir);
 
-           // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ NTLM, NCSA
+           // списки локальных доменов NTLM, NCSA
            if(local_url>0&&(RSQUID!=0||RNONE!=0))
              fprintf(fout,"acl _sams_local_url dstdomain \"%s/local_url.sams\"\n",conf.squidrootdir);
 
@@ -976,31 +974,28 @@ int ChangeSQUIDconf(MYSQL *conn)
 
                if(count>0)
                  {
+
                    acount=atoi(row[14]);
                    if(acount>0)
 		     {
                        if(RSQUID==1||RNONE==1)
 		         {
-			   fprintf(fout,"http_access allow _sams_%s ",row[0]);
-//			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
 		         }  
                        if(RSAMS==1||RGUARD==1)
 		         {
-			   fprintf(fout,"http_access allow _sams_%s ",row[0]);
-//			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }
                    else
 		     {
                        if(RSAMS==1||RGUARD==1)
 		         {
-                           fprintf(fout,"http_access allow _sams_%s ",row[0]);
-//                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		       else
 		         {   
-                           fprintf(fout,"http_access allow _sams_%s ",row[0]);
-//                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }  
 		     
@@ -1009,8 +1004,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               fprintf(fout," !_sams_%s", row2[1]);
-//                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 		      
@@ -1022,15 +1016,9 @@ int ChangeSQUIDconf(MYSQL *conn)
                            while((row2=mysql_fetch_row(res2)))
 	                     {
                                if(acount>0)
-				{
-			         fprintf(fout," _sams_%s", row2[1]);
-//			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
-				}
+			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
 			       else
-				{
-			         fprintf(fout," _sams_%s", row2[1]);
-//			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
-				}
+			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
                        if(acount==0)
@@ -1040,8 +1028,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               fprintf(fout," !_sams_%s", row2[1]);
-//                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 			 }  
@@ -1050,20 +1037,15 @@ int ChangeSQUIDconf(MYSQL *conn)
                    if(RSQUID==1||RNONE==1||RREJIK==1)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
-			{
-		         fprintf(fout," _sams_%s_time ", row[0]);
-//		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
-			}
+		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 		       else 
 		         {	 
-		           fprintf(fout," _sams_%s_time_1", row[0]);
-		           fprintf(fout," _sams_%s_time_2", row[0]);
-//		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
-//		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
-		   fprintf(fout,"\n", &outstr[0]);
+		   fprintf(fout,"%s \n", &outstr[0]);
 		 }
 	     }
            mysql_free_result(res);
@@ -1111,12 +1093,11 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     {
                        if(RSQUID==1||RNONE==1)
 		         {
-//			   fprintf(fout,"http_access deny _sams_%s ",row[0]);
-			   fprintf(fout,"http_access allow _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access deny _sams_%s ",row[0]);
 		         }  
                        if(RSAMS==1||RGUARD==1||RREJIK==1)
 		         {
-			   fprintf(fout,"http_access allow _sams_%s ",row[0]);
+			   sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }
                    else
@@ -1124,11 +1105,11 @@ int ChangeSQUIDconf(MYSQL *conn)
                        if(RSAMS==1||RGUARD==1)
 		         {
                            //fprintf(fout,"http_access allow _sams_%s \n",row[0]);
-                           fprintf(fout,"http_access allow _sams_%s ",row[0]);
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		       else
 		         {   
-                           fprintf(fout,"http_access allow _sams_%s ",row[0]);
+                           sprintf(&outstr[0],"http_access allow _sams_%s ",row[0]);
 			 }  
 		     }  
 		     
@@ -1137,8 +1118,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               fprintf(fout," !_sams_%s", row2[1]);
-//                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 		      
@@ -1150,15 +1130,9 @@ int ChangeSQUIDconf(MYSQL *conn)
                            while((row2=mysql_fetch_row(res2)))
 	                     {
                                if(acount>0)
-				{
-			         fprintf(fout," _sams_%s", row2[1]);
-//			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
-				}
+			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
 			       else
-				{
-			         fprintf(fout," _sams_%s", row2[1]);
-//			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
-				}
+			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
                        if(acount==0)
@@ -1168,8 +1142,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               fprintf(fout," !_sams_%s", row2[1]);
-//                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 			 }  
@@ -1179,19 +1152,16 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
 		         {	 
-		         fprintf(fout," _sams_%s_time", row[0]);
-//		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
+		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 			 }  
 		       else 
 		         {	 
-		           fprintf(fout," _sams_%s_time_1", row[0]);
-		           fprintf(fout," _sams_%s_time_2", row[0]);
-//		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
-//		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
-		   fprintf(fout,"\n");
+		   fprintf(fout,"%s \n", &outstr[0]);
 		 }
 	     }
            mysql_free_result(res);
@@ -1319,7 +1289,7 @@ int MakeACLFiles(MYSQL *conn)
   strcpy(&redirect_to[0],row[0]);
   mysql_free_result(res);
 
-  /* О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - SQUID  */
+  /* Если редиректор - SQUID  */
   if(RSQUID==1)
     {
       sprintf(&shablonname[0],"%s/redirector.sams",conf.squidrootdir);
@@ -1368,7 +1338,7 @@ int MakeACLFiles(MYSQL *conn)
 
 
     }
-  /*END   О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - SQUID        */
+  /*END   Если редиректор - SQUID        */
 
 
 
@@ -1395,7 +1365,7 @@ int MakeACLFiles(MYSQL *conn)
      flag = mkdir(&shablonname[0], 0755);
      chown(&shablonname[0],s.st_uid,s.st_gid);
 
-  /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫  О©╫О©╫О©╫ REJIK      */
+  /* создаем список локальных доменов  для REJIK      */
      sprintf(&shablonname[0],"%s/_sams_banlists/localhosts", conf.rejikpath);
      flag = mkdir(&shablonname[0], 0755);
      chown(&shablonname[0],s.st_uid,s.st_gid);
@@ -1421,7 +1391,7 @@ int MakeACLFiles(MYSQL *conn)
    }
 
   /***************************************************************************************/
-  /*                   О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫                                  */
+  /*                   Создаем списки расширений файлов                                  */
   /***************************************************************************************/
       sprintf(&str[0],"SELECT * FROM %s.redirect LEFT JOIN %s.sconfig ON redirect.filename=sconfig.set WHERE redirect.type='files'&&redirect.filename=sconfig.set",conf.samsdb,conf.samsdb);
       flag=send_mysql_query(conn,&str[0]);
@@ -1463,7 +1433,7 @@ int MakeACLFiles(MYSQL *conn)
 
 
   /***************************************************************************************/
-  /*                   О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫                           */
+  /*                   Создаем списки перенаправления запросов                           */
   /***************************************************************************************/
   if(RREJIK==1)
     {
@@ -1556,7 +1526,7 @@ int MakeACLFiles(MYSQL *conn)
 
     }
   /***************************************************************************************/
-  /*                           О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫                            */
+  /*                           Создаем списки запрета доступа                            */
   /***************************************************************************************/
 
   if(RREJIK==1)
@@ -1674,7 +1644,7 @@ int MakeACLFiles(MYSQL *conn)
       mysql_free_result(res);
     } 
  
-  /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫      */
+  /* создаем списки доступ разрешен      */
 
   if(RREJIK==1)
     {
@@ -1772,7 +1742,7 @@ int MakeACLFiles(MYSQL *conn)
     }
 
 
-/*О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫*/
+/*список локальных хостов*/
  if(RNONE==1||RSQUID==1)
    {
       local_ip=0;
@@ -1843,11 +1813,11 @@ int MakeACLFiles(MYSQL *conn)
 		    
       mysql_free_result(res);
    }
-/*О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫*/
+/*список локальных хостов*/
 
 
 
-  /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫      */
+  /* создаем списки пользователей      */
   ncsacount=0;
   ucount=0; 
 //  sprintf(&str[0],"SELECT * FROM %s.shablons",conf.samsdb);
@@ -2052,11 +2022,11 @@ int MakeACLFiles(MYSQL *conn)
            }              
      }  
   mysql_free_result(res);
-  /* END    О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫      */
+  /* END    создаем списки пользователей      */
 
   if(RSQUID==1||RNONE==1||RREJIK==1)
     {
-      /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ IP     */
+      /* создаем списки отключенных пользователей IP     */
       ncsacount=0;
       disabled_ip=0; 
       sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth='ip' ",conf.samsdb,conf.samsdb);
@@ -2087,9 +2057,9 @@ int MakeACLFiles(MYSQL *conn)
           fclose(fout);
         }      
       mysql_free_result(res);
-      /* END    О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ IP     */
+      /* END    создаем списки отключенных пользователей IP     */
 
-      /* О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ NCSA, NTLM     */
+      /* создаем списки отключенных пользователей NCSA, NTLM     */
       ncsacount=0;
       disabled_id=0; 
       sprintf(&str[0],"SELECT squidusers.*,shablons.auth FROM %s.squidusers LEFT JOIN %s.shablons ON squidusers.shablon=shablons.name WHERE squidusers.enabled<'1'&&shablons.auth!='ip' ",conf.samsdb,conf.samsdb);
@@ -2140,7 +2110,7 @@ int MakeACLFiles(MYSQL *conn)
           fclose(fout);
         }      
       mysql_free_result(res);
-      /* END    О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ NCSA, NTLM     */
+      /* END    создаем списки отключенных пользователей NCSA, NTLM     */
     }
 
 /*
@@ -2705,7 +2675,7 @@ int main (int argc, char *argv[])
 
                //if(DEBUG==1)
   	       //   printf("t->tm_hour==%d t->tm_min=%d conf.createpdf=%d %d!=%d\n", t->tm_hour, t->tm_min, conf.createpdf, t->tm_mday, conf.createpdf);
-		// О©╫О©╫О©╫О©╫О©╫О©╫О©╫ PDF
+		// Создаем PDF
                if(t->tm_hour==23&&t->tm_min==59&&conf.createpdf>0&&t->tm_mday!=conf.createpdf)
 	         {
 		   conf.createpdf=t->tm_mday;
@@ -2726,7 +2696,7 @@ int main (int argc, char *argv[])
 		 }
 
                clearflag=0;
-	       //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫
+	       //Если настал новый месяц то проверяем необходимость ротации БД
 	       if((sams_clr_month!=(t->tm_mon+1) && SQUIDBASE>0) && conf.cachenum<2)
 		 {
                    if(DEBUG==1)
@@ -2753,7 +2723,7 @@ int main (int argc, char *argv[])
                      }
                  }
 
-               //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫, О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+               //если настал новый день, смотрим не пора ли сбросить счетчики трафика
                if((sams_clr_day!=(t->tm_mday))&&COUNTCLEAN==1 && conf.cachenum<2)  
                  {
                    if(DEBUG==1)
@@ -2850,7 +2820,7 @@ int main (int argc, char *argv[])
            sprintf(&str[0],"SELECT action,service,value FROM %s.reconfig WHERE service='squid'&&action='loadfile'&&number='%d'",conf.samsdb,conf.cachenum);
 	   flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
-           //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫
+           //Если сигнал на чтение логов
            
 	   if(mysql_num_rows(res)>0)
 	     {
@@ -2910,7 +2880,7 @@ int main (int argc, char *argv[])
            sprintf(&str[0],"SELECT action,service,value FROM %s.reconfig WHERE service='squid'&&action='files'&&number='%d'",conf.samsdb,conf.cachenum);
 	   flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
-           //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫
+           //Если сигнал на чтение логов
            
 	   if(mysql_num_rows(res)>0)
 	     {
@@ -2935,7 +2905,7 @@ int main (int argc, char *argv[])
            sprintf(&str[0],"SELECT action,service FROM %s.reconfig WHERE service='proxy'&&action='shutdown'&&number='%d'",conf.samsdb,conf.cachenum);
 	   flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
-           //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ shutdown
+           //Если сигнал на shutdown
            
 	   if(mysql_num_rows(res)>0)
 	     {
@@ -2956,7 +2926,7 @@ int main (int argc, char *argv[])
 	   sprintf(&str[0],"SELECT action,service FROM %s.reconfig WHERE service='squid'&&action='reconfig'&&number='%d'",conf.samsdb,conf.cachenum);
            flag=send_mysql_query(conn2,&str[0]);
            res=mysql_store_result(conn2);
-           //О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ SQUID
+           //Если сигнал на рекофигурирование SQUID
            if(mysql_num_rows(res)>0||clearflag>0)  
              {
 	       clearflag=0;
@@ -3001,7 +2971,7 @@ int main (int argc, char *argv[])
                     sprintf(&str[0],"chown -R %s %s/_sams_*", &squiduser[0], conf.sgdbpath);
 		    system(&str[0]);
 	         }
-               /* О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ */
+               /* Задаем права доступа на каталог с Режиком */
                if(RREJIK==1)
                  {
                     sprintf(&str[0],"chown -R %s %s/_sams_*", &squiduser[0], conf.rejikpath);
