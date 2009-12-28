@@ -14,7 +14,7 @@ Name: sams-credit
 Name: sams
 %endif
 Version: 1.0.5
-Release: 59.1
+Release: 0
 Group: Applications/Internet
 License: GPL
 Source: http://nixdev.net/release/sams/sams-%{version}.tar.bz2
