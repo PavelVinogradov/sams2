@@ -51,15 +51,15 @@ Name: sams-credit
 %else
 Name: sams
 %endif
-Version: 1.0.5
+Version: 1.1.0
 Epoch:		742
 Release: %{epoch}%{disttag}
 Group: Applications/Internet
 License: GPL
 Source: http://nixdev.net/release/sams/sams-%{version}.tar.bz2
 #Source: http://nixdev.net/release/sams/sams-%{version}-%{epoch}.tar.bz2
-Patch0: sams-1.0.4.rpm.patch
-Patch1: credit-0.1-sams-1.0.4.patch
+Patch0: sams-1.1.0.rpm.patch
+Patch1: credit-0.1-sams-1.1.0.patch
 Vendor: Sams community
 Packager: SAMS Development Group
 URL: http://sams.perm.ru
@@ -294,10 +294,13 @@ exit 0
 exit 0
 
 %changelog
-* Sun Dec 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
-Added compatibility wirh sams2.spec.
+* Mon Dec 28 2009 Pavel Vinogradov <Pavel.Vinogradov@nixdev.net 1.1.0
+Added compatibility with sams2.spec
 Package split into three packages: sams sams-web sams-doc
 Lot of build bugs fixed
+New upstream version 1.1.0
+
+* Sun Dec 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
 New upstream version 1.0.5
 
 * Thu Nov 20 2008 Denis Zagirov <foomail@yandex.ru> 1.0.4
