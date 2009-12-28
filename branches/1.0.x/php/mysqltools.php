@@ -481,7 +481,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2015;$i++)
+for($i=$year-10;$i<$year+1;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -557,7 +557,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2015;$i++)
+for($i=$year-10;$i<$year+1;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -591,7 +591,7 @@ for($i=1;$i<13;$i++)
    }
 print("              </SELECT> \n");
 print("          <SELECT NAME=\"EYea\" size=1 > \n");
-for($i=2001;$i<2015;$i++)
+for($i=$year-10;$i<$year+1;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -673,7 +673,7 @@ for($i=1;$i<13;$i++)
    }
 print("	       </SELECT> \n");
 print("     <SELECT NAME=\"SYea\" size=1> \n");
-for($i=2001;$i<2015;$i++)
+for($i=$year-10;$i<$year+1;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
@@ -706,7 +706,7 @@ for($i=1;$i<13;$i++)
    }
 print("              </SELECT> \n");
 print("          <SELECT NAME=\"EYea\" size=1 > \n");
-for($i=2001;$i<2015;$i++)
+for($i=$year-10;$i<$year+1;$i++)
    {
      if($year==$i)
         print("	       <OPTION value=$i SELECTED>$i\n");
