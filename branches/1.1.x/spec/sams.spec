@@ -294,23 +294,24 @@ exit 0
 exit 0
 
 %changelog
-* Mon Dec 28 2009 Pavel Vinogradov <Pavel.Vinogradov@nixdev.net 1.1.0
+* Mon Dec 28 2009 Denis Zagirov <foomail@yandex.ru> 1.1.0
 Added compatibility with sams2.spec
 Package split into three packages: sams sams-web sams-doc
 Lot of build bugs fixed
 New upstream version 1.1.0
 
-* Sun Dec 27 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
+* Mon Dec 28 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
 New upstream version 1.0.5
 
-* Thu Nov 20 2008 Denis Zagirov <foomail@yandex.ru> 1.0.4
-Credit patch by cj_nik for version 1.0.4 added.  
-Credit patch filename changed according to sams version.  
-Packages added to Requires section: mysql-server. php-ldap, php-gd , php-mysql  
-  
-* Fri Nov 14 2008 Pavel Vinogradov <Pavel.Vinogradov@nixdev.net> 1.0.4  
-Small build fixed and grammar corection  
-New upstream version 1.0.4  
+* Fri Nov 14 2008 Denis Zagirov <foomail@yandex.ru> 1.0.4
+[Denis Zagirov]
+ Credit patch by cj_nik for version 1.0.4 added.
+ Credit patch filename changed according to sams version.
+ Packages added to Requires section: mysql-server. php-ldap, php-gd , php-mysql
+
+[Pavel Vinogradov]
+ Small build fixed and grammar corection
+ New upstream version 1.0.4
   
 * Sat Nov 8 2008 Denis Zagirov <foomail@yandex.ru> 1.0.3  
 Credit patch  by cj_nik added.  
@@ -331,4 +332,4 @@ Workaround for moving old sams.conf, ensure not to move sams.conf during rpm
 build on host with working sams. (Makefile.am lines 200-203 out)  
   
 * Thu Jun 16 2005 Dmitry Chemerik <chemerik@mail.ru>  
-New version  
+New version
