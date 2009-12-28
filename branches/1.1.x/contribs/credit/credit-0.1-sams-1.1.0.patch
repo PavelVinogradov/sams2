@@ -5,7 +5,7 @@
   INSERT INTO shablons VALUES('default','Default','64000','64000','','','100','MTWHFAS','0','0','24','0','M','0000-00-00','0');
   DROP TABLE IF EXISTS `squidusers`;
 - CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ) TYPE=MyISAM;
-+ CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ,`credit` bigint(20)) TYPE=MyISAM;
++ CREATE TABLE `squidusers` ( `id` char(25), `nick` char(25), `family` char(25), `name` char(25), `soname` char(25), `group` char(25), `domain` char(25), `shablon` char(25), `quotes` bigint(20), `size` bigint(20), `enabled` int(11), `ip` char(15), `ipmask` char(15), `passwd` char(20), `gauditor` int(1),`hit` bigint(20) NOT NULL default '0', `autherrorc` tinyint(1) default '0', `autherrort` varchar(16) default '0' ,`credit` bigint(20) NOT NULL default '0') TYPE=MyISAM;
   DROP TABLE IF EXISTS `tree`;
   CREATE TABLE `tree` ( `name` char(25), `value` tinyint(4)) TYPE=MyISAM;
   DROP TABLE IF EXISTS `urlreplace`;
@@ -253,85 +253,6 @@
 - ?>
 \ No newline at end of file
 + ?>
---- php/src/grouptray.php	2008-07-14 19:51:58.000000000 +0400
-+++ php/src/grouptray.php	2008-12-02 02:26:26.000000000 +0300
-@@ -98,12 +98,14 @@
-     {
-       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B>\n");
-       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B>\n");
-+      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$usertray_UserForm_8_1</B>\n");
-     }  
-   print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B>\n");
- 
-   $count=0;
-   $gtraffic=0;
-   $gquote=0;
-+  $gcredit=0;
-   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\" ORDER BY nick");
-   while($row=mysql_fetch_array($result))
-       {
-@@ -111,18 +113,23 @@
- 
-        if($row['enabled']>0)
-          {
-+	    $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
-+            $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
- 	    if($SAMSConf->realtraffic=="real")
- 	        $traffic=$row['size']-$row['hit'];
-             else
- 	        $traffic=$row['size'];
- 	    $gtraffic+=$traffic;
--	    $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
--            if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
-+	    $gquote+=$quotes;
-+	    $gcredit+=$credit;
-+	    if($quotes>=$traffic || $row['quotes']<=0)
-                $gif="puser.gif";
--            else
--               if($row['quotes']>0)
--                  $gif="quote_alarm.gif";
--          }
-+	    elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row['quotes']<=0)
-+	       $gif="credit_alarm.gif";
-+	    elseif($row['quotes'])
-+	       $gif="quote_alarm.gif";
-+         }
-+
-         if($row['enabled']==0)
-           {
-              $gif="puserd.gif";
-@@ -160,17 +167,30 @@
- 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
- 	     else  
- 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
-+	    print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[credit] Mb");
- 	   }
-          print("<TD WIDTH=\"40%\"> $row[family] $row[name] $row[soname]");
- 	 
- 	 $count=$count+1;  
-       }
--      print("<TR><TD><TD><TD>");
-+////////////////////////////////////////////////////////////////////////////////////
-+	print("<TR>");
-+	if($SAMSConf->access==2)
-+	    print("<TD><TD><TD>");
-+	elseif($ga==1) 
-+	    print("<TD>");
-+//      print("<TR><TD><TD><TD>");
-+///////////////////////////////////////////////////////////////////////////////////
-       PrintFormattedSize($gtraffic);
-       if($gquote!=0)
- 	PrintFormattedSize($gquote);
-       else
-       print("<TD ALIGN=\"CENTER\">unlimited");	
-+      if($gcredit!=0)
-+	PrintFormattedSize($gcredit);
-+      else
-+      print("<TD ALIGN=\"CENTER\">no credit");	
-+
-       print("<TD>\n");
-   print("</TABLE>\n");
- 
 --- php/src/shablontray.php	2007-09-14 13:13:08.000000000 +0400
 +++ php/src/shablontray.php	2008-12-01 07:19:57.000000000 +0300
 @@ -76,14 +76,17 @@
@@ -513,3 +434,82 @@
                          flag=send_mysql_query(conn2,&str[0]);
  
  			    tt2=tt+60*60*24*atoi(row[0]);
+--- php/src/grouptray.php.orig	2008-11-16 17:35:32.000000000 +0300
++++ php/src/grouptray.php	2008-11-20 21:37:01.000000000 +0300
+@@ -98,31 +98,36 @@
+     {
+       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_6</B>\n");
+       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B>\n");
++      print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$usertray_UserForm_8_1</B>\n");
+     }  
+   print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B>\n");
+ 
+   $count=0;
+   $gtraffic=0;
+   $gquote=0;
++  $gcredit=0;
+   $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\" ORDER BY nick");
+   while($row=mysql_fetch_array($result))
+       {
+        print("<TR>\n");
+ 
++       $quotes=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
++       $credit=$row['credit']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+        if($SAMSConf->realtraffic=="real")
+  	 $traffic=$row['size']-$row['hit'];
+        else
+          $traffic=$row['size'];
+        $gtraffic+=$traffic;
+-       $gquote+=$row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE;
+-      
++       $gquote+=$quotes;
++       $gcredit+=$credit;
+        if($row['enabled']>0)
+          {
+-            if($row['quotes']*$SAMSConf->KBSIZE*$SAMSConf->KBSIZE>=$traffic||$row['quotes']<=0)
++            if($quotes>=$traffic||$row['quotes']<=0)
+                $gif="puser.gif";
+-            else
+-               if($row['quotes']>0)
+-                  $gif="quote_alarm.gif";
++            elseif(($quotes<=$traffic && $quotes+$credit>=$traffic) ||  $row['quotes']<=0)
++	       $gif="credit_alarm.gif";
++	    elseif($row['quotes'])
++	       $gif="quote_alarm.gif";
+           }
+         if($row['enabled']==0)
+           {
+@@ -161,22 +166,27 @@
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[quotes] Mb");
+ 	     else  
+ 	       print("<TD WIDTH=\"15%\" ALIGN=CENTER> unlimited ");
++	    print("<TD WIDTH=\"15%\" ALIGN=CENTER> $row[credit] Mb");
+ 	   }
+          print("<TD WIDTH=\"40%\"> $row[family] $row[name] $row[soname]");
+ 	 
+ 	 $count=$count+1;  
+       }
+-      if($SAMSConf->access==2||$ga==1)
+-        {
+-          print("<TR><TD><TD><TD>");
++	print("<TR>");
++	if($SAMSConf->access==2)
++	    print("<TD><TD><TD>");
++	elseif($ga==1) 
++	    print("<TD>");
+           PrintFormattedSize($gtraffic);
+           if($gquote!=0)
+             PrintFormattedSize($gquote);
+           else
+             print("<TD ALIGN=\"CENTER\">unlimited");	
+-          print("<TD>\n");
+-	  print("</TR>\n");
+-        }
++      if($gcredit!=0)
++	PrintFormattedSize($gcredit);
++      else
++      print("<TD ALIGN=\"CENTER\">no credit");	
++      print("<TD>\n");
+     print("</TABLE>\n");
+ 
+     if($SAMSConf->access==2)
