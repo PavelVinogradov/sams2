@@ -2270,6 +2270,8 @@ void ReadSAMSFlags(MYSQL *conn2)
   if(DEBUG==1)
     printf("    SQUID log parser... ");
   sams_step=1;
+
+/* 
   sprintf(&temp[0],"%s",row[6]);
   if(strcmp(row[6],"analog")==0)
     {
@@ -2277,7 +2279,8 @@ void ReadSAMSFlags(MYSQL *conn2)
       if(DEBUG==1)
          printf("permanent\n");
     }
-  sprintf(&temp[0],"%s",row[6]);
+*/    
+  sprintf(&temp[0],"%s",row[6]);  
   if(strcmp(&temp[0],"diskret")==0)
     {
       sams_step=atoi(row[5]);
@@ -2285,7 +2288,11 @@ void ReadSAMSFlags(MYSQL *conn2)
       if(DEBUG==1)
          printf("diskret\n");
     }
-
+  else
+    {
+      printf("SAMS 1.1.n don't support analog parser. Please use dickret parser!");
+      exit (1);
+    }
 
   if(DEBUG==1)
     printf("    User traffic cleaner... ");
@@ -2637,6 +2644,7 @@ int main (int argc, char *argv[])
   //printf("start time: %d-%d-%d %d:%d:%d\n",t->tm_year+1900,t->tm_mon+1,t->tm_mday,t->tm_hour,t->tm_min,t->tm_sec);
 
 
+/* SAMS 1.1.x don't support analog parser
   if(ANALOG==1)  
     {
        if(DEBUG==1)
@@ -2647,6 +2655,8 @@ int main (int argc, char *argv[])
        sprintf(&str[0],"%s/bin/samsf ", conf.samspath);
        system(&str[0]);
     }
+*/
+
   sams_clr_month=t->tm_mon+1;
   sams_clr_day=t->tm_mday;
   sams_sec=(60*sams_step)-t->tm_sec;
@@ -3014,6 +3024,7 @@ int main (int argc, char *argv[])
 	            tt=time(NULL);
                     t=localtime(&tt);
 
+		    /* SAMS 1.1.x don't support analog parser
                     if(ANALOG==1)  
                       {
                          flag=system("killall samsf");
@@ -3025,6 +3036,7 @@ int main (int argc, char *argv[])
 			   printf("restarting samsf = %d\n",flag);
 			 AddLog(conn2,0,"samsdaemon","Restarting samsf");
                       }
+		    */
 /* swap.state*/
 //  sprintf(&str[0],"%s/swap.state",conf.cachedir);
 //  lstat(&str[0],&s);
