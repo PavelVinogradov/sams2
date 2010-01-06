@@ -10,7 +10,7 @@
  localstatedir = @localstatedir@
  libdir = @libdir@
 @@ -206,7 +206,6 @@
- 	cp ./samsf $(bindir);
+ 	cp ./sams $(bindir);
  	cp ./samsredir $(bindir);
  	cp ./samsdaemon $(bindir);
 -	cp ./etc/sams $(RCDPATH);
