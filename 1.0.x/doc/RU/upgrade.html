@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+ <H2>Обновление версии SAMS</H2>
+
+
+<H3>Изменение структуры баз данных</H3>
+
+<P>Добавление новых возможностей в SAMS обычно сопровождается изменением структуры 
+баз данных SAMS. Для изменения структуры баз данных SAMS необходимо запустить скрипт 
+sams/update/upgrade_mysql_table.php
+<BR>Во время выполнения файла будут выводиться логи изменения структуры баз данных. 
+<BR>Пример:
+<em>
+<BR>SEARCH FIELD squidctrl.sams.realsize ... FOUND
+<BR>SEARCH FIELD squidctrl.sams.checkdns ... FOUND
+<BR>SEARCH FIELD squidctrl.webisettings.showname ... FOUND
+<BR>RENAME COLUMN sams.lang
+<BR>ALTER TABLE sams CHANGE lang separator  VARCHAR(15) DEFAULT '+'
+<BR> ... NO
+<BR>SEARCH FIELD squidctrl.sams.loglevel ... FOUND
+<BR>SEARCH FIELD squidctrl.webisettings.kbsize ... FOUND
+<BR>SEARCH FIELD squidctrl.webisettings.mbsize ... FOUND
+<BR>SEARCH TABLE globalsettings ... FOUND
+<BR>SEARCH FIELD squidctrl.sams.defaultdomain ... FOUND
+</em>
+
+
+<H3>Обновление WEB интерфейса и ПО SAMS</H3>
+
+<LI>Сконфигурируйте и скомпилируйте SAMS
+<BR>./configure
+<BR>make
+
+<LI>Остановите samsdaemon
+<LI>Если вы импользуете редиректор sams, остановите SQUID.
+
+<LI>Обновите версию SAMS.
+<BR>make update 
+
+</BODY>
+</HTML>
