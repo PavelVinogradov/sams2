@@ -113,6 +113,7 @@ function AddUser()
   if(isset($_GET["useripmask"])) $useripmask=$_GET["useripmask"];
   if(isset($_GET["newusernick"])) $newusernick=$_GET["newusernick"];
   if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
+  if(isset($_GET["passwd"])) $passwd=$_GET["passwd"];
 
   if(($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")&&$SAMSConf->NTLMDOMAIN=="Y"&&strlen($newusernick)>0)
     { 
@@ -145,6 +146,12 @@ function AddUser()
 
   $usergroup=trim($usergroup);
 
+  if(strlen($passwd) > 0)
+        $pass=crypt($passwd, substr($passwd,0,2));
+  else
+	$pass="";
+
+/*
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
       $pass = "";
@@ -156,7 +163,7 @@ function AddUser()
       else
 	$pass=crypt("none", substr("none",0,2));
     }
-
+*/
   if($enabled=="on")
      $enabled=1;
   else
@@ -272,19 +279,12 @@ function NewUserForm()
          }
        print("> \n");
 
-       if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
-         {
-           if($SAMSConf->AUTH=="ncsa")
-              print("<TR><TD><B>$userstray_NewUserForm_5:\n");
-           if($SAMSConf->AUTH=="ip")
-              print("<TR><TD><B>$userstray_NewUserForm_6:\n");
-           print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 >\n");
-         }
-       //if($SAMSConf->AUTH=="ip")
-       //  {
-           print("<TR><TD><B>$userstray_NewUserForm_7: \n");
-           print("<TD><INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=15> \n");
-       //  }
+       print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_3:\n");
+       print("<TD><INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 >\n");
+
+       print("<TR><TD><B>$userstray_NewUserForm_7: \n");
+       print("<TD><INPUT TYPE=\"TEXT\" NAME=\"userip\" SIZE=15> \n");
+
        print("<TR>\n");
        print("<TD>\n");
        print("<B>$userstray_NewUserForm_8: \n");
@@ -292,14 +292,14 @@ function NewUserForm()
        print("<INPUT TYPE=\"TEXT\" NAME=\"username\" SIZE=30> \n");
        print("<TR>\n");
        print("<TD>\n");
-       print("<B>$userstray_NewUserForm_10: \n");
-       print("<TD>\n");
-       print("<INPUT TYPE=\"TEXT\" NAME=\"userfamily\" SIZE=30> \n");
-       print("<TR>\n");
-       print("<TD>\n");
        print("<B>$userstray_NewUserForm_9: \n");
        print("<TD>\n");
        print("<INPUT TYPE=\"TEXT\" NAME=\"usersoname\" SIZE=30> \n");
+       print("<TR>\n");
+       print("<TD>\n");
+       print("<B>$userstray_NewUserForm_10: \n");
+       print("<TD>\n");
+       print("<INPUT TYPE=\"TEXT\" NAME=\"userfamily\" SIZE=30> \n");
        print("<TR>\n");
        print("<TD>\n");
        print("<B>$userstray_NewUserForm_11: \n");
