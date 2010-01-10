@@ -1,0 +1,57 @@
+sams (1.0.5) unstable; urgency=low
+
+  * Official 1.0.5 release
+  * Package sams-web now depends on sams package
+  * Remove /etc/sams.conf from sams-web package
+  * Upgrade to standards version 3.8.3 (no changes)
+  * Fix some lintian warnings
+  * Depends now on mysql-server without any version number
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Mon, 28 Dec 2009 19:05:44 +0500
+
+sams (1.0.4-1) unstable; urgency=low
+
+  * Official 1.0.4 release
+  * Fix permission for /usr/share/sams/data folder (Bug #218)
+  * Fix many lintian warnings.
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 15 Nov 2008 19:05:44 +0500
+
+sams (1.0.3-2) unstable; urgency=low
+
+  * Official 1.0.3 release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Tue, 15 Jul 2008 19:05:44 +0500
+
+sams (1.0.3-1) unstable; urgency=low
+
+  * Update preinst and postinst scripts
+  * Use debconf to show alert for new users
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Sat, 14 Jun 2008 17:46:15 +0500
+
+sams (1.0.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Fix instalation of init.d script
+  * Fix syntax of init.d script
+  * All binaries now installed in /usr/bin
+  * Rename and update squidguard.conf.patch
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 29 Feb 2008 10:57:04 +0500
+ 
+sams (1.0.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Split package in three part
+  * Fix bugs in package
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 25 Jan 2008 10:57:04 +0500
+
+sams (1.0.0-1) unstable; urgency=low
+
+  * Initial release 
+  * Fix some problems with Makefile
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
+

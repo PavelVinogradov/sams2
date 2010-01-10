@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# $FreeBSD: samsd,v 1.4 2005/09/26 19:53:00 Evgeny Bobir aka LM $
+#
+
+# PROVIDE: samsd
+# REQUIRE: mysql
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name="samsd"
+rcvar=`set_rcvar samsd`
+command="/usr/local/bin/samsdaemon"
+
+load_rc_config $name
+command_args="${samsd_server_flags}"
+sig_stop="USR1"
+
+run_rc_command "$1" 

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+df -P -h | grep -v devfs
