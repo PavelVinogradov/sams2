@@ -179,7 +179,7 @@ function authncsabuttom_1_usersimport()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=loadfileform&filename=authncsabuttom_1_usersimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
+       GraphButton("main.php?show=exe&function=loadfileform&filename=authncsabuttom_1_usersimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1 ");
 	}
 
 }

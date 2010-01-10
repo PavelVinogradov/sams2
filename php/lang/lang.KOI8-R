@@ -976,6 +976,10 @@
    $documentation="Документация";
    $blocked_php_14="Время доступа к прокси серверу:";
    $activate_user="Активировать пользователя";
-
+   $MoveUserTrafficDataForm_1="Переместить данные о трафике другому пользователю";
+   $MoveUserTrafficDataForm_2="Переместить данные о трафике пользователя";
+   $MoveUserTrafficDataForm_3="пользователю";
+   $MoveUserTrafficDataForm_4="Переместить";
+   $authbuttom_1_ncsaimport_LoadFileForm_1="Загрузка списка пользователей из файла с паролями";
 
 ?>

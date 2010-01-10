@@ -17,7 +17,7 @@ function UsersImportFromNCSAFile()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  PageTop("user.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
+  PageTop("user.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
 
   if(isset($_GET["username"])) $userlist=$_GET["username"];
   if(isset($_GET["groupname"])) $usergroup=$_GET["groupname"];
@@ -87,7 +87,7 @@ function UsersImportFromNCSAFileForm()
   
   $DB=new SAMSDB(&$SAMSConf);
 
-  PageTop("user.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
+  PageTop("loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
   
 
 	$listfilename=$_FILES["userfile"]["name"];
@@ -160,7 +160,7 @@ function LoadNCSAFileForm()
    if($USERConf->ToWebInterfaceAccess("CL")!=1 )
 	exit;
   
-  PageTop("loadusers_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
+  PageTop("loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
   print("<FORM NAME=\"LOADFILE\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=usersimportfromncsafileform&filename=authncsabuttom_2_ncsaimport.php\" METHOD=POST>\n");
   print("    <INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");
   print("<BR><INPUT TYPE=\"FILE\" NAME=\"userfile\" value=\"$redir_importurllistform1\">\n");
@@ -180,7 +180,7 @@ function authncsabuttom_2_ncsaimport()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
-       GraphButton("main.php?show=exe&function=loadncsafileform&filename=authncsabuttom_2_ncsaimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
+       GraphButton("main.php?show=exe&function=loadncsafileform&filename=authncsabuttom_2_ncsaimport.php","basefrm","loadncsa_32.jpg","loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1 ");
 	}
 
 }
