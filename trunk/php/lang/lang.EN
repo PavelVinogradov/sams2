@@ -962,6 +962,11 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 //  require($lang);
   $blocked_php_14="Access time:";
   $activate_user="Activate the user";
+  $MoveUserTrafficDataForm_1="To move the data about traffic of the user";
+  $MoveUserTrafficDataForm_2="Move traffic data from user";
+  $MoveUserTrafficDataForm_3="to user";
+  $MoveUserTrafficDataForm_4="To move the traffic data";
+  $authbuttom_1_ncsaimport_LoadFileForm_1="Loading of the list of users from a file with passwords";
 
 
 ?>
