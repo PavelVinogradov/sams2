@@ -1,4 +1,0 @@
-#!/bin/sh
-
-STR=`free | grep Mem:`
-echo $STR 
