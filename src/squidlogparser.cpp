@@ -453,8 +453,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         case SquidLogLine::TCP_REF_FAIL_HIT:
         case SquidLogLine::TCP_IMS_HIT:
         case SquidLogLine::UDP_HIT:
-          usr->addHit (sll.getSize ());
           s_hit = sll.getSize ();
+          usr->addHit (s_hit);
         case SquidLogLine::TCP_NEGATIVE_HIT:
         case SquidLogLine::TCP_MISS:
         case SquidLogLine::TCP_REFRESH_MISS:
@@ -471,8 +471,8 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         case SquidLogLine::ERR_NO_CLIENTS:
         case SquidLogLine::ERR_READ_ERROR:
         case SquidLogLine::ERR_CONNECT_FAIL:
-          usr->addSize (sll.getSize ());
           s_size = sll.getSize ();
+          usr->addSize (s_size);
           break;
         }
       sprintf (s_user, "%s", usr->getNick ().c_str ());

@@ -172,7 +172,7 @@ void SAMSUser::setSize (long long size)
   _size = size;
 }
 
-void SAMSUser::addSize (long size)
+void SAMSUser::addSize (long long size)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << size << ")]");
   _size += size;
@@ -194,7 +194,7 @@ void SAMSUser::setHit (long long hit)
   _hit = hit;
 }
 
-void SAMSUser::addHit (long hit)
+void SAMSUser::addHit (long long hit)
 {
   DEBUG (DEBUG8, "[" << this << "->" << __FUNCTION__ << "(" << hit << ")]");
   _hit += hit;

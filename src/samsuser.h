@@ -182,7 +182,7 @@ public:
    *
    * @param size Объем
    */
-  void addSize (long size);
+  void addSize (long long size);
 
   /**
    * @brief Возвращает объем израсходованного трафика
@@ -202,7 +202,7 @@ public:
    *
    * @param hit Объем
    */
-  void addHit (long hit);
+  void addHit (long long hit);
 
   /**
    * @brief Возвращает объем трафика из кэша
