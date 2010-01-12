@@ -122,7 +122,7 @@ int TestInputString(char *str)
 	}  
     }  
 //  if((int)str[10]!=0x2E && (int)str[14]!=0x20 && (int)str[21]!=0x20)
-  if((int)str[10]!=0x2E || (int)str[14]!=0x20 || (int)str[21]!=0x20)
+  if( (int)str[10]!=0x2E || (int)str[14]!=0x20 || ( (int)str[21]!=0x20 && (int)str[22]!=0x20 && (int)str[23]!=0x20 && (int)str[24]!=0x20  ) )
     {
       if(DEBUG>0)
         {
