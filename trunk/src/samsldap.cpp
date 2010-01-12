@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "samsldap.h"
+#include "debug.h"
 
 #ifdef USE_LDAP
 
@@ -36,6 +37,8 @@ bool SamsLDAP::connect (const string &host, const string &binddn, const string &
 
   if (_connected)
     disconnect ();
+
+  DEBUG(DEBUG8, "Connecting to " << host << " as " << binddn);
 
   string uri = "ldap://" + host;
   _err = ldap_initialize (&_handle, uri.c_str());
