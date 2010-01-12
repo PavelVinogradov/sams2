@@ -288,7 +288,7 @@ bool PgQuery::fetch ()
               ok = false;
             break;
           case DBQuery::T_LONGLONG:
-            if (sscanf(val, "%Ld", (long long*)_columns[i].dst) != 1)
+            if (sscanf(val, "%lld", (long long*)_columns[i].dst) != 1)
               ok = false;
             break;
           default:

@@ -419,7 +419,7 @@ bool MYSQLQuery::fetch ()
               case MYSQL_TYPE_LONGLONG:
                 if (row[i])
                   {
-                    if (sscanf(row[i], "%Ld", (long long*)_columns[i].dst) != 1)
+                    if (sscanf(row[i], "%lld", (long long*)_columns[i].dst) != 1)
                       ok = false;
                   }
                 else
