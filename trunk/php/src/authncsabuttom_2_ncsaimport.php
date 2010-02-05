@@ -9,7 +9,7 @@ function UsersImportFromNCSAFile()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -85,7 +85,7 @@ function UsersImportFromNCSAFileForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
   
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   PageTop("loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
   

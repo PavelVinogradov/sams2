@@ -46,7 +46,7 @@ function JSProxyInfo()
             $redirector="$adminbuttom_1_prop_SamsReConfigForm_8";
 
   $extrainfo="";
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query("SELECT * FROM sysinfo WHERE s_status='1' AND s_proxy_id='$PROXYConf->s_proxy_id'");
 
   if ($num_rows>0)

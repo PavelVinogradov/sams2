@@ -9,7 +9,7 @@ function ClearUserTrafficCounter()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -40,7 +40,7 @@ function ClearUserTrafficCounterForm()
   global $USERConf;
   global $SquidUSERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if($USERConf->ToWebInterfaceAccess("UC")!=1)

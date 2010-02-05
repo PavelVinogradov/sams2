@@ -10,16 +10,19 @@ function SaveBackUp()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
 	if($USERConf->ToWebInterfaceAccess("C")!=1 )
 		exit;
 
+   if(isset($_GET["traffic"])) $traffic=$_GET["traffic"];
+
 	$samsdb=array('auth_param', 'passwd', 'proxy', 'redirect',
 	'sconfig', 'sconfig_time', 'sgroup', 'shablon', 'squiduser',
 	'sysinfo', 'timerange', 'url', 'websettings');
+	$traffictable=array('squidcache', 'cachesum');
 	$filename=strftime("sams2-%d%b%Y-%H-%M-%S.sql.gz");
 
 	PageTop("backup_48.jpg","$backupbuttom_1_savebase_SaveBackUpForm_1");
@@ -49,6 +52,30 @@ function SaveBackUp()
 				gzwrite($fout,$export."\n");
 			}
 		}
+		if($traffic=="on")
+		{
+			for($tcount=0;$tcount<count($traffictable);$tcount++)
+			{
+				echo "export table: ".$traffictable[$tcount]."<BR>";
+				gzwrite($fout,"DELETE FROM ".$traffictable[$tcount].";\n");
+				$QUERY="SELECT * FROM ".$traffictable[$tcount];
+				$num_rows=$DB->samsdb_query_value($QUERY);
+				while($row=$DB->samsdb_fetch_array())
+				{
+					$export = "INSERT INTO ".$traffictable[$tcount]." VALUES(";
+					$a=0;
+					$a=ceil(count($row)/2);
+					for($i=0;$i<$a;$i++)
+					{
+						$export=$export."'".$row[$i]."'";
+						if($i<$a-1)
+							$export=$export.",";
+					}
+					$export=$export.");";
+					gzwrite($fout,$export."\n");
+				}
+			}
+		}
 		gzclose($fout);
 	}
 	else
@@ -73,6 +100,29 @@ function SaveBackUp()
 				}
 				$export=$export.");";
 				fwrite($fout,$export."\n");
+			}
+		}
+		if($traffic=="on")
+		{
+			for($tcount=0;$tcount<count($traffictable);$tcount++)
+			{
+				fwrite($fout,"DROP TABLE IF EXISTS `".$traffictable[$tcount]."`;\n");
+				fwrite($fout,"CREATE TABLE `".$traffictable[$tcount]."`;\n");
+				$QUERY="SELECT * FROM ".$traffictable[$tcount];
+				$num_rows=$DB->samsdb_query_value($QUERY);
+				while($row=$DB->samsdb_fetch_array())
+				{
+					$export = "INSERT INTO ".$traffictable[$tcount]." VALUES(";
+					$a=count($row);
+					for($i=0;$i<$a;$i++)
+					{
+						$export=$export."'".$row[$i]."'";
+						if($i<$a-1)
+							$export=$export.",";
+					}
+					$export=$export.");";
+					fwrite($fout,$export."\n");
+				}
 			}
 		}
 		fclose($fout);
@@ -104,10 +154,11 @@ function SaveBackUpForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"savebackup\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"configbuttom_4_backup.php\">\n");
-	print("<BR>$backupbuttom_1_savebase_SaveBackUpForm_2\n");
-	print("<TABLE>\n");
+	print("<BR>$backupbuttom_1_savebase_SaveBackUpForm_2:\n");
+	print("<P><TABLE>\n");
+	print("<TR><TD><P><INPUT TYPE=\"CHECKBOX\" NAME=\"traffic\"> Save traffic \n");
+	print("<TR><TD><P><INPUT TYPE=\"SUBMIT\" value=\"$backupbuttom_1_savebase_SaveBackUpForm_3\">\n");
 	print("</TABLE>\n");
-	print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$backupbuttom_1_savebase_SaveBackUpForm_3\">\n");
 	print("</FORM>\n");
 
 }

@@ -103,8 +103,7 @@ if($shou==0)
 $DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
 
-//$DB=new SAMSDB($$SAMSConf);
-$DB=new SAMSDB(&$SAMSConf);
+$DB=new SAMSDB();
 
 require('./userclass.php');
 $USERConf=new SAMSUSER();

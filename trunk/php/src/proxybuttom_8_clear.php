@@ -10,7 +10,7 @@ function ClearCounter()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   
   $lang="./lang/lang.$SAMSConf->LANG";

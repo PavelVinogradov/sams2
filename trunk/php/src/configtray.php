@@ -95,7 +95,7 @@ function FileSystemUsage()
 function SysInfo()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
    PageTop("stat_48.jpg","System Information");
 

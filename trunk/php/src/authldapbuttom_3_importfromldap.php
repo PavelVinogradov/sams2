@@ -8,7 +8,7 @@
 function AddGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -41,7 +41,7 @@ function AddGroup()
 function AddShablon()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -90,7 +90,7 @@ function ImportFromLDAP()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -227,7 +227,7 @@ function ImportFromLDAPForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);  
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   PageTop("importfromldap-48.jpg"," $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1 ");
   

@@ -81,7 +81,7 @@ function RemoveSyncGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -107,7 +107,7 @@ function AddSyncGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -145,8 +145,8 @@ function AuthADLDValues()
   print("<P>\n");
   print("<P>\n");
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   $result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='adld' AND s_param='adldgroup'");
   if($result>0)
   {

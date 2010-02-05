@@ -30,7 +30,7 @@ function AuthADLDReConfigForm()
   global $SAMSConf;
   global $PROXYConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $files=array();
   if(isset($_GET["id"])) $proxy_id=$_GET["id"];

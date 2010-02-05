@@ -12,7 +12,7 @@ function AddUsersFromAdLDAP()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -115,7 +115,7 @@ function AddUsersFromADLDForm()
 	require_once("src/adldap.php");
 
 	print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
   	$adldserver=GetAuthParameter("adld","adldserver");
 	$basedn=GetAuthParameter("adld","basedn");

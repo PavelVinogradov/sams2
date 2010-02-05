@@ -59,7 +59,7 @@ function UsersChartGB()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
@@ -119,7 +119,7 @@ function UsersChartGB()
 		$count++;
 	}
 
-	$pie = new PieGraph(400, 250, $size);
+	$pie = new PieGraph(300, 200, $size);
 	$pie->setColors($usercolors);
 	// legends for the data
 	$pie->setLegends($user);
@@ -142,7 +142,7 @@ function UsersChart()
   if($USERConf->ToWebInterfaceAccess("CS")!=1)
 	exit(0);
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();

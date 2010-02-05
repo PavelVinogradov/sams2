@@ -9,7 +9,7 @@ function UsersImportFromFile()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -84,7 +84,7 @@ function UsersImportFromFileForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
   
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   PageTop("user.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
   

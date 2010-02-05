@@ -10,7 +10,7 @@ function MoveUsersToShablon()
   global $SAMSConf;
   global $SHABLONConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
@@ -36,7 +36,7 @@ function ShablonUsers()
   global $SAMSConf;
   global $SHABLONConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

@@ -968,5 +968,43 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $MoveUserTrafficDataForm_4="To move the traffic data";
   $authbuttom_1_ncsaimport_LoadFileForm_1="Loading of the list of users from a file with passwords";
 
+  $setup_1="Choose language";
+  $setup_2="Verify requirements";
+  $setup_3="Set up database";
+  $setup_4="Finished";
+  $setup_5="Requirements problem";
+  $setup_6="The following errors must be resolved before you can continue the installation process:";
+   $setup_7="Web interface SAMS demands the right to record in the catalogue ./data";
+   $setup_8="Каталог ./data закрыт для записи. Чтобы продолжить установку, настройте разрешения вручную.";
+   $setup_9="Пожалуйста, проверьте сообщение об ошибке и попробуйте снова.";
+   $setup_10="Для создания вашей базы данных SAMS2 укажите следующую информацию.";
+   $setup_11="database engine";
+   $setup_12="database user";
+   $setup_13="Password";
+   $setup_14="hostname";
+   $setup_15="database name";
+
+   $setup_16="Next";
+   $setup_17="Back";
+   $setup_18="Check up again";
+   $setup_19="Access rights";
+   $setup_20="php settings";
+   $setup_21="php modules";
+   $setup_22="Zlib module";
+   $setup_23="GD2 module";
+   $setup_24="MySQL support";
+   $setup_25="installed";
+   $setup_26="accessible to record";
+   $setup_27="inaccessible to record";
+   $setup_28="not installed";
+   $setup_29="Recommended";
+   $setup_30="Installed";
+   $setup_31="Options";
+   $setup_32="Create SAMS DB user";
+   $setup_33="SAMS DB user";
+   $setup_34="SAMS DB user password";
+   $setup_35="PostgreSQL support";
+   $setup_36="Start SAMS web interface";
+   $setup_37="Creation of database SAMS";
 
 ?>

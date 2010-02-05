@@ -281,7 +281,7 @@ function IMPORTUSERS($hostname, $username, $pass)
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
- $this->DB=new SAMSDB(&$SAMSConf);
+ $this->DB=new SAMSDB();
  $this->oldDB=new CREATESAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
 
  $this->oldDB->samsdb_query_value("SELECT lang FROM globalsettings");
@@ -305,17 +305,14 @@ function IMPORTUSERS($hostname, $username, $pass)
 
  $this->pgcharset=pg_client_encoding($this->DB->link);
 
- if($SAMSConf->DB_ENGINE=="PostgreSQL")
+ if($SAMSConf->DB_ENGINE=="PostgreSQL"&&$this->sams1charset!=$this->pgcharset)
  {
-	$this->pgcharset=pg_client_encoding($this->DB->link);
-	if($this->sams1charset!=$this->pgcharset)
+	if($this->sams1charset=="KOI8-R")
 	{
-		if($this->sams1charset=="KOI8-R")
-		{
-			pg_set_client_encoding("KOI8");
-		}
+		pg_set_client_encoding("KOI8");
 	}
  }
+
 }
 
 }

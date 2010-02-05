@@ -12,7 +12,7 @@ function AddUsersFromNTLM()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -77,7 +77,7 @@ function AddUsersFromNTLMForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);  
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 NTLM ");
   
   $ntlmserver=GetAuthParameter("ntlm","ntlmserver");

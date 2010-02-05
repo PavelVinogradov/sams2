@@ -27,7 +27,7 @@ function trangeday($dayofweek)
 function SAMSTRANGE($trangeid)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query_value("SELECT *, extract(hour from s_timestart) as s_hour, extract(hour from s_timeend) as e_hour, extract(minute from s_timestart) as s_min, extract(minute from s_timeend) as e_min  FROM timerange WHERE s_trange_id='$trangeid' ");
   $row=$DB->samsdb_fetch_array();
   $this->s_trange_id=$row['s_trange_id'];

@@ -26,7 +26,7 @@ function SAMSAuthenticate()
 function SetUserAuthErrorVariables()
 {
 	global $SAMSConf;
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
 	$time=time();
 
@@ -53,7 +53,7 @@ function SetUserAuthErrorVariables()
 function LoadUserVariables($request)
 {
     global $SAMSConf;
-    $DB=new SAMSDB(&$SAMSConf);
+    $DB=new SAMSDB();
     $num_rows=$DB->samsdb_query_value($request);
 
     if($num_rows==1)
@@ -77,7 +77,7 @@ return(0);
 function LoadUndefinedUserVariables($request)
 {
     global $SAMSConf;
-    $DB=new SAMSDB(&$SAMSConf);
+    $DB=new SAMSDB();
     $num_rows=$DB->samsdb_query_value($request);
 
     if($num_rows>0)

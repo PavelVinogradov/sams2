@@ -25,7 +25,7 @@ function AuthEnabled()
   if($ncsa=="on") $ncsa=1; else $ncsa=0;
 
 
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 	$num_rows=$DB->samsdb_query("UPDATE auth_param SET s_value='$ip' WHERE s_auth='ip' AND s_param='enabled' ");
 	$num_rows=$DB->samsdb_query("UPDATE auth_param SET s_value='$adld' WHERE s_auth='adld' AND s_param='enabled' ");
 	$num_rows=$DB->samsdb_query("UPDATE auth_param SET s_value='$ntlm' WHERE s_auth='ntlm' AND s_param='enabled' ");

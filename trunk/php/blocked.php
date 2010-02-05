@@ -42,7 +42,7 @@
   $langfile="lang/lang.$LANG";
   require($langfile);
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $QUERY="SELECT s_nick, s_family, s_name, s_shablon_id FROM squiduser WHERE s_ip='$id' OR s_nick='$id'";
 
   $result=$DB->samsdb_query_value($QUERY);
@@ -79,9 +79,9 @@
     {
         print("  <P><FONT COLOR=\"RED\"><B><H3>$blocked_php_9");
         print("  <BR>$blocked_php_10</H3></FONT> ");
-        print("  <P>access time:");
+        print("  <P>$blocked_php_14");
 
-        $DB2=new SAMSDB(&$SAMSConf);
+        $DB2=new SAMSDB();
         $QUERY2="SELECT sconfig_time.s_shablon_id,timerange.s_timestart,timerange.s_timeend FROM sconfig_time LEFT JOIN timerange
         ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$row[s_shablon_id]'";
         $result2=$DB2->samsdb_query_value($QUERY2);

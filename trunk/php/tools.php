@@ -3,7 +3,7 @@
 function SearchAuthParameter($auth,$parameter,$value)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' AND s_value='$value' ");
   return($num_rows);
 }
@@ -32,7 +32,7 @@ function UpdateAuthParameter($auth,$parameter)
   if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
   if($value!="")
   {
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 	$num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
 	if($num_rows>0)
 	{
@@ -56,7 +56,7 @@ function GetAuthParameter($auth,$parameter)
 {
   global $SAMSConf;
   $value="";
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
   if($num_rows>0)
   {
@@ -77,7 +77,7 @@ function ReturnDate($string)
 function UserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["id"])) $id=$_POST["id"];
@@ -149,7 +149,7 @@ function UserAuth()
 function NotUsersTreeUserAuth()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   if(isset($_POST["userid"])) $password=$_POST["userid"];
   if(isset($_POST["user"])) $userdomain=$_POST["user"];
@@ -312,7 +312,7 @@ function UserAuthenticate($user,$passwd)
   if(strlen($user)>0 && strlen($passwd)>0)
 	{
 
-	  $DB=new SAMSDB(&$SAMSConf);
+	  $DB=new SAMSDB();
 	  $num_rows=$DB->samsdb_query_value("SELECT s_user FROM passwd WHERE s_user='$user' and s_pass='$passwd' ");
 
 //echo "<h1>=$num_rows=</h1>";
@@ -463,15 +463,12 @@ function ReturnLanguage($filename)
 function PageTop($imgname,$text)
 {
   global $SAMSConf;
-  print("<CENTER>\n");
-  print("<TABLE WIDTH=\"95%\" border=0>\n");
-  print("<TR>\n");
-  print("<TD WIDTH=\"10%\"  valign=\"middle\">\n");
-  print("<img src=\"$SAMSConf->ICONSET/$imgname\" align=\"RIGHT\" valign=\"middle\" >\n");
-  print("<TD  valign=\"middle\">\n");
-  print("<h2  align=\"CENTER\">$text</h2>\n");
+
+  print("<TABLE  CLASS=pagetop>\n");
+  print("<TR><TD WIDTH=\"10%\">\n");
+  print("<img src=\"$SAMSConf->ICONSET/$imgname\">\n");
+  print("<TD><h2>$text</h2>\n");
   print("</TABLE>\n");
-  print("</CENTER>\n");
   print("<BR>\n");
 }
 

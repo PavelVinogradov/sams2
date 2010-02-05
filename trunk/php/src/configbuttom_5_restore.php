@@ -11,7 +11,7 @@ function LoadBackUp()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -28,8 +28,10 @@ function LoadBackUp()
 		$QUERY=strtok($string,";");
 		if(strstr ( $QUERY, "#" ) == FALSE)
 		{
+			echo "$QUERY<BR>";
 			$num_rows=$DB->samsdb_query($QUERY.";");
 		}
+		$count++;
 	}
 
   }
@@ -55,7 +57,7 @@ function LoadBackUpForm()
   print("<P>\n");
   print("<BR>$backupbuttom_2_loadbase_LoadBackUpForm_4\n");
   print("<FORM NAME=\"LOADBACKUP\" ENCTYPE=\"multipart/form-data\" ACTION=\"main.php?show=exe&function=loadbackup&filename=configbuttom_5_restore.php\" METHOD=POST>\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"10485760\">\n");
   print("<INPUT TYPE=\"FILE\" name=\"userfile\" value=\"$backupbuttom_2_loadbase_LoadBackUpForm_2\">\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"load file and restore backup\">\n");
   print("</FORM>\n");

@@ -9,7 +9,7 @@ function UpdateGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	exit;
@@ -32,7 +32,7 @@ function UpdateGroupForm()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
