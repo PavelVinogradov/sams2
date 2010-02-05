@@ -8,7 +8,7 @@
 function AddGroup()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -41,7 +41,7 @@ function AddGroup()
 function AddShablon()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -89,7 +89,7 @@ function ImportFromNTLM()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -240,7 +240,7 @@ function ImportFromNTLMForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);  
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   PageTop("importfromad-48.jpg"," $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1 ");
 

@@ -17,7 +17,7 @@ function ChUserPasswd()
 
 	if($USERConf->ToWebInterfaceAccess("AUC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ) )
 	{
-		$DB=new SAMSDB(&$SAMSConf);
+		$DB=new SAMSDB();
   
 		$lang="./lang/lang.$SAMSConf->LANG";
 		require($lang);
@@ -85,7 +85,7 @@ function ChUserPasswdForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$SquidUSERConf->s_user_id\">\n");
 	print("<TABLE WIDTH=\"90%\">");
 	print("<TR><TD><B>login:</B><TD>");
-	print("$USERConf->s_nick");
+	print("$SquidUSERConf->s_nick");
 	print("<TR><TD><B>Password:</B><TD>");
 	print("<BR><INPUT TYPE=\"PASSWORD\" NAME=\"passw1\" SIZE=30> \n");
 	print("<TR><TD><B>Retype:</B><TD>");

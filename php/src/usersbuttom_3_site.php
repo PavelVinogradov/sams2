@@ -10,7 +10,7 @@ function AddUrltoList()
   global $DATE;
   global $USERConf;
   require("reportsclass.php");
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -30,7 +30,7 @@ function SiteUsersList()
   global $DATE;
   global $USERConf;
   require("reportsclass.php");
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -128,7 +128,7 @@ function UsersSitesPeriod()
   global $SquidUSERConf;
 
   require("reportsclass.php");
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

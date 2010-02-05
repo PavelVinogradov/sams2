@@ -8,7 +8,7 @@ function DeleteList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -30,7 +30,7 @@ function AddNewList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -58,7 +58,7 @@ function SaveDestination()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -241,7 +241,7 @@ function AddURLFromList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -271,7 +271,7 @@ function DeleteURLFromList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -300,7 +300,7 @@ function EditURLFromList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -330,7 +330,7 @@ function DeleteAllURLFromList()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -353,7 +353,7 @@ function RedirListForm()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -521,7 +521,7 @@ function RedirListTray()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

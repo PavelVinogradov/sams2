@@ -10,8 +10,8 @@ function UpdateShablon()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   $sguardgroups=array("ads","aggressive","audio-video","drugs","gambling",
    "hacking","mail","porn","proxy","violence","warez");
 
@@ -86,8 +86,8 @@ function UpdateShablonForm()
   $s_selected=array();
   $credir=0;
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -523,7 +523,7 @@ function RemoveTRange2Shablon()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -549,7 +549,7 @@ function AddTRange2Shablon()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

@@ -25,7 +25,7 @@ function UserTrafficPeriodGB()
 		exit(0);
 	}
 
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 	$g = new chart;
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
@@ -116,7 +116,7 @@ function UserTrafficPeriod()
 
 //echo "id=$id $SquidUSERConf->s_user_id $SquidUSERConf->s_nick<BR>";
 //exit(0);
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
  
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();

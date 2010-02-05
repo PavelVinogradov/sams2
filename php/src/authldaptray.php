@@ -74,7 +74,7 @@ function RemoveSyncGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -100,7 +100,7 @@ function AddSyncGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -135,8 +135,8 @@ function AuthLDAPValues()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
 
   PageTop("config_48.jpg","LDAP configuration ");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");

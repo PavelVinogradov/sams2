@@ -8,8 +8,8 @@
 function SysPlugConfig()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM sysinfo");
   while($row=$DB->samsdb_fetch_array())
@@ -31,7 +31,7 @@ function SysPlugConfig()
 function SysPlugConfigForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query_value("SELECT * FROM sysinfo");
 
   PageTop("sysplug_64.png","System Plugins");

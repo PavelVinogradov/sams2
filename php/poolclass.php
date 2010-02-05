@@ -23,7 +23,7 @@ class SAMSPOOL
 function SAMSPOOL($poolid)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM delaypool WHERE s_pool_id='$poolid' ");
   $row=$DB->samsdb_fetch_array();

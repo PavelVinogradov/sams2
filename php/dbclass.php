@@ -30,14 +30,30 @@ class SAMSDB
 
   function mysqldb_query_value($query)
   {
-        $this->result = mysql_query($query) or die("Invalid query: " . mysql_error());
-	$num_rows = mysql_num_rows($this->result);
+	if(($this->result = mysql_query($query))==FALSE)
+	{
+		$this->dberror=1;
+		$this->dberrortext=mysql_error();
+	}
+	else
+	{
+		$num_rows = mysql_num_rows($this->result);
+		return($num_rows);
+	}
 	return($num_rows);
   }
   function pgsqldb_query_value($query)
   {
-	$this->result = pg_query($query) or die('Query failed: ' . pg_last_error());
-	$num_rows = pg_num_rows($this->result);
+	if(($this->result = pg_query($query))==FALSE)
+	{
+		$this->dberror=1;
+		$this->dberrortext=pg_last_error();
+	}
+	else
+	{
+		$num_rows = pg_num_rows($this->result);
+		return($num_rows);
+	}
 	return($num_rows);
   }
   function pdodb_query_value($query)
@@ -268,12 +284,12 @@ class SAMSDB
 		$this->dberrortext="Error connection to database $dbname@$host<BR>";
 		$this->dberror=1;
 	  }
-	return(0);
+	return($link);
   }
   function pgsqldb_connect($host,$user,$passwd,$dbname)
   {
 	$this->dberror=0;
-	$link = pg_connect("host=$host dbname=$dbname user=$user password=$passwd") or die('Could not connect: ' . pg_last_error());
+	$link = pg_connect("host=$host dbname=$dbname user=$user password=$passwd");
 	return($link);
   }
 
@@ -341,89 +357,93 @@ exit(0);
 //  function SAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $odbc_source)
 //$DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER, $SAMSConf->DB_USER, $SAMSConf->DB_PASSWORD, $SAMSConf->SAMSDB, $SAMSConf->ODBCSOURCE);
 
-  function SAMSDB($samsconf)
+  function SAMSDB()
   {
+	$SAMSConf=new MAINCONF();
 
-$db=$samsconf->DB_ENGINE;
-$odbc=$samsconf->ODBC;
-$host=$samsconf->DB_SERVER;
-$user=$samsconf->DB_USER;
-$passwd=$samsconf->DB_PASSWORD;
-$dbname=$samsconf->SAMSDB;
-$odbc_source=$samsconf->ODBCSOURCE;
+	$db=$SAMSConf->DB_ENGINE;
+	$odbc=$SAMSConf->ODBC;
+	$host=$SAMSConf->DB_SERVER;
+	$user=$SAMSConf->DB_USER;
+	$passwd=$SAMSConf->DB_PASSWORD;
+	$dbname=$SAMSConf->SAMSDB;
+	$odbc_source=$SAMSConf->ODBCSOURCE;
 
 //echo "$dbname: $user@$host <BR>\n";
-    $this->db_odbc=0;
-    $phpver=explode(".",phpversion());
-    if( $odbc==1 )
-    {
-        $this->db_odbc=1;
-        $this->odbc_source=$odbc_source;
-	if(function_exists('odbc_connect'))
+	$this->db_odbc=0;
+	$phpver=explode(".",phpversion());
+	if( $odbc==1 )
 	{
-	    $this->db_odbc=1;
+		$this->db_odbc=1;
+		$this->odbc_source=$odbc_source;
+		if(function_exists('odbc_connect'))
+		{
+			$this->db_odbc=1;
+		}
+		else
+		{
+			$this->db_pdo=1;
+		}
 	}
-	else
+	$this->db_name=$db;
+	if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
 	{
-	    $this->db_pdo=1;
+		$this->link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
 	}
-    }
-    $this->db_name=$db;
-    if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
-      {
-	$link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
-      {
-	$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_odbc==1 && $this->db_pdo==0)
-      {
-	$this->odbcdb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_odbc==1 && $this->db_pdo==1)
-      {
-	$this->pdodb_connect($host,$user,$passwd,$dbname);
-      }
+	if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
+	{
+		$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
+	}
+	if($this->db_odbc==1 && $this->db_pdo==0)
+	{
+		$this->odbcdb_connect($host,$user,$passwd,$dbname);
+	}
+	if($this->db_odbc==1 && $this->db_pdo==1)
+	{
+		$this->pdodb_connect($host,$user,$passwd,$dbname);
+	}
+//	if($this->link==FALSE)
+//		echo "error connection to db<BR>";
   }
 /*
   function SAMSDB($db, $odbc, $host, $user ,$passwd, $dbname, $odbc_source)
   {
 
-    $phpver=explode(".",phpversion());
-    if( $odbc==1 )
-    {
-        $this->db_odbc=1;
-        $this->odbc_source=$odbc_source;
-	if(function_exists('odbc_connect'))
+	$this->db_odbc=0;
+	$phpver=explode(".",phpversion());
+	if( $odbc==1 )
 	{
-	    $this->db_odbc=1;
+		$this->db_odbc=1;
+		$this->odbc_source=$odbc_source;
+		if(function_exists('odbc_connect'))
+		{
+			$this->db_odbc=1;
+		}
+		else
+		{
+			$this->db_pdo=1;
+		}
 	}
-	else
+	$this->db_name=$db;
+	if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
 	{
-	    $this->db_pdo=1;
+		$this->link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
 	}
-    }
-    $this->db_name=$db;
-
-    if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
-      {
-	$link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
-      {
-	$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_odbc==1 && $this->db_pdo==0)
-      {
-	$this->odbcdb_connect($host,$user,$passwd,$dbname);
-      }
-    if($this->db_odbc==1 && $this->db_pdo==1)
-      {
-	$this->pdodb_connect($host,$user,$passwd,$dbname);
-      }
+	if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
+	{
+		$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
+	}
+	if($this->db_odbc==1 && $this->db_pdo==0)
+	{
+		$this->odbcdb_connect($host,$user,$passwd,$dbname);
+	}
+	if($this->db_odbc==1 && $this->db_pdo==1)
+	{
+		$this->pdodb_connect($host,$user,$passwd,$dbname);
+	}
+	if($this->link==FALSE)
+		echo "error connection to db<BR>";
   }
-
 */
 
 }
@@ -492,7 +512,7 @@ if($dbf_handle = @fopen($filename, "r"))
 
 }
 
-
+/*
 
 //$db, $odbc, $host, $user ,$passwd, $dbname
 function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muser, $mpass, $odbcsource)
@@ -667,7 +687,7 @@ $pgdb[47] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
       print("</FORM>\n");
 exit(0);
 }
-
+*/
 function CreateSAMSdbPgSQL($host, $user, $passwd, $dbname)
 {
 CreateSAMSdb("PostgreSQL", "0", $host, $user ,$passwd, $dbname, "", "", "");

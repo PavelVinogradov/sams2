@@ -13,7 +13,7 @@ function ReconfigSquid()
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
  
   if(isset($_GET["id"])) $cache=$_GET["id"];
    

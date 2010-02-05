@@ -18,7 +18,7 @@ function UserSitesPeriod()
   $SquidUSERConf->sams_user($id);
 
   require("reportsclass.php");
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

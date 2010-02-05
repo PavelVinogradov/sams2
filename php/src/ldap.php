@@ -42,40 +42,14 @@ class sams_ldap {
 
     function Authenticate($user, $passwd)
     {
-	if (empty($this->usersrdn))
-	    $binddn = $this->FindUserDN($user);
-	else
-	    $binddn = "uid=".$user.",".$this->usersrdn.",".$this->base_dn;
-	$ldbind=$this->ld->bind($binddn,"$passwd");
+	$ldbind=$this->ld->bind("uid=$user,$this->usersrdn,$this->base_dn","$passwd");
 	return($ldbind);
     }	
-
-    function FindUserDN($user)
-    {
-	$dn="";
-        $basedn=$this->base_dn;
-
-        if (is_null($this->usersfilter) || empty($this->usersfilter))
-	    $filter = "(uid=$username)";
-	else
-            $filter="(&".$this->usersfilter."(uid=$username))";
-
-	$array=array('uid');
-        if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
-	{
-	    if ($entry = $sr->firstEntry()) 
-		$dn = $entry->getDN();
-	}
-	return($dn);
-    }
 
     function GetUsersData()
     {
 	$userdata = array();
-        $basedn=$this->base_dn;
-	if (!empty($this->usersrdn))
-		$basedn=$this->usersrdn.",".$basedn;
-
+	$basedn="$this->usersrdn,$this->base_dn";
 	$filter="$this->usersfilter";
 	if (is_null($filter) || empty($filter)) {
 		$filter = "(cn=*)";
@@ -107,15 +81,11 @@ class sams_ldap {
     function GetUserInfo($username)
     {
 	$userdata = array();
-
-        $basedn=$this->base_dn;
-	if (!empty($this->usersrdn))
-		$basedn=$this->usersrdn.",".$basedn;
-
-        if (is_null($this->usersfilter) || empty($this->usersfilter))
-	    $filter = "(uid=$username)";
-	else
-            $filter="(&".$this->usersfilter."(uid=$username))";
+	$basedn="uid=$username,$this->usersrdn,$this->base_dn";
+	$filter="(&$this->usersfilter(uid=$username))";
+	if (is_null($filter) || empty($filter)) {
+		$filter = "(cn=*)";
+	}
 
 	$array=array($this->usernameattr,'uid');
         if($sr = $this->ld->searchSubtree($basedn,$filter,$array))
@@ -172,9 +142,7 @@ class sams_ldap {
     function GetUsersWithPrimaryGroupID($gid)
     {
 	$userdata = array();
-        $basedn=$this->base_dn;
-	if (!empty($this->usersrdn))
-		$basedn=$this->usersrdn.",".$basedn;
+	$basedn="$this->usersrdn,$this->base_dn";
 	$array=array($this->usernameattr,'uid','gidNumber');
 
         if($sr = $this->ld->searchSubtree($basedn,"(gidNumber=$gid)",$array))

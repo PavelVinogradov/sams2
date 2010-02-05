@@ -11,7 +11,7 @@ function GroupTrafficPeriodPDF()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   if($SAMSConf->LANG=="KOI8-R")
     $lang="./lang/lang.WIN1251";
@@ -105,7 +105,7 @@ function GroupTrafficPeriodGB()
   
   global $SAMSConf;
   global $DATE;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -148,7 +148,7 @@ function GroupTrafficPeriod()
   if($USERConf->ToWebInterfaceAccess("CS")!=1)
 	exit(0);
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();

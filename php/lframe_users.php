@@ -12,8 +12,8 @@ function lframe_users()
 
  global $SAMSConf;
  global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if($SAMSConf->SHOWUTREE=="1"||$USERConf->ToWebInterfaceAccess("GSAUC")==1)

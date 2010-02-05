@@ -9,7 +9,7 @@ function MoveUsersToGroup()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
  if(isset($_GET["id"])) $id=$_GET["id"];
  if(isset($_GET["username"])) $users=$_GET["username"];
 
@@ -28,8 +28,8 @@ function DisableGroupUsers()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
  
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
  if(isset($_GET["id"])) $id=$_GET["id"];
@@ -64,7 +64,7 @@ function UserGroupForm()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -246,7 +246,7 @@ function GroupTray()
 
   if($USERConf->ToWebInterfaceAccess("SC")==1 || ($USERConf->ToWebInterfaceAccess("G")==1 && $USERConf->s_group_id==$id ))
   {
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);

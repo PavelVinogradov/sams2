@@ -11,7 +11,7 @@ function AddUsersFromLDAP()
 
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -69,7 +69,7 @@ function AddUsersFromLDAPForm()
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
   
 
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
   	$adldserver=GetAuthParameter("ldap","ldapserver");
 	$basedn=GetAuthParameter("ldap","basedn");

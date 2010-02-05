@@ -48,7 +48,7 @@ function SAMSUSER()
 function sams_user($userid)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
 //  if()
 
@@ -119,7 +119,7 @@ function sams_admin()
 function sams_admin_authentication($username,$passwd)
   {
      global $SAMSConf;
-     $DB=new SAMSDB(&$SAMSConf);
+     $DB=new SAMSDB();
 
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
@@ -189,7 +189,9 @@ function sams_user_id_authentication()
 
 	$time=time();
 	if(strtolower($auth)=="ntlm")
+	{
 		$USERAUTH = new NTLMAuthenticate();
+	}
 	else if(strtolower($auth)=="adld")
 	{
 		$USERAUTH = new ADLDAuthenticate();
@@ -239,7 +241,7 @@ function sams_user_id_authentication()
 	}
 	else
 	{
-		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
+		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1>\n");
 		$time2=60 - ($time - $USERAUTH->autherrort);
 		if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
 		{
@@ -256,7 +258,7 @@ function sams_user_id_authentication()
 function sams_user_name_authentication()
 {   
      global $SAMSConf;
-     $DB=new SAMSDB(&$SAMSConf);
+     $DB=new SAMSDB();
 
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];

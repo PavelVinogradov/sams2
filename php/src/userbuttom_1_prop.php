@@ -10,7 +10,7 @@ function UpdateUser()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $gauditor="";
   if(isset($_GET["id"])) $userid=$_GET["id"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
@@ -82,8 +82,8 @@ function UpdateUserForm()
   global $USERConf;
   global $SquidUSERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 

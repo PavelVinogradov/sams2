@@ -46,7 +46,7 @@ function shutdown_proxy()
 
   if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 	PageTop("reconfig_48.jpg","Send command '$SAMSConf->SHUTDOWN' to proxy server");
 
 	$QUERY="INSERT INTO reconfig (s_proxy_id, s_service, s_action)  VALUES('$id', 'squid', 'shutdown'); ";

@@ -17,7 +17,7 @@ function MoveUserTrafficData()
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	{      exit;     }
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
 
@@ -46,7 +46,7 @@ function MoveUserTrafficDataForm()
 	
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
 	if($USERConf->ToWebInterfaceAccess("C")!=1 )
 		exit;

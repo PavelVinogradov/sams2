@@ -9,7 +9,7 @@ function UpdatePool()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -67,7 +67,7 @@ function UpdatePoolForm()
   global $SAMSConf;
   global $POOLConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

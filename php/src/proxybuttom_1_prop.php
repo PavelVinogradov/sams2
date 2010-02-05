@@ -10,7 +10,7 @@ function ProxyReConfig()
   global $SAMSConf;
   global $USERConf;
   global $PROXYConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
@@ -91,7 +91,7 @@ function ProxyReConfigForm()
   global $SAMSConf;
   global $PROXYConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $files=array();
   if(isset($_GET["id"])) $proxy_id=$_GET["id"];

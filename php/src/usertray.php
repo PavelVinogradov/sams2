@@ -49,8 +49,8 @@ function UserAuthForm()
 function UserForm()
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
   if(isset($_GET["userid"])) $userid=$_GET["userid"];
@@ -91,14 +91,14 @@ function UserForm()
   print("$row[s_name]\n");
   print("<TR>\n");
   print("<TD>\n");
-  print("<B>$usertray_UserForm_6: \n");
-  print("<TD>\n");
-  print("$row[s_family] \n");
-  print("<TR>\n");
-  print("<TD>\n");
   print("<B>$usertray_UserForm_5: \n");
   print("<TD>\n");
   print("$row[s_soname]\n");
+  print("<TR>\n");
+  print("<TD>\n");
+  print("<B>$usertray_UserForm_6: \n");
+  print("<TD>\n");
+  print("$row[s_family] \n");
   print("<TR>\n");
   print("<TD>\n");
 
@@ -207,8 +207,8 @@ function JSUserInfo()
   if($USERConf->ToWebInterfaceAccess("C")==1)
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_3:<TD>$SquidUSERConf->s_ip";
   $htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_4:<TD>$SquidUSERConf->s_name
-  <TR><TD><B>$usertray_UserForm_6:<TD>$SquidUSERConf->s_family
   <TR><TD><B>$usertray_UserForm_5:<TD>$SquidUSERConf->s_soname
+  <TR><TD><B>$usertray_UserForm_6:<TD>$SquidUSERConf->s_family
   <TR><TD><B>$usertray_UserForm_7:<TD>$SquidUSERConf->s_group_name
   <TR><TD><B>$usertray_UserForm_10:<TD>$enabled";
 	$htmlcode=$htmlcode."<TR><TD><B>$usertray_UserForm_8:<TD>$quote 

@@ -14,8 +14,8 @@ function RemoveCache()
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	exit;
 
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
 
  if(isset($_GET["cache"])) $cache=$_GET["cache"];
   
@@ -39,7 +39,7 @@ function AddCache()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
 $delaypool=0;
 $ntlmdomain=0;
@@ -115,7 +115,7 @@ function CacheForm()
   global $SAMSConf;
   global $USERConf;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 

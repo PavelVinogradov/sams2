@@ -8,7 +8,7 @@ function DisableSelectedUsers()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   if($USERConf->ToWebInterfaceAccess("C")!=1)
     exit(0);
 
@@ -73,8 +73,8 @@ function AllUsersForm()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
-  $DB2=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
+  $DB2=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);

@@ -13,7 +13,7 @@ function AddGroup()
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	exit;
 
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
