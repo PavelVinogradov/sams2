@@ -11,8 +11,8 @@ Vcs-Browser: http://sams.nixdev.net/browser/trunk
 Package: sams2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: sams2-web, sams2-doc, mysql-server, squid
-Suggests: squidguard
+Recommends: sams2-web, sams2-doc, mysql-client, squid
+Suggests: squidguard, mysql-server
 Description: Squid Account Management System (SAMS) - Deamons
  This program basically used for administrative purposes of squid proxy.
  There are access control for users by ntlm, ncsa, basic or ip
