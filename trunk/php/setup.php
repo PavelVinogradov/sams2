@@ -195,48 +195,73 @@ function step_3($lang)
 	require($langmodule);
 
 	$SAMSConf=new MAINCONF();
+	$DB=new SAMSDB();
 
-	require('./tools.php');
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"step\" value=\"4\">\n");
-	print("<INPUT TYPE=\"HIDDEN\" NAME=\"lang\" value=\"$lang\">\n");
-
-	print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
-	print("function SetChange()");
-	print("{");
-	print("if(document.forms[\"setupform\"].elements[\"create\"].checked==true)\n");
-	print("  {\n");
-	print("    document.forms[\"setupform\"].elements[\"muser\"].disabled=false\n");
-	print("    document.forms[\"setupform\"].elements[\"mpass\"].disabled=false\n");
-	print("  }\n");
-	print("if(document.forms[\"setupform\"].elements[\"create\"].checked==false)\n");
-	print("  {\n");
-	print("    document.forms[\"setupform\"].elements[\"muser\"].disabled=true\n");
-	print("    document.forms[\"setupform\"].elements[\"mpass\"].disabled=true\n");
-	print("  }\n");
-	print("}\n");
-	print("</SCRIPT>\n");
-
-	print("<H2 ALIGN=\"CENTER\">Создание базы данных SAMS</H2>");
-
-	print("<TABLE WIDTH=\"90%\">\n");
-
-	print("<TR><TD ALIGN=RIGHT>$setup_11: <TD ALIGN=LEFT>$SAMSConf->DB_ENGINE\n");
-	print("<TR><TD ALIGN=RIGHT>$setup_15: <TD ALIGN=LEFT>$SAMSConf->SAMSDB\n");
-	print("<TR><TD ALIGN=RIGHT>$setup_14: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
-	print("<TR><TD ALIGN=RIGHT>$setup_12: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
-	print("<TR><TD ALIGN=RIGHT>$setup_13: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
-	if($SAMSConf->DB_ENGINE == "MySQL")
+	$result=1;
+	if($DB->dberror==0)
 	{
-		print("<TR><TD ALIGN=RIGHT><P>$setup_32 <INPUT TYPE=\"CHECKBOX\" NAME=\"create\" CHECKED  onclick=SetChange()><TD>\n");
-		print("<TR><TD ALIGN=RIGHT><P>$setup_33: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"muser\" value=\"sams@localhost\">\n");
-		print("<TR><TD ALIGN=RIGHT>$setup_34: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"mpass\">\n");
+		$QUERY="SELECT count(*) FROM auth_param";
+		$result=$DB->samsdb_query_value($QUERY);	
 	}
-	print("</TABLE>\n");
+	if($DB->dberror==1)
+	{	
 
-  	print("<H3>SAMS documentation</H3>\n");
-  	print("<A HREF=\"http://sams.perm.ru/sams2/doc/EN/index.html\">english</A><BR>\n");
-  	print("<A HREF=\"http://sams.perm.ru/sams2/doc/RU/index.html\">russian</A><BR>\n");
+		require('./tools.php');
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"step\" value=\"4\">\n");
+		print("<INPUT TYPE=\"HIDDEN\" NAME=\"lang\" value=\"$lang\">\n");
 
+		print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+		print("function SetChange()");
+		print("{");
+		print("if(document.forms[\"setupform\"].elements[\"create\"].checked==true)\n");
+		print("  {\n");
+		print("    document.forms[\"setupform\"].elements[\"muser\"].disabled=false\n");
+		print("    document.forms[\"setupform\"].elements[\"mpass\"].disabled=false\n");
+		print("  }\n");
+		print("if(document.forms[\"setupform\"].elements[\"create\"].checked==false)\n");
+		print("  {\n");
+		print("    document.forms[\"setupform\"].elements[\"muser\"].disabled=true\n");
+		print("    document.forms[\"setupform\"].elements[\"mpass\"].disabled=true\n");
+		print("  }\n");
+		print("}\n");
+		print("</SCRIPT>\n");
+
+		print("<H2 ALIGN=\"CENTER\">$setup_37</H2>");
+
+		print("<TABLE WIDTH=\"90%\">\n");
+
+		print("<TR><TD ALIGN=RIGHT>$setup_11: <TD ALIGN=LEFT>$SAMSConf->DB_ENGINE\n");
+		print("<TR><TD ALIGN=RIGHT>$setup_15: <TD ALIGN=LEFT>$SAMSConf->SAMSDB\n");
+		print("<TR><TD ALIGN=RIGHT>$setup_14: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
+		print("<TR><TD ALIGN=RIGHT>$setup_12: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
+		print("<TR><TD ALIGN=RIGHT>$setup_13: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
+		if($SAMSConf->DB_ENGINE == "MySQL")
+		{
+			print("<TR><TD ALIGN=RIGHT><P>$setup_32 <INPUT TYPE=\"CHECKBOX\" NAME=\"create\" CHECKED  onclick=SetChange()><TD>\n");
+			print("<TR><TD ALIGN=RIGHT><P>$setup_33: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"muser\" value=\"sams@localhost\">\n");
+			print("<TR><TD ALIGN=RIGHT>$setup_34: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" 	NAME=\"mpass\">\n");
+		}
+		print("</TABLE>\n");
+
+  		print("<H3>SAMS documentation</H3>\n");
+  		print("<A HREF=\"http://sams.perm.ru/sams2/doc/EN/index.html\">english</A><BR>\n");
+		print("<A HREF=\"http://sams.perm.ru/sams2/doc/RU/index.html\">russian</A><BR>\n");
+	}
+	else
+	{
+		echo "<H2 ALIGN=\"CENTER\">$setup_38</H2>";
+		echo "$setup_39<BR>";
+		echo "<SCRIPT language=JAVASCRIPT>\n";
+		echo "function StartWebInterface()\n";
+		echo "{\n";
+		echo "        document.location.replace('index.html');\n";
+		echo "}\n";
+		echo "</SCRIPT>\n";
+		echo "<BR><INPUT CLASS=\"button\" TYPE=\"BUTTON\" value=\"$setup_36\" onclick=StartWebInterface()>\n";
+		echo "</FORM>";
+		exit();
+		
+	}
 
 }
 
@@ -452,14 +477,6 @@ function step_4($lang)
 	if(isset($_GET["muser"]))             $muser=$_GET["muser"];
 	if(isset($_GET["mpass"]))             $mpass=$_GET["mpass"];
 	if(isset($_GET["create"]))            $create=$_GET["create"];
-
-//echo "HOSTNAME=$hostname<BR>";
-//echo "USERNAME=$username<BR>";
-//echo "PASSWORD=$pass<BR>";
-//echo "DBNAME=$SAMSConf->SAMSDB<BR>";
-//echo "ENGINE=$SAMSConf->DB_ENGINE<BR>";
-//echo "ODBC=$SAMSConf->ODBC<BR>";
-//echo "PDO=$SAMSConf->PDO<BR>";
 
 	echo "<H3>$setup_37</H3>\n";
 	CreateSAMSdb();

@@ -1006,5 +1006,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $setup_35="PostgreSQL support";
    $setup_36="Start SAMS web interface";
    $setup_37="Creation of database SAMS";
+   $setup_38="Database SAMS is found";
+   $setup_39="database creation is not required";
 
 ?>
