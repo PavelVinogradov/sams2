@@ -71,6 +71,17 @@ function ShablonUsers()
 	}
   $second_template="NONE";
 
+  print("<TR><TD><B>$AddTRangeForm_trangetray_1: </B>\n");
+  $num_rows=$DB->samsdb_query_value("SELECT sconfig_time.*, timerange.s_name, timerange.s_timestart, s_timeend FROM sconfig_time LEFT JOIN timerange ON sconfig_time.s_trange_id=timerange.s_trange_id WHERE sconfig_time.s_shablon_id='$id' ");
+  if($num_rows>0)
+	{
+  	while($row=$DB->samsdb_fetch_array())
+		{
+		print("<TR><TD><TD ALIGN=\"RIGHT\" > <FONT COLOR=\"BLUE\"><B>$row[s_name]</B> ($row[s_timestart] - $row[s_timeend] ) ");
+		}
+	}
+  $DB->free_samsdb_query();
+
   if ($SHABLONConf->s_shablon_id2 != -1)
     {
       $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$SHABLONConf->s_shablon_id2'");

@@ -467,18 +467,6 @@ function UpdateShablonForm()
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$shablonbuttom_1_prop_UpdateShablonForm_7\">\n");
   print("</FORM>\n");
 
-       print("<SCRIPT language=JAVASCRIPT>\n");
-       print("function RemoveTRange(id)\n");
-       print("{\n");
-       print("  var href=\"main.php?show=exe&function=removetrange2shablon&filename=shablonbuttom_1_prop.php&shablon_id=$SHABLONConf->s_shablon_id&id=\"+id; ");
-//       print("  value=window.confirm(\"Remove time range?\n \" );\n");
-       print("  value=window.confirm(\"Remove time range?\");\n");
-       print("  if(value==true) \n");
-       print("     {\n");
-       print("        parent.basefrm.location.href=href;\n");
-       print("     }\n");
-       print("}\n");
-       print("</SCRIPT> \n");
 
   print("<P><B>$AddTRangeForm_trangetray_1: </B>\n");
   print("<TABLE>\n");
@@ -488,12 +476,43 @@ function UpdateShablonForm()
 	{
   	while($row2=$DB2->samsdb_fetch_array())
 		{
-		print("<TR><TD ALIGN=\"RIGHT\" > <B>$row2[s_name]</B> ($row2[s_timestart] - $row2[s_timeend] )");
+		print("<TR><TD ALIGN=\"RIGHT\" > <B>$row2[s_name]</B> ($row2[s_timestart] - $row2[s_timeend] ) ");
 //		print("<TD > <INPUT TYPE=\"CHECKBOX\" NAME=\"trange[$row2[s_trange_id]]\" CHECKED>");
-		print("<INPUT TYPE=\"BUTTON\" value=\"Remove\" Onclick=RemoveTRange($row2[s_trange_id])>\n");
+		print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform2\" Onclick=RemoveTRange($row2[s_trange_id])>\n");
 		}
 	}
   print("</TABLE>\n");
+  
+  if($num_rows>1)
+  {
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function RemoveTRange(id)\n");
+       print("{\n");
+       print("  var href=\"main.php?show=exe&function=removetrange2shablon&filename=shablonbuttom_1_prop.php&shablon_id=$SHABLONConf->s_shablon_id&id=\"+id; ");
+//       print("  value=window.confirm(\"Remove time range?\n \" );\n");
+       print("  value=window.confirm(\"$shablonbuttom_1_prop_UpdateShablonForm_30\");\n");
+       print("  if(value==true) \n");
+       print("     {\n");
+       print("        parent.basefrm.location.href=href;\n");
+       print("     }\n");
+       print("}\n");
+       print("</SCRIPT> \n");
+  }
+  else
+  {
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function RemoveTRange(id)\n");
+       print("{\n");
+       print("  value=window.alert(\"$shablonbuttom_1_prop_UpdateShablonForm_31\");\n");
+       print("  if(value==true) \n");
+       print("     {\n");
+       print("        parent.basefrm.location.href=href;\n");
+       print("     }\n");
+       print("}\n");
+       print("</SCRIPT> \n");
+
+  }
+
   $DB2->free_samsdb_query();
   //$DB->free_samsdb_query();
 

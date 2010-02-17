@@ -968,6 +968,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $MoveUserTrafficDataForm_4="To move the traffic data";
   $authbuttom_1_ncsaimport_LoadFileForm_1="Loading of the list of users from a file with passwords";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_30="Remove a time range";
+  $shablonbuttom_1_prop_UpdateShablonForm_31="You cannot remove a unique time range in a template";
+
+
   $setup_1="Choose language";
   $setup_2="Verify requirements";
   $setup_3="Set up database";
