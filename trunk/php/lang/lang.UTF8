@@ -982,6 +982,9 @@
    $MoveUserTrafficDataForm_4="Переместить";
    $authbuttom_1_ncsaimport_LoadFileForm_1="Загрузка списка пользователей из файла с паролями";
 
+   $shablonbuttom_1_prop_UpdateShablonForm_30="Удалить временной диапазон?";
+   $shablonbuttom_1_prop_UpdateShablonForm_31="Вы не можете удалить единственный временной диапазон в шаблоне";
+
    $setup_1="Выбор языка";
    $setup_2="Проверка требований";
    $setup_3="Установка базы данных";
