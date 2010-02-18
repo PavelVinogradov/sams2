@@ -60,7 +60,7 @@ for($i=0;$i<$tc;$i++)
   while($row=$DB->samsdb_fetch_array())
      {
 //$qqq=$_GET["$row[s_redirect_id]"];
-       if($_GET["$row[s_redirect_id]"]=="on")
+       if($_GET["d$row[s_redirect_id]"]=="on")
           {
             $num_rows=$DB2->samsdb_query("INSERT INTO sconfig VALUES('$sname','$row[s_redirect_id]') ");
           }
@@ -137,7 +137,7 @@ function UpdateShablonForm()
      }
   $DB->free_samsdb_query();
 
- // перенаправление запроса
+ // О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
   $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
@@ -155,13 +155,13 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }
      }
 
- // подстановка запроса
+ // О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
   $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
@@ -187,14 +187,18 @@ function UpdateShablonForm()
 
 
   $DENIEDCHECKED="";
+  $DENIEDDISABLED="";
   if ($SHABLONConf->s_alldenied == 1)
-    $DENIEDCHECKED="CHECKED";
+  {
+	$DENIEDCHECKED="CHECKED";
+	$DENIEDDISABLED="DISABLED";
+  }
 
   print("<TR bgcolor=blanchedalmond>\n  <TD WIDTH=\"40%\" ALIGN=RIGHT>");
   print("<INPUT TYPE=\"CHECKBOX\" NAME=\"alldenied\" onclick=EnableDeniedLists(UPDATESHABLON) $DENIEDCHECKED></TD>\n");
   print("  <TD ALIGN=LEFT WIDTH=\"60%\"><B>$shablonbuttom_1_prop_UpdateShablonForm_22</B></TD>\n");
 
- // запрет доступа
+ // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫
   $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
@@ -212,13 +216,13 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked $DENIEDDISABLED></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }
      }
 
- // запрет доступа по регулярным выражениям
+ // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
   $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
@@ -236,13 +240,13 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }
      }
 
- // доступ разрешен
+ // О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
   $section_exist=0;
   for($i=0; $i<$credir; $i++)
       {
@@ -260,7 +264,7 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }
@@ -284,7 +288,7 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }
@@ -295,33 +299,31 @@ function UpdateShablonForm()
  
   $sguardgroups=array("ads","aggressive","audio-video","drugs","gambling",
    "hacking","mail","porn","proxy","violence","warez");
-  //$num_rows=$DB->samsdb_query_value("SELECT * FROM shablon WHERE s_shablon_id='$id' ");
-  //$row=$DB->samsdb_fetch_array();
-  print("<TABLE>\n");
 
-           print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
-           print("function EnableDeniedLists(formname)\n");
-           print("{\n");
-           print("  if(formname.alldenied.checked==true)\n");
-           print("    {\n");
-           for($i=0;$i<$dcount;$i++)
+           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
+           print("function EnableDeniedLists(formname) \n");
+           print("{ \n");
+           print("  if(formname.alldenied.checked==true) \n");
+           print("    { \n");
+           for($i=0; $i<$credir; $i++)
 	      {
-	         print("    formname.$dlist[$i].disabled=true; \n    ");
-	      };
-           print("    }\n");
-           print("  if(formname.alldenied.checked==false)\n");
-           print("    {\n");
-	   for($i=0;$i<$dcount;$i++)
+		if($s_type[$i]=="denied")
+			print("       formname.d$s_id[$i].disabled=true; \n");
+	      }
+           print("    } \n");
+           print("  if(formname.alldenied.checked==false) \n");
+           print("    { \n");
+	   for($i=0; $i<$credir; $i++)
 	      {
-	         print("    formname.$dlist[$i].disabled=false; \n    ");
-	      };
-           print("    }\n");
-	   print("}\n");
-           print("</SCRIPT>\n");
-    
-  
-  
-  
+		if($s_type[$i]=="denied")
+			print("       formname.d$s_id[$i].disabled=false; \n");
+	      }
+           print("    } \n");
+	   print("} \n");
+           print("</SCRIPT> \n");
+
+
+  print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$shablonbuttom_1_prop_UpdateShablonForm_4:\n");
@@ -525,10 +527,11 @@ function UpdateShablonForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"shablonbuttom_1_prop.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$id\">\n");
   print("<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM timerange ");
+  $num_rows=$DB->samsdb_query_value("SELECT timerange.*,sconfig_time.s_shablon_id FROM timerange LEFT JOIN sconfig_time ON timerange.s_trange_id=sconfig_time.s_trange_id");
   while($row=$DB->samsdb_fetch_array())
 	{
-           print("<OPTION VALUE=$row[s_trange_id]> $row[s_name] ($row[s_timestart] - $row[s_timeend] )");
+		if($row[s_shablon_id]!=$id)
+			print("<OPTION VALUE=$row[s_trange_id]> $row[s_name] ($row[s_timestart] - $row[s_timeend] )");
 	}
   print("</SELECT>\n");
   $DB->free_samsdb_query();

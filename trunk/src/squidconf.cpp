@@ -170,6 +170,7 @@ bool SquidConf::defineACL ()
                 {
                       if ((*time_it)->isFullDay ())
                         continue;
+
                       fout << "acl Sams2Time" << (*time_it)->getId () << " time " << (*time_it)->getDays () << " ";
                       if ((*time_it)->hasMidnight ())
                         fout << (*time_it)->getEndTimeStr () << "-" << (*time_it)->getStartTimeStr () << endl;
@@ -346,6 +347,7 @@ bool SquidConf::defineACL ()
                           if (!grp)
                             continue;
                           restriction.str("");
+// fout << "# Setup Sams2 http_acess: ACC_DENY: " << grp->getAccessType () << endl;
                           switch (grp->getAccessType ())
                             {
                               case UrlGroup::ACC_DENY:
@@ -378,9 +380,20 @@ bool SquidConf::defineACL ()
                     {
                       uint idx;
                       for (idx=0; idx<restriction_deny.size(); idx++)
-                          fout << "http_access deny Sams2Template" << tpl->getId () << " " << restriction_deny[idx] << endl;
-                      for (idx=0; idx<restriction_allow.size(); idx++)
-                          fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
+                          fout << "http_access allow Sams2Template" << tpl->getId () << " !" << restriction_deny[idx] << endl;
+
+                      //Если запрещен доступ ко всем ресурсам
+		      if ( tpl->getAllDeny () != 0 )
+		      {
+                        for (idx=0; idx<restriction_allow.size(); idx++)
+                            fout << "http_access deny Sams2Template" << tpl->getId () << " !" << restriction_allow[idx] << endl;
+                      }
+                      else
+		      {
+                        for (idx=0; idx<restriction_allow.size(); idx++)
+                            fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
+                      }
+
                       for (idx=0; idx<restriction_time.size(); idx++)
                           fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_time[idx] << endl;
                     }
