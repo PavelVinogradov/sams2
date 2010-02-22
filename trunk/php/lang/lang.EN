@@ -970,6 +970,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $shablonbuttom_1_prop_UpdateShablonForm_30="Remove a time range";
   $shablonbuttom_1_prop_UpdateShablonForm_31="You cannot remove a unique time range in a template";
+  $configbuttom_3_import_importsamsusers_1="Import of users";
+  $configbuttom_3_import_importshablons_1="Import of tamplates";
+  $configbuttom_3_import_importgroups_1="Import of user groups";
+  $configbuttom_3_import_importurllists_1="Import of URL lists";
 
 
   $setup_1="Choose language";

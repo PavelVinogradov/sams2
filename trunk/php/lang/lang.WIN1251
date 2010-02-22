@@ -984,6 +984,10 @@
 
    $shablonbuttom_1_prop_UpdateShablonForm_30="Удалить временной диапазон?";
    $shablonbuttom_1_prop_UpdateShablonForm_31="Вы не можете удалить единственный временной диапазон в шаблоне";
+   $configbuttom_3_import_importsamsusers_1="Импорт пользователей";
+   $configbuttom_3_import_importshablons_1="Импорт шаблонов";
+   $configbuttom_3_import_importgroups_1="Импорт групп пользователей";
+   $configbuttom_3_import_importurllists_1="Импорт списков URL";
 
    $setup_1="Выбор языка";
    $setup_2="Проверка требований";
