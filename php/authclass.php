@@ -342,8 +342,9 @@ function UserIDAuthenticate($userid, $password)
 class NCSAAuthenticate extends SAMSAuthenticate {
 function UserAuthenticate($user, $password)
 {
+
     $this->UserName=$user;
-    $request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
+    $request="SELECT s_nick, s_passwd, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE  s_nick='$user'";
 
     $this->LoadUndefinedUserVariables($request);
     $passwd=crypt($password, $this->salt);
