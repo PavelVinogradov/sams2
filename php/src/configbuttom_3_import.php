@@ -14,6 +14,9 @@ class IMPORTUSERS
   var $pgcharset;
   var $encode;
   var $groupname = array();
+  var $trangename = array();
+  var $trange = array();
+  var $trangecount;
   
   var $urllistname=array();
   var $urllistid2=array();
@@ -129,6 +132,45 @@ function importgroups()
   echo "</TABLE>\n";
 }
 
+function importtimerange()
+{
+  global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+
+	$DBNAME="";
+	if($SAMSConf->DB_ENGINE=="MySQL")
+		$DBNAME="samsdb.";
+
+	$this->oldDB->samsdb_query_value("select days,shour,smin,ehour,emin from shablons group by days,shour,smin,ehour,emin");
+	echo "<H2>$configbuttom_3_import_importtimerange_1</H2>";
+	echo "<TABLE CLASS=samstable>\n";
+	echo "<TH>$shablonbuttom_1_prop_UpdateShablonForm_14\n";
+	echo "<TH>$shablonbuttom_1_prop_UpdateShablonForm_13\n";
+	echo "<TH>\n";
+	$this->trangecount=0;
+	while($row=$this->oldDB->samsdb_fetch_array())
+	{
+//		$this->trangename[] ="$this->trangecount";
+//		$this->trange[$this->trangecount] = $row['days']." ".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
+
+			echo "<TR><TD>".$row['days'];
+			echo "<TD>".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
+
+			$QUERY="INSERT INTO ".$DBNAME."timerange( s_name, s_days, s_timestart, s_timeend ) VALUES ( 'import_".$this->trangecount."', '".$row['days']."', '".$row['shour'].":".$row['smin'].":00','".$row['ehour'].":".$row['emin'].":00' )";
+			$this->DB->samsdb_query($QUERY);
+			echo "<TD>added";
+		$this->trangecount++;
+	}
+  $this->oldDB->free_samsdb_query();
+  echo "</TABLE>\n";
+}
+
 function importshablons()
 {
   global $SAMSConf;
@@ -177,8 +219,14 @@ function importshablons()
                           $new_pool_id=$row2['s_shablon_id'];
 
 			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
-			echo "<TD>added";
 
+			$this->DB->samsdb_query_value("SELECT s_trange_id FROM ".$DBNAME."timerange WHERE s_days='".$row['days']."' AND s_timestart='".$row['shour'].":".$row['smin'].":00' AND s_timeend='".$row['ehour'].":".$row['emin'].":00'");
+	                while($row2=$this->DB->samsdb_fetch_array())
+                          $new_trange_id=$row2['s_trange_id'];
+
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "sconfig_time ( s_shablon_id, s_trange_id) VALUES ('$new_shablon_id', '$new_trange_id') ");
+
+			echo "<TD>added";
 		}
 		$this->shabloncount++;
 	}
@@ -186,6 +234,8 @@ function importshablons()
   echo "</TABLE>";
 
 }
+
+
 
 function importsamsusers()
 {
@@ -332,8 +382,9 @@ function importdata()
    $IMP=new IMPORTUSERS($hostname, $username, $pass);
   if($importusers=="on")
 	{
-		echo "IMPORT GROUP:<BR>";
 		$IMP->importgroups();
+		echo "<BR>";
+		$IMP->importtimerange();
 		echo "<BR>";
 		$IMP->importshablons();
 		echo "<BR>";

@@ -988,6 +988,7 @@
    $configbuttom_3_import_importshablons_1="Импорт шаблонов";
    $configbuttom_3_import_importgroups_1="Импорт групп пользователей";
    $configbuttom_3_import_importurllists_1="Импорт списков URL";
+   $configbuttom_3_import_importtimerange_1="Импорт временных диапазонов";
 
    $setup_1="Выбор языка";
    $setup_2="Проверка требований";
