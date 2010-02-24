@@ -14,7 +14,7 @@
 function ReturnUsersFromDBGroup($groupname)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $dbusers = array();
   
@@ -46,7 +46,7 @@ function ReturnUsersFromNTLMGroup($groupname)
   $adusers = array();
   $count=0;
 
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
   	$ntlmserver=GetAuthParameter("ntlm","ntlmserver");
 	$ntlmadmin=GetAuthParameter("ntlm","ntlmadmin");
@@ -87,7 +87,7 @@ function ReturnUsersFromNTLMGroup($groupname)
 function SearchUserFromDBGroup($username)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $dbusers = array();
   
@@ -115,7 +115,7 @@ function MoveUserToDBGroup($username, $groupname)
 {
   global $SAMSConf;
   global $DEBUG;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   $dbusers = array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -147,7 +147,7 @@ function AddUserToDBGroup($username, $groupname)
 {
   require_once("src/adldap.php");
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $dbusers = array();
   
@@ -159,10 +159,19 @@ function AddUserToDBGroup($username, $groupname)
   $row=$DB->samsdb_fetch_array();
   $groupid=$row['s_group_id'];
 
-  $QUERY="SELECT shablon.s_shablon_id FROM shablon WHERE s_name='$groupname'";
+  $QUERY="SELECT shablon.s_shablon_id,shablon.s_quote FROM shablon WHERE s_name='$groupname'";
   $result=$DB->samsdb_query_value($QUERY);
   $row=$DB->samsdb_fetch_array();
   $shablonid=$row['s_shablon_id'];
+  $userquote=$row['s_quote'];
+  if ( $userquote == "" )
+  {
+	$userquote=0;
+  }
+  if ( $enabled == "" )
+  {
+	$enabled=1;
+  }
 
 	if($DEBUG!=0)
 		echo " $user $username $name[0] ".$name[$cname-1]." $cname\n";
@@ -182,7 +191,7 @@ function AddUserToDBGroup($username, $groupname)
 function DeleteUserToDBGroup($username, $groupname)
 {
   global $SAMSConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $dbusers = array();
   
@@ -210,7 +219,7 @@ function SearchUserFromNTLMGroups($username)
 {
   global $SAMSConf;
   global $DEBUG;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
 
   $dbusers = array();
 
@@ -276,7 +285,7 @@ function SearchUserFromNTLMGroups($username)
 
 	$SAMSConf=new SAMSCONFIG();
 
-	$DB=new SAMSDB(&$SAMSConf);
+	$DB=new SAMSDB();
 
 	// Получаем список групп AD, синхронизируемых с группами SAMS
 	$result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup'");
