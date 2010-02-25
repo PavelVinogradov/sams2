@@ -65,7 +65,7 @@ function ClearUserTrafficCounterForm()
 
 
 
-function userbuttom_5_clear($userid)
+function userbuttom_5_clear()
 {
   global $SAMSConf;
   global $USERConf;
