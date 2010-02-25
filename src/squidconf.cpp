@@ -374,28 +374,37 @@ bool SquidConf::defineACL ()
                         }
                     }
 
+                  // Если используется внешний редиректор, то он проверяет ограничения, а squid пускает всех
                   if (redir_type != Proxy::REDIR_NONE)
                     fout << "http_access allow Sams2Template" << tpl->getId () << endl;
                   else if (SAMSUserList::activeUsersInTemplate (tpl->getId ()) > 0)
                     {
-                      uint idx;
-                      for (idx=0; idx<restriction_deny.size(); idx++)
-                          fout << "http_access allow Sams2Template" << tpl->getId () << " !" << restriction_deny[idx] << endl;
+                      // Если нет ограничений у шаблона, то просто разрешаем доступ
+                      if ((restriction_deny.size()==0) && (restriction_allow.size()==0) && (restriction_time.size()==0))
+                        {
+                          fout << "http_access allow Sams2Template" << tpl->getId () << endl;
+                        }
+                      else // Накладываем различные ограничения
+                        {
+                          uint idx;
+                          for (idx=0; idx<restriction_deny.size(); idx++)
+                              fout << "http_access allow Sams2Template" << tpl->getId () << " !" << restriction_deny[idx] << endl;
 
-                      //Если запрещен доступ ко всем ресурсам
-		      if ( tpl->getAllDeny () != 0 )
-		      {
-                        for (idx=0; idx<restriction_allow.size(); idx++)
-                            fout << "http_access deny Sams2Template" << tpl->getId () << " !" << restriction_allow[idx] << endl;
-                      }
-                      else
-		      {
-                        for (idx=0; idx<restriction_allow.size(); idx++)
-                            fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
-                      }
+                          //Если запрещен доступ ко всем ресурсам
+		          if ( tpl->getAllDeny () != 0 )
+		          {
+                            for (idx=0; idx<restriction_allow.size(); idx++)
+                                fout << "http_access deny Sams2Template" << tpl->getId () << " !" << restriction_allow[idx] << endl;
+                          }
+                          else
+		          {
+                            for (idx=0; idx<restriction_allow.size(); idx++)
+                                fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_allow[idx] << endl;
+                          }
 
-                      for (idx=0; idx<restriction_time.size(); idx++)
-                          fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_time[idx] << endl;
+                          for (idx=0; idx<restriction_time.size(); idx++)
+                              fout << "http_access allow Sams2Template" << tpl->getId () << " " << restriction_time[idx] << endl;
+                        }
                     }
                 }
             } //if (current_tag == "http_access")
