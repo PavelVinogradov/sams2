@@ -475,6 +475,13 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
           usr->addSize (s_size);
           break;
         }
+
+      if (s_size == 0)
+        {
+          DEBUG (DEBUG9, "[" << this << "->" << __FUNCTION__ << "] " << "s_size=0, drop processing log line");
+          continue;
+        }
+
       sprintf (s_user, "%s", usr->getNick ().c_str ());
       sprintf (s_domain, "%s", usr->getDomain ().c_str ());
       sprintf (s_ipaddr, "%s", sll.getIP ().c_str ());
