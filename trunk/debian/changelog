@@ -5,7 +5,7 @@ sams2 (2.0.0-b1) unstable; urgency=low
   * Move html documentation to /usr/share/sams2-doc/html
   * Update standard version to 3.8.3 (No changes)
 
- -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Mon, 30 Nov 2009 22:37:38 +0400
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 26 Feb 2010 22:37:38 +0400
 
 sams2 (2.0.0-a2) unstable; urgency=low
 
