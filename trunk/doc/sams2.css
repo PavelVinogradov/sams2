@@ -33,7 +33,7 @@ body {
   background: white none;
   color: black;
   font-family: sans-serif;
-  padding: 0 15px 0 0;
+  padding: 5px 30px 0 30px;
   margin: 0; 
 }
 
@@ -160,7 +160,15 @@ padding: 0em 0em 0em 1em;
 
 table { 
   padding: 0px; 
+  text-align: left;
+  border-collapse: collapse;
 } 
+th, td {
+  padding-top: 10 px;
+  padding-bottom: 10 px;
+  padding-left: 10 px;
+/*  border: 2px solid black;*/
+}
 
 dl { 
   margin-top: 0em; 
@@ -208,7 +216,10 @@ table.screen {
 */
 
 p { 
-  text-align: justify; 
+  text-align: justify;
+  text-indent: 5em;  
+  font-family: sans-serif;
+  line-height: 150%;
 }
 
 /* More specific settings */
@@ -216,9 +227,15 @@ p {
 /* P, H1, H2, H3, H4, H5, TD, TH { font-family: Helvetica, Arial, sans-serif;
     } */
 
-p, h1, h2, h3, h4, h5, h6, td, th { 
+h1, h2, h3, h4, h5, h6 { 
+  font-family: sans-serif;
+/*  text-indent: 30px;  */
+}
+
+td, th { 
   font-family: sans-serif;
 }
+
 
 /* Visual cues for GUI elements etc in the text */
 
@@ -256,6 +273,11 @@ p, h1, h2, h3, h4, h5, h6, td, th {
   background-color: rgb(255,255,255);
   color: rgb(0,96,160);
   font-weight: bold;
+}
+
+img {
+/*  width: 800px;*/
+  margin: 10px 10px 10px 10px
 }
 
 h1, h2, h3, h4, h5, h6 { 

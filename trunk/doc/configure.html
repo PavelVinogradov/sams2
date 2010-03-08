@@ -28,25 +28,46 @@
 <H2><A NAME="configure.web">5.1.1 Первый запуск веб интерфейса SАMS. Создание базы данных SAMS.</H2>
 <P>
 В любом web браузере откройте страницу http://yourservername/sams2. Если веб интерфейс не смог 
-присоединиться к базе данных, Появится окно, изображенное ниже.
-Задайте параметры подключения к базе данных и нажмите кнопку "Create database".
+присоединиться к базе данных, Появится окно, предлагающее запустить визард, создающий базу данных.
 </P>
 <P>
  <CENTER>
  <IMG SRC="images/createdb.jpg" ALIGN="CENTER">
- <BR>Рис 5.1.1. Первый запуск WEB интерфейса SAMS. Диалог задания параметров подключения к базе данных.
+ <BR>Рис 5.1.1. Первый запуск WEB интерфейса SAMS. База данных SAMS не обнаружена.
+ </CENTER>
+</P>
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb2.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.2. Визард создания базы данных SAMS. Диалог выбора кодировки веб интерфейса.
+ </CENTER>
+</P>
+Далее производится проверка параметров настроек php, необходимых для функционирования веб интерфейса SAMS.
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb3.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.3. Визард создания базы данных SAMS. Проверка настроек php.
+ </CENTER>
+</P>
+
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb4.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.5. Первый запуск WEB интерфейса SAMS. Диалог подключения к базе данных SAMS.
  </CENTER>
 </P>
 <P>
 <FONT COLOR="RED">Внимание!!!</FONT> 
 При использовании MySQL база данных создается скриптом автоматически, при использовании PostgreSQL ее необходимо создать заранее.
 </P>
+
 <P>
  <CENTER>
- <IMG SRC="images/createdb2.jpg" ALIGN="CENTER">
- <BR>Рис 5.1.2. Первый запуск WEB интерфейса SAMS. Лог создания базы данных SAMS.
+ <IMG SRC="images/createdb5.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.6. Первый запуск WEB интерфейса SAMS. Лог создания базы данных SAMS.
  </CENTER>
 </P>
+
 <P>
 Далее на экран будет выведен лог создания базы данных SAMS. Если все прошло удачно, нажмите на кнопку "Start SAMS web interface"
 </P>
@@ -71,7 +92,7 @@ admin и qwerty.
   <TR>
     <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
     <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
-    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="notes.html">Особенности</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="webinterface.html">Настройки WEB интерфейса</A></TD>
   </TR>
 </TABLE>
 
