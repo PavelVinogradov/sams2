@@ -203,7 +203,10 @@ echo "1<BR>";
 			$URL["norm_url"][$count]=str_replace("/","",$row['url_domain']);
 			$URL["url_size"][$count]=$row['url_size'];
 			$URL["hit_size"][$count]=$row['hit_size'];
-			$URL["sum_size"][$count]=$row['url_size']+$row['hit_size'];
+			if($SAMSConf->realtraffic=="real")
+				$URL["sum_size"][$count]=$row['url_size']-$row['hit_size'];
+			else
+				$URL["sum_size"][$count]=$row['url_size'];
 			$count++;
 		}
        }
