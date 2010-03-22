@@ -235,7 +235,56 @@ function importshablons()
 
 }
 
+function seturllists()
+{
+  global $SAMSConf;
+  global $USERConf;
 
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+
+	$DBNAME="";
+//	if($SAMSConf->DB_ENGINE=="MySQL")
+//		$DBNAME="samsdb.";
+
+	$shabloncount=0;
+	$this->oldDB->samsdb_query_value("select sconfig.sname, sconfig.set, shablons.name, shablons.nick, redirect.name as gname from sconfig left join shablons on shablons.name=sconfig.sname left join redirect on redirect.filename=sconfig.set ");
+	echo "<H2>$configbuttom_3_import_importshablons_1</H2>";
+	echo "<TABLE CLASS=samstable>\n";
+	echo "<TH>$shablonnew_NewShablonForm_2\n";
+	echo "<TH>$redir_addredirectform2\n";
+	while($row=$this->oldDB->samsdb_fetch_array())
+	{
+		if($row['sname'] == $row['name'])
+		{
+			echo "<TR>\n";
+			echo "<TD>$row[nick]\n";
+			echo "<TD>$row[gname]\n";
+
+			$QUERY="SELECT s_shablon_id, s_name FROM ".$SAMSConf->SAMSDB.".shablon WHERE s_name='$row[nick]'";
+			$num_rows_shablon=$this->DB->samsdb_query_value($QUERY);
+			while($row2=$this->DB->samsdb_fetch_array())
+			{
+				$shablonid=$row2['s_shablon_id'];
+			}
+			$QUERY="SELECT s_redirect_id, s_name FROM ".$SAMSConf->SAMSDB.".redirect WHERE s_name='$row[gname]'";
+			$num_rows_redirect=$this->DB->samsdb_query_value($QUERY);
+			while($row2=$this->DB->samsdb_fetch_array())
+			{
+				$redirectid=$row2['s_redirect_id'];
+			}
+			if($num_rows_shablon>0 && $num_rows_redirect>0)
+			{
+				$QUERY="INSERT INTO ".$SAMSConf->SAMSDB.".sconfig ( s_shablon_id, s_redirect_id ) VALUES ('$shablonid', '$redirectid') ";
+				$num_rows=$this->DB->samsdb_query($QUERY);
+			}
+		}
+	}
+	echo "</table>\n";
+}
 
 function importsamsusers()
 {
@@ -380,6 +429,7 @@ function importdata()
  if(isset($_GET["pass"])) $pass=$_GET["pass"];
 
    $IMP=new IMPORTUSERS($hostname, $username, $pass);
+
   if($importusers=="on")
 	{
 		$IMP->importgroups();
@@ -394,6 +444,11 @@ function importdata()
   if($importurllists=="on")
 	{
 		$IMP->importurllists();
+	}
+
+  if($importusers=="on" && $importurllists=="on")
+	{
+		$IMP->seturllists();
 	}
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
