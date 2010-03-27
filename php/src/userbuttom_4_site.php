@@ -120,9 +120,9 @@ function UserSitesPeriod()
 			print("<TR>");
 			print("<TD colspan=2>\n");
 			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);
-			RTableCell(FormattedString($URL["url_size"][$key],15));
-			RTableCell(FormattedString($URL["hit_size"][$key],15));
-			RTableCell(FormattedString($URL["sum_size"][$key],15));
+			RTableCell(FormattedString($URL["url_size"][$key]),15);
+			RTableCell(FormattedString($URL["hit_size"][$key]),15);
+			RTableCell(FormattedString($URL["sum_size"][$key]),15);
 			$url_size_value+=$URL["url_size"][$key];
 			$hit_size_value+=$URL["hit_size"][$key];
 			$sum_size_value+=$URL["sum_size"][$key];
@@ -131,9 +131,10 @@ function UserSitesPeriod()
 		else
 		{
 			print("<TD colspan=2>\n");
-			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);			RTableCell(FormattedString($URL["url_size"][$key],15));
-			RTableCell(FormattedString($URL["hit_size"][$key],15));
-			RTableCell(FormattedString($URL["sum_size"][$key],15));
+			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);
+			RTableCell(FormattedString($URL["url_size"][$key]),15);
+			RTableCell(FormattedString($URL["hit_size"][$key]),15);
+			RTableCell(FormattedString($URL["sum_size"][$key]),15);
 			$url_size_value+=$URL["url_size"][$key];
 			$hit_size_value+=$URL["hit_size"][$key];
 			$sum_size_value+=$URL["sum_size"][$key];
@@ -141,9 +142,9 @@ function UserSitesPeriod()
 	}
 	print("<TR>");
 	print("<TD colspan=3>\n");
-	RBTableCell(FormattedString($url_size_value,15));
-	RBTableCell(FormattedString($hit_size_value,15));
-	RBTableCell(FormattedString($sum_size_value,15));
+	RBTableCell(FormattedString($url_size_value),15);
+	RBTableCell(FormattedString($hit_size_value),15);
+	RBTableCell(FormattedString($sum_size_value),15);
 	print("</TABLE>");
 
 
