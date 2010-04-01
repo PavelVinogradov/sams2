@@ -450,6 +450,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         case SquidLogLine::TCP_HIT:
         case SquidLogLine::TCP_MEM_HIT:
         case SquidLogLine::TCP_REFRESH_HIT:
+        case SquidLogLine::TCP_REFRESH_UNMODIFIED:
         case SquidLogLine::TCP_REF_FAIL_HIT:
         case SquidLogLine::TCP_IMS_HIT:
         case SquidLogLine::UDP_HIT:
@@ -458,6 +459,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
         case SquidLogLine::TCP_NEGATIVE_HIT:
         case SquidLogLine::TCP_MISS:
         case SquidLogLine::TCP_REFRESH_MISS:
+        case SquidLogLine::TCP_REFRESH_MODIFIED:
         case SquidLogLine::TCP_CLIENT_REFRESH:
         case SquidLogLine::TCP_CLIENT_REFRESH_MISS:
         case SquidLogLine::TCP_IMS_MISS:
