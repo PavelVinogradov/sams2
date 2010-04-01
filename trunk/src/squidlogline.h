@@ -59,6 +59,8 @@ public:
     *  was made and a "304 Not Modified" reply was received.
     */
     TCP_REFRESH_HIT,
+    TCP_REFRESH_MODIFIED,       ///< The requested object was cached but STALE. The IMS query returned the new content.
+    TCP_REFRESH_UNMODIFIED,     ///< The requested object was cached but STALE. The IMS query for the object resulted in "304 not modified".
 
     /** The object was in the cache, but STALE. The request to validate the object
     * failed, so the old (stale) object was returned.

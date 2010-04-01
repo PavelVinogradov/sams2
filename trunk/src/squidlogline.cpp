@@ -105,6 +105,10 @@ SquidLogLine::logCacheResult SquidLogLine::parseCacheResult (const string & cr)
     res = TCP_MISS;
   else if (cr == "TCP_REFRESH_HIT")
     res = TCP_REFRESH_HIT;
+  else if (cr == "TCP_REFRESH_MODIFIED")
+    res = TCP_REFRESH_MODIFIED;
+  else if (cr == "TCP_REFRESH_UNMODIFIED")
+    res = TCP_REFRESH_UNMODIFIED;
   else if (cr == "TCP_REF_FAIL_HIT")
     res = TCP_REF_FAIL_HIT;
   else if (cr == "TCP_REFRESH_MISS")
@@ -305,6 +309,10 @@ string SquidLogLine::toString (logCacheResult cr)
     res = "TCP_MISS";
   else if (cr == TCP_REFRESH_HIT)
     res = "TCP_REFRESH_HIT";
+  else if (cr == TCP_REFRESH_MODIFIED)
+    res = "TCP_REFRESH_MODIFIED";
+  else if (cr == TCP_REFRESH_UNMODIFIED)
+    res = "TCP_REFRESH_UNMODIFIED";
   else if (cr == TCP_REF_FAIL_HIT)
     res = "TCP_REF_FAIL_HIT";
   else if (cr == TCP_REFRESH_MISS)
