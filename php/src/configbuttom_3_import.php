@@ -365,6 +365,152 @@ function importsamsusers()
 
 }
 
+function ImportProxySettings()
+{
+  global $SAMSConf;
+  global $USERConf;
+
+  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+	exit(0);
+
+	$lang="./lang/lang.$SAMSConf->LANG";
+	require($lang);
+
+	$DBNAME="";
+	if($SAMSConf->DB_ENGINE=="MySQL")
+		$DBNAME="samsdb.";
+
+	$shabloncount=0;
+	$this->oldDB->samsdb_query_value("select * from squidctrl.sams");
+	echo "<H2>import proxy settings</H2>";
+
+	$row=$this->oldDB->samsdb_fetch_array();
+
+$s_description='Imported from sams 1.x'; 
+$s_endvalue=$row['endvalue'];
+if($s_envalue="")
+	$s_endvalue=0;
+
+$s_redirect_to=$row['redirect_to'];
+$s_denied_to=$row['denied_to'];
+$s_redirector=$row['redirector'];
+
+if($s_redirector!="sams")
+	$s_redirector="none";
+
+$s_delaypool=$row['delaypool'];
+
+if($s_delaypool=="Y")
+	$s_delaypool=1;
+else
+	$s_delaypool=0;
+
+$s_auth=$row['auth'];
+$s_wbinfopath=$row['wbinfopath'];
+$s_separator=$row['separator'];
+$s_usedomain=$row['ntlmdomain'];
+
+if($s_usedomain=="Y")
+	$s_usedomain=1;
+else
+	$s_usedomain=0;
+
+$s_bigd=$row['bigd'];
+
+if($s_bigd=="S")
+	$s_bigd=1;
+else if($s_bigd=="Y")
+	$s_bigd=0;
+else
+	$s_bigd=2;
+
+$s_bigu=$row['bigu'];
+
+if($s_bigu=="S")
+	$s_bigu=1;
+else if($s_bigu=="Y")
+	$s_bigu=0;
+else
+	$s_bigu=2;
+
+$s_sleep=$row['sleep'];
+$s_parser=$row['parser_on'];
+
+if($s_parser=="Y")
+	$s_parser=1;
+else
+	$s_parser=0;
+
+$s_parser_time=$row['parser_time'];
+
+$s_count_clean=$row['count_clean'];
+
+if($s_count_clean=="Y")
+	$s_count_clean=1;
+else
+	$s_count_clean=0;
+
+$s_nameencode=$row['nameencode'];
+
+if($s_nameencode=="Y")
+	$s_nameencode=1;
+else
+	$s_nameencode=0;
+
+$s_realsize=$row['realsize'];
+
+$s_checkdns=$row['checkdns'];
+if($s_checkdns=="Y")
+	$s_checkdns=1;
+else
+	$s_checkdns=0;
+
+$s_debuglevel=$row['loglevel'];
+
+$s_defaultdomain=$row['defaultdomain'];
+$s_squidbase=$row['squidbase'];
+$s_udscript=$row['udscript'];
+$s_adminaddr=$row['adminaddr'];
+
+
+
+$QUERY = "INSERT INTO " .$DBNAME. "proxy
+ (s_description, s_auth, s_redirector, s_defaultdomain, s_usedomain,
+ s_separator, s_bigd, s_bigu, s_nameencode,
+ s_redirect_to, s_denied_to, s_checkdns, s_realsize,
+ s_sleep, s_parser, s_parser_time, s_count_clean,
+ s_wbinfopath, s_delaypool, s_debuglevel, s_udscript,
+ s_adminaddr, s_squidbase) 
+VALUES ('$s_description', '$s_auth', '$s_redirector', '$s_defaultdomain', '$s_usedomain',
+ '$s_separator', '$s_bigd', '$s_bigu', '$s_nameencode',
+ '$s_redirect_to', '$s_denied_to', '$s_checkdns', '$s_realsize',
+ '$s_sleep', '$s_parser', '$s_parser_time', '$s_count_clean',
+ '$s_wbinfopath', '$s_delaypool', '$s_debuglevel', '$s_udscript',
+ '$s_adminaddr', '$s_squidbase')";
+
+  $this->DB->samsdb_query($QUERY);
+
+  if($s_auth=="ntlm" && GetAuthParameter("ntlm","enabled")==0)
+  {
+	$num_rows=$this->DB->samsdb_query("UPDATE auth_param SET s_value='1' WHERE s_auth='ntlm' AND s_param='enabled' ");
+  }
+  if($s_auth=="ntlm" && GetAuthParameter("ntlm","ntlmdomain")!=$s_defaultdomain)
+  {
+	$num_rows=$this->DB->samsdb_query("UPDATE auth_param SET s_value='$s_defaultdomain' WHERE s_auth='ntlm' AND s_param='ntlmdomain' ");
+  }
+  if($s_auth=="ncsa" && GetAuthParameter("ncsa","enabled")==0)
+  {
+	$num_rows=$this->DB->samsdb_query("UPDATE auth_param SET s_value='1' WHERE s_auth='ncsa' AND s_param='enabled' ");
+
+  }
+  if($s_auth=="ip" && GetAuthParameter("ip","enabled")==0)
+  {
+	$num_rows=$this->DB->samsdb_query("UPDATE auth_param SET s_value='1' WHERE s_auth='ip' AND s_param='enabled' ");
+
+  }
+
+}
+
 
 function IMPORTUSERS($hostname, $username, $pass)
 {
@@ -410,6 +556,8 @@ function IMPORTUSERS($hostname, $username, $pass)
 
 }
 
+
+
 function importdata()
 {
   global $SAMSConf;
@@ -424,6 +572,7 @@ function importdata()
  if(isset($_GET["importusers"])) $importusers=$_GET["importusers"];
  if(isset($_GET["importgroups"])) $importgroups=$_GET["importgroups"];
  if(isset($_GET["importurllists"])) $importurllists=$_GET["importurllists"];
+ if(isset($_GET["importproxy"])) $importproxy=$_GET["importproxy"];
  if(isset($_GET["hostname"])) $hostname=$_GET["hostname"];
  if(isset($_GET["username"])) $username=$_GET["username"];
  if(isset($_GET["pass"])) $pass=$_GET["pass"];
@@ -450,6 +599,12 @@ function importdata()
 	{
 		$IMP->seturllists();
 	}
+
+  if($importproxy=="on")
+	{
+		$IMP->importproxysettings();
+	}
+
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
@@ -465,7 +620,7 @@ function importdataform()
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
-  PageTop("shablon.jpg","$configbuttom_3_import_importdataform_1 ");
+  PageTop("importdb_48.jpg","$configbuttom_3_import_importdataform_1 ");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/importfromsams1.html\">$documentation</A>");
   print("<P>\n");
@@ -478,8 +633,9 @@ function importdataform()
 			print("<TR><TD ALIGN=RIGHT>DB Hostname: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
-			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\">\n");
-			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\">\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\" CHECKED>\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\" CHECKED>\n");
+			print("<TR><TD ALIGN=RIGHT>Создать прокси сервер и импортировать настройки: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importproxy\" CHECKED>\n");
 			print("</TABLE>\n");
 
 			printf("<BR><CENTER>");
@@ -500,7 +656,7 @@ function configbuttom_3_import()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
-	               "basefrm","importdb_32.jpg","importdb_48.jpg","  import data from sams ver.1 database  ");
+	               "basefrm","importdb_32.jpg","importdb_48.jpg","Импорт настроек из базы данных SAMS 1.x");
     }
 }
 
