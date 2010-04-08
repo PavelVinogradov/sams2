@@ -1017,5 +1017,20 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $setup_37="Creation of database SAMS";
    $setup_38="Database SAMS is found";
    $setup_39="database creation is not required";
+   $adminbuttom_1_prop_SamsReConfigForm_53="Proxy server ID";
+
+   $confogbuttom_3_importcache_importcachesumtable_1="Import data about the traffic of users";
+   $confogbuttom_3_importcache_importcachesumtable_2="records is imported";
+   $confogbuttom_3_importcache_importcachesumtable_2="records it is imported";
+   $confogbuttom_3_importcache_importcachetable_1="Import data about the traffic of users for";
+   $confogbuttom_3_importcache_importcachetable_2="records is imported";
+   $confogbuttom_3_importcache_importcachetable_3="Import data is finished";
+   $confogbuttom_3_importcache_importcachetable_4="records it is imported";
+   $configbuttom_3_importcache_configbuttom_3_importcache_1="Import data about the traffic of users from database SAMS 1.x";
+   $configbuttom_3_import_importdataform_4="Создать прокси сервер и импортировать настройки";
+   $configbuttom_3_importcache_selectimportdateform_1="Импорт данных о трафике пользователей";
+   $configbuttom_3_importcache_selectimportdateform_2="Найден трафик пользователей с";
+   $configbuttom_3_importcache_selectimportdateform_3="по";
+   $configbuttom_3_importcache_selectimportdateform_4="Выберите период, трафик за который будет импортирован";
 
 ?>

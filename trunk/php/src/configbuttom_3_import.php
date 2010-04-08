@@ -56,7 +56,9 @@ function importurllists()
 	echo "<TABLE CLASS=samstable>\n";
 	echo "<TH>$redir_1\n";
 	echo "<TH>\n";
-	$this->oldDB->samsdb_query_value("SELECT * FROM squidctrl.redirect ");
+	$QUERY="SELECT * FROM squidctrl.redirect ";
+
+	$this->oldDB->samsdb_query_value($QUERY);
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
 		echo "<TR><TD><B>$row[name]</B><TD> added<BR>";
@@ -64,7 +66,8 @@ function importurllists()
 	}
 	$this->oldDB->free_samsdb_query();
 	$i=0;
-	$this->urllistcount=$this->DB->samsdb_query_value("SELECT * FROM " .$DBNAME. "redirect ");
+        $QUERY="SELECT * FROM " .$DBNAME. "redirect ";
+	$this->urllistcount=$this->DB->samsdb_query_value($QUERY);
 	while($row=$this->DB->samsdb_fetch_array())
 	{
 		$this->urllistname[$i]=$row['s_name'];
@@ -72,7 +75,9 @@ function importurllists()
 		$i++;
 	}
 	$this->DB->free_samsdb_query();
-	$this->oldDB->samsdb_query_value("SELECT urls.*,redirect.name as rname FROM squidctrl.urls LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename ");
+
+        $QUERY="SELECT urls.*,redirect.name as rname FROM squidctrl.urls LEFT JOIN squidctrl.redirect ON urls.type=redirect.filename ";
+	$this->oldDB->samsdb_query_value($QUERY);
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
 		$index=array_search($row['rname'], $this->urllistname);
@@ -95,9 +100,9 @@ function importgroups()
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-	$DBNAME="";
-	if($SAMSConf->DB_ENGINE=="MySQL")
-		$DBNAME="samsdb.";
+	$DBNAME="$SAMSConf->SAMSDB.";
+//	if($SAMSConf->DB_ENGINE=="MySQL")
+//		$DBNAME="samsdb.";
 
 	$this->groupcount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM sams ");
@@ -121,7 +126,6 @@ function importgroups()
 
 			$GROUPNAME5=$GROUPNAME;
 			//$GROUPNAME5 = substr_replace ( $GROUPNAME, "", 1 );
-
 			$QUERY="INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$GROUPNAME."') ";
 			$this->DB->samsdb_query($QUERY);
 			echo "<TD>added";
@@ -182,9 +186,9 @@ function importshablons()
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-	$DBNAME="";
-	if($SAMSConf->DB_ENGINE=="MySQL")
-		$DBNAME="samsdb.";
+	$DBNAME="$SAMSConf->SAMSDB.";
+//	if($SAMSConf->DB_ENGINE=="MySQL")
+//		$DBNAME="samsdb.";
 
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM shablons ");
@@ -204,15 +208,15 @@ function importshablons()
 		if($row['name']!="default")
 		{
 			echo "<TR><TD><B>$row[nick]</B>";
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+			$QUERY="INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ";
+			$this->DB->samsdb_query($QUERY);
 
-
-			$this->DB->samsdb_query_value("SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row[nick]'");
+			$QUERY="SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row[nick]'";
+			$this->DB->samsdb_query_value($QUERY);
 	                while($row2=$this->DB->samsdb_fetch_array())
                           $new_shablon_id=$row2['s_shablon_id'];
 
 			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row[nick]', '2', '$row[shablonpool]', '$row[userpool]' ) ");
-
 
 			$this->DB->samsdb_query_value("SELECT s_pool_id FROM ".$DBNAME."delaypool WHERE s_name='$row[nick]'");
 	                while($row2=$this->DB->samsdb_fetch_array())
@@ -246,7 +250,8 @@ function seturllists()
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-	$DBNAME="";
+	$DBNAME="$SAMSConf->SAMSDB.";
+//	$DBNAME="";
 //	if($SAMSConf->DB_ENGINE=="MySQL")
 //		$DBNAME="samsdb.";
 
@@ -297,9 +302,10 @@ function importsamsusers()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	$DBNAME="";
-	if($SAMSConf->DB_ENGINE=="MySQL")
-		$DBNAME="samsdb.";
+	$DBNAME="$SAMSConf->SAMSDB.";
+#	$DBNAME="";
+#	if($SAMSConf->DB_ENGINE=="MySQL")
+#		$DBNAME="samsdb.";
 
 
 	$groupcount2=0;
@@ -376,14 +382,11 @@ function ImportProxySettings()
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-	$DBNAME="";
-	if($SAMSConf->DB_ENGINE=="MySQL")
-		$DBNAME="samsdb.";
+	$DBNAME="$SAMSConf->SAMSDB.";
 
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("select * from squidctrl.sams");
 	echo "<H2>import proxy settings</H2>";
-
 	$row=$this->oldDB->samsdb_fetch_array();
 
 $s_description='Imported from sams 1.x'; 
@@ -407,7 +410,7 @@ else
 
 $s_auth=$row['auth'];
 $s_wbinfopath=$row['wbinfopath'];
-$s_separator=$row['separator'];
+$s_separator=quotemeta($row['separator']);
 $s_usedomain=$row['ntlmdomain'];
 
 if($s_usedomain=="Y")
@@ -473,7 +476,6 @@ $s_udscript=$row['udscript'];
 $s_adminaddr=$row['adminaddr'];
 
 
-
 $QUERY = "INSERT INTO " .$DBNAME. "proxy
  (s_description, s_auth, s_redirector, s_defaultdomain, s_usedomain,
  s_separator, s_bigd, s_bigu, s_nameencode,
@@ -487,7 +489,6 @@ VALUES ('$s_description', '$s_auth', '$s_redirector', '$s_defaultdomain', '$s_us
  '$s_sleep', '$s_parser', '$s_parser_time', '$s_count_clean',
  '$s_wbinfopath', '$s_delaypool', '$s_debuglevel', '$s_udscript',
  '$s_adminaddr', '$s_squidbase')";
-
   $this->DB->samsdb_query($QUERY);
 
   if($s_auth=="ntlm" && GetAuthParameter("ntlm","enabled")==0)
@@ -531,19 +532,22 @@ function IMPORTUSERS($hostname, $username, $pass)
 //SHOW VARIABLES where variable_name='character_set_database';
 //show server_encoding;
 
-
+/*
  $this->oldDB->samsdb_query_value("SHOW VARIABLES WHERE variable_name='character_set_database'");
  $row=$this->oldDB->samsdb_fetch_array();
  $this->oldDBcharset=$row[0];
  $this->oldDB->free_samsdb_query();
-
+*/
+ $this->oldDBcharset="KOI8-R";
+/*
  $this->DB->samsdb_query_value("show server_encoding");
  $row=$this->DB->samsdb_fetch_array();
  $this->DBcharset=$row[0];
  $this->DB->free_samsdb_query();
 
  $this->pgcharset=pg_client_encoding($this->DB->link);
-
+*/
+ $this->DBcharset="KOI8-R";
  if($SAMSConf->DB_ENGINE=="PostgreSQL"&&$this->sams1charset!=$this->pgcharset)
  {
 	if($this->sams1charset=="KOI8-R")
@@ -635,7 +639,7 @@ function importdataform()
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\" CHECKED>\n");
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\" CHECKED>\n");
-			print("<TR><TD ALIGN=RIGHT>Создать прокси сервер и импортировать настройки: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importproxy\" CHECKED>\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_4: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importproxy\" CHECKED>\n");
 			print("</TABLE>\n");
 
 			printf("<BR><CENTER>");
