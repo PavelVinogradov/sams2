@@ -169,20 +169,28 @@ function AddUser()
   else
      $enabled=-1;
 
-  if(strlen($userip)>7)
-    {
-      $num_rows=$DB->samsdb_query_value("SELECT s_ip FROM squiduser WHERE s_ip='$userip' ");
-      if($num_rows>0)
+	if(strlen($userip)>7)
+	{
+		$QUERY="SELECT s_ip FROM squiduser WHERE s_ip='$userip' ";
+		$num_rows=$DB->samsdb_query_value($QUERY);
+		if($num_rows>0)
+		{
+			PageTop("denied.gif","<FONT COLOR=\"RED\">$usersbuttom_1_useradd_AddUser_1 <BR><FONT COLOR=BLUE>$userip</FONT> <BR>$usersbuttom_1_useradd_AddUser_2</FONT>");
+			exit(0);
+		}
+	}
+	$QUERY="SELECT s_nick FROM squiduser WHERE s_nick='$newusernick' ";
+	$num_rows=$DB->samsdb_query_value($QUERY);
+	if($num_rows>0)
         {
-           PageTop("denied.gif","<FONT COLOR=\"RED\">$usersbuttom_1_useradd_AddUser_1 $userip $usersbuttom_1_useradd_AddUser_2</FONT>");
-           exit(0);
+		PageTop("denied.gif","<FONT COLOR=\"RED\">$usersbuttom_1_useradd_AddUser_3 <BR><FONT COLOR=BLUE>$newusernick</FONT> <BR>$usersbuttom_1_useradd_AddUser_2</FONT>");
+		exit(0);
         }
-     }
+
   if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
     {
-      $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$newusernick', '$userdomain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname', '$userip', '$pass', '0', '0', '0') ");
-//     if($result!=FALSE)
-//         UpdateLog("$SAMSConf->adminname","Added user $newusernick ","01");
+	$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$newusernick', '$userdomain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+	$DB->samsdb_query($QUERY);
     }
   else
     {
