@@ -890,7 +890,7 @@
   $CacheForm_squidbuttom_4_addcache_9="Не задано описание прокси-сервера";
   $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
   $usersbuttom_1_useradd_AddUser_1="Пользователь с IP адресом ";
-  $usersbuttom_1_useradd_AddUser_2=" Уже зарегистрирован в системе";
+  $usersbuttom_1_useradd_AddUser_2=" уже зарегистрирован в системе";
 
   $filedeniedlisttray_filedeniedlisttray_1="Расширения файлов.  <BR>Список";
   $regexlisttray_regexlisttray_1="Регулярные выражения.  <BR>Список";
@@ -1044,5 +1044,6 @@
    $configbuttom_3_importcache_selectimportdateform_2="Найден трафик пользователей с";
    $configbuttom_3_importcache_selectimportdateform_3="по";
    $configbuttom_3_importcache_selectimportdateform_4="Выберите период, трафик за который будет импортирован";
+   $usersbuttom_1_useradd_AddUser_3="Пользователь с логином ";
 
 ?>
