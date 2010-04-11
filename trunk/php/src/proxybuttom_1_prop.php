@@ -63,9 +63,20 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["shablon"])) $shablon=$_GET["shablon"];
   if(isset($_GET["group"])) $group=$_GET["group"];
 
+  if(isset($_GET["plus"])) $plus=$_GET["plus"];
+  if(isset($_GET["slashe"])) $slashe=$_GET["slashe"];
+  if(isset($_GET["at"])) $at=$_GET["at"];
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
+
+  $separator="0";
+  if($plus=="on")
+    $separator="$separator+";
+  if($at=="on")
+    $separator="$separator@";
+  if($slashe=="on")
+    $separator="$separator\\\\";
 
   $query="UPDATE proxy SET s_debuglevel='$loglevel', s_checkdns='$checkdns', s_realsize='$traffic', 
       s_nameencode='$nameencode', s_sleep='$sleep', s_count_clean='$count_clean', s_parser='$parser_on',
@@ -73,11 +84,10 @@ $group=$PROXYConf->s_autogrp;
       s_delaypool='$delaypool', s_redirect_to='$redirect_to', s_denied_to='$denied_to', s_redirector='$redirector', s_auth='$auth', 
       s_wbinfopath='$wbinfopath', s_defaultdomain='$defaultdomain', s_squidbase='$squidbase', s_udscript='$udscript', 
       s_adminaddr='$adminaddr', 
-      s_autouser='$autouser', s_autotpl='$shablon', s_autogrp='$group' 
+      s_autouser='$autouser', s_autotpl='$shablon', s_autogrp='$group', s_separator='$separator'  
       WHERE s_proxy_id='$id'";
+
   $DB->samsdb_query($query);
-//  if($defauth!=$auth)
-//    $DB->samsdb_query("UPDATE shablon SET s_auth='$auth' WHERE s_auth!='ip' ");
   $SAMSConf->LoadConfig();
 
 	print("<SCRIPT>\n");
@@ -102,7 +112,7 @@ function ProxyReConfigForm()
 	exit;
   
 
-  PageTop("config_48.jpg","Proxy server<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT> ");
+  PageTop("config_48.jpg","Proxy server<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT>");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/squid.html\">$documentation</A>");
   print("<P>\n");
@@ -132,6 +142,9 @@ function ProxyReConfigForm()
   print("      formname.usedomain.disabled=true; \n");
   print("      formname.bigdomain.disabled=true; \n");
   print("      formname.bigusername.disabled=true; \n");
+  print("      formname.plus.disabled=true; \n");
+  print("      formname.slashe.disabled=true; \n");
+  print("      formname.at.disabled=true; \n");
   print("    }\n");
   print("  else if(auth==\"ncsa\")\n");
   print("    {\n");
@@ -148,6 +161,9 @@ function ProxyReConfigForm()
   print("  else if(auth==\"adld\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=false; \n");
+  print("      formname.plus.disabled=false; \n");
+  print("      formname.slashe.disabled=false; \n");
+  print("      formname.at.disabled=fals; \n");
   print("      if(domainenabled==true)\n");
   print("        formname.bigdomain.disabled=false; \n");
   print("      else\n");
@@ -157,6 +173,9 @@ function ProxyReConfigForm()
   print("  else if(auth==\"ntlm\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=false; \n");
+  print("      formname.plus.disabled=false; \n");
+  print("      formname.slashe.disabled=false; \n");
+  print("      formname.at.disabled=false; \n");
   print("      if(domainenabled==true)\n");
   print("        formname.bigdomain.disabled=false; \n");
   print("      else\n");
@@ -380,6 +399,20 @@ function ProxyReConfigForm()
             print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   print("</SELECT>\n");
 
+
+	print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
+	if(strstr($PROXYConf->s_separator, "+")==FALSE)
+		print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\"> <B>+</B>\n");
+	else
+		print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED> <B>+</B>\n");
+	if(strstr($PROXYConf->s_separator, "\\")==FALSE)
+		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\"> <B>\\</B> \n");
+	else
+		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" CHECKED> <B>\\</B> \n");
+	if(strstr($PROXYConf->s_separator, "@")==FALSE)
+		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"> <B>@</B> \n");
+	else
+		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\" CHECKED> <B>@</B> \n");
   print("</TD>\n");
   print("</TR>\n");
   print("</TABLE>\n");
