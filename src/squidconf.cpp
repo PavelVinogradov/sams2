@@ -220,14 +220,18 @@ bool SquidConf::defineACL ()
                       else
                         {
                           if ((authType == Proxy::AUTH_NCSA) && (fncsa.is_open ()))
+			  {
                             fncsa << *(*it) << ":" << (*it)->getPassword () << endl;
+			  }
+
                           fout << "acl Sams2Template" << tpl->getId () << " " << method << " " << *(*it) << endl;
                         }
                     }
 
-                  if (fncsa.is_open ())
-                    {
-                      fncsa.close ();
+                }
+              if (fncsa.is_open ())
+                {
+                    fncsa.close ();
 /* Смена владельца не актуальна, т.к. демоны авторизации работают под root
                       string chown_cmd = "chown squid " + ncsafile;
                       if (system (chown_cmd.c_str ()))
@@ -235,11 +239,6 @@ bool SquidConf::defineACL ()
                           WARNING ("Unable to change owner of " << ncsafile);
                         }
 */
-                    }
-
-//                  if (redir_type == Proxy::REDIR_INTERNAL)
-//                    continue;
-
                 }
 
               if (redir_type == Proxy::REDIR_NONE)
