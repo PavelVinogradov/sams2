@@ -556,7 +556,12 @@ bool SquidConf::defineACL ()
               )
             continue;
 
-          fout << nextline << endl;
+          if (nextline.find ("Sams2") == string::npos)
+	    {
+               fout << nextline << endl;
+              continue;
+            }
+
         }
       else
         {
