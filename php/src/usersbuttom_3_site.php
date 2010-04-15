@@ -174,7 +174,7 @@ function UsersSitesPeriod()
   print("<TH WIDTH=20%>URL");
   if($USERConf->ToWebInterfaceAccess("C")==1)
   {
-      print("<TH WIDTH=15%>");
+      print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_3");
       print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_4");
    }   
   print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_5");

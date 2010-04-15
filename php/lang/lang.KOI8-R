@@ -673,7 +673,7 @@
   $userbuttom_2_traffic_UserTrafficPeriod_5="Трафик";
 
   $userbuttom_4_site_UserSitesPeriod_4="Из КЭШ";
-  $userbuttom_4_site_UserSitesPeriod_5="Трафик";
+  $userbuttom_4_site_UserSitesPeriod_5="Суммарный трафик";
 
   $DateTimeSelect_mysqltools_1="Дата";
   $DateTimeSelect_mysqltools_2="Время";
