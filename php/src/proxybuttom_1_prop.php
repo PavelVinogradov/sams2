@@ -66,6 +66,7 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["plus"])) $plus=$_GET["plus"];
   if(isset($_GET["slashe"])) $slashe=$_GET["slashe"];
   if(isset($_GET["at"])) $at=$_GET["at"];
+  if(isset($_GET["description"])) $description=$_GET["description"];
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
@@ -78,7 +79,7 @@ $group=$PROXYConf->s_autogrp;
   if($slashe=="on")
     $separator="$separator\\\\";
 
-  $query="UPDATE proxy SET s_debuglevel='$loglevel', s_checkdns='$checkdns', s_realsize='$traffic', 
+  $query="UPDATE proxy SET s_description='$description', s_debuglevel='$loglevel', s_checkdns='$checkdns', s_realsize='$traffic', 
       s_nameencode='$nameencode', s_sleep='$sleep', s_count_clean='$count_clean', s_parser='$parser_on',
       s_parser_time='$parser_time', s_bigd='$bigdomain', s_bigu='$bigusername', s_usedomain='$usedomain',
       s_delaypool='$delaypool', s_redirect_to='$redirect_to', s_denied_to='$denied_to', s_redirector='$redirector', s_auth='$auth', 
@@ -92,6 +93,7 @@ $group=$PROXYConf->s_autogrp;
 
 	print("<SCRIPT>\n");
 	print("parent.tray.location.href=\"tray.php?show=exe&function=proxytray&filename=proxytray.php&id=$id\";\n");    
+	print("  parent.lframe.location.href=\"lframe.php\"; \n");
 	print("</SCRIPT> \n");
 }
 
@@ -233,6 +235,8 @@ function ProxyReConfigForm()
   
   print("<TABLE CLASS=samstable>\n");
   
+  print("<TR><TD><B>$CacheForm_squidbuttom_4_addcache_3: </B>\n");
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"description\" value=\"$PROXYConf->s_description\">\n");
   print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_46: </B>\n");
   print("<TD><SELECT NAME=\"traffic\">\n");
   if($PROXYConf->s_realsize=="real")

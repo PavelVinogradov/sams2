@@ -151,19 +151,6 @@ function AddUser()
   else
 	$pass="";
 
-/*
-  if($SAMSConf->AUTH=="ncsa"||$SAMSConf->AUTH=="ip")
-    {
-      $pass = "";
-
-      if(isset($_GET["passwd"])) $pass = $_GET["passwd"];
-
-      if(strlen($pass) >= 3)
-        $pass=crypt($pass, substr($pass,0,2));
-      else
-	$pass=crypt("none", substr("none",0,2));
-    }
-*/
   if($enabled=="on")
      $enabled=1;
   else
@@ -196,23 +183,13 @@ function AddUser()
     {
 	if(strlen($nick)==0) $nick=$newusernick;
 	if(strlen($userdomain)==0) $userdomain=$domain;
-//echo "INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES (  '$nick', '$domain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname','$userip', '$pass', '0', '0', '0' )";
-//exit(0);
-        $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES (  '$nick', '$domain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname','$userip', '$pass', '0', '0', '0' ) ");
+        $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES (  '$nick', '$userdomain', '$username', '$userfamily', '$usershablon', '$userquote', '0', '$enabled', '$usergroup', '$usersoname','$userip', '$pass', '0', '0', '0' ) ");
 
-//     if($result!=FALSE)
-//         UpdateLog("$SAMSConf->adminname","Added user $nick ","01");
     }
-//  if($result==0)
-//    {
-//       print("<FONT COLOR=\"RED\">Error creating user (mysql database)</FONT>");
-//    }
-
-//  print("<CENTER>\n");
-//  NewUserForm();
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
   print("</SCRIPT> \n");
+
 }
 
 function NewUserForm()
