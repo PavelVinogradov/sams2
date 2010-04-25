@@ -183,6 +183,7 @@ bool SAMSUserList::reload()
   string s_tmp_nick;
   string s_tmp_auth;
   string s_tmp_passwd;
+  Proxy::reload ();
   bool usedomain = Proxy::useDomain ();
   while (query->fetch ())
     {

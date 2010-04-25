@@ -138,3 +138,31 @@ TABLE.pagetop IMG {
     vertical-align: middle;
   }
 
+table.lframehead {
+    width:100%;
+    vertical: center;
+    text-align: center;
+    BORDER-COLLAPSE: collapse;
+  }
+
+table.lframehead TH  {
+    background-color:#155776;
+    color:#ffffff;
+    FONT: 40px Sans;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+  }
+
+table.lframehead TD  {
+    background-color:#3ca9bd;
+    color:#ffffff;
+    FONT: 11px Sans;
+    text-decoration: none;
+    display: block;
+  }
+
+
+
+
+
