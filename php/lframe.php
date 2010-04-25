@@ -66,12 +66,15 @@ print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree
 print("</head>\n");
 print("<body topmargin=16 marginheight=16 >\n");
 
-print("<IMG SRC=\"$SAMSConf->ICONSET/sams.gif\">\n");
 print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"icon/classic/treeview.css\">\n");
 echo "<script type=\"text/javascript\" src=\"lib/jquery-1.2.6.js\"></script> \n
 <script type=\"text/javascript\" src=\"lib/jquery.cookie.js\"></script>\n
 <script type=\"text/javascript\" src=\"lib/jquery.treeview.js\"></script>\n";
-
+echo "<TABLE CLASS=lframehead>\n";
+echo "<TR><TH CLASS=lframehead>SAMS\n";
+echo "<TR><TD  CLASS=lframehead>squid account management system\n";
+echo "</TABLE>\n";
+echo "<P>\n";
 $HOSTNAME=getenv('HOSTNAME');
 
 echo "<style type=\"text/css\">\n
