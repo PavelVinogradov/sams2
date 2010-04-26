@@ -30,7 +30,7 @@ class SAMSDB
 
   function mysqldb_query_value($query)
   {
-	if(($this->result = mysql_query($query))==FALSE)
+	if(($this->result = mysql_query($query, $this->link))==FALSE)
 	{
 		$this->dberror=1;
 		$this->dberrortext=mysql_error();
@@ -84,6 +84,7 @@ class SAMSDB
   }
   function samsdb_query_value($query)
   {
+#echo "1 query = $query<BR>";
    if($this->db_name=="MySQL" && $this->db_odbc==0)
       {
          $num_rows = $this->mysqldb_query_value($query);
@@ -122,7 +123,6 @@ class SAMSDB
   function pdodb_fetch_array()
   {
 	$row = $this->pdo_stmt->fetch(); 
-//	print_r($row);
          return($row);
   }
   function mysqldb_fetch_array()
@@ -171,11 +171,10 @@ class SAMSDB
 */
   function mysqldb_query($query)
   {
-        $this->result = mysql_query($query) or die("Invalid query: " . mysql_error());
+        $this->result = mysql_query($query,$this->link) or die("Invalid query: " . mysql_error());
   }
   function pgsqldb_query($query)
   {
-//echo "QUERY = $query\n";
 	$this->result = pg_query($query) or die('Query failed: ' . pg_last_error());
   }
   function pdodb_query($query)
@@ -285,6 +284,7 @@ class SAMSDB
 		$this->dberror=1;
 	  }
 	return($link);
+
   }
   function pgsqldb_connect($host,$user,$passwd,$dbname)
   {
@@ -369,7 +369,7 @@ exit(0);
 	$dbname=$SAMSConf->SAMSDB;
 	$odbc_source=$SAMSConf->ODBCSOURCE;
 
-//echo "$dbname: $user@$host <BR>\n";
+#echo "$dbname: $user@$host $passwd <BR>\n";
 	$this->db_odbc=0;
 	$phpver=explode(".",phpversion());
 	if( $odbc==1 )
@@ -470,7 +470,7 @@ class CREATESAMSDB extends SAMSDB
 
     if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
       {
-	$link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
+	$this->link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
       }
     if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
       {
