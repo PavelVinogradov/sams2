@@ -77,7 +77,8 @@ function JSProxyInfo()
   </TABLE>
 
   <TABLE>
-  <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2<TD>$auth
+  <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_53<TD>$PROXYConf->s_proxy_id 
+  <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2<TD>$auth 
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_38<TD>$parser
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_6<TD>$redirector
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_46<TD>$traffic
