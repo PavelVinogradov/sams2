@@ -248,67 +248,108 @@ function CacheForm()
 	print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_57</B>\n");
 	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adminaddr\" value=\"root@localhost\">\n");
  
-  print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_7 (byte)</B>\n");
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"kbsize\" value=\"1024\">\n");
-  print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_8 (byte)</B>\n");
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"1048576\">\n");
+	print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_7 (byte)</B>\n");
+	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"kbsize\" value=\"1024\">\n");
+	print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_8 (byte)</B>\n");
+	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"1048576\">\n");
  
 	print("</TABLE>\n");
 
 
      
 	//********* Авторизация пользователя  **************************
-	print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_17</B>\n");
-  print("<TABLE WIDTH=\"90%\" BORDER=0 >\n");
-  print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2</B><TD>\n");
-  print("<TR bgcolor=blanchedalmond><TD VALIGN=TOP >");
-  print("<INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ntlm\" onclick=EnableCheckBox(ADDCACHE) onchange=EnableDomainName(ADDCACHE)>\n");
-  $sdomain="";
-  $suser="";
-  if($row['bigu']=="Y")            $suser="USER";
-  if($row['bigu']=="S")            $suser="user";
-  if($row['bigu']=="N")            $suser="User";
-  
-  print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
-  print("  </B>\n<B>)</B>\n");
-  print("<BR><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"adld\" onclick=EnableCheckBox(ADDCACHE) onchange=EnableDomainName(ADDCACHE)>\n");
-  print("  <B>Active Directory</B><BR>(Experimental)\n");
-  
-  print("<TD name=c1  ID=\"c1\">");
-     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"ntlmdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>$adminbuttom_1_prop_SamsReConfigForm_19\n");
-  
-  print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
-  print("<SELECT NAME=\"bigdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-            print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-  print("</SELECT > $adminbuttom_1_prop_SamsReConfigForm_20d\n");
+  $QUERY="SELECT s_auth FROM auth_param WHERE s_param='enabled' AND s_value='1'";
+  $num_rows=$DB->samsdb_query_value($QUERY);
+  $ntlmauth=0;
+  $ncsaauth=0;
+  $ldapauth=0;
+  $adldauth=0;
+  while($row=$DB->samsdb_fetch_array())
+  {
+	if($row[s_auth]=="ntlm")
+	{
+		$ntlmauth=1;
+	}
+	if($row[s_auth]=="adld")
+	{
+		$adldauth=1;
+	}
+	if($row[s_auth]=="ldap")
+	{
+		$ldapauth=1;
+	}
+	if($row[s_auth]=="ncsa")
+	{
+		$ncsaauth=1;
+	}
 
-  print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
-  print("<SELECT NAME=\"bigusername\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
-            print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-            print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-            print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+  }
+
+  print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_17</B>\n");
+  print("<TABLE WIDTH=\"90%\" BORDER=0 >\n");
+
+  print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_2</B><TD>\n");
+  if($ntlmauth==1)
+  {
+	print("<TR bgcolor=blanchedalmond><TD VALIGN=TOP >");
+	print("<INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ntlm\" onclick=EnableCheckBox(ADDCACHE) onchange=EnableDomainName(ADDCACHE)>\n");
+	$sdomain="";
+	$suser="";
+	if($row['bigu']=="Y")            $suser="USER";
+	if($row['bigu']=="S")            $suser="user";
+	if($row['bigu']=="N")            $suser="User";
+  
+	print("  <B>NTLM (</B>\n<B ID=\"DomainUser\"> $sdomain $suser");
+	print("  </B>\n<B>)</B>\n");
+  }
+  if($adldauth==1)
+  {
+	print("<BR><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"adld\" onclick=EnableCheckBox(ADDCACHE) onchange=EnableDomainName(ADDCACHE)>\n");
+	print("  <B>Active Directory</B><BR>\n");
+  }
+  if($ntlmauth==1||$adldauth==1)
+  {
+
+	print("<TD name=c1  ID=\"c1\">");
+	print("<INPUT TYPE=\"CHECKBOX\" NAME=\"ntlmdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>$adminbuttom_1_prop_SamsReConfigForm_19\n");
+  
+	print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
+	print("<SELECT NAME=\"bigdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
+	print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+	print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+	print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("</SELECT > $adminbuttom_1_prop_SamsReConfigForm_20d\n");
+
+	print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
+	print("<SELECT NAME=\"bigusername\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
+	print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+	print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
 	print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
   
 	print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
 	print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED DISABLED> <B>+</B>\n");
 	print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" DISABLED> <B>\\</B> \n");
 	print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"  DISABLED> <B>@</B> \n");
-     
 
-  
-  print("<P >\n");
-  print("<BR><INPUT TYPE=\"BUTTON\" NAME=\"testpdc\" VALUE=\"$adminbuttom_1_prop_SamsReConfigForm_39\" onclick=TestPDC(ADDCACHE) DISABLED>\n");
+	print("<P >\n");
+	print("<BR><INPUT TYPE=\"BUTTON\" NAME=\"testpdc\" VALUE=\"$adminbuttom_1_prop_SamsReConfigForm_39\" onclick=TestPDC(ADDCACHE) DISABLED>\n");
 
-  print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"nameencode\" DISABLED >\n");
-
-  print("$adminbuttom_1_prop_SamsReConfigForm_28");
-  print("<BR>$adminbuttom_1_prop_SamsReConfigForm_29");
-  print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ncsa\"  onclick=DisableCheckBox(ADDCACHE)><B>NCSA</B><TD>\n");
-  print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ip\"  CHECKED  onclick=DisableCheckBox(ADDCACHE)><B>IP</B><TD>\n");
-  print("</TABLE>\n");
+	print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"nameencode\" DISABLED >\n");
+	print("$adminbuttom_1_prop_SamsReConfigForm_28");
+	print("<BR>$adminbuttom_1_prop_SamsReConfigForm_29");
+  }
+  if($ldapauth==1)
+  {
+	print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ldap\"  onclick=DisableCheckBox(ADDCACHE)><B>LDAP</B><TD>\n");
+  }
+  if($ncsaauth==1)
+  {
+	print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ncsa\"  onclick=DisableCheckBox(ADDCACHE)><B>NCSA</B><TD>\n");
+  }
+	print("<TR bgcolor=blanchedalmond><TD><INPUT TYPE=\"RADIO\" NAME=\"auth\" VALUE=\"ip\"  CHECKED  onclick=DisableCheckBox(ADDCACHE)><B>IP</B><TD>\n");
+	print("</TABLE>\n");
 
        print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
        print("function EnableDomainName(formname) \n");
