@@ -185,6 +185,10 @@ bool SAMSUserList::reload()
   string s_tmp_passwd;
   Proxy::reload ();
   bool usedomain = Proxy::useDomain ();
+  Proxy::CharCase domain_case = Proxy::getDomainCase ();
+  Proxy::CharCase username_case = Proxy::getUsernameCase ();
+  bool auth_ntlm = Proxy::AUTH_NTLM;
+  bool auth_adld = Proxy::AUTH_ADLD;
   while (query->fetch ())
     {
       s_tmp_domain = "";
@@ -193,9 +197,36 @@ bool SAMSUserList::reload()
       if (usedomain)
         {
           s_tmp_domain = TrimSpaces(s_domain);
+          if (auth_ntlm == 1 || auth_adld == 1)
+          {
+
+            switch (domain_case)
+            {
+              case Proxy::CASE_UPPER:
+                s_tmp_domain = ToUpper (s_tmp_domain);
+                break;
+              case Proxy::CASE_LOWER:
+                s_tmp_domain = ToLower (s_tmp_domain);
+                break;
+              default:
+                break;
+            }
+
+          }
           usr->setDomain (s_tmp_domain);
         }
       s_tmp_nick = TrimSpaces(s_nick);
+      switch (username_case)
+      {
+        case Proxy::CASE_UPPER:
+          s_tmp_nick = ToUpper (s_tmp_nick);
+          break;
+        case Proxy::CASE_LOWER:
+          s_tmp_nick = ToLower (s_tmp_nick);
+          break;
+        default:
+          break;
+      }
       usr->setNick (s_tmp_nick);
       s_tmp_ip = TrimSpaces(s_ip);
       usr->setIP (s_tmp_ip);
