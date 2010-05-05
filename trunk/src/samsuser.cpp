@@ -303,7 +303,7 @@ string SAMSUser::asString () const
     {
       if (!_domain.empty () && Proxy::useDomain ())
         {
-          res = _domain + "\\";
+          res = _domain + Proxy::getSeparator ();
         }
       res += _nick;
     }

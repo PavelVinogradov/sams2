@@ -196,6 +196,7 @@ public:
    * @return url адрес для подмены баннеров
    */
   static string getRedirectAddr ();
+  static string getSeparator ();
 
   /**
    * @brief Возвращает url адрес, используемый при блокировке доступа в редиректоре
@@ -331,6 +332,7 @@ protected:
   static bool _connection_owner;       ///< true если владельцем подключения является экземпляр класса
   static bool _auto_clean_counters;    ///< Очищать или нет счетчики пользователей после окончания периода ограничения
   static bool _use_delay_pools;        ///< Использовать или нет ограничение скорости
+  static string _separator;            ///< Используемый сепаратор
 };
 
 #endif
