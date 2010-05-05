@@ -249,7 +249,7 @@ bool SAMSUserList::reload()
 
       _users[hash] = usr;
 
-      s_tmp_domain += "\\";
+      s_tmp_domain += Proxy::getSeparator ();
       DEBUG (DEBUG9, "[" << __FUNCTION__ << "] Found user: " <<
         "id=" << s_user_id << " " <<
         "tplid=" << s_shablon_id << ":" << s_shablon_id2 << " " <<

@@ -58,6 +58,7 @@ DBConn *Proxy::_conn = NULL;
 bool Proxy::_connection_owner = false;
 bool Proxy::_auto_clean_counters = true;
 bool Proxy::_use_delay_pools = false;
+string Proxy::_separator;
 
 string Proxy::toString (TrafficType t)
 {
@@ -252,6 +253,11 @@ Proxy::RedirType Proxy::getRedirectType ()
 long Proxy::getCacheAge ()
 {
   return _squidbase;
+}
+
+string Proxy::getSeparator ()
+{
+  return _separator;
 }
 
 SAMSUser *Proxy::findUser (const string & ip, const string & ident)
@@ -469,6 +475,7 @@ bool Proxy::reload ()
   char s_redirect_to[105];
   long s_count_clean;
   long s_delaypool;
+  char s_separator[15];
 
   DBQuery *query = NULL;
   basic_stringstream < char >sqlcmd;
@@ -585,6 +592,11 @@ bool Proxy::reload ()
       delete query;
       return false;
     }
+  if (!query->bindCol (22, DBQuery::T_CHAR, s_separator, sizeof(s_separator)))
+    {
+      delete query;
+      return false;
+    }
 
   sqlcmd << "select s_auth, s_checkdns, s_realsize, s_kbsize, s_endvalue, s_usedomain, s_defaultdomain";
   sqlcmd << ", s_parser, s_parser_time";
@@ -592,7 +604,7 @@ bool Proxy::reload ()
   sqlcmd << ", s_squidbase, s_redirector";
   sqlcmd << ", s_denied_to, s_redirect_to, s_adminaddr";
   sqlcmd << ", s_bigd, s_bigu";
-  sqlcmd << ", s_count_clean, s_delaypool";
+  sqlcmd << ", s_count_clean, s_delaypool, s_separator";
   sqlcmd << " from proxy where s_proxy_id=" << _id;
 
   if (!query->sendQueryDirect (sqlcmd.str ()))
@@ -659,6 +671,13 @@ bool Proxy::reload ()
     _use_delay_pools = true;
   else
     _use_delay_pools = false;
+
+  if (strstr (s_separator, "+") != 0)
+    _separator = "+";
+  else if (strstr (s_separator, "@") != 0)
+    _separator = "@";
+  else
+    _separator = "\\";
 
   DEBUG (DEBUG3, "Clear counters: " << ((_auto_clean_counters) ? ("true") : ("false")));
   DEBUG (DEBUG3, "Use delay pool: " << ((_use_delay_pools) ? ("true") : ("false")));
