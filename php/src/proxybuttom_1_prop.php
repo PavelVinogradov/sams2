@@ -63,21 +63,18 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["shablon"])) $shablon=$_GET["shablon"];
   if(isset($_GET["group"])) $group=$_GET["group"];
 
-  if(isset($_GET["plus"])) $plus=$_GET["plus"];
-  if(isset($_GET["slashe"])) $slashe=$_GET["slashe"];
-  if(isset($_GET["at"])) $at=$_GET["at"];
   if(isset($_GET["description"])) $description=$_GET["description"];
+  if(isset($_GET["separator"])) $separator=$_GET["separator"];
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  $separator="0";
-  if($plus=="on")
-    $separator="$separator+";
-  if($at=="on")
-    $separator="$separator@";
-  if($slashe=="on")
-    $separator="$separator\\\\";
+  if($separator==0)
+    $separator="0+";
+  if($separator==1)
+    $separator="0\\\\";
+  if($separator==2)
+    $separator="0@";
 
   $query="UPDATE proxy SET s_description='$description', s_debuglevel='$loglevel', s_checkdns='$checkdns', s_realsize='$traffic', 
       s_nameencode='$nameencode', s_sleep='$sleep', s_count_clean='$count_clean', s_parser='$parser_on',
@@ -144,34 +141,26 @@ function ProxyReConfigForm()
   print("      formname.usedomain.disabled=true; \n");
   print("      formname.bigdomain.disabled=true; \n");
   print("      formname.bigusername.disabled=true; \n");
-  print("      formname.plus.disabled=true; \n");
-  print("      formname.slashe.disabled=true; \n");
-  print("      formname.at.disabled=true; \n");
+  print("      formname.separator.disabled=true; \n");
   print("    }\n");
   print("  else if(auth==\"ncsa\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=true; \n");
   print("      formname.bigdomain.disabled=true; \n");
   print("      formname.bigusername.disabled=true; \n");
-  print("      formname.plus.disabled=true; \n");
-  print("      formname.slashe.disabled=true; \n");
-  print("      formname.at.disabled=true; \n");
+  print("      formname.separator.disabled=true; \n");
   print("    }\n");
   print("  else if(auth==\"ldap\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=true; \n");
   print("      formname.bigdomain.disabled=true; \n");
   print("      formname.bigusername.disabled=true; \n");
-  print("      formname.plus.disabled=true; \n");
-  print("      formname.slashe.disabled=true; \n");
-  print("      formname.at.disabled=true; \n");
+  print("      formname.separator.disabled=true; \n");
   print("    }\n");
   print("  else if(auth==\"adld\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=false; \n");
-  print("      formname.plus.disabled=false; \n");
-  print("      formname.slashe.disabled=false; \n");
-  print("      formname.at.disabled=fals; \n");
+  print("      formname.separator.disabled=false; \n");
   print("      if(domainenabled==true)\n");
   print("        formname.bigdomain.disabled=false; \n");
   print("      else\n");
@@ -185,17 +174,13 @@ function ProxyReConfigForm()
   print("      {\n");
   print("        formname.bigdomain.disabled=false; \n");
   print("        formname.bigusername.disabled=false; \n");
-  print("        formname.plus.disabled=false; \n");
-  print("        formname.slashe.disabled=false; \n");
-  print("        formname.at.disabled=false; \n");
+  print("        formname.separator.disabled=false; \n");
   print("      }\n");
   print("      else\n");
   print("      {\n");
   print("        formname.bigdomain.disabled=true; \n");
   print("        formname.bigusername.disabled=true; \n");
-  print("        formname.plus.disabled=true; \n");
-  print("        formname.slashe.disabled=true; \n");
-  print("        formname.at.disabled=true; \n");
+  print("        formname.separator.disabled=true; \n");
   print("      }\n");
 //  print("      formname.bigusername.disabled=false; \n");
   print("    }\n");
@@ -207,17 +192,13 @@ function ProxyReConfigForm()
   print("      {\n");
   print("        formname.bigdomain.disabled=false; \n");
   print("        formname.bigusername.disabled=false; \n");
-  print("        formname.plus.disabled=false; \n");
-  print("        formname.slashe.disabled=false; \n");
-  print("        formname.at.disabled=false; \n");
+  print("        formname.separator.disabled=false; \n");
   print("      }\n");
   print("  else \n");
   print("      {\n");
   print("        formname.bigdomain.disabled=true; \n");
   print("        formname.bigusername.disabled=true; \n");
-  print("        formname.plus.disabled=true; \n");
-  print("        formname.slashe.disabled=true; \n");
-  print("        formname.at.disabled=true; \n");
+  print("        formname.separator.disabled=true; \n");
   print("      }\n");
   print("}\n");
   print("function EnableParser(formname)");
@@ -340,13 +321,6 @@ function ProxyReConfigForm()
   print("</TABLE>\n");
 
   
-
-
-
-
-
-
-
   print("<BR>\n");
   print("<P><B>$adminbuttom_1_prop_SamsReConfigForm_17</B>\n");
 
@@ -431,21 +405,24 @@ function ProxyReConfigForm()
   print("</SELECT>\n");
 
 
-	print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
-	if(strstr($PROXYConf->s_separator, "+")==FALSE)
-		print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\"> <B>+</B>\n");
-	else
-		print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED> <B>+</B>\n");
-	if(strstr($PROXYConf->s_separator, "\\")==FALSE)
-		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\"> <B>\\</B> \n");
-	else
-		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" CHECKED> <B>\\</B> \n");
-	if(strstr($PROXYConf->s_separator, "@")==FALSE)
-		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"> <B>@</B> \n");
-	else
-		print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\" CHECKED> <B>@</B> \n");
+  print("<P>$adminbuttom_1_prop_SamsReConfigForm_50: \n");
+  print("<SELECT NAME=\"separator\" $USERDISABLE>\n");
+  if(strstr($PROXYConf->s_separator, "+")!=FALSE)
+            print("<OPTION VALUE=0 SELECTED>+</OPTION>\n");
+  else
+            print("<OPTION VALUE=0>+</OPTION>\n");
+  if(strstr($PROXYConf->s_separator, "\\")!=FALSE)
+            print("<OPTION VALUE=1 SELECTED >\\</OPTION>\n");
+  else
+            print("<OPTION VALUE=1 >\\</OPTION>\n");
+  if(strstr($PROXYConf->s_separator, "@")!=FALSE)
+            print("<OPTION VALUE=2 SELECTED>@</OPTION>\n");
+  else
+            print("<OPTION VALUE=2>@</OPTION>\n");
+  print("</SELECT>\n");
   print("</TD>\n");
   print("</TR>\n");
+
   print("</TABLE>\n");
   
 
