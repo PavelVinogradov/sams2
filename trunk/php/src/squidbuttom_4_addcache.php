@@ -64,8 +64,8 @@ $adminaddr="root@localhost";
   if(isset($_GET["auth"])) $auth=$_GET["auth"];
   if(isset($_GET["wbinfopath"])) $wbinfopath=$_GET["wbinfopath"];
   if(isset($_GET["ntlmdomain"])) $ntlmdomain=SetCheckBoxValue($_GET["ntlmdomain"]);
-  if(isset($_GET["bigdomain"])) $bigdomain=SetCheckBoxValue($_GET["bigdomain"]);
-  if(isset($_GET["bigusername"])) $bigusername=SetCheckBoxValue($_GET["bigusername"]);
+  if(isset($_GET["bigdomain"])) $bigdomain=$_GET["bigdomain"];
+  if(isset($_GET["bigusername"])) $bigusername=$_GET["bigusername"];
   if(isset($_GET["parser_on"])) $parser_on=SetCheckBoxValue($_GET["parser_on"]);
   if(isset($_GET["parser"])) $parser=$_GET["parser"];
   if(isset($_GET["parser_time"])) $parser_time=$_GET["parser_time"];
@@ -75,15 +75,13 @@ $adminaddr="root@localhost";
   if(isset($_GET["traffic"])) $traffic=$_GET["traffic"];
   if(isset($_GET["checkdns"])) $checkdns=SetCheckBoxValue($_GET["checkdns"]);
   if(isset($_GET["loglevel"])) $loglevel=$_GET["loglevel"];
-  if(isset($_GET["at"])) $at=SetCheckBoxValue($_GET["at"]);
-  if(isset($_GET["slashe"])) $slashe=SetCheckBoxValue($_GET["slashe"]);
-  if(isset($_GET["plus"])) $plus=SetCheckBoxValue($_GET["plus"]);
   if(isset($_GET["defaultdomain"])) $defaultdomain=$_GET["defaultdomain"];
   if(isset($_GET["squidbase"])) $squidbase=SetCheckBoxValue($_GET["squidbase"]);
   if(isset($_GET["udscript"])) $udscript=$_GET["udscript"];
   if(isset($_GET["adminaddr"])) $adminaddr=$_GET["adminaddr"];
   if(isset($_GET["kbsize"])) $kbsize=$_GET["kbsize"];
   if(isset($_GET["mbsize"])) $mbsize=$_GET["mbsize"];
+  if(isset($_GET["separator"])) $separator=$_GET["separator"];
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -91,13 +89,17 @@ $adminaddr="root@localhost";
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	exit;
 
-  if($at==1)    { $at="@"; }
-  if($slashe==1)   {  $slashe="\\"; }
-  if($plus==1)    { $plus="+"; }
+  if($separator==0)
+    $separator="0+";
+  if($separator==1)
+    $separator="0\\\\";
+  if($separator==2)
+    $separator="0@";
 
 	$query = "INSERT INTO proxy ( s_description) VALUES ( '$description' ) ";
+
 	$DB->samsdb_query($query);
-	$query = "UPDATE proxy SET  s_endvalue='0', s_redirect_to='$redirect_to', s_denied_to='$denied_to', s_redirector='$redirector', s_delaypool='$delaypool', s_auth='$auth', s_wbinfopath='$wbinfopath', s_separator='0$plus$at$slashe$slashe', s_usedomain='$ntlmdomain', s_bigd='$bigdomain', s_bigu='$bigusername', s_sleep='$sleep', s_parser='$parser', s_parser_time='$parser_time', s_count_clean='$count_clean', s_nameencode='$nameencode', s_realsize='$traffic', s_checkdns='$checkdns', s_debuglevel='$loglevel', s_defaultdomain='workgroup', s_squidbase='$squidbase', s_udscript='$udscript', s_adminaddr='$adminaddr', s_kbsize='$kbsize', s_mbsize='$mbsize' WHERE s_description='$description' ";
+	$query = "UPDATE proxy SET  s_endvalue='0', s_redirect_to='$redirect_to', s_denied_to='$denied_to', s_redirector='$redirector', s_delaypool='$delaypool', s_auth='$auth', s_wbinfopath='$wbinfopath', s_separator='$separator', s_usedomain='$ntlmdomain', s_bigd='$bigdomain', s_bigu='$bigusername', s_sleep='$sleep', s_parser='$parser', s_parser_time='$parser_time', s_count_clean='$count_clean', s_nameencode='$nameencode', s_realsize='$traffic', s_checkdns='$checkdns', s_debuglevel='$loglevel', s_defaultdomain='workgroup', s_squidbase='$squidbase', s_udscript='$udscript', s_adminaddr='$adminaddr', s_kbsize='$kbsize', s_mbsize='$mbsize' WHERE s_description='$description' ";
 //echo "$query<BR>";
 	$DB->samsdb_query($query);
 
@@ -131,9 +133,7 @@ function CacheForm()
            print("    formname.bigusername.disabled=false; \n");
            print("    formname.nameencode.disabled=false; \n");
            print("    formname.testpdc.disabled=false; \n");
-           print("    formname.plus.disabled=false; \n");
-           print("    formname.at.disabled=false; \n");
-           print("    formname.slashe.disabled=false; \n");
+           print("    formname.separator.disabled=false; \n");
 //		   print("    document.getElementById('c1').innerHTML='YES'; ");
 		   print("}\n");
            print("function DisableCheckBox(formname)\n");
@@ -143,9 +143,7 @@ function CacheForm()
            print("    formname.bigusername.disabled=true; \n");
            print("    formname.nameencode.disabled=true; \n");
            print("    formname.testpdc.disabled=true; \n");
-           print("    formname.plus.disabled=true; \n");
-           print("    formname.at.disabled=true; \n");
-           print("    formname.slashe.disabled=true; \n");
+           print("    formname.separator.disabled=true; \n");
            print("}\n");
 
 	   print("function TestPDC(formname)\n");
@@ -178,10 +176,10 @@ function CacheForm()
        print("}\n");
        print("</SCRIPT> \n");
  
-      print("<FORM NAME=\"ADDCACHE\" ACTION=\"main.php\" onsubmit=\"return TestName(ADDCACHE)\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addcache\">\n");
-      print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"squidbuttom_4_addcache.php\">\n");
+       print("<FORM NAME=\"ADDCACHE\" ACTION=\"main.php\" onsubmit=\"return TestName(ADDCACHE)\">\n");
+       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
+       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addcache\">\n");
+       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"squidbuttom_4_addcache.php\">\n");
 	print("<INPUT TYPE=\"SUBMIT\" value=\"$CacheForm_squidbuttom_4_addcache_8\" >\n");
 
 	print("<TABLE CLASS=samstable WIDTH=\"90%\" BORDER=0>\n");
@@ -189,17 +187,17 @@ function CacheForm()
 	print("<TR><TD><B>$CacheForm_squidbuttom_4_addcache_7:</B>\n");
 	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"description\" SIZE=30> \n");
 
-	/*      Считать трафик: REAL/FULL     */
+	/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫: REAL/FULL     */
 	print("<TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_46: </B>\n");
 	print("<TD><SELECT NAME=\"traffic\">\n");
 	print("<OPTION VALUE=\"full\"> $adminbuttom_1_prop_SamsReConfigForm_48");
 	print("<OPTION VALUE=\"real\"> $adminbuttom_1_prop_SamsReConfigForm_47");
 	print("</SELECT>\n");
-	/*      Проверять DNS     */
+	/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ DNS     */
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_49</B>\n");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"checkdns\" > \n");
-	/*      Уровень логов     */
+	/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫     */
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_51</B>\n");
 	print("<TD><SELECT NAME=\"loglevel\">\n");
@@ -211,7 +209,7 @@ function CacheForm()
 			print("<OPTION VALUE=\"$i\"> $i");
 	  }
 	print("</SELECT>\n");
-	/*     Домен по-умолчанию     */
+	/*     О©╫О©╫О©╫О©╫О©╫ О©╫О©╫-О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫     */
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_52</B>\n");
 	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"defaultdomain\" value=\"$row[defaultdomain]\">\n");
@@ -232,7 +230,7 @@ function CacheForm()
 		  }
             }
         }
-	/*     Скрипт, вызываемый при отключении пользователя     */
+	/*     О©╫О©╫О©╫О©╫О©╫О©╫, О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫     */
 	print("<TR>\n");
 	print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_56</B>\n");
 	print("<TD><SELECT NAME=\"udscript\" ID=\"udscript\" >\n");
@@ -243,7 +241,7 @@ function CacheForm()
 		print("<OPTION VALUE=\"$script[$i]\"> $script[$i]\n");
 	}
 	print("</SELECT>\n");
-	/*     Адрес администратора     */
+	/*     О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫     */
 	print("<TR bgcolor=blanchedalmond>\n");
 	print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_57</B>\n");
 	print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adminaddr\" value=\"root@localhost\">\n");
@@ -257,7 +255,7 @@ function CacheForm()
 
 
      
-	//********* Авторизация пользователя  **************************
+	//********* О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫  **************************
   $QUERY="SELECT s_auth FROM auth_param WHERE s_param='enabled' AND s_value='1'";
   $num_rows=$DB->samsdb_query_value($QUERY);
   $ntlmauth=0;
@@ -315,23 +313,26 @@ function CacheForm()
   
 	print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
 	print("<SELECT NAME=\"bigdomain\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
-	print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-	print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-	print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-	print("<OPTION VALUE=\"A\" >$adminbuttom_1_prop_SamsReConfigForm_20a & $adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("<OPTION VALUE=\"0\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+	print("<OPTION VALUE=\"1\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("<OPTION VALUE=\"2\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
 	print("</SELECT > $adminbuttom_1_prop_SamsReConfigForm_20d\n");
 
 	print("<BR><LI>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
 	print("<SELECT NAME=\"bigusername\" DISABLED onchange=EnableDomainName(ADDCACHE)>\n");
-	print("<OPTION VALUE=\"Y\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-	print("<OPTION VALUE=\"S\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-	print("<OPTION VALUE=\"N\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+	print("<OPTION VALUE=\"0\">$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+	print("<OPTION VALUE=\"1\" >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+	print("<OPTION VALUE=\"2\">$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
 	print("</SELECT >$adminbuttom_1_prop_SamsReConfigForm_20d\n");
-  
-	print("<P><B> $adminbuttom_1_prop_SamsReConfigForm_50 </B>\n");
-	print("<P><INPUT TYPE=\"CHECKBOX\" NAME=\"plus\" CHECKED DISABLED> <B>+</B>\n");
-	print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"slashe\" DISABLED> <B>\\</B> \n");
-	print("<BR><INPUT TYPE=\"CHECKBOX\" NAME=\"at\"  DISABLED> <B>@</B> \n");
+
+	print("<P>$adminbuttom_1_prop_SamsReConfigForm_50: \n");
+	print("<SELECT NAME=\"separator\"  DISABLED>\n");
+        print("<OPTION VALUE=0>+</OPTION>\n");
+        print("<OPTION VALUE=1 SELECTED >\\</OPTION>\n");
+        print("<OPTION VALUE=2>@</OPTION>\n");
+	print("</SELECT>\n");
+
+
 
 	print("<P >\n");
 	print("<BR><INPUT TYPE=\"BUTTON\" NAME=\"testpdc\" VALUE=\"$adminbuttom_1_prop_SamsReConfigForm_39\" onclick=TestPDC(ADDCACHE) DISABLED>\n");
