@@ -28,6 +28,11 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
+  global $SAMSConf;
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
   $phpos=PHP_OS;
   $value=ExecuteShellScript("freemem",$phpos);
   $swapvalue=ExecuteShellScript("freeswap",$phpos);
@@ -46,16 +51,16 @@ function MemoryUsage()
   print("<P><TABLE CLASS=samstable>");
   print("<TR >");
   print("<TH>");
-  print("<TH><B>Total</B>");
-  print("<TH><B>Used</B>");
-  print("<TH><B>Free</B>\n");
+  print("<TH><B>$configtray_1_MemTotal</B>");
+  print("<TH><B>$configtray_1_MemUsed</B>");
+  print("<TH><B>$configtray_1_MemFree</B>\n");
   print("<TR >");
-  print("<TD>Memory");
+  print("<TD>$configtray_1_Mem");
   print("<TD>$mem[0]");
   print("<TD>$mem[1]");
   print("<TD>$mem[2]\n");
   print("<TR >");
-  print("<TD>Swap");
+  print("<TD>$configtray_1_Swap");
   print("<TD>$swap[0]");
   print("<TD>$swap[1]");
   print("<TD>$swap[2]\n");
@@ -64,18 +69,23 @@ function MemoryUsage()
 
 function FileSystemUsage()
 {
+  global $SAMSConf;
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
     $fstest=ExecuteShellScript("fsusage","");
     $a=explode(" ",$fstest);
     $acount=count($a)/6;
 
       print("<P><TABLE CLASS=samstable>");
       print("<TR>");
-      print("<TH><B>Filesystem</B>");
-      print("<TH><B>Size</B>");
-      print("<TH><B>Used</B>");
-      print("<TH><B>Available</B>");
-      print("<TH><B>Use%</B>");
-      print("<TH><B>Mounted on</B>");
+      print("<TH><B>$configtray_2_FS</B>");
+      print("<TH><B>$configtray_2_Size</B>");
+      print("<TH><B>$configtray_2_Used</B>");
+      print("<TH><B>$configtray_2_Avail</B>");
+      print("<TH><B>$configtray_2_Percent</B>");
+      print("<TH><B>$configtray_2_Mnt</B>");
 
       for($i=0;$i<$acount;$i++)
         {
@@ -97,7 +107,10 @@ function SysInfo()
   global $SAMSConf;
   $DB=new SAMSDB();
 
-   PageTop("stat_48.jpg","System Information");
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+   PageTop("stat_48.jpg","$configtray_0_Head");
 
    $hostname=GetHostName();
    $ipaddr=GetIPAddr();
@@ -106,13 +119,13 @@ function SysInfo()
    $uptime=ExecuteShellScript("uptime","");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>Hostname</B>");
+   print("<TD WIDTH=\"25%\"><B>$configtray_0_Hostname</B>");
    print("<TD WIDTH=\"75%\">$hostname");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>IP addr</B>");
+   print("<TD WIDTH=\"25%\"><B>$configtray_0_IP</B>");
    print("<TD WIDTH=\"75%\">$ipaddr");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>Uptime</B>");
+   print("<TD WIDTH=\"25%\"><B>$configtray_0_Uptime</B>");
    print("<TD WIDTH=\"75%\">$uptime");
    print("</TABLE>");
 
@@ -130,14 +143,14 @@ function SysInfo()
 //  echo "SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate'<BR>";
    print("<P><TABLE CLASS=samstable>\n");
    print("<TH>\n");
-   print("<TH width=\"33%\" >All traffic\n");
-   print("<TH width=\"33%\" >From cache\n");
-   print("<TH width=\"33%\" >Traffic\n");
+   print("<TH width=\"33%\" >$configtray_3_SumTraffic\n");
+   print("<TH width=\"33%\" >$configtray_3_FromCache\n");
+   print("<TH width=\"33%\" >$configtray_3_Traffic\n");
 
   $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
-   print("<TD > This month\n");
+   print("<TD >$configtray_3_M\n");
    $aaa=FormattedString("$row[0]");
    RTableCell($aaa,33);
    $aaa=FormattedString("$row[1]");
@@ -149,7 +162,7 @@ function SysInfo()
   $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date=\"$edate\" ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
-   print("<TD > This day\n");
+   print("<TD >$configtray_3_D\n");
    $aaa=FormattedString("$row[0]");
    RTableCell($aaa,33);
    $aaa=FormattedString("$row[1]");

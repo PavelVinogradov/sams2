@@ -502,7 +502,7 @@
   $admintray_UserDoc_3=" To look up the internet work statistics choose the left user frame "; 
   $admintray_UserDoc_4=" under which you authorize in the windows domain (or enter in the browser to work in the Internet), and enter the password
 "; 
-$admintray_AdminTray_1=" Administrator ";
+  $admintray_AdminTray_1=" Administrator ";
 
   $adminbuttom_5_deladmin_DeleteAdmin_1=" User "; 
   $adminbuttom_5_deladmin_DeleteAdmin_2=" deleted "; 
@@ -957,9 +957,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $shablonbuttom_1_prop_UpdateShablonForm_28="Second template";
   $authbuttom_1_usersimport_LoadFileForm_1="Loading of the list of users from a file";
   $documentation="Documentation";
-//  global $LANG;
-//  $lang="./lang/lang.$LANG";
-//  require($lang);
   $blocked_php_14="Access time:";
   $activate_user="Activate the user";
   $MoveUserTrafficDataForm_1="To move the data about traffic of the user";
@@ -1014,10 +1011,34 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $setup_34="SAMS DB user password";
    $setup_35="PostgreSQL support";
    $setup_36="Start SAMS web interface";
-   $setup_37="Creation of database SAMS";
+   $setup_37="Creation of SAMS database";
    $setup_38="Database SAMS is found";
    $setup_39="database creation is not required";
    $adminbuttom_1_prop_SamsReConfigForm_53="Proxy server ID";
+
+   $configtray_0_Head="System Information";
+   $configtray_0_Hostname="Hostname";
+   $configtray_0_IP="IP-address";
+   $configtray_0_Uptime="Uptime";
+
+   $configtray_1_Mem="Memory";
+   $configtray_1_Swap="Swap";
+   $configtray_1_MemTotal="Total";
+   $configtray_1_MemUsed="Used";
+   $configtray_1_MemFree="Free";
+
+   $configtray_2_FS="Filesystem";
+   $configtray_2_Size="Size";
+   $configtray_2_Used="Used";
+   $configtray_2_Avail="Available";
+   $configtray_2_Percent="Use, %";
+   $configtray_2_Mnt="Mounted on";
+
+   $configtray_3_M="This month";
+   $configtray_3_D="This day";
+   $configtray_3_SumTraffic="All traffic";
+   $configtray_3_FromCache="From cache";
+   $configtray_3_Traffic="Traffic";
 
    $confogbuttom_3_importcache_importcachesumtable_1="Import data about the traffic of users";
    $confogbuttom_3_importcache_importcachesumtable_2="records is imported";
@@ -1033,5 +1054,4 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $configbuttom_3_importcache_selectimportdateform_3="till";
    $configbuttom_3_importcache_selectimportdateform_4="Choose the period the traffic for which will be imported";
    $usersbuttom_1_useradd_AddUser_3="The user with login ";
-
 ?>
