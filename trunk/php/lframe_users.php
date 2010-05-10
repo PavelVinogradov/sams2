@@ -12,6 +12,7 @@ function lframe_users()
 
  global $SAMSConf;
  global $USERConf;
+ global $SquidUSERConf;
   $DB=new SAMSDB();
   $DB2=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -79,7 +80,10 @@ function lframe_users()
       while($row=$DB->samsdb_fetch_array())
          {
 	    $metka="users$count";
-
+if($USERConf->ToWebInterfaceAccess("SAC")==1 ||
+ ( $USERConf->ToWebInterfaceAccess("G")==1 && $USERConf->s_group_id==$row['s_group_id'] )
+)
+{
 //	    echo "<li class=\"collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\">$row[s_name]</span>\n";
 	    echo "<li class=\"closed collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\">$row[s_name]</A></span>\n";
 	    echo "<ul id=\"group_$row[s_group_id]\">\n";
@@ -128,6 +132,7 @@ function lframe_users()
 	     $count++;  
 	    echo "</ul>";
 	    echo "</li>";
+}
          }
 
 

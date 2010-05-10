@@ -23,7 +23,7 @@ function AuthNCSATray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authncsavalues&filename=authncsatray.php\";\n");
       print("</SCRIPT> \n");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
 	print("<TABLE border=0 WIDTH=95%>\n");
 	print("<TR HEIGHT=60>\n");

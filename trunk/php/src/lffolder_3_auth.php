@@ -13,7 +13,7 @@
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	if($USERConf->ToWebInterfaceAccess("C")==1 )
+	if($USERConf->ToWebInterfaceAccess("UC")==1 )
 	{
 		$item=array("classname"=> "samsauth",
 			"icon" => "auth.gif",

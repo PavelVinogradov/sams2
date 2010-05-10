@@ -12,7 +12,7 @@ function AddGroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
@@ -46,7 +46,7 @@ function AddShablon()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   $period="M";
@@ -97,7 +97,7 @@ function ImportFromAD()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
 echo "ImportFromAD<BR>";
@@ -247,7 +247,7 @@ function ImportFromADForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);  
 
   PageTop("importfromad-48.jpg"," $authadldbuttom_3_importfromad_ImportFromADForm_1 ");
@@ -428,7 +428,7 @@ function authadldbuttom_3_importfromad()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=importfromadform&filename=authadldbuttom_3_importfromad.php","basefrm","importfromad-32.jpg","importfromad-48.jpg","$authadldbuttom_3_importfromad_ImportFromADForm_1");
 	}

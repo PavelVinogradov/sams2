@@ -14,6 +14,7 @@
   require('./userclass.php');
   global $SAMSConf;
   global $USERConf;
+  global $SquidUSERConf;
 
   $SAMSConf=new SAMSCONFIG();
   $USERConf=new SAMSUSER();
@@ -74,6 +75,8 @@ echo "<TABLE CLASS=lframehead>\n";
 echo "<TR><TH CLASS=lframehead>SAMS\n";
 echo "<TR><TD  CLASS=lframehead>squid account management system\n";
 echo "</TABLE>\n";
+if( strlen($USERConf->s_nick)!=0 || strlen($SAMSConf->adminname)!=0 )
+	echo "<span class=\"connecteduser\">connected as $USERConf->s_nick $SAMSConf->adminname</span>\n";
 echo "<P>\n";
 $HOSTNAME=getenv('HOSTNAME');
 
@@ -105,8 +108,6 @@ echo " });\n";
 
 echo "});\n";
 echo "</script>\n";
-
-//echo "samsadmin=$USERConf->s_samsadmin <BR>userid=$USERConf->s_user_id=$id=$SAMSConf->USERID <BR> $USERConf->s_webaccess";
 print("</html>\n");
 
 

@@ -11,7 +11,7 @@ function GetDomainUsersList()
   global $SAMSConf;
   global $USERConf;
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
+  if($USERConf->ToWebInterfaceAccess("UC")!=1)
 	exit;
 
   db_connect($SAMSConf->SAMSDB) or exit();
@@ -98,7 +98,7 @@ function AddUser()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
+  if($USERConf->ToWebInterfaceAccess("UC")!=1)
 	exit;
  
   if(isset($_GET["usernick"])) $usernick=$_GET["usernick"];
@@ -201,7 +201,7 @@ function NewUserForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UC")==1)
     {
        if($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")
          {
@@ -361,7 +361,7 @@ function usersbuttom_1_useradd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UC")==1)
     {
        GraphButton("main.php?show=exe&function=newuserform&filename=usersbuttom_1_useradd.php","basefrm","useradd_32.jpg","useradd_48.jpg","$usersbuttom_1_useradd_usersbuttom_1_useradd_1");
 	}

@@ -14,7 +14,7 @@ function UsersImportFromFile()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   PageTop("user.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
@@ -81,7 +81,7 @@ function UsersImportFromFileForm()
   require($lang);
 
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
   
   $DB=new SAMSDB();
@@ -156,7 +156,7 @@ function LoadFileForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($USERConf->ToWebInterfaceAccess("CL")!=1 )
+   if($USERConf->ToWebInterfaceAccess("UCL")!=1 )
 	exit;
   
   PageTop("loadusers_48.jpg","$authbuttom_1_usersimport_LoadFileForm_1");
@@ -177,7 +177,7 @@ function usersbuttom_1_usersimport()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=loadfileform&filename=usersbuttom_1_usersimport.php","basefrm","loadusers_32.jpg","loadusers_48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 ");
 	}

@@ -12,7 +12,7 @@ function AddGroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
@@ -46,7 +46,7 @@ function AddShablon()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   $period="M";
@@ -94,7 +94,7 @@ function ImportFromNTLM()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 /*
 echo "Import From NTLM<BR>";
@@ -237,7 +237,7 @@ function ImportFromNTLMForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);  
 
   $DB=new SAMSDB();
@@ -407,7 +407,7 @@ function authntlmbuttom_3_importfromntlm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=importfromntlmform&filename=authntlmbuttom_3_importfromntlm.php","basefrm","importfromad-32.jpg","importfromad-48.jpg","$authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1");
 	}
