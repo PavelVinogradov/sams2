@@ -14,7 +14,7 @@ function UsersImportFromNCSAFile()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   PageTop("user.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
@@ -82,7 +82,7 @@ function UsersImportFromNCSAFileForm()
   require($lang);
 
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
   
   $DB=new SAMSDB();
@@ -157,7 +157,7 @@ function LoadNCSAFileForm()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
 
-   if($USERConf->ToWebInterfaceAccess("CL")!=1 )
+   if($USERConf->ToWebInterfaceAccess("UCL")!=1 )
 	exit;
   
   PageTop("loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1");
@@ -178,7 +178,7 @@ function authncsabuttom_2_ncsaimport()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=loadncsafileform&filename=authncsabuttom_2_ncsaimport.php","basefrm","loadncsa_32.jpg","loadncsa_48.jpg","$authbuttom_1_ncsaimport_LoadFileForm_1 ");
 	}

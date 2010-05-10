@@ -17,7 +17,7 @@ function AddUsersFromNTLM()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
  
   if(isset($_GET["domainname"])) $domainname=$_GET["domainname"];
@@ -74,7 +74,7 @@ function AddUsersFromNTLMForm()
   if(isset($_GET["ldapgroup"])) $ldapgroup=$_GET["ldapgroup"];
   if(isset($_GET["getgroup"])) $getgroup=$_GET["getgroup"];
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);  
 
   $DB=new SAMSDB();
@@ -174,7 +174,7 @@ function authntlmbuttom_2_usersadd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=addusersfromntlmform&filename=authntlmbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 Windows");
 	}

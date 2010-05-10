@@ -16,7 +16,7 @@ function AddUsersFromLDAP()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   if(isset($_GET["username"])) $userlist=$_GET["username"];
@@ -62,7 +62,7 @@ function AddUsersFromLDAPForm()
   if(isset($_GET["getgroup"])) $getgroup=$_GET["getgroup"];
   if(isset($_GET["addgroupname"])) $addgroupname=$_GET["addgroupname"]; 
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
   
 
@@ -335,7 +335,7 @@ function authldapbuttom_2_usersadd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=addusersfromldapform&filename=authldapbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 LDAP");
 	}

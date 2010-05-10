@@ -9,7 +9,7 @@ function DisableSelectedUsers()
   global $SAMSConf;
   global $USERConf;
   $DB=new SAMSDB();
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
+  if($USERConf->ToWebInterfaceAccess("UAC")!=1)
     exit(0);
 
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
@@ -30,35 +30,14 @@ function DisableSelectedUsers()
 
  for($i=0; $i<$discount; $i++)
     {
-//       if($SAMSConf->LOGLEVEL >= 3&&strlen($disable[$i])>0)
-//         {
-//            $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$disable[$i]' ");
-//            $row=$DB->samsdb_fetch_array();
-//            UpdateLog("$SAMSConf->adminname","Deactivate user $row[nick]","01");
-//         }
-//echo "UPDATE squiduser SET s_enabled='-1' WHERE s_user_id='$disable[$i]' count1=$count1  discount=$discount<BR>";
        $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_enabled='-1' WHERE s_user_id='$disable[$i]'");
    }
  for($i=0; $i<$defcount; $i++)
     {
-//       if($SAMSConf->LOGLEVEL >= 3&&strlen($defen[$i])>0)
-//         {
-//             $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$defen[$i]' ");
-//            $row=$DB->samsdb_fetch_array();
-//            UpdateLog("$SAMSConf->adminname","Activate user $row[nick]","01");
-//         }
-//echo "UPDATE squiduser SET s_enabled='1' WHERE s_user_id='$defen[$i]'<BR>";
        $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_enabled='1' WHERE s_user_id='$defen[$i]'");
     }
  for($i=0; $i<$delcount; $i++)
     {
-//       if($SAMSConf->LOGLEVEL >= 3&&strlen($delete[$i])>0)
-//         {
-//             $num_rows=$DB->samsdb_query_value("SELECT s_nick FROM squiduser WHERE s_user_id='$delete[$i]' ");
-//            $row=$DB->samsdb_fetch_array();
-//            UpdateLog("$SAMSConf->adminname","Delete user $row[nick] ","01");
-//         }
-//echo "DELETE FROM squiduser WHERE s_user_id='$delete[$i]'<BR>";
         $num_rows=$DB->samsdb_query("DELETE FROM squiduser WHERE s_user_id='$delete[$i]' ");
     }
      print("<SCRIPT>\n");
@@ -88,7 +67,7 @@ function AllUsersForm()
   if(isset($_GET["username"])) $username=$_GET["username"];
 
   PageTop("user.jpg","$grouptray_UserGroupForm_1");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UAC")==1)
     {
       print("<FORM NAME=\"searchform\" ACTION=\"main.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
@@ -172,7 +151,7 @@ function AllUsersForm()
        print("}\n");
        print("</SCRIPT> \n");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UAC")==1)
     {
       print("<FORM NAME=\"groupform\" ACTION=\"main.php\"  METHOD=\"post\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
@@ -185,20 +164,20 @@ function AllUsersForm()
   print("<THEAD>\n");
   print("<TR>\n");
 
-  if($USERConf->ToWebInterfaceAccess("CGS")==1)
+  if($USERConf->ToWebInterfaceAccess("UCGS")==1)
     {
       print("<TH  WIDTH=\"10%\"> <B>$userstray_AllUsersForm_1</B> \n");
     }
   print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_2</B>\n");
   print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_3</B>\n");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UC")==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_4</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_5</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_9</B>\n");
     }  
   print("<TH WIDTH=\"30%\" bgcolor=beige> <B>$userstray_AllUsersForm_6</B>\n");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UAC")==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_7</B>\n");
     }  
@@ -255,13 +234,13 @@ function AllUsersForm()
                if($row['s_quote']>0)
                   $gif="quote_alarm.gif";
            }
-	if($USERConf->ToWebInterfaceAccess("CGS")==1)
+	if($USERConf->ToWebInterfaceAccess("UACGS")==1)
            {
               print("<TD WIDTH=\"10%\">");
               print("<IMG SRC=\"$SAMSConf->ICONSET/$gif\">");
               
 	   }
-	if($USERConf->ToWebInterfaceAccess("C")==1)
+	if($USERConf->ToWebInterfaceAccess("UAC")==1)
            {
              print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[s_user_id]\" ");
              if($row['s_enabled']>0)
@@ -273,7 +252,7 @@ function AllUsersForm()
 	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
-	if($USERConf->ToWebInterfaceAccess("C")==1)
+	if($USERConf->ToWebInterfaceAccess("UC")==1)
            {
 	     PrintFormattedSize($traffic);
              
@@ -314,23 +293,44 @@ function AllUsersForm()
 	   }
 	   
          print("<TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]");
-	if($USERConf->ToWebInterfaceAccess("C")==1)
+	if($USERConf->ToWebInterfaceAccess("UC")==1)
            {
               print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" > \n");
+	   }
+	else if($USERConf->ToWebInterfaceAccess("A")==1)
+           {
+              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" DISABLED > \n");
 	   }
 	 $count=$count+1;  
       }
       print("</TBODY>\n");
-      print("<TR><TD><INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=EnableAll(groupform) > \n");
-      print("<BR><INPUT TYPE=\"BUTTON\" VALUE=\"deselect all\" onclick=DisableAll(groupform) > \n");
-      print("<TD><TD><TD><TD><TD><TD><TD> \n");
-      print("<INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=DeleteAll(groupform) > \n");
+      if($USERConf->ToWebInterfaceAccess("UAC")==1)
+      {
+	print("<TR><TD><INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=EnableAll(groupform) > \n");
+	print("<BR><INPUT TYPE=\"BUTTON\" VALUE=\"deselect all\" onclick=DisableAll(groupform) > \n");
+	print("<TD><TD><TD> \n");
+      }
+      if($USERConf->ToWebInterfaceAccess("UC")==1)
+      {
+	print("<TD><TD><TD>\n");
+      }
+      if($USERConf->ToWebInterfaceAccess("UC")==1)
+      {
+	print("<TD> <INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=DeleteAll(groupform) > \n");
+      }
+      else if($USERConf->ToWebInterfaceAccess("A")==1)
+      {
+	print("<TD> <INPUT TYPE=\"BUTTON\" VALUE=\"select all\" DISABLED > \n");
+      }
   print("</TABLE>\n");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("UAC")==1)
     {
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"counter\" value=\"$count\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"groupname\" value=\"$groupname\">\n");
+    }
+  if($USERConf->ToWebInterfaceAccess("AUC")==1)
+    {
       print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
       
       print("</FORM>\n");

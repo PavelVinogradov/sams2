@@ -8,6 +8,23 @@ function SearchAuthParameter($auth,$parameter,$value)
   return($num_rows);
 }
 
+function SAMSLangToUTF8($inp)
+{
+  global $SAMSConf;
+  $charset=explode(",",$_SERVER['HTTP_ACCEPT_CHARSET']);
+	$out=$inp;
+	if($SAMSConf->LANG!="UTF8" && $SAMSConf->LANG!="EN")
+	{
+		$out=iconv($SAMSConf->CHARSET, "UTF-8", $inp);
+	}
+	if($SAMSConf->LANG=="EN")
+	{
+		return($inp);
+//		$out=iconv("UTF-8", $charset[0], $inp);
+	}
+  return($out);
+}
+
 function UTF8ToSAMSLang($inp)
 {
   global $SAMSConf;

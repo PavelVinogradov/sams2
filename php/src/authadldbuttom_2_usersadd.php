@@ -17,7 +17,7 @@ function AddUsersFromAdLDAP()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
  
   if(isset($_GET["domainname"])) $domainname=$_GET["domainname"];
@@ -63,14 +63,10 @@ function AddUsersFromAdLDAP()
 
   while(strlen($userlist[$i])>0)
      {
-//       print("userlist=$userlist[$i] enabled=$enabled<BR>");
-
        $string=$userlist[$i];
        $i++;
        $user="$string";
-
-//       print("user=$user domain=$domain enabled=$enabled usergroup=$usergroup shablon=$usershablon<BR>");
-       
+	$username = UTF8ToSAMSLang($user);
 	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
        if($num_rows==0)
           {
@@ -78,12 +74,10 @@ function AddUsersFromAdLDAP()
 		$aaa2 = $userinfo[0]["givenname"][0];
 		$aaa3 = $userinfo[0]["sn"][0];
 
-		$num_rows=$DB->samsdb_query("INSERT INTO squiduser 
-			(s_group_id, s_shablon_id, s_nick, s_domain, s_enabled) 
-		VALUES('$usergroup', '$usershablon', '$user', '$domain', '$enabled')");
+		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled) 
+		VALUES('$usergroup', '$usershablon', '$username', '$domain', '$enabled')";
+		$num_rows=$DB->samsdb_query($QUERY);
 
-//		if($result!=FALSE)
-//                   UpdateLog("$SAMSConf->adminname","Added user $user ","01");
           }
 
      }
@@ -107,7 +101,7 @@ function AddUsersFromADLDForm()
   if(isset($_GET["ldapgroup"])) $ldapgroup=$_GET["ldapgroup"];
   if(isset($_GET["getgroup"])) $getgroup=$_GET["getgroup"];
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);  
 
   PageTop("user.jpg"," $usersbuttom_1_domain_AddUsersFromDomainForm_1 Active Directory ");
@@ -218,7 +212,8 @@ function AddUsersFromADLDForm()
 	$user=$a[$i];
 	$username=$a[$i];
 
-  	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
+	$finduser = UTF8ToSAMSLang($user);
+  	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$finduser'");
         if($num_rows==0)  
 	  {
 		$userinfo=$ldap->user_info( $user, $fields=NULL);
@@ -294,7 +289,7 @@ function authadldbuttom_2_usersadd()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=addusersfromadldform&filename=authadldbuttom_2_usersadd.php","basefrm","domain-32.jpg","domain-48.jpg","$usersbuttom_1_domain_AddUsersFromDomainForm_1 Active Directory");
 	}

@@ -253,7 +253,7 @@ function AuthADLDTray()
       print("        parent.basefrm.location.href=\"main.php?show=exe&function=authadldvalues&filename=authadldtray.php\";\n");
       print("</SCRIPT> \n");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
 	print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
 	print("<TR HEIGHT=60>\n");

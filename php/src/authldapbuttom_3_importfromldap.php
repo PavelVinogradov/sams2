@@ -12,7 +12,7 @@ function AddGroup()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
@@ -46,7 +46,7 @@ function AddShablon()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit;
 
   $period="M";
@@ -95,7 +95,7 @@ function ImportFromLDAP()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
   PageTop("importfromldap-48.jpg"," $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1 ");
@@ -224,7 +224,7 @@ function ImportFromLDAPForm()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1 )
+  if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);  
 
   $DB=new SAMSDB();
@@ -397,7 +397,7 @@ function authldapbuttom_3_importfromldap()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
+  if($USERConf->ToWebInterfaceAccess("UC")==1 )
     {
        GraphButton("main.php?show=exe&function=importfromldapform&filename=authldapbuttom_3_importfromldap.php","basefrm","importfromldap-32.jpg","importfromldap-48.jpg","$authadldbuttom_3_importfromldap_ImportFromLDAPForm_1");
 	}
