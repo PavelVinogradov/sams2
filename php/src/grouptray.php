@@ -29,32 +29,44 @@ function DisableGroupUsers()
   global $USERConf;
 
   $DB=new SAMSDB();
-  $DB2=new SAMSDB();
+  if($USERConf->ToWebInterfaceAccess("UAC")!=1)
+    exit(0);
  
  if(isset($_GET["counter"])) $counter=$_GET["counter"];
+ if(isset($_GET["disable"])) $disable=$_GET["disable"];
+ if(isset($_GET["defen"])) $defen=$_GET["defen"];
+ if(isset($_GET["delete"])) $delete=$_GET["delete"];
+ if(isset($_GET["discount"])) $discount=$_GET["discount"];
+ if(isset($_GET["delcount"])) $delcount=$_GET["delcount"];
+ if(isset($_GET["defcount"])) $defcount=$_GET["defcount"];
  if(isset($_GET["id"])) $id=$_GET["id"];
- if(isset($_GET["users"])) $users=$_GET["users"];
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_group_id='$id' ");
-  while($row=$DB->samsdb_fetch_array())
-     {
-       //$id=$row['s_user_id'];
-       $enabled=-1;
-       if($users[$row['s_user_id']]=="on")
-         $enabled=1;
-       if($enabled==1&&$row['s_enabled']!=1)
-         {
-           $num_rows=$DB2->samsdb_query("UPDATE squiduser SET s_enabled='$enabled' WHERE s_user_id='$row[s_user_id]' ");
-	 }
-       if($enabled<=0&&$row['s_enabled']==1)
-         {
-           $num_rows=$DB2->samsdb_query("UPDATE squiduser SET s_enabled='$enabled' WHERE s_user_id='$row[s_user_id]'");
-	 }
-     }
+
+ $disable=explode(",",$disable);
+ $count1=count($disable);
+ $defen=explode(",",$defen);
+ $count3=count($defen);
+ $delete=explode(",",$delete);
+ $count2=count($delete);
+
+ for($i=0; $i<$discount; $i++)
+    {
+	$QUERY="UPDATE squiduser SET s_enabled='-1' WHERE s_user_id='$disable[$i]'";
+	$num_rows=$DB->samsdb_query($QUERY);
+   }
+ for($i=0; $i<$defcount; $i++)
+    {
+	$QUERY="UPDATE squiduser SET s_enabled='1' WHERE s_user_id='$defen[$i]'";
+       $num_rows=$DB->samsdb_query($QUERY);
+    }
+ for($i=0; $i<$delcount; $i++)
+    {
+        $num_rows=$DB->samsdb_query("DELETE FROM squiduser WHERE s_user_id='$delete[$i]' ");
+    }
+
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
      print("        parent.tray.location.href=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$id\";\n");
      print("</SCRIPT> \n");
-
 }
 
 
@@ -81,12 +93,84 @@ function UserGroupForm()
     }
   PageTop("user.jpg","$grouptray_UserGroupForm_1.<BR>$grouptray_UserGroupForm_2 <FONT COLOR=\"blue\">$gname</FONT>");
 
+
+       print("<SCRIPT language=JAVASCRIPT>\n");
+       print("function SendForm(formname)\n");
+       print("{\n");
+       print("   var disable = new Array(); \n");
+       print("   var defen = new Array(); \n");
+       print("   var userdel = new Array(); \n");
+       print("   var discount=0; \n");
+       print("   var defcount=0; \n");
+       print("   var delcount=0; \n");
+       print("   var dis = \" \"; \n");
+       print("   var def = \" \"; \n");
+       print("   var del = \" \"; \n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.users[i].checked==false && groupform.dusers[i].value==\"1\")\n");
+       print("             {\n");
+       print("                  disable[discount] = groupform.users[i].value; \n");
+       print("                  discount+=1; \n");
+       print("                  dis = dis + groupform.users[i].value + \" \"; \n");
+       print("             }\n");
+       print("           if(groupform.users[i].checked==true && ( groupform.dusers[i].value==\"-1\" || groupform.dusers[i].value==\"0\" ))\n");
+       print("             {\n");
+       print("                  defen[defcount] = groupform.users[i].value; \n");
+       print("                  defcount+=1; \n");
+       print("                  def = def + groupform.users[i].value + \" \"; \n");
+       print("             }\n");
+      print("           if(groupform.userdel[i].checked==true)\n");
+       print("             {\n");
+       print("                  userdel[delcount] = groupform.userdel[i].value; \n");
+       print("                  delcount+=1; \n");
+       print("                  del = del + groupform.userdel[i].value + \" \"; \n");
+       print("             }\n");
+       print("        }\n");
+       print("   var strr= \"main.php?show=exe&filename=grouptray.php&function=disablegroupusers&disable=\" + disable + \"&delete=\" + userdel + \"&defen=\" + defen + \"&delcount=\"+delcount+\"&discount=\"+discount + \"&defcount=\"+defcount +\"&id=$id\"  \n");
+//       print("   var value=window.confirm( \"disable:\" + dis + \" delete: \" + del + \"default:\" + def );\n");
+       print("   parent.basefrm.location.href=strr;\n");
+       print("}\n");
+       print("function EnableAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.users[i].checked==false )\n");
+       print("             {\n");
+       print("                  groupform.users[i].checked=true; \n");
+       print("             }\n");
+       print("        }\n");
+       print("}\n");
+       print("function DisableAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.users[i].checked==true )\n");
+       print("             {\n");
+       print("                  groupform.users[i].checked=false; \n");
+       print("             }\n");
+       print("        }\n");
+       print("}\n");
+       print("function DeleteAll(formname)\n");
+       print("{\n");
+       print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
+       print("       {\n");
+       print("           if(groupform.userdel[i].checked==false )\n");
+       print("             {\n");
+       print("                  groupform.userdel[i].checked=true; \n");
+       print("             }\n");
+       print("        }\n");
+       print("}\n");
+       print("</SCRIPT> \n");
+
+
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-      print("<FORM NAME=\"groupform\" ACTION=\"main.php\">\n");
+      print("<FORM NAME=\"groupform\" ACTION=\"main.php\"  METHOD=\"post\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"grouptray.php\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"disablegroupusers\">\n");
+      print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
     } 
   
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
@@ -107,6 +191,10 @@ function UserGroupForm()
       print("<TH WIDTH=\"15%\" bgcolor=beige ALIGN=CENTER> <B>$grouptray_NewGroupForm_7</B></TH>\n");
     }  
   print("<TH WIDTH=\"40%\" bgcolor=beige> <B>$grouptray_NewGroupForm_8</B></TH>\n");
+  if($USERConf->ToWebInterfaceAccess("UAC")==1)
+    {
+      print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_7</B>\n");
+    }  
   $DB->free_samsdb_query();
 
   $count=0;
@@ -142,10 +230,12 @@ function UserGroupForm()
            }
 	if($USERConf->ToWebInterfaceAccess("C")==1)
            {
-             print(" <INPUT TYPE=\"CHECKBOX\" NAME=users[$row[s_user_id]] ");
-             if($row['s_enabled']==1)
+             print(" <INPUT TYPE=\"CHECKBOX\" NAME=\"users\" ID=\"$count\" VALUE=\"$row[s_user_id]\" ");
+             if($row['s_enabled']>0)
 	       print(" CHECKED ");
 	     print("></TD>\n");
+
+             print(" <INPUT TYPE=\"HIDDEN\" NAME=\"dusers\" ID=\"$count\" VALUE=\"$row[s_enabled]\" >");
            }
 	 
 	 print("  <TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B></TD>\n");
@@ -170,9 +260,38 @@ function UserGroupForm()
                print("  <TD WIDTH=\"15%\" ALIGN=CENTER>unlimited</TD>\n");
 	   }
          print("  <TD WIDTH=\"40%\"> $row[s_family] $row[s_name] $row[s_soname]</TD>\n");
+
+	if($USERConf->ToWebInterfaceAccess("UC")==1)
+           {
+              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" > \n");
+	   }
+	else if($USERConf->ToWebInterfaceAccess("A")==1)
+           {
+              print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"userdel\" ID=\"$count\" VALUE=\"$row[s_user_id]\" DISABLED > \n");
+	   }
 	 
 	 $count=$count+1;  
       }
+
+      if($USERConf->ToWebInterfaceAccess("UAC")==1)
+      {
+	print("<TR><TD><INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=EnableAll(groupform) > \n");
+	print("<BR><INPUT TYPE=\"BUTTON\" VALUE=\"deselect all\" onclick=DisableAll(groupform) > \n");
+	print("<TD><TD><TD> \n");
+      }
+      if($USERConf->ToWebInterfaceAccess("UC")==1)
+      {
+	print("<TD><TD>\n");
+      }
+      if($USERConf->ToWebInterfaceAccess("UC")==1)
+      {
+	print("<TD> <INPUT TYPE=\"BUTTON\" VALUE=\"select all\" onclick=DeleteAll(groupform) > \n");
+      }
+      else if($USERConf->ToWebInterfaceAccess("A")==1)
+      {
+	print("<TD> <INPUT TYPE=\"BUTTON\" VALUE=\"select all\" DISABLED > \n");
+      }
+
   print("</TABLE>\n");
   $DB->free_samsdb_query();
 
@@ -180,8 +299,7 @@ function UserGroupForm()
     {
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"counter\" value=\"$count\">\n");
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$id\">\n");
-      print(" <INPUT TYPE=\"SUBMIT\" VALUE=\"$grouptray_NewGroupForm_9\" \n> ");
-      
+      print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
       print("</FORM>\n");
     } 
 
