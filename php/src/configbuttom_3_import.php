@@ -61,8 +61,9 @@ function importurllists()
 	$this->oldDB->samsdb_query_value($QUERY);
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-		echo "<TR><TD><B>$row[name]</B><TD> added<BR>";
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')");
+		$row_name=iconv($this->sams1charset,$this->sams2charset,$row['name']);
+		echo "<TR><TD><B>$row_name</B><TD> added<BR>";
+		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "redirect (s_name,s_type) VALUES( '$row_name', '$row[type]')");
 	}
 	$this->oldDB->free_samsdb_query();
 	$i=0;
@@ -101,8 +102,6 @@ function importgroups()
 	require($lang);
 
 	$DBNAME="$SAMSConf->SAMSDB.";
-//	if($SAMSConf->DB_ENGINE=="MySQL")
-//		$DBNAME="samsdb.";
 
 	$this->groupcount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM sams ");
@@ -115,8 +114,9 @@ function importgroups()
 	echo "<TH>\n";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-		$this->groupname[] ="$row[nick]";
-		$this->groupid[]="$row[name]";
+		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
+		$this->groupname[] =$row_nick;
+		$this->groupid[]=$row['name'];
 
 		if($row['nick']!="Administrators"&&$row['nick']!="Users")
 		{
@@ -124,8 +124,6 @@ function importgroups()
 			$GROUPNAME=$this->groupname[$this->groupcount];
 			echo "<TR><TD><B>$GROUPNAME</B>";
 
-			$GROUPNAME5=$GROUPNAME;
-			//$GROUPNAME5 = substr_replace ( $GROUPNAME, "", 1 );
 			$QUERY="INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$GROUPNAME."') ";
 			$this->DB->samsdb_query($QUERY);
 			echo "<TD>added";
@@ -160,9 +158,6 @@ function importtimerange()
 	$this->trangecount=0;
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-//		$this->trangename[] ="$this->trangecount";
-//		$this->trange[$this->trangecount] = $row['days']." ".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
-
 			echo "<TR><TD>".$row['days'];
 			echo "<TD>".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
 
@@ -187,8 +182,6 @@ function importshablons()
 	require($lang);
 
 	$DBNAME="$SAMSConf->SAMSDB.";
-//	if($SAMSConf->DB_ENGINE=="MySQL")
-//		$DBNAME="samsdb.";
 
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM shablons ");
@@ -198,40 +191,38 @@ function importshablons()
 	echo "<TH>\n";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-		$this->shablonname[] ="$row[nick]";
+		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
+		$this->shablonname[] =$row_nick;
 		$this->shablonid[]="$row[name]";
 		if($row['clrdate']=="0000-00-00")
 			$clrdate="1980-01-01";
 		else
 			$clrdate=$row['clrdate'];
-		//print("$row[nick]: $clrdate <BR>");
-		if($row['name']!="default")
-		{
-			echo "<TR><TD><B>$row[nick]</B>";
-			$QUERY="INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ";
-			$this->DB->samsdb_query($QUERY);
 
-			$QUERY="SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row[nick]'";
-			$this->DB->samsdb_query_value($QUERY);
-	                while($row2=$this->DB->samsdb_fetch_array())
-                          $new_shablon_id=$row2['s_shablon_id'];
+		echo "<TR><TD><B>$row_nick</B>";
+		$QUERY="INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row_nick', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ";
+		$this->DB->samsdb_query($QUERY);
 
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row[nick]', '2', '$row[shablonpool]', '$row[userpool]' ) ");
+		$QUERY="SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row_nick'";
+		$this->DB->samsdb_query_value($QUERY);
+	        while($row2=$this->DB->samsdb_fetch_array())
+                     $new_shablon_id=$row2['s_shablon_id'];
 
-			$this->DB->samsdb_query_value("SELECT s_pool_id FROM ".$DBNAME."delaypool WHERE s_name='$row[nick]'");
-	                while($row2=$this->DB->samsdb_fetch_array())
-                          $new_pool_id=$row2['s_shablon_id'];
+		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row_nick', '2', '$row[shablonpool]', '$row[userpool]' ) ");
 
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
+		$this->DB->samsdb_query_value("SELECT s_pool_id FROM ".$DBNAME."delaypool WHERE s_name='$row_nick'");
+	        while($row2=$this->DB->samsdb_fetch_array())
+                     $new_pool_id=$row2['s_shablon_id'];
 
-			$this->DB->samsdb_query_value("SELECT s_trange_id FROM ".$DBNAME."timerange WHERE s_days='".$row['days']."' AND s_timestart='".$row['shour'].":".$row['smin'].":00' AND s_timeend='".$row['ehour'].":".$row['emin'].":00'");
-	                while($row2=$this->DB->samsdb_fetch_array())
-                          $new_trange_id=$row2['s_trange_id'];
+		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
 
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "sconfig_time ( s_shablon_id, s_trange_id) VALUES ('$new_shablon_id', '$new_trange_id') ");
+		$this->DB->samsdb_query_value("SELECT s_trange_id FROM ".$DBNAME."timerange WHERE s_days='".$row['days']."' AND s_timestart='".$row['shour'].":".$row['smin'].":00' AND s_timeend='".$row['ehour'].":".$row['emin'].":00'");
+	        while($row2=$this->DB->samsdb_fetch_array())
+                     $new_trange_id=$row2['s_trange_id'];
 
-			echo "<TD>added";
-		}
+		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "sconfig_time ( s_shablon_id, s_trange_id) VALUES ('$new_shablon_id', '$new_trange_id') ");
+
+		echo "<TD>added";
 		$this->shabloncount++;
 	}
   $this->oldDB->free_samsdb_query();
@@ -251,9 +242,6 @@ function seturllists()
 	require($lang);
 
 	$DBNAME="$SAMSConf->SAMSDB.";
-//	$DBNAME="";
-//	if($SAMSConf->DB_ENGINE=="MySQL")
-//		$DBNAME="samsdb.";
 
 	$shabloncount=0;
 	$this->oldDB->samsdb_query_value("select sconfig.sname, sconfig.set, shablons.name, shablons.nick, redirect.name as gname from sconfig left join shablons on shablons.name=sconfig.sname left join redirect on redirect.filename=sconfig.set ");
@@ -263,19 +251,21 @@ function seturllists()
 	echo "<TH>$redir_addredirectform2\n";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
+		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
+		$row_gname=iconv($this->sams1charset,$this->sams2charset,$row['gname']);
 		if($row['sname'] == $row['name'])
 		{
 			echo "<TR>\n";
-			echo "<TD>$row[nick]\n";
-			echo "<TD>$row[gname]\n";
+			echo "<TD>$row_nick\n";
+			echo "<TD>$row_gname\n";
 
-			$QUERY="SELECT s_shablon_id, s_name FROM ".$SAMSConf->SAMSDB.".shablon WHERE s_name='$row[nick]'";
+			$QUERY="SELECT s_shablon_id, s_name FROM ".$SAMSConf->SAMSDB.".shablon WHERE s_name='$row_nick'";
 			$num_rows_shablon=$this->DB->samsdb_query_value($QUERY);
 			while($row2=$this->DB->samsdb_fetch_array())
 			{
 				$shablonid=$row2['s_shablon_id'];
 			}
-			$QUERY="SELECT s_redirect_id, s_name FROM ".$SAMSConf->SAMSDB.".redirect WHERE s_name='$row[gname]'";
+			$QUERY="SELECT s_redirect_id, s_name FROM ".$SAMSConf->SAMSDB.".redirect WHERE s_name='$row_gname'";
 			$num_rows_redirect=$this->DB->samsdb_query_value($QUERY);
 			while($row2=$this->DB->samsdb_fetch_array())
 			{
@@ -303,16 +293,12 @@ function importsamsusers()
   require($lang);
 
 	$DBNAME="$SAMSConf->SAMSDB.";
-#	$DBNAME="";
-#	if($SAMSConf->DB_ENGINE=="MySQL")
-#		$DBNAME="samsdb.";
-
 
 	$groupcount2=0;
 	for($i=0;$i<$this->groupcount;$i++)
 	{
-	$this->DB->samsdb_query_value("SELECT s_group_id FROM " .$DBNAME. "sgroup WHERE s_name='".$this->groupname[$i]."' ");
-	while($row=$this->DB->samsdb_fetch_array())
+		$this->DB->samsdb_query_value("SELECT s_group_id FROM " .$DBNAME. "sgroup WHERE s_name='".$this->groupname[$i]."' ");
+		while($row=$this->DB->samsdb_fetch_array())
 		{
 			$this->groupid2[$i]=$row['s_group_id'];
 			$this->groupcount2++;
@@ -339,29 +325,33 @@ function importsamsusers()
 	echo "<TH>\n";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
+		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
+		$row_family=iconv($this->sams1charset,$this->sams2charset,$row['family']);
+		$row_name=iconv($this->sams1charset,$this->sams2charset,$row['name']);
+		$row_soname=iconv($this->sams1charset,$this->sams2charset,$row['soname']);
 
 		$sindex=array_search($row['shablon'], $this->shablonid);
 		$gindex=array_search($row['group'], $this->groupid);
 		if($row['family']!="") 
-			$s_family = $row['family'];
+			$s_family = $row_family;
 		else
 			$s_family = ".";
 			
 		if($row['name']!="") 
-			$s_name = $row['name'];
+			$s_name = $row_name;
 		else
 			$s_name = ".";
 		if($row['soname']!="") 
-			$s_soname = $row['soname'];
+			$s_soname = $row_soname;
 		else
 			$s_soname = ".";
 		if($row['ip']!="") 
 			$s_ip = $row['ip'];
 		else
 			$s_ip = "....";
-		echo "<TR><TD><B>$row[nick]</B><TD> $s_family $s_name <BR>";
+		echo "<TR><TD><B>$row_nick</B><TD> $s_family $s_name <BR>";
 		$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
-		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row[nick]', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
+		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
 		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "squiduser $str VALUES $values ");
 		echo "<TD>added\n";
 		$count++;
@@ -524,37 +514,37 @@ function IMPORTUSERS($hostname, $username, $pass)
  $this->DB=new SAMSDB();
  $this->oldDB=new CREATESAMSDB("MySQL", "0", $hostname, $username, $pass, "squidctrl", "0");
 
- $this->oldDB->samsdb_query_value("SELECT lang FROM globalsettings");
+
+
+ $this->sams1charset="koi8-r";
+ $QUERY="SELECT * FROM globalsettings";
+ $num_rows=$this->oldDB->samsdb_query_value($QUERY);
  $row=$this->oldDB->samsdb_fetch_array();
+ $this->sams1charset=$row['lang'];
 
-
-// SHOW TABLE STATUS WHERE name='squidusers';
-//SHOW VARIABLES where variable_name='character_set_database';
-//show server_encoding;
-
-/*
- $this->oldDB->samsdb_query_value("SHOW VARIABLES WHERE variable_name='character_set_database'");
- $row=$this->oldDB->samsdb_fetch_array();
- $this->oldDBcharset=$row[0];
  $this->oldDB->free_samsdb_query();
-*/
- $this->oldDBcharset="KOI8-R";
-/*
- $this->DB->samsdb_query_value("show server_encoding");
- $row=$this->DB->samsdb_fetch_array();
- $this->DBcharset=$row[0];
+
+ if($this->sams1charset=="UTF8")
+	$this->sams1charset="utf-8";
+ if($this->sams1charset=="WIN1251")
+	$this->sams1charset="windows-1251";
+ if($this->sams1charset=="EN")
+	$this->sams1charset="utf-8";
+
+ $this->sams2charset="koi8-r";
+ $QUERY="SELECT * FROM samsdb.websettings";
+ $num_rows=$this->DB->samsdb_query_value($QUERY);
+ $row2=$this->DB->samsdb_fetch_array();
+ $this->sams2charset=$row2['s_lang'];
+
  $this->DB->free_samsdb_query();
 
- $this->pgcharset=pg_client_encoding($this->DB->link);
-*/
- $this->DBcharset="KOI8-R";
- if($SAMSConf->DB_ENGINE=="PostgreSQL"&&$this->sams1charset!=$this->pgcharset)
- {
-	if($this->sams1charset=="KOI8-R")
-	{
-		pg_set_client_encoding("KOI8");
-	}
- }
+ if($this->sams2charset=="UTF8")
+	$this->sams2charset="utf-8";
+ if($this->sams2charset=="WIN1251")
+	$this->sams2charset="windows-1251";
+ if($this->sams2charset=="EN")
+	$this->sams2charset="utf-8";
 
 }
 
