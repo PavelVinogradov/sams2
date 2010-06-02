@@ -31,13 +31,18 @@ function AddUsersFromLDAP()
 
   $i=0;
 
+  $query="select s_quote from shablon";
+  $num_rows=$DB->samsdb_query_value($query);
+  $row=$DB->samsdb_fetch_array();
+  $s_quote=$row['s_quote'];
+  $DB->free_samsdb_query();
   while(strlen($userlist[$i])>0)
      {
 
 	$string=$userlist[$i];
 	$i++;
 	$user="$string";
-	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled) VALUES('$usergroup', '$usershablon', '$user', '$enabled')";
+	$query="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$user', '$enabled', '$s_quote')";
 	$num_rows=$DB->samsdb_query($query);
 
      }
@@ -110,26 +115,6 @@ function AddUsersFromLDAPForm()
 		}
 		$groupinfo=$samsldap->GetGroupsData();
 
-// Uncomment the following block to show users either from selected group or entire list
-/*
-                print("<H2>LDAP users</H2>");
-                print("<TABLE CLASS=samstable>");
-                print("<TH width=5%>No");
-                print("<TH >Name");
-                print("<TH >Common name");
-                for($j=0;$j<$a['userscount'];$j++)
-                {
-                        echo "<TR><TD>$j<TD> ".$a['uid'][$j];
-                        echo "<TD> ".$a['cn'][$j];
-                }
-                for($j=0;$j<$b['userscount'];$j++)
-                {
-                        echo "<TR><TD>$j<TD> ".$b['uid'][$j];
-                        echo "<TD> ".$b['cn'][$j];
-                }
-                echo "</TABLE>";
-*/
-
 		$SELECTED="";
 		if($addgroupname=="_allgroups_" || $addgroupname=="")
 			$SELECTED="SELECTED";
@@ -175,10 +160,7 @@ function AddUsersFromLDAPForm()
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
 			{
-//				if($addgroupname=="_allgroups_" || $addgroupname=="")
 					print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
-//				else
-//					print("<OPTION VALUE=\"$user\"> <B>$user</B> \n");
 			}
 			$DB->free_samsdb_query();
 		}
@@ -191,10 +173,7 @@ function AddUsersFromLDAPForm()
 			$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
 			if($num_rows==0)  
 			{
-//				if($addgroupname=="_allgroups_" || $addgroupname=="")
 					print("<OPTION VALUE=\"$user\"> <B>$user</B> ($username) \n");
-//				else
-//					print("<OPTION VALUE=\"$user\"> <B>$user</B> \n");
 			}
 			$DB->free_samsdb_query();
 		}
