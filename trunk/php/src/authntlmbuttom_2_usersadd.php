@@ -36,6 +36,11 @@ function AddUsersFromNTLM()
 
   $i=0;
 
+  $query="select s_quote from shablon where s_shablon_id='$usershablon'";
+  $num_rows=$DB->samsdb_query_value($query);
+  $row=$DB->samsdb_fetch_array();
+  $s_quote=$row['s_quote'];
+  $DB->free_samsdb_query();
   while(strlen($userlist[$i])>0)
      {
        $string=$userlist[$i];
@@ -47,9 +52,7 @@ function AddUsersFromNTLM()
 	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
        if($num_rows==0)
           {
-		$num_rows=$DB->samsdb_query("INSERT INTO squiduser 
-			(s_group_id, s_shablon_id, s_nick, s_domain, s_enabled) 
-		VALUES('$usergroup', '$usershablon', '$user', '$domain', '$enabled')");
+		$num_rows=$DB->samsdb_query("INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$user', '$domain', '$enabled', '$s_quote')");
 
           }
 
