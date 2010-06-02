@@ -60,6 +60,11 @@ function AddUsersFromAdLDAP()
 	$ldap=new adLDAP($options);
 
 
+  $query="select s_quote from shablon where s_shablon_id='$usershablon'";
+  $num_rows=$DB->samsdb_query_value($query);
+  $row=$DB->samsdb_fetch_array();
+  $s_quote=$row['s_quote'];
+  $DB->free_samsdb_query();
 
   while(strlen($userlist[$i])>0)
      {
@@ -74,8 +79,7 @@ function AddUsersFromAdLDAP()
 		$aaa2 = $userinfo[0]["givenname"][0];
 		$aaa3 = $userinfo[0]["sn"][0];
 
-		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled) 
-		VALUES('$usergroup', '$usershablon', '$username', '$domain', '$enabled')";
+		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$username', '$domain', '$enabled', '$s_quote')";
 		$num_rows=$DB->samsdb_query($QUERY);
 
           }

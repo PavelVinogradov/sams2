@@ -31,7 +31,7 @@ function AddUsersFromLDAP()
 
   $i=0;
 
-  $query="select s_quote from shablon";
+  $query="select s_quote from shablon where s_shablon_id='$usershablon'";
   $num_rows=$DB->samsdb_query_value($query);
   $row=$DB->samsdb_fetch_array();
   $s_quote=$row['s_quote'];
