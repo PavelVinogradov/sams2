@@ -309,13 +309,11 @@ s_autouser  int NOT NULL DEFAULT '0',
 s_autotpl int DEFAULT '0',
 s_autogrp int DEFAULT '0')";
 
-//'0', 'Proxy server','0','http://your.ip.address/sams/icon/classic/blank.gif', 'http://your.ip.address/sams/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '0', '0', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024', '1048576')
-//$pgdb[3] = "INSERT INTO proxy SET s_description='main proxy server' ";
 $pgdb[3] = "INSERT INTO proxy VALUES ('1', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
 , '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '0', '0' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
-$pgdb[5] = "INSERT INTO passwd VALUES('Admin','00YfpO1MXDzqQ','2','0','' )";
-$pgdb[6] = "INSERT INTO passwd VALUES('Auditor','00MTbxknCTtNs','1','0','' )";
+$pgdb[5] = "INSERT INTO passwd VALUES('admin','00YfpO1MXDzqQ','2','0','' )";
+$pgdb[6] = "INSERT INTO passwd VALUES('auditor','00MTbxknCTtNs','1','0','' )";
 $pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(100),
 s_auth varchar(4) default 'ip', 
 s_quote int default '100',s_period varchar(3) NOT NULL default 'M', s_clrdate date NOT NULL default '1980-01-01',
@@ -326,7 +324,7 @@ s_days varchar(14),
 s_timestart time default '00:00:00', 
 s_timeend time default '23:59:59')";
 //s_shour int default '0', s_smin int default '0', s_ehour int default '23', s_emin int default '59')";
-$pgdb[10] = "INSERT INTO timerange VALUES('0','Full day','MTWHFAS','00:00:00','00:00:00')";
+$pgdb[10] = "INSERT INTO timerange VALUES('0','Full day','MTWHFAS','00:00:00','23:59:59')";
 $pgdb[11] = "CREATE TABLE sconfig_time ( s_shablon_id int, s_trange_id int )";
 if($SAMSConf->DB_ENGINE=="MySQL")
 	$pgdb[12] = "INSERT INTO sconfig_time VALUES( '1', '1' )";
