@@ -175,11 +175,6 @@ function UpdateUserForm()
       }
   print("</SELECT>\n");
   $DB2->free_samsdb_query();
-  print("<TR>\n");
-  print("<TD>\n");
-  print("<B>$userbuttom_1_prop_UpdateUserForm_9 \n");
-  print("<TD>\n");
-  print(" \n");
 
   print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
   print("function EnableIndividualQuote(formname)\n");
@@ -208,11 +203,10 @@ function UpdateUserForm()
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"individuallimit\" onclick=EnableIndividualQuote(UPDATEUSER) > \n");
 	$QDISABLED="DISABLED";
   }
-  print("<TD>\n");
   
   print("<TR>\n");
   print("<TD>\n");
-  print("<B>$userbuttom_1_prop_UpdateUserForm_10 \n");
+  print("<B>$userbuttom_1_prop_UpdateUserForm_9 $userbuttom_1_prop_UpdateUserForm_10 </B>\n");
   print("<TD>\n");
   if($SquidUSERConf->s_quote==-1)
 	$uquote=$SquidUSERConf->s_defquote;
