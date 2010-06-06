@@ -5,6 +5,70 @@
  * (see the file 'main.php' for license details)
  */
 
+function ShowLoadingFilesFromDomain()
+{
+  global $SAMSConf;
+  global $DATE;
+  global $USERConf;
+  global $SquidUSERConf;
+
+  if(isset($_GET["id"])) $id=$_GET["id"];
+  $SquidUSERConf=new SAMSUSER();
+  $SquidUSERConf->sams_user($id);
+
+  require("reportsclass.php");
+  $DB=new SAMSDB();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  if(isset($_GET["url"])) $url=$_GET["url"];
+  if(isset($_GET["username"])) $username=$_GET["username"];
+  if(isset($_GET["userdomain"])) $userdomain=$_GET["userdomain"];
+  if(isset($_GET["userid"])) $userid=$_GET["userid"];
+  if(isset($_GET["usergroup"])) $usergroup=$_GET["usergroup"];
+
+	if($USERConf->ToWebInterfaceAccess("GSC")!=1 && ($USERConf->s_user_id != $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")!=1 ) )
+	{
+		exit(0);
+	}
+
+  $sdate=$DATE->sdate();
+  $edate=$DATE->edate();
+  $bdate=$DATE->BeginDate();
+  $eddate=$DATE->EndDate();
+  $sday=$DATE->sday;
+  $smon=$DATE->smon;
+  $syea=$DATE->syea;
+  $shou=$DATE->shou;
+  $eday=$DATE->eday;
+  $emon=$DATE->emon;
+  $eyea=$DATE->eyea;
+  $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
+
+  PageTop("straffic_48.jpg","$userbuttom_4_site_SiteUserList_1 $url <BR>$userbuttom_4_site_SiteUserList_6 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT>");
+  printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
+
+  $QUERY="select * from squidcache where s_user='".$SquidUSERConf->s_nick."' AND s_url like '%$url%' AND s_date>='$sdate' AND s_date<='$edate' ORDER BY s_url";
+  $num_rows=$DB->samsdb_query_value($QUERY);
+  print("<TABLE CLASS=samstable>");
+  print("<TH WIDTH=10%>Date");
+  print("<TH WIDTH=10%>$usersbuttom_2_traffic_UsersTrafficPeriod_4");
+  print("<TH WIDTH=60%>URL");
+  print("<TH WIDTH=10%>$usersbuttom_2_traffic_UsersTrafficPeriod_7");
+  print("<TH WIDTH=10%>$usersbuttom_2_traffic_UsersTrafficPeriod_5");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		echo "<TR>\n";
+		RTableCell($row['s_date'],10);
+		RTableCell($row['s_user'],10);
+		LTableCell(" ".$row['s_url'],60);
+		RTableCell(FormattedString($row['s_size']),10);
+		RTableCell(FormattedString($row['s_hit']),10);
+
+       }
+
+}
 
 function UserSitesPeriod()
 {
@@ -119,7 +183,9 @@ function UserSitesPeriod()
 			$count++;
 			print("<TR>");
 			print("<TD colspan=2>\n");
-			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);
+
+			RTableCell("<A HREF=\"main.php?show=exe&filename=userbuttom_4_site.php&function=showloadingfilesfromdomain&id=$id&SDay=$sday&SMon=$smon&SYea=$syea&EDay=$eday&EMon=$emon&EYea=$eyea&url=".$URL["norm_url"][$key]."\" TARGET=\"BLANK\" >" .$URL["norm_url"][$key]."</A>\n",15);
+
 			RTableCell(FormattedString($URL["url_size"][$key]),15);
 			RTableCell(FormattedString($URL["hit_size"][$key]),15);
 			RTableCell(FormattedString($URL["sum_size"][$key]),15);
@@ -131,7 +197,7 @@ function UserSitesPeriod()
 		else
 		{
 			print("<TD colspan=2>\n");
-			RTableCell("<A HREF=\"http://".$URL["norm_url"][$key]."\" TARGET=\"BLANK\">" .$URL["norm_url"][$key]."</A>\n",15);
+			RTableCell("<A HREF=\"main.php?show=exe&filename=userbuttom_4_site.php&function=showloadingfilesfromdomain&id=$id&SDay=$sday&SMon=$smon&SYea=$syea&EDay=$eday&EMon=$emon&EYea=$eyea&url=".$URL["norm_url"][$key]."\" TARGET=\"BLANK\" >" .$URL["norm_url"][$key]."</A>\n",15);
 			RTableCell(FormattedString($URL["url_size"][$key]),15);
 			RTableCell(FormattedString($URL["hit_size"][$key]),15);
 			RTableCell(FormattedString($URL["sum_size"][$key]),15);
