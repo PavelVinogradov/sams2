@@ -32,11 +32,23 @@ class DATE
     }
   function sdate()
     {
-       return("$this->syea-$this->smon-$this->sday");
+	$sday=$this->sday;
+	$smon=$this->smon;
+	if($this->sday<10)
+		$sday="0$this->sday";
+	if($this->smon<10)
+		$smon="0$this->smon";
+	return("$this->syea-$smon-$sday"); 
     }
   function edate()
     {
-       return("$this->eyea-$this->emon-$this->eday");
+	$eday=$this->eday;
+	$emon=$this->emon;
+	if($this->eday<10)
+		$eday="0$this->eday";
+	if($this->emon<10)
+		$emon="0$this->emon";
+	return("$this->eyea-$emon-$eday"); 
     }
 }
 
