@@ -528,10 +528,14 @@ function UpdateShablonForm()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" value=\"$id\">\n");
   print("<TD><SELECT NAME=\"trange\" ID=\"trange\" >\n");
   $num_rows=$DB->samsdb_query_value("SELECT timerange.*,sconfig_time.s_shablon_id FROM timerange LEFT JOIN sconfig_time ON timerange.s_trange_id=sconfig_time.s_trange_id");
+  $prev_trange_id=-1;
   while($row=$DB->samsdb_fetch_array())
 	{
-		if($row[s_shablon_id]!=$id)
+		if($row['s_shablon_id']!=$id && $row['s_trange_id']!=$prev_trange_id )
+		{
 			print("<OPTION VALUE=$row[s_trange_id]> $row[s_name] ($row[s_timestart] - $row[s_timeend] )");
+		}
+		$prev_trange_id=$row['s_trange_id'];
 	}
   print("</SELECT>\n");
   $DB->free_samsdb_query();
