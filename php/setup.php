@@ -309,7 +309,7 @@ s_autouser  int NOT NULL DEFAULT '0',
 s_autotpl int DEFAULT '0',
 s_autogrp int DEFAULT '0')";
 
-$pgdb[3] = "INSERT INTO proxy VALUES ('1', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
+$pgdb[3] = "INSERT INTO proxy VALUES ('0', 'Proxy server','0','http://your.ip.address/sams2/icon/classic/blank.gif', 'http://your.ip.address/sams2/messages', 'NONE', '0', 'ip', '/usr/bin','+', '0', '2', '2', '1', '1', '1','0', '0', 'real', '0', '0', 'workgroup', '0', 'NONE', '', '1024'
 , '1048576', '0.0.0.0', 'workgroup', 'Administrator', '0', 'Users', '0', '0', '0' ) ";
 $pgdb[4] = "CREATE TABLE passwd ( s_user varchar(25) PRIMARY KEY, s_pass varchar(60), s_access int default '0', s_autherrorc smallint default '0', s_autherrort varchar(16) default '0' )";
 $pgdb[5] = "INSERT INTO passwd VALUES('admin','00YfpO1MXDzqQ','2','0','' )";
@@ -317,7 +317,7 @@ $pgdb[6] = "INSERT INTO passwd VALUES('auditor','00MTbxknCTtNs','1','0','' )";
 $pgdb[7] = "CREATE TABLE shablon ( s_shablon_id SERIAL PRIMARY KEY, s_name varchar(100),
 s_auth varchar(4) default 'ip', 
 s_quote int default '100',s_period varchar(3) NOT NULL default 'M', s_clrdate date NOT NULL default '1980-01-01',
-s_alldenied smallint NOT NULL default '0', s_shablon_id2 int NULL)";
+s_alldenied smallint NOT NULL default '0', s_shablon_id2 int default '-1')";
 $pgdb[8] = "INSERT INTO shablon VALUES('0','Default','ip','100','M','1980-01-01','0', '-1')";
 $pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varchar(100), 
 s_days varchar(14), 
