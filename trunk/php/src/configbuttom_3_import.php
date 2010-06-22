@@ -63,11 +63,11 @@ function importurllists()
 	{
 		$row_name=iconv($this->sams1charset,$this->sams2charset,$row['name']);
 		echo "<TR><TD><B>$row_name</B><TD> added<BR>";
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "redirect (s_name,s_type) VALUES( '$row_name', '$row[type]')");
+		$this->DB->samsdb_query("INSERT INTO redirect (s_name,s_type) VALUES( '$row_name', '$row[type]')");
 	}
 	$this->oldDB->free_samsdb_query();
 	$i=0;
-        $QUERY="SELECT * FROM " .$DBNAME. "redirect ";
+        $QUERY="SELECT * FROM redirect ";
 	$this->urllistcount=$this->DB->samsdb_query_value($QUERY);
 	while($row=$this->DB->samsdb_fetch_array())
 	{
@@ -82,7 +82,7 @@ function importurllists()
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
 		$index=array_search($row['rname'], $this->urllistname);
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' )");
+			$this->DB->samsdb_query("INSERT INTO url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' )");
 	}
 	$this->oldDB->free_samsdb_query();
 	echo "</TABLE>\n";
@@ -124,7 +124,7 @@ function importgroups()
 			$GROUPNAME=$this->groupname[$this->groupcount];
 			echo "<TR><TD><B>$GROUPNAME</B>";
 
-			$QUERY="INSERT INTO " .$DBNAME. "sgroup ( s_name ) VALUES ('".$GROUPNAME."') ";
+			$QUERY="INSERT INTO sgroup ( s_name ) VALUES ('".$GROUPNAME."') ";
 			$this->DB->samsdb_query($QUERY);
 			echo "<TD>added";
 		}
@@ -161,7 +161,7 @@ function importtimerange()
 			echo "<TR><TD>".$row['days'];
 			echo "<TD>".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
 
-			$QUERY="INSERT INTO ".$DBNAME."timerange( s_name, s_days, s_timestart, s_timeend ) VALUES ( 'import_".$this->trangecount."', '".$row['days']."', '".$row['shour'].":".$row['smin'].":00','".$row['ehour'].":".$row['emin'].":00' )";
+			$QUERY="INSERT INTO timerange( s_name, s_days, s_timestart, s_timeend ) VALUES ( 'import_".$this->trangecount."', '".$row['days']."', '".$row['shour'].":".$row['smin'].":00','".$row['ehour'].":".$row['emin'].":00' )";
 			$this->DB->samsdb_query($QUERY);
 			echo "<TD>added";
 		$this->trangecount++;
@@ -200,27 +200,27 @@ function importshablons()
 			$clrdate=$row['clrdate'];
 
 		echo "<TR><TD><B>$row_nick</B>";
-		$QUERY="INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row_nick', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ";
+		$QUERY="INSERT INTO shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row_nick', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ";
 		$this->DB->samsdb_query($QUERY);
 
-		$QUERY="SELECT s_shablon_id FROM ".$DBNAME."shablon WHERE s_name='$row_nick'";
+		$QUERY="SELECT s_shablon_id FROM shablon WHERE s_name='$row_nick'";
 		$this->DB->samsdb_query_value($QUERY);
 	        while($row2=$this->DB->samsdb_fetch_array())
                      $new_shablon_id=$row2['s_shablon_id'];
 
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row_nick', '2', '$row[shablonpool]', '$row[userpool]' ) ");
+		$this->DB->samsdb_query("INSERT INTO delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row_nick', '2', '$row[shablonpool]', '$row[userpool]' ) ");
 
-		$this->DB->samsdb_query_value("SELECT s_pool_id FROM ".$DBNAME."delaypool WHERE s_name='$row_nick'");
+		$this->DB->samsdb_query_value("SELECT s_pool_id FROM delaypool WHERE s_name='$row_nick'");
 	        while($row2=$this->DB->samsdb_fetch_array())
-                     $new_pool_id=$row2['s_shablon_id'];
+                     $new_pool_id=$row2['s_pool_id'];
 
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
+		$this->DB->samsdb_query("INSERT INTO d_link_s ( s_pool_id, s_shablon_id, s_negative) VALUES ('$new_pool_id', '$new_shablon_id', '0') ");
 
-		$this->DB->samsdb_query_value("SELECT s_trange_id FROM ".$DBNAME."timerange WHERE s_days='".$row['days']."' AND s_timestart='".$row['shour'].":".$row['smin'].":00' AND s_timeend='".$row['ehour'].":".$row['emin'].":00'");
+		$this->DB->samsdb_query_value("SELECT s_trange_id FROM timerange WHERE s_days='".$row['days']."' AND s_timestart='".$row['shour'].":".$row['smin'].":00' AND s_timeend='".$row['ehour'].":".$row['emin'].":00'");
 	        while($row2=$this->DB->samsdb_fetch_array())
                      $new_trange_id=$row2['s_trange_id'];
 
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "sconfig_time ( s_shablon_id, s_trange_id) VALUES ('$new_shablon_id', '$new_trange_id') ");
+		$this->DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id) VALUES ('$new_shablon_id', '$new_trange_id') ");
 
 		echo "<TD>added";
 		$this->shabloncount++;
@@ -297,7 +297,7 @@ function importsamsusers()
 	$groupcount2=0;
 	for($i=0;$i<$this->groupcount;$i++)
 	{
-		$this->DB->samsdb_query_value("SELECT s_group_id FROM " .$DBNAME. "sgroup WHERE s_name='".$this->groupname[$i]."' ");
+		$this->DB->samsdb_query_value("SELECT s_group_id FROM sgroup WHERE s_name='".$this->groupname[$i]."' ");
 		while($row=$this->DB->samsdb_fetch_array())
 		{
 			$this->groupid2[$i]=$row['s_group_id'];
@@ -309,7 +309,7 @@ function importsamsusers()
 	$this->shabloncount2=0;
 	for($i=0;$i<$this->shabloncount;$i++)
 	{
-	$this->DB->samsdb_query_value("SELECT s_shablon_id FROM " .$DBNAME. "shablon WHERE s_name='".$this->shablonname[$i]."' ");
+	$this->DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='".$this->shablonname[$i]."' ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
 			$this->shablonid2[$i]=$row['s_shablon_id'];
@@ -352,7 +352,7 @@ function importsamsusers()
 		echo "<TR><TD><B>$row_nick</B><TD> $s_family $s_name <BR>";
 		$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
 		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "squiduser $str VALUES $values ");
+		$this->DB->samsdb_query("INSERT INTO squiduser $str VALUES $values ");
 		echo "<TD>added\n";
 		$count++;
 	}
@@ -466,7 +466,7 @@ $s_udscript=$row['udscript'];
 $s_adminaddr=$row['adminaddr'];
 
 
-$QUERY = "INSERT INTO " .$DBNAME. "proxy
+$QUERY = "INSERT INTO proxy
  (s_description, s_auth, s_redirector, s_defaultdomain, s_usedomain,
  s_separator, s_bigd, s_bigu, s_nameencode,
  s_redirect_to, s_denied_to, s_checkdns, s_realsize,
