@@ -72,7 +72,7 @@ $group=$PROXYConf->s_autogrp;
   if($separator==0)
     $separator="0+";
   if($separator==1)
-    $separator="0\\\\";
+    $separator="0\\\\\\\\";
   if($separator==2)
     $separator="0@";
 
@@ -92,6 +92,7 @@ $group=$PROXYConf->s_autogrp;
 	print("parent.tray.location.href=\"tray.php?show=exe&function=proxytray&filename=proxytray.php&id=$id\";\n");    
 	print("  parent.lframe.location.href=\"lframe.php\"; \n");
 	print("</SCRIPT> \n");
+
 }
 
 
