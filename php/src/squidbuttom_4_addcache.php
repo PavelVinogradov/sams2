@@ -92,7 +92,7 @@ $adminaddr="root@localhost";
   if($separator==0)
     $separator="0+";
   if($separator==1)
-    $separator="0\\\\";
+    $separator="0\\\\\\\\";
   if($separator==2)
     $separator="0@";
 

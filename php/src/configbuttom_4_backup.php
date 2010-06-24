@@ -34,7 +34,7 @@ function SaveBackUp()
 		for($tcount=0;$tcount<count($samsdb);$tcount++)
 		{
 			echo "export table: ".$samsdb[$tcount]."<BR>";
-			gzwrite($fout,"DELETE FROM ".$samsdb[$tcount].";\n");
+			gzwrite($fout,"TRUNCATE TABLE ".$samsdb[$tcount].";\n");
 			$QUERY="SELECT * FROM ".$samsdb[$tcount];
 			$num_rows=$DB->samsdb_query_value($QUERY);
 			while($row=$DB->samsdb_fetch_array())

@@ -33,7 +33,6 @@ function LoadBackUp()
 		}
 		$count++;
 	}
-
   }
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
