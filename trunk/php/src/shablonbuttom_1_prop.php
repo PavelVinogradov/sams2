@@ -31,6 +31,7 @@ function UpdateShablon()
   if(isset($_GET["clrmonth"])) $clrmonth=$_GET["clrmonth"];
   if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
   if(isset($_GET["alldenied"])) $alldenied=$_GET["alldenied"];
+  if(isset($_GET["delaypool"])) $delaypool=$_GET["delaypool"];
    
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
@@ -66,6 +67,9 @@ for($i=0;$i<$tc;$i++)
           }
      }
   $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_shablon_id2='$shablon2'  WHERE s_shablon_id='$sname' ");
+
+  $num_rows=$DB2->samsdb_query("UPDATE d_link_s SET s_pool_id='$delaypool' WHERE s_shablon_id='$sname' ");
+
 
   print("<SCRIPT>\n");
   print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$sname\"; \n");
@@ -463,6 +467,24 @@ function UpdateShablonForm()
   print("<INPUT TYPE=\"TEXT\" NAME=\"clrmonth\" SIZE=2 $ADISABLED VALUE=\"$MCLRVALUE\">:\n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"clrday\" SIZE=2 $ADISABLED VALUE=\"$DCLRVALUE\">\n");
 
+  print("<TR><TD><B>Delay pool </B>\n");
+  $QUERY="SELECT delaypool.s_pool_id as delaypoolid, delaypool.s_name as delaypoolname, shablon.s_shablon_id as shablonid  FROM delaypool LEFT JOIN d_link_s ON delaypool.s_pool_id=d_link_s.s_pool_id LEFT JOIN shablon ON d_link_s.s_shablon_id=shablon.s_shablon_id";
+  $num_rows=$DB->samsdb_query_value($QUERY);
+  print("<TD>\n");
+  print("<SELECT NAME=\"delaypool\">\n");
+
+  if($num_rows>0)
+	{
+		while($row=$DB->samsdb_fetch_array())
+		{
+			$DELAYPOOLSELECTED="";
+			if($id==$row['shablonid'])
+				$DELAYPOOLSELECTED="SELECTED";
+        		print("<OPTION VALUE=\"$row[delaypoolid]\" $DELAYPOOLSELECTED> $row[delaypoolname]\n");
+		}
+
+	}
+  $DB->free_samsdb_query();
 
 
   print("</TABLE>\n");
@@ -539,6 +561,7 @@ function UpdateShablonForm()
 	}
   print("</SELECT>\n");
   $DB->free_samsdb_query();
+
   print("<INPUT TYPE=\"SUBMIT\" value=\"Add\">\n");
   print("</TABLE>\n");
   print("</FORM>\n");
