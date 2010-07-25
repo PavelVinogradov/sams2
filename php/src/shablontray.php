@@ -92,6 +92,18 @@ function ShablonUsers()
     }
 
   print("<TR><TD><B>$shablonbuttom_1_prop_UpdateShablonForm_28 </B><TD><FONT COLOR=\"BLUE\">$second_template\n");
+
+  print("<TR><TD><B>Delay pool </B>\n");
+  $QUERY="SELECT d_link_s.s_pool_id as delaypoolid, d_link_s.s_shablon_id as shablonid,shablon.s_name, delaypool.s_name as delaypoolname FROM d_link_s LEFT JOIN shablon ON d_link_s.s_shablon_id=shablon.s_shablon_id LEFT JOIN delaypool ON d_link_s.s_pool_id=delaypool.s_pool_id WHERE shablon.s_shablon_id='$id'";
+  $num_rows=$DB->samsdb_query_value($QUERY);
+  if($num_rows>0)
+	{
+		$row=$DB->samsdb_fetch_array();
+		print("<TD><FONT COLOR=\"BLUE\">$row[delaypoolname]\n");
+
+	}
+  $DB->free_samsdb_query();
+
   print("<TR>\n");
   print("</TABLE>\n");
 
