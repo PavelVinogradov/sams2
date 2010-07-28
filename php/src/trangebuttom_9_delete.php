@@ -25,7 +25,7 @@ function DeleteTRange()
         //$row=$DB->samsdb_fetch_array();
         $DB->samsdb_query("DELETE FROM timerange WHERE s_trange_id='$id' ");
         //$result=mysql_query("DELETE FROM sconfig WHERE sname=\"$id\" ");
-        //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row['nick']","01");
+        //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
     }
   //$result=mysql_query("UPDATE squidusers SET shablon=\"default\" WHERE shablon=\"$id\" ");
 

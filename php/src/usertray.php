@@ -57,17 +57,17 @@ function UserForm()
   $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_user_id='$userid' ");
   $row=$DB->samsdb_fetch_array();
 
-  $num_rows2=$DB2->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='".$row['s_group_id']."' ");
+  $num_rows2=$DB2->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$row[s_group_id]' ");
   $row2=$DB2->samsdb_fetch_array();
 
-  PageTop("user.jpg","$usertray_UserForm_1 <FONT COLOR=\"BLUE\">$row['nick']</FONT>");
+  PageTop("user.jpg","$usertray_UserForm_1 <FONT COLOR=\"BLUE\">$row[nick]</FONT>");
 
   print("<TABLE>\n");
   print("<TR>\n");
   print("<TD>\n");
   print("<B>Nickname:\n");
   print("<TD>\n");
-  print("$row['s_nick']\n");
+  print("$row[s_nick]\n");
   if($SAMSConf->NTLMDOMAIN=="Y")
     {
       print("<TR>\n");
@@ -107,7 +107,7 @@ function UserForm()
   print("$row2[s_name]\n");
   $DB2->free_samsdb_query();
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 || strcasecmp($SAMSConf->domainusername,$row['nick'])==0 || $SAMSConf->groupauditor==$row['group'])
+  if($USERConf->ToWebInterfaceAccess("C")==1 || strcasecmp($SAMSConf->domainusername,$row[nick])==0 || $SAMSConf->groupauditor==$row[group])
     {
        print("<TR>\n");
        print("<TD>\n");
