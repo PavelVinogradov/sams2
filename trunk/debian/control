@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 Build-Depends: debhelper (>= 5), automake, autotools-dev, libtool, libmysqlclient15-dev, libpcre3-dev, quilt
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 Homepage: http://sams.nixdev.net
 Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
 Vcs-Browser: http://sams.nixdev.net/browser/trunk
@@ -36,7 +36,8 @@ Description: Squid Account Management System (SAMS) - Web interface
  manage user access to proxy server
 
 Package: sams2-doc
+Section: doc
 Architecture: all
-Depends: doxygen
+Depends: doxygen, debhelper (>=5)
 Description: Squid Account Management System 2 (SAMS) - Documentation
  The sams2-doc package includes the HTML versions of the "Using SAMS2".

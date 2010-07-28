@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:		sams
-# Required-Start:	$local_fs $network $time
+# Required-Start:	$local_fs $network $time $remote_fs
 # Required-Stop:	
 # Should-Start:		$named $mysql $squid
 # Should-Stop:
