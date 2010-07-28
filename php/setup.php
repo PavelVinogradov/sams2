@@ -434,7 +434,7 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
 	   }
 	echo "</TABLE>";
-	$sDB->samsdb_query("UPDATE passwd SET s_pass='$crpasswd' WHERE s_user='Admin' ");		
+	$sDB->samsdb_query("UPDATE passwd SET s_pass='$crpasswd' WHERE s_user='admin' ");		
         if($create=="on")
 		$sDB->samsdb_query("GRANT ALL ON $dbname.* TO $muser IDENTIFIED BY '$mpass' ");		
      }
