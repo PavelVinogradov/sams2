@@ -34,7 +34,7 @@ function DeleteShablon()
 			exit(0);
 		}
         //$result=mysql_query("DELETE FROM sconfig WHERE sname=\"$id\" ");
-        //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row['nick']","01");
+        //UpdateLog("$SAMSConf->adminname","$shablonbuttom_9_delete_DeleteShablon_1 $row[nick]","01");
     }
   //$result=mysql_query("UPDATE squidusers SET shablon=\"default\" WHERE shablon=\"$id\" ");
   print("OK<BR>");

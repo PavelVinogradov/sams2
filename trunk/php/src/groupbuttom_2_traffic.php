@@ -61,7 +61,7 @@ function GroupTrafficPeriodPDF()
   $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
   while($row=mysql_fetch_array($result))
        {
-         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row['user']\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row['domain']\"");
+         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
          $row_2=mysql_fetch_array($result_2);
          pdf_show_xy($pdfFile, $count+1, 50, $ycount);  
          pdf_show_xy($pdfFile, "$row[user]", 80, $ycount);  
