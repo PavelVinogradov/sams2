@@ -127,7 +127,7 @@ function UpdateUserForm()
        print("<TD>\n");
        print("<B>$userbuttom_1_prop_UpdateUserForm_3:");
        print("<TD>\n");
-       //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\">");
+       //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row['passwd']\">");
        print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$SquidUSERConf->s_passwd\">");
 //    }
 */

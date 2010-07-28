@@ -41,19 +41,16 @@ function importurllists()
 	$this->oldDB->samsdb_query_value("SELECT * FROM squidctrl.redirect ");
 	while($row=$this->oldDB->samsdb_fetch_array())
 		{
-		//echo "INSERT INTO redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')<BR>";
-		echo "URL list <B>$row[name]</B> added<BR>";
-		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "redirect (s_name,s_type) VALUES( '$row[name]', '$row[type]')");
+		echo "URL list <B>$row['name']</B> added<BR>";
+		$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "redirect (s_name,s_type) VALUES( '".$row['name']."', '".$row['type']."')");
 		}
 	$this->oldDB->free_samsdb_query();
 	$i=0;
 	$this->urllistcount=$this->DB->samsdb_query_value("SELECT * FROM " .$DBNAME. "redirect ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
-			//print("$i:  ".$row['s_name']."<BR>");
 			$this->urllistname[$i]=$row['s_name'];
 			$this->urllistid2[$i]=$row['s_redirect_id'];
-			//print("$row[nick]: $clrdate <BR>");
 			$i++;
 		}
 	$this->DB->free_samsdb_query();
@@ -81,21 +78,16 @@ function importgroups()
 	$DBNAME="";
 	if($SAMSConf->DB_ENGINE=="MySQL")
 		$DBNAME="samsdb.";
-echo "<BR>1 ";
 	if($SAMSConf->access!=2)     {       exit;     }
-echo "2 ";
 	$this->groupcount=0;
 	$this->oldDB->samsdb_query_value("SELECT * FROM sams ");
 	$row=$this->oldDB->samsdb_fetch_array();
 	
-echo "2 $row[auth] $row[lang]";
 	$this->oldDB->samsdb_query_value("SELECT * FROM groups ");
-echo "3 ";
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-echo "4 ";
-		$this->groupname[] ="$row[nick]";
-		$this->groupid[]="$row[name]";
+		$this->groupname[] = $row['nick'];
+		$this->groupid[] = $row['name'];
 
 		print($this->groupcount.":  ".$this->groupname[$this->groupcount]." ".$this->groupid[$this->groupcount]."<BR>");
 		if($row['nick']!="Administrators"&&$row['nick']!="Users")
@@ -124,18 +116,16 @@ function importshablons()
 	$this->oldDB->samsdb_query_value("SELECT * FROM shablons ");
 	while($row=$this->oldDB->samsdb_fetch_array())
 		{
-		$this->shablonname[] ="$row[nick]";
-		$this->shablonid[]="$row[name]";
-		//print("$this->shabloncount:  ".$this->shablonname[$this->shabloncount]." ".$this->shablonid[$this->shabloncount]."<BR>");
+		$this->shablonname[] = $row['nick'];
+		$this->shablonid[] = $row['name'];
 		if($row['clrdate']=="0000-00-00")
 			$clrdate="1980-01-01";
 		else
 			$clrdate=$row['clrdate'];
-		//print("$row[nick]: $clrdate <BR>");
 		if($row['name']!="default")
 			{
-			echo "template <B>$row[nick]</B> added<BR>";
-			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES ('$row[nick]', '$row[auth]', '$row[traffic]', '$row[period]', '$clrdate', '$row[alldenied]' ) ");
+			echo "template <B>".$row['nick']."</B> added<BR>";
+			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "shablon ( s_name, s_auth, s_quote, s_period, s_clrdate, s_alldenied) VALUES (".$row['nick'].", ".$row['auth'].", ".$row['traffic'].", ".$row['period'].", ".$clrdate.", ".$row['alldenied']." ) ");
 			}
 		$this->shabloncount++;
 		}
@@ -158,9 +148,7 @@ function importsamsusers()
 	$this->DB->samsdb_query_value("SELECT s_group_id FROM " .$DBNAME. "sgroup WHERE s_name='".$this->groupname[$i]."' ");
 	while($row=$this->DB->samsdb_fetch_array())
 		{
-//			print("$i:  ".$row['s_group_id']." ".$this->groupname[$i]."<BR>");
 			$this->groupid2[$i]=$row['s_group_id'];
-			//print("$row[nick]: $clrdate <BR>");
 			$this->groupcount2++;
 		}
   	$this->DB->free_samsdb_query();
@@ -201,10 +189,10 @@ function importsamsusers()
 				$s_ip = $row['ip'];
 			else
 				$s_ip = "....";
-			echo "add user: <B>$row[nick]</B> $s_family $s_name<BR>";
+			echo "add user: <B>$row['nick']</B> $s_family $s_name<BR>";
 			$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
-			$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row[nick]', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
-			echo "user <B>$row[nick]</B> $s_family $s_name added<BR>";
+			$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '".$row['nick']."', '$s_family', '$s_name', '$s_soname', '".$row['domain']."', '".$row["quotes"]."', '".$row['size']."', '".$row['hit']."', '".$row['enabled']."', '$s_ip', '".$row['passwd']."', '".$row['gauditor']."',  '".$row['autherrorc']."', '".$row['autherrort']."' )";
+			echo "user <B>$row['nick']</B> $s_family $s_name added<BR>";
 			$this->DB->samsdb_query("INSERT INTO " .$DBNAME. "squiduser $str VALUES $values ");
 			$count++;
 		}

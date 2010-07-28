@@ -18,7 +18,7 @@ function DeleteList()
   if(isset($_GET["id"])) $id=$_GET["id"];
 
   $num_rows=$DB->samsdb_query("DELETE FROM redirect WHERE s_redirect_id='$id' ");
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteList_1 $row[name]","02");
+//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteList_1 $row['name']","02");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -259,7 +259,7 @@ function AddURLFromList()
       $DB->samsdb_query("INSERT INTO url (s_url,s_redirect_id) VALUES ('$url', '$id') ");
 //      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE filename=\"$type\" ");
 //      $row=$DB->samsdb_fetch_array();
-//      UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row[name] $urllistfunction_AddURLFromList_2 $url","02");
+//      UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row['name'] $urllistfunction_AddURLFromList_2 $url","02");
     }
   
   print("<SCRIPT>\n");
@@ -288,7 +288,7 @@ function DeleteURLFromList()
   $num_rows=$DB->samsdb_query("DELETE FROM url WHERE s_url='$deletedurl' and s_redirect_id='$type' ");
 //  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
 //  $row=mysql_fetch_array($result);
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteURLFromList_1 $row[name] $urllistfunction_DeleteURLFromList_2 $url","02");
+//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteURLFromList_1 $row['name'] $urllistfunction_DeleteURLFromList_2 $url","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlistform&id=$type\";\n");
@@ -318,7 +318,7 @@ function EditURLFromList()
   $num_rows=$DB->samsdb_query("UPDATE url SET s_url='$url' WHERE s_url='$oldvalue' and s_redirect_id='$type' ");
 //  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
 //  $row=mysql_fetch_array($result);
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row[name] $urllistfunction_AddURLFromList_2 $url","02");
+//  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row['name'] $urllistfunction_AddURLFromList_2 $url","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlistform&id=$type\";\n");

@@ -193,7 +193,7 @@ function importshablons()
 	{
 		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
 		$this->shablonname[] =$row_nick;
-		$this->shablonid[]="$row[name]";
+		$this->shablonid[] = $row['name'];
 		if($row['clrdate']=="0000-00-00")
 			$clrdate="1980-01-01";
 		else
@@ -351,7 +351,7 @@ function importsamsusers()
 			$s_ip = "....";
 		echo "<TR><TD><B>$row_nick</B><TD> $s_family $s_name <BR>";
 		$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
-		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
+		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '".$row['domain']."', '".$row['quotes']."', '".$row['size']."', '".$row['hit']."', '".$row['enabled']."', '$s_ip', '".$row['passwd']."', '".$row['gauditor']."',  '".$row['autherrorc']."', '".$row['autherrort']."' )";
 		$this->DB->samsdb_query("INSERT INTO squiduser $str VALUES $values ");
 		echo "<TD>added\n";
 		$count++;
