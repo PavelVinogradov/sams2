@@ -147,8 +147,8 @@ function SysInfo()
    print("<TH width=\"33%\" >$configtray_3_FromCache\n");
    print("<TH width=\"33%\" >$configtray_3_Traffic\n");
 
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' ");
-  $row=$DB->samsdb_fetch_array();
+   $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' ");
+   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD >$configtray_3_M\n");
    $aaa=FormattedString("$row[0]");
@@ -159,7 +159,7 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date=\"$edate\" ");
+  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date='$edate' ");
   $row=$DB->samsdb_fetch_array();
    print("<TR>\n");
    print("<TD >$configtray_3_D\n");
