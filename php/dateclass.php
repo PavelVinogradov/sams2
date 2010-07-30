@@ -34,9 +34,9 @@ class DATE
     {
 	$sday=$this->sday;
 	$smon=$this->smon;
-	if($this->sday<10)
+	if($this->sday<10 && strlen($this->sday)<=1)
 		$sday="0$this->sday";
-	if($this->smon<10)
+	if($this->smon<10 && strlen($this->smon)<=1)
 		$smon="0$this->smon";
 	return("$this->syea-$smon-$sday"); 
     }
@@ -44,9 +44,9 @@ class DATE
     {
 	$eday=$this->eday;
 	$emon=$this->emon;
-	if($this->eday<10)
+	if($this->eday<10 && strlen($this->eday)<=1)
 		$eday="0$this->eday";
-	if($this->emon<10)
+	if($this->emon<10 && strlen($this->emon)<=1)
 		$emon="0$this->emon";
 	return("$this->eyea-$emon-$eday"); 
     }
