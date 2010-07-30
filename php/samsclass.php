@@ -225,10 +225,15 @@ class SAMSCONFIG extends MAINCONF
       $DB->samsdb_query("SELECT COUNT(*) FROM proxy ");
       $row=$DB->samsdb_fetch_array();
       $this->PROXYCOUNT=$row[0];
-      if($row[0]==0)
-        $this->PROXYCOUNT = 1;
-        $this->SWITCHTO=1;
-//      $DB->samsdb_query("USE $this->SAMSDB");
+      if($row[0]==0) 
+	$this->PROXYCOUNT = 1;
+
+      $this->SWITCHTO=1;
+
+      //TODO: This code don't work with multiple proxy
+      $DB->samsdb_query("SELECT * from proxy");
+      $row = $DB->samsdb_fetch_array();
+      $this->realtraffic = $row['s_realsize'];
     }
 
 
