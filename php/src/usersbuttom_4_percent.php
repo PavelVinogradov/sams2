@@ -206,7 +206,7 @@ function UsersChart()
 		print("<TR>");
 		LTableCell($i,8);
 		if($sort=="users")
-			LTableCell("<A HREF=\"http://localhost/sams2/tray.php?show=exe&filename=usertray.php&function=usertray&auth=adld&id=".$userid[$i]."\" TARGET=\"tray\" >".$user[$i]."</A>",16);
+			LTableCell("<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&auth=adld&id=".$userid[$i]."\" TARGET=\"tray\" >".$user[$i]."</A>",16);
 		else
 			LTableCell("<A HREF=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=".$userid[$i]."\" TARGET=\"tray\" >".$user[$i]."</A>",16);
 
