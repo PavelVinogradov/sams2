@@ -66,7 +66,13 @@ class PieGraph
 	*/
 	function hex2rgb($hex)
 	{
-		$color = ereg_replace('^#','',$hex);
+		#ereg_replace was deprecated in PHP 5.3 and recommend to replace with preg_replace
+		#Bugs: 
+		#	http://sams.nixdev.net/ticket/496
+		#	http://sams.nixdev.net/ticket/498
+		#$color = ereg_replace('^#','',$hex);
+		$color = preg_replace('{^#}','',$hex);
+
 		$rgb = array(
 					 (16 * hexdec(substr($color,0,1)) + hexdec(substr($color,1,1)) ),
 		             (16 * hexdec(substr($color,2,1)) + hexdec(substr($color,3,1)) ),
