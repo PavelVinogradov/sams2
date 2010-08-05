@@ -158,12 +158,20 @@ function importtimerange()
 	$this->trangecount=0;
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-			echo "<TR><TD>".$row['days'];
-			echo "<TD>".$row['shour'].".".$row['smin'].":".$row['ehour'].".".$row['emin'];
+		$ehour=$row['ehour'];
+		$emin=$row['emin'];
+		if( $ehour=="24" && $emin=="00" )
+		{
+			$ehour=23;
+			$emin=59;
+		}
 
-			$QUERY="INSERT INTO timerange( s_name, s_days, s_timestart, s_timeend ) VALUES ( 'import_".$this->trangecount."', '".$row['days']."', '".$row['shour'].":".$row['smin'].":00','".$row['ehour'].":".$row['emin'].":00' )";
-			$this->DB->samsdb_query($QUERY);
-			echo "<TD>added";
+		echo "<TR><TD>".$row['days'];
+		echo "<TD>".$row['shour'].".".$row['smin'].":".$ehour.".".$emin;
+
+		$QUERY="INSERT INTO timerange( s_name, s_days, s_timestart, s_timeend ) VALUES ( 'import_".$this->trangecount."', '".$row['days']."', '".$row['shour'].":".$row['smin'].":00','".$ehour.":".$emin.":00' )";
+		$this->DB->samsdb_query($QUERY);
+		echo "<TD>added";
 		$this->trangecount++;
 	}
   $this->oldDB->free_samsdb_query();
