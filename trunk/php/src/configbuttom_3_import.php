@@ -208,7 +208,7 @@ function importshablons()
 	        while($row2=$this->DB->samsdb_fetch_array())
                      $new_shablon_id=$row2['s_shablon_id'];
 
-		$this->DB->samsdb_query("INSERT INTO delaypool ( s_name, s_class, s_agg1, s_ind1) VALUES ('$row_nick', '2', '$row[shablonpool]', '$row[userpool]' ) ");
+		$this->DB->samsdb_query("INSERT INTO delaypool ( s_name, s_class, s_agg1, s_agg2, s_ind1, s_ind2) VALUES ('$row_nick', '2', '$row[shablonpool]', '$row[shablonpool]',  '$row[userpool]', '$row[userpool]') ");
 
 		$this->DB->samsdb_query_value("SELECT s_pool_id FROM delaypool WHERE s_name='$row_nick'");
 	        while($row2=$this->DB->samsdb_fetch_array())
