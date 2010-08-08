@@ -209,7 +209,7 @@ rm -rf "${RPM_BUILD_ROOT}"
 %files
 %defattr(-,root,root,-)
 %{_prefix}/bin/samsparser
-%{_prefix}/bin/samsdaemon
+%{_prefix}/bin/sams2daemon
 %{_prefix}/bin/samsredir
 %{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2

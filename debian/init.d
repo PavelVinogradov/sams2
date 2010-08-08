@@ -10,7 +10,7 @@
 # Default-Stop:		0 1 6
 # Short-Description:	Starting sams daemon
 # Description:		Squid Account Management System (SAMS)
-#  Starting sams management daemon - samsdaemon
+#  Starting sams management daemon - sams2daemon
 ### END INIT INFO
 #
 # Author:	Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
@@ -19,9 +19,9 @@
 
 SAMSPATH=`cat /etc/sams2.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
-DAEMON=$SAMSPATH/bin/samsdaemon
+DAEMON=$SAMSPATH/bin/sams2daemon
 LOCKFILE=/var/lock/samsd
-PIDFILE=/var/run/samsdaemon.pid
+PIDFILE=/var/run/sams2daemon.pid
 RETVAL=0
 SAMS_ENABLE=false
 

@@ -3,7 +3,7 @@ BUILT_SOURCES =
 CLEANFILES =
 DISTCLEANFILES = Makefile.in config.h.in
 
-bin_PROGRAMS = samsparser samsdaemon samsredir
+bin_PROGRAMS = samsparser sams2daemon samsredir
 
 # set the include path found by configure
 INCLUDES = $(all_includes)
@@ -17,7 +17,7 @@ samsparser_SOURCES = \
 	dbconn.cpp dbquery.cpp mysqlquery.cpp templatelist.cpp template.cpp grouplist.cpp \
 	pgconn.cpp pgquery.cpp timerangelist.cpp timerange.cpp urlgrouplist.cpp urlgroup.cpp \
 	dns.cpp userlist.cpp samsldap.cpp
-samsdaemon_SOURCES = \
+sams2daemon_SOURCES = \
 	datefilter.cpp debug.cpp filter.cpp ip.cpp \
 	localnetworks.cpp logger.cpp net.cpp odbcconn.cpp odbcquery.cpp processmanager.cpp \
 	proxy.cpp samsconfig.cpp samsuser.cpp samsuserlist.cpp tools.cpp url.cpp \
