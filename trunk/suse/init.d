@@ -117,7 +117,7 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 # Note: Special treatment of stop for LSB conformance
-SAMS2_BIN=__PREFIX/samsdaemon
+SAMS2_BIN=__PREFIX/sams2daemon
 test -x $SAMS2_BIN || { echo "$SAMS2_BIN not installed"; 
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 5; fi; }

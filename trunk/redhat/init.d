@@ -25,7 +25,7 @@ OPTIONS=${OPTIONS:-"-l syslog"}
 PIDFILE_TIMEOUT=${PIDFILE_TIMEOUT:-5}
 SHUTDOWN_TIMEOUT=${SHUTDOWN_TIMEOUT:-60}
 
-DAEMON=__PREFIX/samsdaemon
+DAEMON=__PREFIX/sams2daemon
 
 prog=sams2
 
@@ -40,7 +40,7 @@ start () {
 	if [ $RETVAL -eq 0 ]; then
 		timeout=0;
 		while : ; do
-			[ ! -f /var/run/samsdaemon.pid ] || break
+			[ ! -f /var/run/sams2daemon.pid ] || break
 			if [ $timeout -ge $PIDFILE_TIMEOUT ]; then
 				RETVAL=1
 				break
@@ -49,7 +49,7 @@ start () {
 			timeout=$((timeout+1))
 		done
 	fi
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/samsdaemon
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/sams2daemon
 	[ $RETVAL -eq 0 ] && echo_success
 	[ $RETVAL -ne 0 ] && echo_failure
 	echo
@@ -62,10 +62,10 @@ stop () {
 	$DAEMON --stop
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ] ; then
-		rm -f /var/lock/subsys/samsdaemon
+		rm -f /var/lock/subsys/sams2daemon
 		timeout=0
 		while : ; do
-			[ -f /var/run/samsdaemon.pid ] || break
+			[ -f /var/run/sams2daemon.pid ] || break
 			if [ $timeout -ge $SHUTDOWN_TIMEOUT ]; then
 				echo_failure
 				echo
@@ -99,7 +99,7 @@ case $1 in
 		restart
 	;;
 	condrestart)
-		[ -f /var/lock/subsys/samsdaemon ] && restart || :
+		[ -f /var/lock/subsys/sams2daemon ] && restart || :
 	;;	
 	reload)
 		echo -n $"Reloading $prog: "
