@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Синхронизация с доменом Active Directory</TITLE>
+  <META NAME="GENERATOR" CONTENT="Dmitry Chemerik">
+  <META NAME="AUTHOR" CONTENT="Dmitry Chemerik">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">Синхронизация SAMS </TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="syncwithldap.html">Авторизация в домене LDAP</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="syncwithntlm.html">Авторизация в домене Windows (NTLM)</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+
+<H2><A NAME="debug">7.2 Синхронизация с доменом Active Directory</A></H2>
+<P>
+SAMS позволяет синхронизировать пользователей групп SAMS с пользователями групп домена Active Directory. Синхронизация пользователей производится для групп, импортированных из AD.
+</P>
+
+<P>
+<B>Настройка подключения WEB интерфейса SAMS к Active Directory</B> 
+</P>
+
+<CENTER>
+<IMG SRC="images/configadaccess.jpg" >
+<BR>Рис 7.2.1. Настройка подключения WEB интерфейса SAMS к Active Directory
+</CENTER>
+<P>
+Параметры, задаваемые для настройки доступа к серверу Active Dierctory:
+</P>
+<P>
+  <TABLE WIDTH="90%" BORDER="1" CELLPADDING="0" CELLSPACING="0" ALIGN=CENTER>
+	<TR>
+	<TD>Active Directory server
+	<TD>IP адрес контроллера домена AD
+	<TR>
+	<TD>AD domain
+	<TD>домен AD
+	<TR>
+	<TD>AD administrator
+	<TD>пользователь, от имени которого WEB интерфейс SAMS будет подключаться к домены AD	
+	<TR>
+	<TD>AD administrator password
+	<TD>пароль
+	<TR>
+	<TD>AD user group
+	<TD>Группа AD, которая содержит пользователей
+</TABLE>
+  </P>
+<P>
+После сохранения параметров можно протестировать подключение к домену AD нажав кнопку "test connections to Active Directory"
+</P>
+
+<P>
+<B>Импорт пользователей групп Active Directory в SAMS</B> 
+</P>
+<P>
+Импорт производится из WEB интерфейса SAMS.
+</P>
+<CENTER>
+<IMG SRC="images/importfromad.jpg" >
+<BR>Рис 7.2.2. Импорт групп пользователей из домена Active Directory 
+</CENTER>
+<P>
+При импорте создаются группы и шаблоны SAMS c названиями групп AD. 
+</P>
+<P>
+В форме импорта пользователей из домена AD задаются параметры:
+<LI>Объем трафика пользователя шаблона по умолчанию
+<LI>Скорость канала для всего шаблона
+<LI>Скорость канала для отдельного пользователя
+<LI>Период лимита трафика 
+<BR>Далее эти параметры будут присвоены шаблонам пользователей. 
+</P>
+
+<P>
+<B>Вывод группы SAMS из синхронизации с доменом AD</B>
+</P>
+Если необходимо вывести группу SAMS из синхронизации с доменом AD, необходимо выбрать 
+группы из списка и нажать кнопку "Удалить выбранные группы из синхронизации с доменом AD"
+
+<P>
+<B>Вывод группы SAMS из синхронизации с доменом AD</B>
+</P>
+Если необходимо вернуть группу SAMS в синхронизацию с доменом AD, необходимо выбрать 
+группу из списка групп SAMS, и нажать кнопку "Добавить выбранные группы в синхронизацию с доменом AD"
+
+<P>
+<B>Синхронизация пользователей с доменом AD</B>
+</P>
+Синхронизация производится скриптом syncfromad. 
+Скрипт вызывается из cron:
+<BR> 
+*/15 * * * * root cd /usr/local/share/sams2; php bin/syncfromad
+</P>
+
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="syncwithldap.html">Авторизация в домене LDAP</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="syncwithntlm.html">Авторизация в домене Windows (NTLM)</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,388 @@
+<?php
+/*  
+ * SAMS (Squid Account Management System)
+ * Author: Dmitry Chemerik chemerik@mail.ru
+ * (see the file 'main.php' for license details)
+ */
+
+
+/*
+ * Функция ReturnUsersFromDBGroup($groupname)
+ * возвращает массив пользователей группы $groupname
+ */
+
+function ReturnUsersFromDBGroup($groupname)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $count=0;
+  $result=$DB->samsdb_query_value("SELECT squiduser.s_nick, sgroup.s_group_id, sgroup.s_name FROM squiduser LEFT JOIN sgroup ON squiduser.s_group_id=sgroup.s_group_id WHERE sgroup.s_name = '$groupname'");
+  while($row=$DB->samsdb_fetch_array())
+  {
+	$dbusers[$count++]=$row['s_nick'];
+  }
+
+  return($dbusers);
+}
+
+
+/*
+ * Функция ReturnUsersFromLDAPGroup($groupname)
+ * возвращает массив пользователей LDAP группы $groupname
+ */
+function ReturnUsersFromLDAPGroup($groupname)
+{
+  global $SAMSConf;
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $adusers = array();
+  $count=0;
+
+	$DB=new SAMSDB();
+
+	$adldserver=GetAuthParameter("ldap","ldapserver");
+	$basedn=GetAuthParameter("ldap","basedn");
+	$adadmin=GetAuthParameter("ldap","adadmin");
+	$adadminpasswd=GetAuthParameter("ldap","adadminpasswd");
+	$usersrdn=GetAuthParameter("ldap","usersrdn");
+	$usersfilter=GetAuthParameter("ldap","usersfilter");
+	$usernameattr=GetAuthParameter("ldap","usernameattr");
+	$groupsrdn=GetAuthParameter("ldap","groupsrdn");
+	$groupsfilter=GetAuthParameter("ldap","groupsfilter");
+
+	$samsldap = new sams_ldap($adldserver, $basedn, $usersrdn, $usersfilter, $usernameattr, $groupsrdn, $groupsfilter, $adadmin, $adadminpasswd);
+	$b=$samsldap->GetUsersWithSecondaryGroupID($groupname);
+	for($j=0;$j<$b['userscount'];$j++)
+	{
+		$adusers[$j]=$b['uid'][$j];
+	}
+
+  return($adusers);
+}
+
+/*
+ * Функция SearchUserFromDBGroup($username)
+ * возвращает название группы SAMS, синхронизируемой с группами AD, 
+ * в которой найден пользователь $username. 
+ * если пользователь не найден, возвращается NULL
+ */
+function SearchUserFromDBGroup($username)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+	$count=0;
+
+	$QUERY="SELECT sgroup.s_name as groupname FROM auth_param LEFT JOIN sgroup ON auth_param.s_value=sgroup.s_name LEFT JOIN squiduser ON sgroup.s_group_id=squiduser.s_group_id WHERE s_auth='ldap' AND s_param='ldapgroup' AND squiduser.s_nick='$username'";
+
+	$result=$DB->samsdb_query_value($QUERY);
+	if($result>0)
+	{
+		$row=$DB->samsdb_fetch_array();
+		return($row['groupname']);
+	}
+  return(NULL);
+}
+
+/*
+ * Функция MoveUserToDBGroup($username, $groupname)
+ * перемещает пользователя $username в группу $groupname
+ */
+function MoveUserToDBGroup($username, $groupname)
+{
+  global $SAMSConf;
+  global $DEBUG;
+  $DB=new SAMSDB();
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $QUERY="SELECT sgroup.s_group_id FROM sgroup WHERE s_name='$groupname'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $groupid=$row['s_group_id'];
+
+  $QUERY="SELECT shablon.s_shablon_id FROM shablon WHERE s_name='$groupname'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $shablonid=$row['s_shablon_id'];
+
+  $QUERY="UPDATE squiduser SET s_group_id='$groupid',s_shablon_id='$shablonid' WHERE s_nick='$username' ";
+  $result=$DB->samsdb_query_value($QUERY);
+  if($DEBUG!=0)
+	echo "Move user $username ToDBGroup $groupname ".$row['s_group_id']."\n";
+
+  return(NULL);
+}
+
+/*
+ * Функция AddUserToDBGroup($username, $groupname)
+ * добавляет нового пользователя $username в группу $groupname
+ */
+function AddUserToDBGroup($username, $groupname)
+{
+  require_once("src/adldap.php");
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $QUERY="SELECT sgroup.s_group_id FROM sgroup WHERE s_name='$groupname'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $groupid=$row['s_group_id'];
+
+  $QUERY="SELECT shablon.s_shablon_id,shablon.s_quote FROM shablon WHERE s_name='$groupname'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $shablonid=$row['s_shablon_id'];
+  $userquote=$row['s_quote'];
+  if ( $userquote == "" )
+  {
+	$userquote=0;
+  }
+  if ( $enabled == "" )
+  {
+	$enabled=1;
+  }
+	if($DEBUG!=0)
+		echo " $user $username $name[0] ".$name[$cname-1]." $cname\n";
+	$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$username', '$userdomain', '', '', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '', '$userip', '$pass', '0', '0', '0') ";
+	$DB->samsdb_query($QUERY);
+
+  return(NULL);
+}
+
+
+
+
+/*
+ * Функция DeleteUserToDBGroup($username, $groupname)
+ * удаляет пользователя $username из группы $groupname
+ */
+function DeleteUserToDBGroup($username, $groupname)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $QUERY="SELECT sgroup.s_group_id FROM sgroup WHERE s_name='$groupname'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $groupid=$row['s_group_id'];
+
+  $QUERY="DELETE FROM squiduser WHERE s_nick='$username' AND s_group_id='$groupid' ";
+  $result=$DB->samsdb_query($QUERY);
+
+  return(NULL);
+}
+
+/*
+ * Функция SearchUserFromLDAPGroups($username)
+ * возвращает название группы AD
+ * в которой найден пользователь $username. 
+ * если пользователь не найден, возвращается NULL
+ */
+function SearchUserFromLDAPGroups($username)
+{
+  global $SAMSConf;
+  global $DEBUG;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+	$count=0;
+
+	$QUERY="SELECT s_value FROM auth_param WHERE s_auth='ldap' AND s_param='ldapgroup'";
+	$result=$DB->samsdb_query_value($QUERY);
+
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$adgusers=ReturnUsersFromLDAPGroup($row['s_value']);
+		$adguserscount=count($adgusers);
+
+		for($i=0; $i<$adguserscount; $i++)
+		{
+			if($adgusers[$i]==$username)
+			{
+				return($row['s_value']);
+			}
+		}
+	}
+  return(NULL);
+}
+
+
+  include("./dbclass.php");
+  include("./samsclass.php");
+  include("./tools.php");
+  include("src/ldap.php");
+
+  global $DATE;
+  global $SAMSConf;
+  global $USERConf;
+  global $DEBUG;
+
+  $HELP=0;
+  if ($argc != 1)
+  {
+	for($i=1; $i<$argc; $i++)
+	{
+		if (in_array($argv[$i], array('--help', '-h', '-?')))
+		{
+			echo "NAME\n";
+			echo "    samssyncwithad - synchronize with ActiveDirectory users\n\n";
+			echo "SYNOPSIS\n";
+			echo "    samssyncwithad [command]\n\n";
+			echo "COMMANDS\n";
+			echo "    -h, --help\n";
+			echo "                Show this help screen and exit.\n";
+			echo "    -d, --debug\n";
+			echo "                 Produce lots of debugging information.\n";
+			exit();
+		}
+		if (in_array($argv[$i], array('--debug', '-d')))
+		{
+			$DEBUG=1;
+		}
+	}
+  }
+
+
+
+	$SAMSConf=new SAMSCONFIG();
+	$DB=new SAMSDB();
+
+	// Получаем список групп AD, синхронизируемых с группами SAMS
+	$result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='ldap' AND s_param='ldapgroup'");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		if($DEBUG!=0)
+			echo "SAMS Group: ".$row['s_value']."\n";
+
+		// Получаем массив пользователей группы LDAP
+		$adgusers=ReturnUsersFromLDAPGroup($row['s_value']);
+		$adguserscount=count($adgusers);
+		if($DEBUG!=0)
+		{
+			echo "AD Group:  $adguserscount users\n";
+			for($i=0; $i<$adguserscount; $i++)
+			{
+				echo "    $adgusers[$i]\n";
+			}
+		}
+		// Получаем массив пользователей группы SAMS
+		$dbgusers=ReturnUsersFromDBGroup($row['s_value']);
+		$dbguserscount=count($dbgusers);
+		if($DEBUG!=0)
+		{
+			echo "\n";
+			echo "SAMS DB: $dbguserscount users\n";
+			for($i=0; $i<$dbguserscount; $i++)
+			{
+				echo "    $dbgusers[$i]\n";
+			}
+		}
+		// получаем список пользователей, которые есть в группе AD,
+		// но отсутствуют в группе SAMS
+		$newuserinadgroup=array_diff ( $adgusers, $dbgusers );
+		// получаем список пользователей, которые есть в группе SAMS,
+		// но отсутствуют в группе AD
+		$olduserindbgroup=array_diff ( $dbgusers, $adgusers );
+		rsort($newuserinadgroup);
+		rsort($olduserindbgroup);
+
+		if($DEBUG!=0)
+		{
+			echo "\n";
+			echo "new users from AD: ".count($newuserinadgroup)."\n";
+			echo "    users from DB: ".count($olduserindbgroup)."\n";
+			echo "\n";
+		}
+
+		// если найдены новые пользователи в группе AD
+		if(count($newuserinadgroup)>0)
+		{
+			for($i=0; $i<count($newuserinadgroup); $i++)
+			{
+				if($DEBUG!=0)
+					echo "$i: $newuserinadgroup[$i]\n";
+				// Ищем пользователя в группах SAMS 
+				// (пользователя перевели в другую группу AD)
+				$groupname=SearchUserFromDBGroup($newuserinadgroup[$i]);
+
+				if($groupname!=NULL)
+				{
+					if($DEBUG!=0)
+						echo "user $newuserinadgroup[$i] found in the group $groupname\n";
+					// Если пользователь найден в другой группе SAMS, перемещаем
+					MoveUserToDBGroup($newuserinadgroup[$i], $row['s_value']);
+				}
+				else
+				{
+					// Если пользователь не найден в другой группе SAMS
+					// добавляем пользователя
+					AddUserToDBGroup($newuserinadgroup[$i], $row['s_value']);
+					if($DEBUG!=0)
+						echo "new user ".$newuserinadgroup[$i]." in the group ".$row['s_value']."\n";					
+				}
+			}
+		}
+
+		// если найдены пользователи в группе SAMS, отсутствующие в группе AD
+		if(count($olduserindbgroup)>0)
+		{
+			for($i=0; $i<count($olduserindbgroup); $i++)
+			{
+				if($DEBUG!=0)
+					echo "\n";
+				// Ищем пользователя в группах AD, с которыми синхронизируются
+				// пользователи SAMS
+				$groupname=SearchUserFromLDAPGroups($olduserindbgroup[$i]);
+
+				if($groupname!=NULL)
+				{
+					// Если пользователь найден в другой группе, перемещаем
+					MoveUserToDBGroup($olduserindbgroup[$i], $groupname);
+					if($DEBUG!=0)
+						echo "user $olduserindbgroup[$i] found in the group $groupname. Move. \n";
+				}
+				else
+				{
+					// Если пользователь не найден, удаляем
+					DeleteUserToDBGroup($olduserindbgroup[$i], $row['s_value']);
+					if($DEBUG!=0)
+						echo "user $olduserindbgroup[$i] not found in DB. delete\n";
+				}
+			}
+		}
+
+	}
+
+
+
+?>

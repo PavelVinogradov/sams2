@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - SQUID</TITLE>
+  <META NAME="GENERATOR" CONTENT="Dmitry Chemerik">
+  <META NAME="AUTHOR" CONTENT="Dmitry Chemerik">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Администрирование</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="usergroups.html">Группы пользователей</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="notes.html">Особенности</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H2><A NAME="configure.squid">6. Управление несколькими прокси серверами SQUID</H2>
+<P>
+SAMS может управлять несколькими прокси серверами SQUID. Чтобы SAMS мог управлять прокси сервером SQUID, 
+его необходимо зарегистрировать в веб интерфейсе SAMS.
+</P>
+<H3>Регистрация прокси сервера SQUID в WEB интерфейсе SAMS</H3>
+
+<H3>Настройка свойств прокси сервера SQUID</H3>
+<P>
+  <TABLE WIDTH="90%" BORDER="1" CELLPADDING="0" CELLSPACING="0" ALIGN=CENTER>
+  <TR>
+    <TD>Считать трафик</TD>
+    <TD>Тип трафика, для расчетов ограничений. Реальный (полученный из Internet) или полный ()</TD>
+  </TR>
+  <TR>
+    <TD><A NAME="proxy.dns">Преобразовывать DNS имена</A></TD>
+    <TD>При необходимости, использовать DNS для преобразования имен.</TD>
+  </TR>
+  <TR>
+    <TD>Уровень детализации записей в журнале</TD>
+    <TD>Уровень отладочных сообщений в диапазоне от 0 до 9.</TD>
+  </TR>
+  <TR>
+    <TD>Домен по умолчанию</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Выберите скрипт, используемый для отправки сообщения при отключении пользователей</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Введите адрес администратора, на который следует посылать сообщения</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Способ аутентификации пользователя</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Проверять наличие команды на реконфигурирование squid каждые </TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Обрабатывать логи SQUID</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Автоматически очищать счетчики трафика пользователей</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Путь к wbinfo</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Файл перенаправления запроса</TD>
+    <TD><A NAME="proxy.redir">Путь к файлу, используемому для обрезания баннеров. Чаще всего это пустая картинка в 1 пиксель.</A></TD>
+  </TR>
+  <TR>
+    <TD>Путь к каталогу, где лежат файлы запрета запроса</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Редиректор</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Включить ограничение скорости доступа пользователей (delaypool)</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Сохранять данные о трафике в базе за последние N месяцев</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Автоматически создавать новых пользователей</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Шаблон у создаваемого пользователя</TD>
+    <TD><BR></TD>
+  </TR>
+  <TR>
+    <TD>Группа у создаваемого пользователя</TD>
+    <TD><BR></TD>
+  </TR>
+  </TABLE>
+</P>
+
+<H3>Команда на реконфигурирование прокси сервера SQUID</H3>
+
+<H3>Выключение прокси сервера SQUID</H3>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="usergroups.html">Группы пользователей</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="notes.html">Особенности</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

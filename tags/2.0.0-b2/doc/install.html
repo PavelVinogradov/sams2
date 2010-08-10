@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Установка</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Установка</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1><A NAME="install">3 Установка</A></H1>
+
+<H2><A NAME="download">3.1 Загрузка дистрибутива</A></H2>
+
+<P>Для загрузки дистрибутива зайдите на
+<A HREF="http://sams.nixdev.net">http://sams.nixdev.net</A> и выберите наиболее
+предпочтительный вариант. Если дистрибутив представлен в виде собранного пакета
+для вашей операционной системы, то установите его, используя соответствующий
+менеджер пакетов, и переходите к этапу <A HREF="configure.html#configure">настройки</A>.
+Если же вы выбрали установку из исходных кодов, то пора переходить к этапу
+<A HREF="#compilation">сборки</A>.
+</P>
+
+<H2><A NAME="compilation">3.2 Компиляция исходных текстов</A></H2>
+
+<OL>
+  <LI>
+    <P>У вас должен быть файл sams2-<i>VERSION</i>.tar.gz. Распакуйте его с помощью команды</P>
+    <P><PRE>$ tar xzf sams2-<i>VERSION</i>.tar.gz</PRE></P>
+  </LI>
+
+  <LI>
+    <P>Перейдите в полученную директорию</P>
+    <P><PRE>$ cd sams2-<i>VERSION</i></PRE></P>
+  </LI>
+
+  <LI>
+    <P>На этом этапе вам необходимо создать скрипт автоматической
+    конфигурации для компилирования. Используйте команду</P>
+    <P><PRE>$ make -f Makefile.cvs</PRE></P>
+    <P>(на некоторых операционных системах используется gmake)</P>
+  </LI>
+
+  <LI>
+    <P>Далее запустите скрипт автоматической конфигурации</P>
+    <P><PRE>$ sh ./configure</PRE></P>
+    <P>В этом случае скрипт попробует найти все необходимые зависимости самостоятельно
+      и в дальнейшем будет произведена установка в /usr/local. Если вы хотите устанавливать
+      SAMS в другую директорию, или <A HREF="requirements.html#develpackages">необходимые пакеты</A>
+      находятся не в стандартном месте, или конфигурация по умолчанию вас не устраивает,
+      то воспользуйтесь опциями configure, список которых можно получить, выполнив команду
+    </P>
+    <P><PRE>$ sh ./configure --help</PRE></P>
+    <P>
+      По окончанию конфигурирования обратите внимание на используемые библиотеки (API).
+      Из трех возможных вариантов баз данных, должен быть сконфигурирован хотя-бы один,
+      иначе SAMS работать не сможет. Соответственно, если библиотека подключения к какой-либо
+      БД не сконфигурирована, то в дальнейшем вы не сможете использовать эту БД в качестве
+      хранилища данных SAMS.
+    </P>
+    <P>
+      Также следует обратить внимание на pcre и pcrecpp. Если нет ни того, ни другого,
+      то использование регулярных выражений будет недоступно, но другие функции будут работать.
+      Если же установлены обе библиотеки, то по умолчанию будет использоваться pcrecpp.
+    </P>
+    <P>
+      По умолчанию, документация для исходных текстов не компилируется. Для компиляции
+      и последующей установки этой документации необходимо иметь установленный пакет doxygen
+      и добавить опцию --with-srcdocs.
+    </P>
+    <P><PRE>$ sh ./configure --with-srcdocs</PRE></P>
+    <P>
+    <SPAN STYLE='color:red'>
+      Запомните пути, которые выводятся в самом конце, они вам понадобятся в дальнейшем,
+      на этапе <A HREF="#systemconfig">системных настроек</A>.
+    </SPAN>
+    </P>
+  </LI>
+
+  <LI>
+    <P>После успешного конфигурирования необходимо запустить процесс компиляции. Выполните команду</P>
+    <P><PRE>$ make</PRE></P>
+    <P>(Не забывайте что на некоторых операционных системах используется gmake)</P>
+    <P>Если во время сборки появляются ошибки, проверьте наличие
+       <A HREF="requirements.html#develpackages">необходимых пакетов</A>.
+    </P>
+  </LI>
+</OL>
+
+
+<H2><A NAME="makeinstall">3.3 Установка из исходных текстов</A></H2>
+
+<P>Для установки необходимо обладать привилегиями root, для этого, находясь в директории,
+где происходила компиляция, выполните команды</P>
+
+<PRE>$ su</PRE>
+<P>Password: &lt;тут самый секретный пароль&gt;</P>
+<PRE># make install</PRE>
+<P>После этого все модули будут установлены и можно приступать к <A HREF="#systemconfig">системным настройкам</A>.</P>
+
+<P><SPAN STYLE='color:red'>Надо написать как поставить отдельный модуль (web, daemons, doc)</SPAN></P>
+
+<H2><A NAME="systemconfig">3.4 Системная настройка</A></H2>
+
+<P>
+<OL>
+  <LI>
+    Измените владельца файлов web интерфейса на пользователя и группу http сервера. Их можно узнать
+    в файле httpd.conf, параметры User и Group соответственно. Например,
+    <PRE>chown -R apache:apache /usr/local/share/sams2-2.0.0</PRE>
+  </LI>
+  <LI>
+    Измените владельца конфигурационного файла sams2.conf на пользователя и группу http сервера. Например,
+    <PRE>chown apache:apache /usr/local/etc/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Скопируйте файл redhat/httpd_conf из директории дистрибутива в директорию конфигурационных файлов
+    http сервера, переименовав его в sams2.conf. Например,
+    <PRE>cp redhat/httpd_conf /etc/httpd/conf.d/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Замените в файле, скопированном в предыдущем пункте, ключевое слово __WEBPREFIX на директорию,
+    где находятся файлы web интерфейса.
+    Воспользуйтесь предпочитаемым редактором или возьмите за основу следующую команду:
+    <PRE>sed -i -e 's|__WEBPREFIX|/usr/local/share/sams2-2.0.0|' /etc/httpd/conf.d/sams2.conf</PRE>
+  </LI>
+  <LI>
+    Перезапустите http сервер для того чтобы изменения вступили в силу. Например,
+    <PRE>/etc/init.d/httpd restart</PRE>
+  </LI>
+  <LI> Установите скрипт запуска демона.
+    <TABLE BORDER=1 CELLSPACING=0 CELLPADDING=10>
+      <TR>
+        <TD><IMG SRC="images/redhat-logo.png"></TD>
+        <TD>
+          <PRE>cp redhat/init.d /etc/init.d/sams2</PRE>
+          Замените в файле ключевое слово __PREFIX на директорию, где находится исполняемый файл демона,
+          а ключевое слово __CONFDIR на директорию, где находится конфигурационный файл SAMS.
+          Воспользуйтесь предпочитаемым редактором или возьмите за основу следующую команду:
+          <PRE>sed -i -e 's|__CONFDIR|/usr/local/etc|' -e 's|__PREFIX|/usr/local/bin|' /etc/init.d/sams2</PRE>
+          Добавьте скрипт в базу данных chkconfig.
+          <PRE>/sbin/chkconfig --add sams2</PRE>
+          Включите его выполнение на уровнях по умолчанию.
+          <PRE>/sbin/chkconfig sams2 on</PRE>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/freebsd-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/suse-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+      <TR>
+        <TD><IMG SRC="images/ubuntu-logo.png"></TD>
+        <TD>
+          <BR>
+        </TD>
+      </TR>
+    </TABLE>
+  </LI>
+</OL>
+</P>
+
+<H2><A NAME="createdb">3.5 Создание базы данных SAMS</A></H2>
+
+   <H3>Создание базы данных SAMS в СУБД MySQL</H3>
+   База данных SAMS для MySQL создается автоматически при  первом запуске WEB интерфейса.
+
+
+   <H3>Создание базы данных SAMS в СУБД PostgreSQL</H3>
+
+   <P><B>1. Создание пользователя</B>
+
+   <P>Вы должны создать пользователя только для базы данных SAMS. 
+   <BR>Следующая команда создает нового пользователя "username" и запрашиваетпвроль этого пользователя:
+   <P>createuser --pwprompt --encrypted --no-adduser --no-createdb username
+
+   <P><B>2. Создание базы данных SAMS</B>
+
+
+   <P>Вы должны создать базу данных только для использования с SAMS. 
+
+   <BR>Следующая команда создает новую базу данных "databasename", принадлежащую пользователю "username":
+   <P>createdb --owner=username databasename
+
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

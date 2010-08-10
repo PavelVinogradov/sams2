@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Синхронизация с доменом LDAP</TITLE>
+  <META NAME="GENERATOR" CONTENT="Dmitry Chemerik">
+  <META NAME="AUTHOR" CONTENT="Dmitry Chemerik">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">Синхронизация SAMS </TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="authorization.html">Авторизация</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="syncwithad.html">Авторизация в домене AD</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+
+<H2><A NAME="debug">7.1 Синхронизация с доменом LDAP</A></H2>
+<P>
+SAMS позволяет синхронизировать пользователей групп SAMS с пользователями групп домена LDAP. Синхронизация пользователей производится для групп, импортированных из LDAP.
+</P>
+
+<P>
+<B>Настройка подключения WEB интерфейса SAMS к LDAP</B> 
+</P>
+
+<CENTER>
+<IMG SRC="images/configldapaccess.jpg" >
+<BR>Рис 7.1.1. Настройка подключения WEB интерфейса SAMS к Active Directory
+</CENTER>
+<P>
+Необходимо задать параметры:
+<TABLE WIDTH="90%" BORDER="1" CELLPADDING="0" CELLSPACING="0" ALIGN=CENTER>
+	<TR>
+	<TD>Server</TD>
+	<TD>IP адрес или имя сервера LDAP</TD>
+        </TR>
+	<TR>
+	<TD>Base DN
+	<TD>базовая ветка в дереве каталогов LDAP
+        </TR>
+	<TR>
+	<TD>Bind DN
+	<TD>учетная запись для подключения к LDAP
+        </TR>
+	<TR>
+	<TD>Bind password
+	<TD>пароль учетной записи для подключения к LDAP
+        </TR>
+	<TR>
+	<TD>Users RDN
+	<TD>ответвление для пользователей (может быть пустым)
+        </TR>
+	<TR>
+	<TD>Users filter
+	<TD>фильтр, используемый для отсеивания ненужных учетных записей (может быть пустым)
+        </TR>
+	<TR>
+	<TD>User name attribute
+	<TD>аттрибут, из которого будет импортироваться имя пользователя
+        </TR>
+	<TR>
+	<TD>Groups RDN
+	<TD>ответвление для групп (может быть пустым)
+        </TR>
+	<TR>
+	<TD>Groups filter
+	<TD>фильтр, используемый для отсеивания ненужных групп
+        </TR>
+</TABLE>
+</P>
+<P>
+После сохранения параметров можно протестировать подключение к LDAP нажав кнопку "test connections to LDAP"
+</P>
+
+<P>
+<B>Импорт пользователей групп LDAP в SAMS</B> 
+</P>
+<P>
+Импорт производится из WEB интерфейса SAMS.
+</P>
+<CENTER>
+<IMG SRC="images/importfromldap.jpg" >
+<BR>Рис 7.1.2. Импорт групп пользователей из домена LDAP 
+</CENTER>
+<P>
+При импорте создаются группы и шаблоны SAMS c названиями групп LDAP. 
+</P>
+<P>
+В форме импорта пользователей из домена LDAP задаются параметры:
+<LI>Объем трафика пользователя шаблона по умолчанию
+<LI>Скорость канала для всего шаблона
+<LI>Скорость канала для отдельного пользователя
+<LI>Период лимита трафика
+<BR>Далее эти параметры будут присвоены шаблонам пользователей. 
+</P>
+
+<P>
+<B>Вывод группы SAMS из синхронизации с доменом LDAP</B>
+</P>
+Если необходимо вывести группу SAMS из синхронизации с доменом LDAP, необходимо выбрать 
+группы из списка и нажать кнопку "Удалить выбранные группы из синхронизации с доменом LDAP"
+
+<P>
+<B>Ввод группы SAMS в синхронизацию с доменом LDAP</B>
+</P>
+Если необходимо вернуть группу SAMS в синхронизацию с доменом LDAP, необходимо выбрать 
+группу из списка групп SAMS, и нажать кнопку "Добавить выбранные группы в синхронизацию с доменом LDAP"
+
+<P>
+<B>Синхронизация пользователей с доменом LDAP</B>
+</P>
+Синхронизация производится скриптом syncfromldap. 
+Скрипт вызывается из cron:
+<BR> 
+*/15 * * * * root cd /usr/local/share/sams2; php bin/syncfromldap
+</P>
+
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="authorization.html">Авторизация</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="syncwithad.html">Авторизация в домене AD</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

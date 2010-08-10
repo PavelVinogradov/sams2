@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Принцип работы и краткое описание</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Общие сведения</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1><A NAME="#overview">1 Принцип работы и краткое описание модулей</A></H1>
+
+<P>
+На Рис. 1 представлена принципиальная схема работы SAMS с применением встроенного
+редиректора. В случае использования других редиректоров, доступность ресурса
+определяется правилами, которые заносятся в конфигурационный файл squid
+</P>
+
+<P>
+<CENTER>
+<IMG WIDTH=623 HEIGHT=593 SRC="images/workflow.jpg">
+<BR>Рисунок 1
+</CENTER>
+</p>
+
+<P>Весь SAMS разбит на 3 основных модуля, каждый из которых может быть
+установлен на разных машинах, при этом через один web интерфейс
+можно управлять разными демонами на разных машинах.</P>
+
+<TABLE WIDTH="90%" BORDER=1 CELLSPACING=0 CELLPADDING=3 ALIGN=CENTER>
+  <TR>
+    <TD WIDTH="10%"><B>sams2</B></TD>
+    <TD WIDTH="90%">
+	<P>
+	Предназначен:</P>
+	<LI>для сбора статистики посещения пользователями ресурсов Интернет;</LI>
+	<LI>автоматической блокировки пользователей;</LI>
+	<LI>перенаправления или блокировки запросов пользователей;</LI>
+	<LI>настройки конфигурационного файла SQUID;</LI>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>sams2-web</B></TD>
+    <TD>SAMS2 web интерфейс
+	<P>
+	Предназначен для управления SAMS2
+	</P>
+	Позволяет:
+	<LI>управлять настройками SAMS2;</LI>
+	<LI>управлять доступом пользователей к прокси серверу SQUID;</LI>
+	<LI>изменять правила доступа в интернет пользователей;</LI>
+	<LI>предоставлять статистику посещения ресурсов интернет пользователями;</LI>
+	<LI>генерировать отчеты в виде pdf файлов</LI>
+    </TD>
+  </TR>
+  <TR>
+    <TD>sams2-doc</TD>
+    <TD>
+      Различная документация как по
+      установке, настройке, управлению, так и по принципам и правилам написания
+      дополнительных подключаемых модулей. Здесь же содержится документация по
+      исходным текстам программ.
+    </TD>
+  </TR>
+</TABLE>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="requirements.html">Требования</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

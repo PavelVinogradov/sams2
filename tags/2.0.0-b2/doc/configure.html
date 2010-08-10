@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Администрирование</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Администрирование</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="webinterface.html">Настройки WEB интерфейса</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1><A NAME="configure">5 Администрирование</A></H1>
+
+<H2><A NAME="configure.web">5.1.1 Первый запуск веб интерфейса SАMS. Создание базы данных SAMS.</H2>
+<P>
+В любом web браузере откройте страницу http://yourservername/sams2. Если веб интерфейс не смог 
+присоединиться к базе данных, Появится окно, предлагающее запустить визард, создающий базу данных.
+</P>
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.1. Первый запуск WEB интерфейса SAMS. База данных SAMS не обнаружена.
+ </CENTER>
+</P>
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb2.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.2. Визард создания базы данных SAMS. Диалог выбора кодировки веб интерфейса.
+ </CENTER>
+</P>
+Далее производится проверка параметров настроек php, необходимых для функционирования веб интерфейса SAMS.
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb3.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.3. Визард создания базы данных SAMS. Проверка настроек php.
+ </CENTER>
+</P>
+
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb4.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.5. Первый запуск WEB интерфейса SAMS. Диалог подключения к базе данных SAMS.
+ </CENTER>
+</P>
+<P>
+<FONT COLOR="RED">Внимание!!!</FONT> 
+При использовании MySQL база данных создается скриптом автоматически, при использовании PostgreSQL ее необходимо создать заранее.
+</P>
+
+<P>
+ <CENTER>
+ <IMG SRC="images/createdb5.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.6. Первый запуск WEB интерфейса SAMS. Лог создания базы данных SAMS.
+ </CENTER>
+</P>
+
+<P>
+Далее на экран будет выведен лог создания базы данных SAMS. Если все прошло удачно, нажмите на кнопку "Start SAMS web interface"
+</P>
+
+<H2><A NAME="configure.web">5.1.2 Запуск веб интерфейса SАMS.</H2>
+
+<P>
+В любом web браузере откройте страницу http://yourservername/sams2. Появится окно, изображенное ниже.
+нажмите на ссылку "SAMS management interface" и введите логин и пароль администратора.  Значения по-умолчанию 
+admin и qwerty.
+</P>
+<P>
+ <CENTER>
+ <IMG SRC="images/admin_login.jpg" ALIGN="CENTER">
+ <BR>Рис 5.1.3. Запуск WEB интерфейса SAMS
+ </CENTER>
+</P>
+
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="setup.html">Настройка</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="webinterface.html">Настройки WEB интерфейса</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

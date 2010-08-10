@@ -1,0 +1,1348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Описание таблиц и полей в БД</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Dmitry Chemerik">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Приложения</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><BR></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1 ALIGN=center>Приложение 1. Описание таблиц и полей в БД</H1>
+
+<H2>Список таблиц</H2>
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TD><A HREF="#websettings">websettings</A> </TD>
+		<TD>Настройки WEB интерфейса.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#timerange">timerange</A></TD>
+		<TD>Временные диапазоны.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#sconfig">sconfig</A></TD>
+		<TD>Сопоставление списков URL с шаблонами.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#redirect">redirect</A></TD>
+		<TD>Списки URL.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#sconfig_time">sconfig_time</A></TD>
+		<TD>Сопоставление временных диапазонов с шаблонами.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#proxy">proxy</A></TD>
+		<TD>Настройки прокси сервера.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#passwd">passwd</A></TD>
+		<TD>Пользователи - администраторы. В таблице содержится логин и пароль пользователя-администратора SAMS. В SAMS2 права на администрирование SAMS можно задать для любого пользователя.
+	</TR>
+	<TR>
+		<TD><A HREF="#shablon">shablon</A></TD>
+		<TD>Шаблоны пользователей.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#samslog">samslog</A></TD>
+		<TD>Протокол событий SAMS2.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#sgroup">sgroup</A></TD>
+		<TD>Группы пользователей.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#reconfig">reconfig</A></TD>
+		<TD>Команды демону из WEB интерфейса.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#url">url</A></TD>
+		<TD>Содержание группы URL адресов.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#squiduser">squiduser</A></TD>
+		<TD>Пользователи.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#squidcache">squidcache</A></TD>
+		<TD>Подробная информация о трафике пользователей.</TD>
+	</TR>
+	<TR>
+		<TD><A HREF="#cachesum">cachesum</A></TD>
+		<TD>Суммарная информация о трафике пользователей за однодневный период.</TD>
+	</TR>
+        <TR>
+                <TD><A HREF="#auth_param">auth_param</A></TD>
+                <TD>Параметры различных способов авторизации.</TD>
+        </TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="websettings"><B>Таблица websettings</B></A> – Настройки WEB интерфейса.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_lang </TD>
+		<TD> varchar(15) </TD>
+		<TD> NOT NULL </TD>
+		<TD> EN </TD>
+		<TD> Язык. </TD>
+	</TR>
+	<TR>
+		<TD> s_iconset </TD>
+		<TD> varchar(25) </TD>
+		<TD> NOT NULL </TD>
+		<TD> classic </TD>
+		<TD> Набор иконок. </TD>
+	</TR>
+	<TR>
+		<TD> s_useraccess </TD>
+		<TD> smallint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1 </TD>
+		<TD> Предоставлять или нет доступ обычным пользователям. </TD>
+	</TR>
+	<TR>
+		<TD> s_urlaccess </TD>
+		<TD> smallint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1 </TD>
+		<TD> Показывать или нет обычным пользователям списки интернет ресурсов. </TD>
+	</TR>
+	<TR>
+		<TD> s_showutree </TD>
+		<TD> smallint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1 </TD>
+		<TD> Показывать или нет дерево пользователей. </TD>
+	</TR>
+	<TR>
+		<TD> s_showname </TD>
+		<TD> varchar(5) </TD>
+		<TD> NOT NULL </TD>
+		<TD> nick </TD>
+		<TD>
+			В каком виде отображать имена пользователей. Значение представляет собой набор полей из таблицы
+			<A HREF="#squiduser">squidsuser</A>, перечисленных через пробел.
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_showgraph </TD>
+		<TD> smallint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Показывать или нет графики. </TD>
+	</TR>
+	<TR>
+		<TD> s_createpdf </TD>
+		<TD> varchar(6) </TD>
+		<TD> NOT NULL </TD>
+		<TD> NONE </TD>
+		<TD>
+			Каким образом создавать отчеты в pdf файлы.
+                        <LU>
+			  <LI>none – не создавать</LI>
+			  <LI>fpdf – использовать fpdf</LI>
+			  <LI>pdflib – использовать pdflib</LI>
+                        </LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_version </TD>
+		<TD> char(5) </TD>
+		<TD> NOT NULL </TD>
+		<TD> 2.0 </TD>
+		<TD> Версия базы данных. Должна изменятся при малейшем изменении структуры. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="timerange"><B>Таблица timerange</B></A> – Временные диапазоны.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_trange_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_name </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Имя. </TD>
+	</TR>
+	<TR>
+		<TD> s_days </TD>
+		<TD> varchar(14) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Дни недели. </TD>
+	</TR>
+	<TR>
+		<TD> s_timestart </TD>
+		<TD> time </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Начало периода. </TD>
+	</TR>
+	<TR>
+		<TD> s_timeend </TD>
+		<TD> time </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Окончание периода. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="sconfig"><B>Таблица sconfig</B></A> – Сопоставление списков URL с шаблонами.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_shablon_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор шаблона из таблицы <A HREF="#shablon">shablon</A> </TD>
+	</TR>
+	<TR>
+		<TD> s_redirect_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Идентификатор списка из таблицы <A HREF="#redirect">redirect</A> </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="redirect"><B>Таблица redirect</B></A> – Списки URL.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_redirect_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_name </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Название списка </TD>
+	</TR>
+	<TR>
+		<TD> <A NAME="redirect.s_type">s_type</A> </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD>
+			Тип списка:
+			<LU>
+			  <LI>redir – блокировка баннеров</LI>
+			  <LI>denied – доступ запрещен</LI>
+			  <LI>allow – доступ разрешен</LI>
+			  <LI>files – расширения файлов</LI>
+			  <LI>replace – перенаправление на другой URL</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_dest </TD>
+		<TD> varchar(128) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Адрес перенаправления для s_type=replace </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="sconfig_time"><B>Таблица sconfig_time</B></A> – Сопоставление временных диапазонов с шаблонами.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_shablon_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор шаблона из таблицы <A HREF="#shablon">shablon</A> </TD>
+	</TR>
+	<TR>
+		<TD> s_trange_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Идентификатор временной границы из таблицы <A HREF="#timerange">timerange</A> </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="proxy"><B>Таблица proxy</B></A> – Настройки прокси сервера.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_proxy_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_description </TD>
+		<TD> varchar(100) </TD>
+		<TD> <BR> </TD>
+		<TD> Proxy server </TD>
+		<TD> Описание прокси сервера. </TD>
+	</TR>
+	<TR>
+		<TD> <A NAME="proxy.s_endvalue">s_endvalue</A> </TD>
+		<TD> bigint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Смещение в файле access.log, с которого начинается обработка. </TD>
+	</TR>
+	<TR>
+		<TD> s_redirect_to </TD>
+		<TD> varchar(100) </TD>
+		<TD> <BR> </TD>
+		<TD> http://your.ip.addr.. </TD>
+		<TD> Путь к файлу перенаправления запроса. </TD>
+	</TR>
+	<TR>
+		<TD> s_denied_to </TD>
+		<TD> varchar(100) </TD>
+		<TD> <BR> </TD>
+		<TD> http://your.ip.addr.. </TD>
+		<TD> Путь к каталогу где лежат файлы запрета запроса. </TD>
+	</TR>
+	<TR>
+		<TD> s_redirector </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> NONE </TD>
+		<TD>
+			Какой используется редиректор. Возможные значения:
+			<LU>
+			  <LI>none – не использовать редиректор</LI>
+			  <LI>sams – встроенный редиректор</LI>
+			  <LI>rejik – внешний редиректор rejik</LI>
+			  <LI>squidquard – внешний редиректор squidguard</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_delaypool </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> <FONT COLOR="#ff0000">Устарело и более не используется.</FONT>
+			Использовать или нет ограничение скорости канала
+			(<A HREF="shablon.s_shablonpool">shablon.s_shablonpool</A> и <A HREF="shablon.s_userpool">shablon.s_userpool</A>).
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_auth </TD>
+		<TD> varchar(4) </TD>
+		<TD> <BR> </TD>
+		<TD> ip </TD>
+		<TD>
+			Тип авторизации в системе по умолчанию.
+			<FONT STYLE="background: #ff0000">
+			Непонятно когда используется. <B>По умолчанию</B> значит если где-то не указано, а где может быть не указано?
+			</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_wbinfopath </TD>
+		<TD> varchar(100) </TD>
+		<TD> <BR> </TD>
+		<TD> /usr/bin </TD>
+		<TD> Путь к wbinfo. </TD>
+	</TR>
+	<TR>
+		<TD> s_separator </TD>
+		<TD> varchar(15) </TD>
+		<TD> <BR> </TD>
+		<TD> + </TD>
+		<TD> Разделитель домена и имени пользователя. Обычно + или \ или @ </TD>
+	</TR>
+	<TR>
+		<TD> s_usedomain </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Использовать или нет домен при создании acl файлов. </TD>
+	</TR>
+	<TR>
+		<TD> s_bigd</FONT></FONT></P> </TD>
+		<TD> smallint</FONT></FONT></P> </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Как записывать домен при создании acl файлов.
+			<LU>
+			  <LI>0 – DOMAIN</LI>
+			  <LI>1 – domain</LI>
+			  <LI>2 – Domain</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_bigu </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Как записывать пользователя при создании acl файлов.
+			<LU>
+			  <LI>0 – USER</LI>
+			  <LI>1 – user</LI>
+			  <LI>2 – User</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_sleep </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 1 </TD>
+		<TD> Время (секунды) через которое samsdaemon опрашивает БД насчет команд.  </TD>
+	</TR>
+	<TR>
+		<TD> s_parser </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Выбор обработчика значений.
+                        <LU>
+			  <LI>0 – не обрабатывать логи</LI>
+			  <LI>1 – раз  в промежуток времени</LI>
+			  <LI>2 – постоянный (устарел и не используется)</LI>
+                        </LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_parser_time </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 1 </TD>
+		<TD> Промежуток времени (минуты) через которое запускается обработчик логов. Используется если s_parser=1 </TD>
+	</TR>
+	<TR>
+		<TD> s_count_clean </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Очищать или нет счетчики пользователей при окончании периода лимита в шаблонах. </TD>
+	</TR>
+	<TR>
+		<TD> s_nameencode </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Перекодировать или нет имена пользователей при их записи в ACL. </TD>
+	</TR>
+	<TR>
+		<TD> s_realsize </TD>
+		<TD> varchar(4) </TD>
+		<TD> <BR> </TD>
+		<TD> real </TD>
+		<TD>
+			Тип учитываемого трафика.
+			<LU>
+			  <LI>real – реально полученный пользователем</LI>
+			  <LI>full – весь трафик, включая и кэш</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_checkdns </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Преобразовывать или нет имена в IP адреса при обработке логов. </TD>
+	</TR>
+	<TR>
+		<TD> s_debuglevel </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Уровень отладки. Возможные значения:
+			<LU>
+			  <LI>1 –</LI>
+			  <LI>2 –</LI>
+			  <LI>3 –</LI>
+			  <LI>4 –</LI>
+			  <LI>5 –</LI>
+			  <LI>6 –</LI>
+			  <LI>7 –</LI>
+			  <LI>8 –</LI>
+			  <LI>9 – Показывать работу вспомогательных функций</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_defaultdomain </TD>
+		<TD> char(25) </TD>
+		<TD> <BR> </TD>
+		<TD> WORKGROUP </TD>
+		<TD> Домен по умолчанию. </TD>
+	</TR>
+	<TR>
+		<TD> s_squidbase </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Количество месяцев, за которые сохранять данные о трафике в базе. </TD>
+	</TR>
+	<TR>
+		<TD> s_udscript </TD>
+		<TD> varchar(100) </TD>
+		<TD> <BR> </TD>
+		<TD> NONE </TD>
+		<TD> Скрипт, выполняемый при отключении пользователя. </TD>
+	</TR>
+	<TR>
+		<TD> s_adminaddr </TD>
+		<TD> varchar(60) </TD>
+		<TD> <BR> </TD>
+		<TD> root@localhost </TD>
+		<TD> Адрес администратора. </TD>
+	</TR>
+	<TR>
+		<TD> s_kbsize </TD>
+		<TD> varchar(15) </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1024 </TD>
+		<TD> Размер килобайта в байтах. </TD>
+	</TR>
+	<TR>
+		<TD> s_mbsize </TD>
+		<TD> varchar(15) </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1048576 </TD>
+		<TD> Размер мегабайта в байтах. </TD>
+	</TR>
+	<TR>
+		<TD> s_ldapserver </TD>
+		<TD> varchar(30) </TD>
+		<TD> <BR> </TD>
+		<TD> 0.0.0.0 </TD>
+		<TD> Имя или адрес LDAP сервера. </TD>
+	</TR>
+	<TR>
+		<TD> s_ldapbasedn </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> workgroup </TD>
+		<TD> Домен. </TD>
+	</TR>
+	<TR>
+		<TD> s_ldapuser </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> Administrator </TD>
+		<TD> Пользователь - администратор домена. </TD>
+	</TR>
+	<TR>
+		<TD> s_ldappasswd </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Пароль администратора. </TD>
+	</TR>
+	<TR>
+		<TD> s_ldapusergroup </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> Users </TD>
+		<TD> Группа. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="passwd"><B>Таблица passwd</B></A> – Администраторы и аудиторы.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_user </TD>
+		<TD> varchar(25) </TD>
+		<TD> PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Имя администратора или аудитора. Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_pass </TD>
+		<TD> varchar(60) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Пароль (хэш). </TD>
+	</TR>
+	<TR>
+		<TD> s_access </TD>
+		<TD> smallint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD>
+			Код доступа. Возможные значения:
+			<LU>
+			  <LI>1 – администратор</LI>
+			  <LI>2 – аудитор</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_autherrorc </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Счетчик неверных авторизаций. После 3х неверно введенных паролей счетчик обнуляется и доступ в веб интерфейсе блокируется
+			на 1 минуту. При верно введенном пароле обнуляется.
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_autherrort </TD>
+		<TD> varchar(16) </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Время когда пользователь сможет войти в веб интерфейс. Имеет смысл если s_autherrorc &gt; 0. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="shablon"><B>Таблица shablon</B></A> – Шаблоны пользователей.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_shablon_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_name </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Имя шаблона. </TD>
+	</TR>
+	<TR>
+		<TD> s_shablonpool </TD>
+		<TD> bigint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Ограничение скорости всего шаблона. </TD>
+	</TR>
+	<TR>
+		<TD> s_userpool </TD>
+		<TD> bigint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Ограничение скорости пользователя шаблона. </TD>
+	</TR>
+	<TR>
+		<TD> <A NAME="shablon.s_auth">s_auth</A> </TD>
+		<TD> varchar(4) </TD>
+		<TD> <BR> </TD>
+		<TD> ip </TD>
+		<TD>
+			Тип авторизации пользователей шаблона.  Возможные значения:
+			<LU>
+			  <LI>ip – по IP адресу</LI>
+			  <LI>ncsa – по имени/паролю</LI>
+			  <LI>ntlm – в домене Windows</LI>
+			  <LI>adld – в ActiveDirectory</LI>
+			  <LI>ldap – в OpenLDAP</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> <A NAME="shablon.s_quote">s_quote</A> </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> 100 </TD>
+		<TD> Ограничение трафика пользователя шаблона. В мегабайтах. </TD>
+	</TR>
+	<TR>
+		<TD> s_period </TD>
+		<TD> varchar(3) </TD>
+		<TD> <BR> </TD>
+		<TD> M </TD>
+		<TD>
+			Период ограничения трафика. Возможные значения:
+			<LU>
+			  <LI>M – месяц</LI>
+			  <LI>W – неделя</LI>
+			  <LI>D - день</LI>
+			  <LI>число – количество дней</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_clrdate </TD>
+		<TD> date </TD>
+		<TD> <BR> </TD>
+		<TD> 1980-01-01 </TD>
+		<TD> Дата следующей очистки счетчиков трафика.  Используется только при нестандартном периоде ограничения. </TD>
+	</TR>
+	<TR>
+		<TD> s_alldenied </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Признак что доступ запрещен везде. Используется для разрешения доступа только к ресурсам из списка allow. </TD>
+	</TR>
+	<TR>
+		<TD> s_shablon_id2 </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD>
+			Идентификатор вторичного шаблона. Если не NULL и не -1, то вместо блокировки, пользователи переводятся во вторичный шаблон до
+			тех пор, пока не произойдет очистка счетчиков у вторичного шаблона или пока пользователь не превысит лимит вторичного шаблона.
+		</TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="samslog"><B>Таблица samslog</B></A> – Протокол событий SAMS2.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_log_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_issuer </TD>
+		<TD> varchar(50) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Автор события. Возможные значения: sams, samsf, samsdaemon или имя пользователя, авторизовавшегося в web интерфейсе. </TD>
+	</TR>
+	<TR>
+		<TD> s_date </TD>
+		<TD> date </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Дата события. </TD>
+	</TR>
+	<TR>
+		<TD> s_time </TD>
+		<TD> time </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Время события. </TD>
+	</TR>
+	<TR>
+		<TD> s_value </TD>
+		<TD> varchar(60) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Описание события. </TD>
+	</TR>
+	<TR>
+		<TD> s_code </TD>
+		<TD> char(2) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD>
+			Код.  Предназначен для просмотра в web интерфесе
+			<LU>
+			  <LI>1 - события связанные с пользователями (добавление, удаление, отключение)</LI>
+			  <LI>2- события связанные со списками URL (добавление, удаление URL)</LI>
+			  <LI>4 - события связанные с администраторами SAMS</LI>
+			  <LI>10 - события, связанные с демонами (samsdaemon, samsf и т.п.)</LI>
+			</LU>
+		</TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="sgroup"><B>Таблица sgroup</B></A> – Группы пользователей.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_group_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_name </TD>
+		<TD> varchar(25) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Название группы. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="reconfig"><B>Таблица reconfig</B></A> – Команды демону из WEB интерфейса.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_proxy_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор прокси сервера из таблицы <A HREF="#proxy">proxy</A>.  </TD>
+	</TR>
+	<TR>
+		<TD> s_service </TD>
+		<TD> varchar(15) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Служба, которой выдается команда </TD>
+	</TR>
+	<TR>
+		<TD> s_action </TD>
+		<TD> varchar(10) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Команда для службы. </TD>
+	</TR>
+</TABLE>
+
+<P CLASS="western" STYLE="margin-top: 0cm">
+Поддерживаются следующие пары значений s_service/s_action:
+<LU>
+  <LI>proxy/shutdown – Выполняется команда <A HREF="sams2_conf.html#sams2.conf.shutdowncommand">SHUTDOWNCOMMAND</A> из файла sams2.conf.</LI>
+  <LI>samsdaemon/shutdown – Завершается работа демона samsdaemon.</LI>
+  <LI>samsdaemon/reload – Обновляются настройки и данные из файла sams2.conf и базы данных.</LI>
+  <LI>squid/reconfig – Обновляются настройки и данные из файла sams2.conf и базы данных, обновляется конфигурационный файл squid с последующим его перезапуском</LI>
+  <LI>database/export – Содержимое таблицы squidcache записывается во внешний файл. Используется только для тестов(!)</LI>
+</LU>
+</P>
+
+<BR>
+<BR>
+
+<A NAME="url"><B>Таблица url</B></A> – Содержание группы URL адресов.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_url_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_redirect_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор списка из таблицы <A HREF="#redirect">redirect</A>.  </TD>
+	</TR>
+	<TR>
+		<TD> s_url </TD>
+		<TD> varchar(132) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> URL, его часть или регулярное выражение. Зависит от значения <A HREF="#redirect.s_type">s_type</A>. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="squiduser"><B>Таблица squiduser</B></A> – Пользователи.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_user_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_group_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор группы из таблицы <A HREF="#group">group</A>. </TD>
+	</TR>
+	<TR>
+		<TD> s_shablon_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор шаблона из таблицы <A HREF="#shablon">shablon</A>. </TD>
+	</TR>
+	<TR>
+		<TD> s_nick </TD>
+		<TD> char(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Логин. </TD>
+	</TR>
+	<TR>
+		<TD> s_family </TD>
+		<TD> char(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Фамилия. </TD>
+	</TR>
+	<TR>
+		<TD> s_name </TD>
+		<TD> char(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Имя. </TD>
+	</TR>
+	<TR>
+		<TD> s_soname </TD>
+		<TD> char(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Отчество. </TD>
+	</TR>
+	<TR>
+		<TD> s_domain </TD>
+		<TD> char(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Домен. </TD>
+	</TR>
+	<TR>
+		<TD> s_quote </TD>
+		<TD> int </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Ограничение трафика в мегабайтах. При значении -1 используется значение <A HREF="#shablon.s_quote">shablon.s_quote</A>. </TD>
+	</TR>
+	<TR>
+		<TD> s_size </TD>
+		<TD> bigint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Общий объем использованного трафика в байтах. </TD>
+	</TR>
+	<TR>
+		<TD> s_hit </TD>
+		<TD> bigint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Объем трафика из кэша в байтах. </TD>
+	</TR>
+	<TR>
+		<TD> s_enabled </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 1 </TD>
+		<TD>
+			Статус активности.
+			<LU>
+			  <LI>-1 – отключен администратором.</LI>
+			  <LI>0 – отключен за превышение трафика.</LI>
+			  <LI>1 – активный.</LI>
+			  <LI>2 – переведен в другой шаблон за превышение трафика.</LI>
+			</LU>
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_ip </TD>
+		<TD> char(15) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> IP адрес пользователя. Используется вместо s_nick если <A HREF="#shablon.s_auth">shablon.s_auth</A>=ip. </TD>
+	</TR>
+	<TR>
+		<TD> s_passwd </TD>
+		<TD> varchar(20) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Пароль на доступ (хэш). Используется если <A HREF="#shablon.s_auth">shablon.s_auth</A>=ncsa. </TD>
+	</TR>
+	<TR>
+		<TD> s_gauditor </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> <FONT COLOR="#ff0000">Устарело и более не используется.</FONT> Может или нет смотреть трафик своей группы. </TD>
+	</TR>
+	<TR>
+		<TD> s_autherrorc </TD>
+		<TD> smallint </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD>
+			Счетчик неверных авторизаций. После 3х неверно введенных паролей счетчик обнуляется и доступ в веб интерфейсе блокируется
+			на 1 минуту. При верно введенном пароле обнуляется.
+		</TD>
+	</TR>
+	<TR>
+		<TD> s_autherrort </TD>
+		<TD> varchar(16) </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Время когда пользователь сможет войти в веб интерфейс. Имеет смысл если s_autherrorc &gt; 0. </TD>
+	</TR>
+	<TR>
+		<TD> s_webaccess </TD>
+		<TD> varchar(16) </TD>
+		<TD> <BR> </TD>
+		<TD> W </TD>
+		<TD>
+			Права доступа в веб интерфейсе. Набор символов, каждый из которых отвечает за свой уровень доступа.
+			<LU>
+			  <LI>W – Имеет право смотреть свою статистику.</LI>
+			  <LI>G – Имеет право смотреть статистику пользователей своей группы</LI>
+			  <LI>S – Имеет право смотреть статистику Всех пользователей</LI>
+			  <LI>A – Имеет право активировать/отключать пользователей</LI>
+			  <LI>U – Имеет право добавлять пользователей в SAMS</LI>
+			  <LI>L – Имеет право изменять списки URL</LI>
+			  <LI>C – Имеет право настраивать SAMS</LI>
+			</LU>
+		</TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="squidcache"><B>Таблица squidcache</B></A> – Подробная информация о трафике пользователей.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_cache_id </TD>
+		<TD> <BR> </TD>
+		<TD> SERIAL PRIMARY KEY </TD>
+		<TD> <BR> </TD>
+		<TD> Первичный ключ таблицы. </TD>
+	</TR>
+	<TR>
+		<TD> s_proxy_id </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор прокси сервера из таблицы <A HREF="#proxy">proxy</A>. </TD>
+	</TR>
+	<TR>
+		<TD> s_date </TD>
+		<TD> date </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1980-01-01 </TD>
+		<TD> Дата. </TD>
+	</TR>
+	<TR>
+		<TD> s_time </TD>
+		<TD> time </TD>
+		<TD> NOT NULL </TD>
+		<TD> 00:00:00 </TD>
+		<TD> Время. </TD>
+	</TR>
+	<TR>
+		<TD> s_user </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Пользователь. </TD>
+	</TR>
+	<TR>
+		<TD> s_domain </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> NULL </TD>
+		<TD> Домен. </TD>
+	</TR>
+	<TR>
+		<TD> s_size </TD>
+		<TD> int </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Размер ресурса. </TD>
+	</TR>
+	<TR>
+		<TD> s_hit </TD>
+		<TD> int </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Размер ресурса из кэш. </TD>
+	</TR>
+	<TR>
+		<TD> s_ipaddr </TD>
+		<TD> varchar(15) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> IP адрес, откуда был запрос. </TD>
+	</TR>
+	<TR>
+		<TD> s_period </TD>
+		<TD> int </TD>
+		<TD> <BR> </TD>
+		<TD> 0 </TD>
+		<TD> Время ожидания прокси сервера. </TD>
+	</TR>
+	<TR>
+		<TD> s_method </TD>
+		<TD> char(15) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Метод ответа squid. Подробнее смотрите информацию по squid, секцию Cache Result. </TD>
+	</TR>
+	<TR>
+		<TD> s_url </TD>
+		<TD> varchar(150) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Адрес ресурса. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="cachesum"><B>Таблица cachesum</B></A> – Суммарная информация о трафике пользователей за однодневный период.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+	<TR>
+		<TH WIDTH="10%"> <B>Имя поля</B> </TH>
+		<TH WIDTH="10%"> <B>Тип поля</B> </TH>
+		<TH WIDTH="15%"> <B>Параметры</B> </TH>
+		<TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+		<TH WIDTH="55%"> <B>Описание</B> </TH>
+	</TR>
+	<TR>
+		<TD> s_proxy_id </TD>
+		<TD> int </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Идентификатор прокси сервера из таблицы <A HREF="#proxy">proxy</A>. </TD>
+	</TR>
+	<TR>
+		<TD> s_date </TD>
+		<TD> date </TD>
+		<TD> NOT NULL </TD>
+		<TD> 1980-01-01 </TD>
+		<TD> Дата. </TD>
+	</TR>
+	<TR>
+		<TD> s_user </TD>
+		<TD> varchar(50) </TD>
+		<TD> NOT NULL </TD>
+		<TD> <BR> </TD>
+		<TD> Пользователь. </TD>
+	</TR>
+	<TR>
+		<TD> s_domain </TD>
+		<TD> varchar(50) </TD>
+		<TD> <BR> </TD>
+		<TD> <BR> </TD>
+		<TD> Домен. </TD>
+	</TR>
+	<TR>
+		<TD> s_size </TD>
+		<TD> bigint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Общий объем трафика пользователя (в байтах) за 1 день с указанного прокси. </TD>
+	</TR>
+	<TR>
+		<TD> s_hit </TD>
+		<TD> bigint </TD>
+		<TD> NOT NULL </TD>
+		<TD> 0 </TD>
+		<TD> Объем трафика пользователя из кэша (в байтах) за 1 день с указанного прокси. </TD>
+	</TR>
+</TABLE>
+
+<BR>
+<BR>
+
+<A NAME="auth_param"><B>Таблица auth_param</B></A> – Параметры различных способов авторизации.
+<TABLE WIDTH="100%" BORDER=1 CELLSPACING=0 CELLPADDING=3>
+        <TR>
+                <TH WIDTH="10%"> <B>Имя поля</B> </TH>
+                <TH WIDTH="10%"> <B>Тип поля</B> </TH>
+                <TH WIDTH="15%"> <B>Параметры</B> </TH>
+                <TH WIDTH="10%"> <B>Значение по умолчанию</B> </TH>
+                <TH WIDTH="55%"> <B>Описание</B> </TH>
+        </TR>
+        <TR>
+                <TD> s_auth </TD>
+                <TD> varchar(4) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD>
+                    Тип авторизации. Возможные значения:
+                    <LU>
+                      <LI>ip – по IP адресу</LI>
+                      <LI>ncsa – по имени/паролю</LI>
+                      <LI>ntlm – в домене Windows</LI>
+                      <LI>adld – в ActiveDirectory</LI>
+                      <LI>ldap – в OpenLDAP</LI>
+                    </LU>
+                </TD>
+        </TR>
+        <TR>
+                <TD> s_param </TD>
+                <TD> varchar(50) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+        </TR>
+        <TR>
+                <TD> s_value </TD>
+                <TD> varchar(50) </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+                <TD> <BR> </TD>
+        </TR>
+</TABLE>
+
+<BR>
+<BR>
+
+Дополнительно создаются индексы:<BR>
+CREATE UNIQUE INDEX idx_squidcache on squidcache ( s_user, s_proxy_id );<BR>
+CREATE UNIQUE INDEX idx_cachesum on cachesum ( s_proxy_id, s_date, s_user, s_domain );<BR>
+CREATE UNIQUE INDEX idx_squiduser on squiduser ( s_nick, s_name, s_shablon_id, s_group_id );<BR>
+CREATE UNIQUE INDEX idx_samslog on samslog ( s_code, s_issuer );<BR>
+CREATE UNIQUE INDEX idx_url on url ( s_redirect_id, s_url );<BR>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><BR></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><BR></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>
