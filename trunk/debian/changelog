@@ -1,3 +1,10 @@
+sams2 (2.0.0-b3) unstable; urgency=low
+
+  * Change libmysqlclint dependency from libmysqlclient15-dev to
+    libmysqlclient-dev
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 13 Aug 2010 11:32:26 +0400
+
 sams2 (2.0.0-b2) unstable; urgency=low
 
   * New version
