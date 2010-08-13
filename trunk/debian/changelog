@@ -2,6 +2,7 @@ sams2 (2.0.0-b3) unstable; urgency=low
 
   * Change libmysqlclint dependency from libmysqlclient15-dev to
     libmysqlclient-dev
+  * Add dependency to php5-gd for sams-web
 
  -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 13 Aug 2010 11:32:26 +0400
 
