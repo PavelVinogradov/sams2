@@ -24,7 +24,7 @@ Description: Squid Account Management System (SAMS) - Deamons
 Package: sams2-web
 Section: web
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql
+Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql, php5-gd
 Recommends: sams2-doc
 Suggests: php5-gd, php5-ldap
 Description: Squid Account Management System (SAMS) - Web interface
