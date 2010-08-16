@@ -111,7 +111,7 @@ function AuthNTLMValues()
   $DB=new SAMSDB();
   $DB2=new SAMSDB();
 
-  PageTop("config_48.jpg","NTLM configuration ");
+  PageTop("config_48.jpg",$lframe_sams_Auth_Title_NTLM_Config);
 //  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
 //  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/syncwithntlm.html\">Documentation</A>");
 //  print("<P>\n");
@@ -152,7 +152,7 @@ function AuthNTLMValues()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"ntlmtest\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authntlmtray.php\">\n");
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test ntlm configurations\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$lframe_sams_Auth_NTLM_config_test\">\n");
   print("</FORM>\n");
 
   $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='ntlm' AND  s_param='ntlmgroup'");

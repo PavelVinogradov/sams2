@@ -19,7 +19,7 @@
 			"icon" => "auth.gif",
 			"target"=> "tray",
 			"url"=> "tray.php?show=exe&filename=authtray.php&function=authtray",
-			"text"=> "Authorisation");
+			"text"=> "$lframe_sams_Authorisation");
 		treeFolder($item);
 
 		if(GetAuthParameter("adld","enabled")>0)
@@ -27,7 +27,7 @@
 			$item=array("classname"=> "samsauth",
 				"target"=> "tray",
 				"url"=> "tray.php?show=exe&function=authadldtray&filename=authadldtray.php",
-				"text"=> "ActiveDirectory");
+				"text"=> "Active Directory");
 			treeFolderItem($item);
 		}
 		if(GetAuthParameter("ntlm","enabled")>0)

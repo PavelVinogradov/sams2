@@ -95,7 +95,7 @@ function AuthEnabledForm()
   print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"ncsa\" $NCSACHECKED> \n");
 
   print("</TABLE>\n");
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Configure\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$lframe_sams_Auth_ConfigureButton\">\n");
   print("</FORM>\n");
   print("<P><IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/authorization.html\">$documentation</A>");

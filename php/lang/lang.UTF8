@@ -614,6 +614,26 @@
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
   $lframe_sams_FolderSubstitute_1="Подстановка";
+  $lframe_sams_Authorisation="Авторизация";
+  $lframe_sams_Auth_Title_LDAP_Config="Конфигурация LDAP";
+  $lframe_sams_Auth_LDAP_connections_test="Тестировать LDAP-подключение";
+  $lframe_sams_Auth_Title_NTLM_Config="Конфигурация NTLM";
+  $lframe_sams_Auth_NTLM_config_test="Тестировать NTLM-подключение";
+  $lframe_sams_Auth_ConfigureButton="Конфигурировать";
+  $lframe_sams_DelayPools="Пулы ограничения скорости";
+  $lframe_sams_DelayPools_Add="Добавить пул ограничения скорости";
+  $lframe_sams_DelayPools_Field_Name="Название";
+  $lframe_sams_DelayPools_Field_Class="Класс";
+  $lframe_sams_DelayPools_AgrBucket_Restore="Общая скорость";
+  $lframe_sams_DelayPools_AgrBucket_Size="Порог общей скорости";
+  $lframe_sams_DelayPools_NetBucket_Restore="Скорость подсети";
+  $lframe_sams_DelayPools_NetBucket_Size="Порог скорости подсети";
+  $lframe_sams_DelayPools_IndBucket_Restore="Скорость индивидуального хоста";
+  $lframe_sams_DelayPools_IndBucket_Size="Порог скорости индивидуального хоста";
+  $lframe_sams_DelayPool="Пул ограничения скорости";
+  $lframe_sams_DelayPools_AddButton="Добавить";
+  $lframe_sams_DelayPools_EditButton="Редактировать пул";
+  $lframe_sams_DelayPools_DeleteButton="Удалить пул";
 
   $userbuttom_4_site_SiteUserList_1="Список URL, полученных с ";
   $userbuttom_4_site_SiteUserList_2="редактирование URL";
@@ -929,6 +949,8 @@
   $AddSyncGroup_authntlmtray_1="В синхронизацию с доменом Windows добавлены группы";
   $RemoveSyncGroup_authntlmtray_1="Из инхронизации с доменом Windows выведены группы:";
 
+  $AuthADLDValues_authadldtray_AD_connections_test="Тестировать подключение к Active Directory";
+
   $lffolder_5_z0_trange_lfforder_5_z0_trange_1="Временные диапазоны";
   $AddTRangeForm_trangetray_1="Временные диапазоны";
   $JSTRangeInfo_trangetray_1="Временной диапазон";
@@ -1027,7 +1049,6 @@
    $setup_38="База данных SAMS найдена";
    $setup_39="создание базы данных не требуется";
    $adminbuttom_1_prop_SamsReConfigForm_53="Идентификатор прокси сервера";
-
 
    $confogbuttom_3_importcache_importcachesumtable_1="Импорт данных о трафике пользователей";
    $confogbuttom_3_importcache_importcachesumtable_2="записей импортировано";

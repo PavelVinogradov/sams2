@@ -62,7 +62,7 @@ function poolbuttom_9_delete()
 
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
-       print("TITLE=\"Delete Pool '$POOLConf->s_name'\"  border=0 ");
+       print("TITLE=\"$lframe_sams_DelayPools_DeleteButton '$POOLConf->s_name'\"  border=0 ");
        print("onclick=DeletePool() \n");
        print("onmouseover=\"this.src='$SAMSConf->ICONSET/trash_48.jpg'\" \n");
        print("onmouseout= \"this.src='$SAMSConf->ICONSET/trash_32.jpg'\" >\n");
