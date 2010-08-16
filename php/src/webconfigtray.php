@@ -17,7 +17,8 @@ function GetUpTime()
   $value=`uptime`;
   return($value);
 }
-function GetHostName()
+
+function GetSamsHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
      {  $value="N.A."; }

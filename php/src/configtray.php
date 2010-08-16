@@ -12,7 +12,7 @@ class UpTime
   var $minits="";
 }
 
-function GetHostName()
+function GetSamsHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
      {  $value="N.A."; }
@@ -112,7 +112,7 @@ function SysInfo()
 
    PageTop("stat_48.jpg","$configtray_0_Head");
 
-   $hostname=GetHostName();
+   $hostname=GetSamsHostName();
    $ipaddr=GetIPAddr();
    //$uptime=system("uptime | cut -d',' -f 1 ");
 
