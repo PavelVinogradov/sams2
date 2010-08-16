@@ -42,11 +42,11 @@
  else
    {
      $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
-     $SAMSConf->domainusername=$_COOKIE['domainuser'];
-     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
-     $SAMSConf->USERID=$_COOKIE['userid'];
-     $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
-	$samsadmin=$_COOKIE['samsadmin'];
+     if(isset($_COOKIE['domainuser'])) $SAMSConf->domainusername = $_COOKIE['domainuser'];
+     if(isset($_COOKIE['gauditor']))   $SAMSConf->groupauditor=$_COOKIE['gauditor'];
+     if(isset($_COOKIE['userid']))     $SAMSConf->USERID=$_COOKIE['userid'];
+     if(isset($_COOKIE['webaccess']))  $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
+     if(isset($_COOKIE['samsadmin']))  $samsadmin=$_COOKIE['samsadmin'];
    }  
 
    if($samsadmin==1)
