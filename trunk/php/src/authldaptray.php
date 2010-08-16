@@ -138,7 +138,7 @@ function AuthLDAPValues()
   $DB=new SAMSDB();
   $DB2=new SAMSDB();
 
-  PageTop("config_48.jpg","LDAP configuration ");
+  PageTop("config_48.jpg",$lframe_sams_Auth_Title_LDAP_Config);
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/syncwithldap.html\">$documentation</A>");
   print("<P>\n");
@@ -197,7 +197,7 @@ function AuthLDAPValues()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"ldaptest\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authldaptray.php\">\n");
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test connections to LDAP\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$lframe_sams_Auth_LDAP_connections_test\">\n");
   print("</FORM>\n");
 
   $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='ldap' AND  s_param='ldapgroup'");

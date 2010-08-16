@@ -57,7 +57,7 @@ function AddPoolForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
 
-  PageTop("delaypool_32.png","Add delay pool");
+  PageTop("delaypool_32.png",$lframe_sams_DelayPools_Add);
   print("<BR>\n");
  
   print("<SCRIPT language=JAVASCRIPT>\n");
@@ -107,11 +107,11 @@ function AddPoolForm()
 
   print("<TABLE  BORDER=0>\n");
   print("<TR>\n");
-  print("  <TD><B>Name:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_Field_Name:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"name\" SIZE=50></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Class:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_Field_Class:</B></TD>\n");
   print("  <TD>\n");
   print("  <SELECT NAME=\"class\" onchange=ClassChanged(POOL)>\n");
   print("  <OPTION value=1 SELECTED>1</OPTION>\n");
@@ -121,33 +121,33 @@ function AddPoolForm()
   print("  </TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Aggregate bucket restore:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_AgrBucket_Restore:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"agg1\" VALUE=\"-1\" SIZE=10></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Aggregate bucket size:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_AgrBucket_Size:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"agg2\" VALUE=\"-1\" SIZE=10></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Network bucket restore:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_NetBucket_Restore:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"net1\" VALUE=\"-1\" DISABLED SIZE=10></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Network bucket size:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_NetBucket_Size:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"net2\" VALUE=\"-1\" DISABLED SIZE=10></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Individual bucket restore:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_IndBucket_Restore:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"ind1\" VALUE=\"-1\" DISABLED SIZE=10></TD>\n");
   print("</TR>\n");
   print("<TR>\n");
-  print("  <TD><B>Individual bucket size:</B></TD>\n");
+  print("  <TD><B>$lframe_sams_DelayPools_IndBucket_Size:</B></TD>\n");
   print("  <TD><INPUT TYPE=\"TEXT\" NAME=\"ind2\" VALUE=\"-1\" DISABLED SIZE=10></TD>\n");
   print("</TR>\n");
   print("</TABLE>\n");
 
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Add\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$lframe_sams_DelayPools_AddButton\">\n");
   print("</FORM>\n");
 
   //print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
@@ -172,21 +172,21 @@ function JSPoolInfo()
   $code=$code."<TABLE WIDTH=\"95%\" border=0><TR><TD WIDTH=\"10%\"  valign=\"middle\">";
   $code=$code."<img src=\"$SAMSConf->ICONSET/delaypool_32.png\" align=\"RIGHT\" valign=\"middle\" >";
   $code=$code."<TD valign=\"middle\">";
-  $code=$code."<h2 align=\"CENTER\">Delay Pool <FONT COLOR=\"BLUE\">$POOLConf->s_name</FONT></h2>";
+  $code=$code."<h2 align=\"CENTER\">$lframe_sams_DelayPool <FONT COLOR=\"BLUE\">$POOLConf->s_name</FONT></h2>";
   $code=$code."</TABLE>";
 
   $code=$code."<TABLE>";
-  $code=$code."<TR><TD>Aggregate bucket restore:</TD><TD>$POOLConf->s_agg1</TD></TR>";
-  $code=$code."<TR><TD>Aggregate bucket maximum:</TD><TD>$POOLConf->s_agg2</TD></TR>";
+  $code=$code."<TR><TD>$lframe_sams_DelayPools_AgrBucket_Restore:</TD><TD>$POOLConf->s_agg1</TD></TR>";
+  $code=$code."<TR><TD>$lframe_sams_DelayPools_AgrBucket_Size:</TD><TD>$POOLConf->s_agg2</TD></TR>";
   if ($POOLConf->s_class == 3)
   {
-    $code=$code."<TR><TD>Network bucket restore:</TD><TD>$POOLConf->s_net1</TD></TR>";
-    $code=$code."<TR><TD>Network bucket maximum:</TD><TD>$POOLConf->s_net2</TD></TR>";
+    $code=$code."<TR><TD>$lframe_sams_DelayPools_NetBucket_Restore:</TD><TD>$POOLConf->s_net1</TD></TR>";
+    $code=$code."<TR><TD>$lframe_sams_DelayPools_NetBucket_Size:</TD><TD>$POOLConf->s_net2</TD></TR>";
   }
   if ($POOLConf->s_class > 1)
   {
-    $code=$code."<TR><TD>Individual bucket restore:</TD><TD>$POOLConf->s_ind1</TD></TR>";
-    $code=$code."<TR><TD>Individual bucket maximum:</TD><TD>$POOLConf->s_ind2</TD></TR>";
+    $code=$code."<TR><TD>$lframe_sams_DelayPools_IndBucket_Restore:</TD><TD>$POOLConf->s_ind1</TD></TR>";
+    $code=$code."<TR><TD>$lframe_sams_DelayPools_IndBucket_Size:</TD><TD>$POOLConf->s_ind2</TD></TR>";
   }
   $code=$code."</TABLE>";
   $code=$code."</CENTER></BODY></HTML>";

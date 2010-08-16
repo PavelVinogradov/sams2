@@ -265,7 +265,7 @@ function poolbuttom_1_prop()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=updatepoolform&filename=poolbuttom_1_prop.php&id=$POOLConf->s_pool_id",
-	               "basefrm","config_32.jpg","config_48.jpg","Edit delay pool $POOLConf->s_name");
+	               "basefrm","config_32.jpg","config_48.jpg","$lframe_sams_DelayPools_EditButton '$POOLConf->s_name'");
     }
 }
 

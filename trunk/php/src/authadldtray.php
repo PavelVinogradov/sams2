@@ -193,7 +193,7 @@ function AuthADLDValues()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"adldtest\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"authadldtray.php\">\n");
 
-  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"test connections to Active Directory\">\n");
+  print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$AuthADLDValues_authadldtray_AD_connections_test\">\n");
   print("</FORM>\n");
 
   $num_rows=$DB->samsdb_query_value("select s_value from auth_param where s_auth='adld' AND  s_param='adldgroup';");
