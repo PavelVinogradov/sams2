@@ -17,7 +17,7 @@ function GetUpTime()
   $value=`getuptime`;
   return($value);
 }
-function GetHostName()
+function GetSamsHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
      {  $value="N.A."; }
@@ -111,7 +111,7 @@ function SysInfo()
 {
    PageTop("stat_48.jpg","System Information");
 
-   $hostname=GetHostName();
+   $hostname=GetSamsHostName();
    $ipaddr=GetIPAddr();
    $uptime=GetUpTime();
    print("<TABLE WIDTH=90%  CLASS=samstable>");
