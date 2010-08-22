@@ -17,12 +17,10 @@ function setcolor($thisstep,$step)
 {
 	if($step==$thisstep)
 	{
-//		return("<FONT COLOR=\"RED\">");
 		return("<div class=\"step-on\">");
 	}
 	else
 	{
-//		return("<FONT COLOR=\"RED\">");
 		return("<div class=\"step-off\">");
 	}
 	
@@ -37,10 +35,6 @@ function leftfrm($step, $lang)
 	echo "<TR><TD>".$color=setcolor($step,3)."$setup_3</div>\n";
 	echo "<TR><TD>".$color=setcolor($step,4)."$setup_4</div>\n";
 
-//	echo "<TR><TD>".$color=setcolor($step,1)."$setup_1</FONT>\n";
-//	echo "<TR><TD>".$color=setcolor($step,2)."$setup_2</FONT>\n";
-//	echo "<TR><TD>".$color=setcolor($step,3)."$setup_3</FONT>\n";
-//	echo "<TR><TD>".$color=setcolor($step,4)."$setup_4</FONT>\n";
 	echo "</TABLE>\n";
 }
 function step_1($lang)
@@ -51,7 +45,6 @@ function step_1($lang)
 
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"step\" value=\"2\">\n");
 	print("<H2 ALIGN=\"CENTER\">$setup_1</H2>");
-//	print("<SELECT NAME=\"lang\">\n");
 
 	if ($handle2 = opendir("./lang"))
         {
@@ -71,7 +64,6 @@ function step_1($lang)
 			$language=ReturnLanguage("lang/$file");
 			if($filename2==$lang)
 			{
-//     				print("<OPTION VALUE=\"$filename2\" SELECTED> $language");
      				print("<INPUT TYPE=\"radio\" NAME=\"lang\" VALUE=\"$filename2\" CHECKED> $language<BR>");
 			}
 			else
@@ -82,13 +74,11 @@ function step_1($lang)
             }
 	    print("<BR><INPUT CLASS=\"button\" TYPE=\"BUTTON\" value=\"Reload\" onclick=ReloadPage(lang)>\n");
         }
-//   print("</SELECT>\n");
 
 }
 
 function get_permissions($str, $mode, $comment, $lang)
 {
-//	require('./samsclass.php');
 	$langmodule="./lang/lang.$lang";
 	require($langmodule);
 
@@ -106,7 +96,6 @@ function get_permissions($str, $mode, $comment, $lang)
 }
 function get_php_function($phpfunction, $str, $lang)
 {
-//	require('./samsclass.php');
 	$langmodule="./lang/lang.$lang";
 	require($langmodule);
 
@@ -138,12 +127,10 @@ function step_2($lang)
 
 	echo "<TABLE WIDTH=80%>\n";
 	echo "<H3><FONT COLOR=BLUE>$setup_19:</FONT></H3>\n";
-//echo substr(sprintf('%o', fileperms('data')), -4);
 	if(get_permissions("data/test.txt", "w", $setup_7, $lang)==0)
 	{
 		echo "<BR><font color=red> $setup_8</font>";
 		echo "<BR>$setup_9";
-//		exit(0);
 	}
 	echo "</TABLE>";
 
@@ -267,15 +254,12 @@ function step_3($lang)
 
 }
 
-//function CreateSAMSdb($db, $odbc, $host, $user ,$passwd, $dbname, $create, $muser, $mpass, $odbcsource)
 function CreateSAMSdb($lang)
 {
 
 	$pgdb=array();
 
 	require('./samsclass.php');
-//	$langmodule="./lang/lang.$lang";
-//	require($langmodule);
 
 	$SAMSConf=new MAINCONF();
 
@@ -323,7 +307,6 @@ $pgdb[9] = "CREATE TABLE timerange ( s_trange_id SERIAL PRIMARY KEY, s_name varc
 s_days varchar(14), 
 s_timestart time default '00:00:00', 
 s_timeend time default '23:59:59')";
-//s_shour int default '0', s_smin int default '0', s_ehour int default '23', s_emin int default '59')";
 $pgdb[10] = "INSERT INTO timerange VALUES('0','Full day','MTWHFAS','00:00:00','23:59:59')";
 $pgdb[11] = "CREATE TABLE sconfig_time ( s_shablon_id int, s_trange_id int )";
 if($SAMSConf->DB_ENGINE=="MySQL")
@@ -459,20 +442,13 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"step\" value=\"5\">\n");
 
-//      print("<FORM NAME=\"startsams\" ACTION=\"index.html\" TARGET=_parent>\n");
       printf("<BR><CENTER>");
-//      print("<BR><INPUT TYPE=\"SUBMIT\" value=\"Start SAMS webinterface\">\n");
-//      print("</FORM>\n");
-//exit(0);
 }
 
 function step_4($lang)
 {
-//	require('./samsclass.php');
 	$langmodule="./lang/lang.$lang";
 	require($langmodule);
-
-//	$SAMSConf=new MAINCONF();
 
 	if(isset($_GET["hostname"])) $hostname=$_GET["hostname"];
 	if(isset($_GET["username"])) $username=$_GET["username"];

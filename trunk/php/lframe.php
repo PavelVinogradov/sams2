@@ -5,7 +5,6 @@
  * (see the file 'main.php' for license details)
  */
 
-  //require('./src/auth.php');
   require('./dbclass.php');
   require('./samsclass.php');
   require('./tools.php');

@@ -38,7 +38,6 @@ class SAMSUSER
   var $U_access;
   var $L_access;
   var $C_access;
-//WGSAULC
 
 function SAMSUSER()
 {
@@ -49,8 +48,6 @@ function sams_user($userid)
 {
   global $SAMSConf;
   $DB=new SAMSDB();
-
-//  if()
 
   $num_rows=$DB->samsdb_query_value("SELECT squiduser.*,shablon.s_name as s_shablon_name,shablon.s_quote as def_quote,sgroup.s_name as s_group_name,shablon.s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id LEFT JOIN sgroup ON squiduser.s_group_id=sgroup.s_group_id WHERE s_user_id='$userid' ");
   $row=$DB->samsdb_fetch_array();
@@ -129,7 +126,6 @@ function sams_admin_authentication($username,$passwd)
 	exit;
      }
      $row=$DB->samsdb_fetch_array();
-     //$row=mysql_fetch_array($result);
      $autherrorc=$row['s_autherrorc'];
      $autherrort=$row['s_autherrort'];
      $admname=$row['s_user'];
@@ -172,7 +168,6 @@ function sams_admin_authentication($username,$passwd)
 		$function="autherror";
            }
        }
-//exit;
 
   }   
 

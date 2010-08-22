@@ -151,10 +151,6 @@ if($function=="nuserauth")
 
   }  
 
-
-
-//else
-//  {
 	$cookie_user="";
 	$cookie_passwd="";
 	$cookie_domainuser="";
@@ -168,8 +164,6 @@ if($function=="nuserauth")
 	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
 	if(isset($HTTP_COOKIE_VARS['userid'])) $SAMSConf->USERID=$HTTP_COOKIE_VARS['userid'];
 	if(isset($HTTP_COOKIE_VARS['webaccess'])) $SAMSConf->USERWEBACCESS=$HTTP_COOKIE_VARS['webaccess'];
-//             setcookie("userid","$SAMSConf->USERID");
-//             setcookie("webaccess","$SAMSConf->USERWEBACCESS");
 	if($SAMSConf->PHPVER<5)
 	  {
 		$SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
@@ -186,7 +180,6 @@ if($function=="nuserauth")
 		if(isset($_COOKIE['webaccess']))  $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
 		if(isset($_COOKIE['samsadmin']))  $samsadmin=$_COOKIE['samsadmin'];
 	  }  
-//  }
    if($samsadmin==1)
 	{
 		$USERConf->sams_admin();
@@ -209,7 +202,7 @@ if($gb!=1)
     print("<HTML><HEAD>");
     print("<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$SAMSConf->ICONSET/tree.css\">\n");
     print("</head>\n");
-    print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");//     if($autherrorc==1&&$autherrort>0)
+    print("<body LINK=\"#ffffff\" VLINK=\"#ffffff\">\n");
     print("<center>\n");
   }
 
@@ -218,7 +211,6 @@ if($gb!=1)
 	{
 	require('./proxyclass.php');
 	$PROXYConf=new SAMSPROXY($_GET["id"]);
-	//$PROXYConf->PrintProxyClass();
 	}
 
   if(strstr($filename,"trange")&&$function!="addtrangeform"&&$function!="addtrange")
@@ -226,7 +218,6 @@ if($gb!=1)
 	require('./trangeclass.php');
 	 if(isset($_GET["id"])) $id=$_GET["id"];
 	$TRANGEConf=new SAMSTRANGE($id);
-	//$PROXYConf->PrintProxyClass();
 	}
 
   if(strstr($filename,"pool")&&$function!="addpoolform"&&$function!="addpool")
@@ -241,7 +232,6 @@ if($gb!=1)
 	 if(isset($_GET["id"])) $id=$_GET["id"];
 	require('./shablonclass.php');
 	$SHABLONConf=new SAMSSHABLON($id);
-	//$PROXYConf->PrintProxyClass();
 	}
 
   if($user=="exe"&&$function!="setcookie"&&$function!="userauth"&&$function!="nuserauth"&&$module==null)
@@ -266,7 +256,6 @@ if($gb!=1)
   }
 if($function=="nuserauth"|| $function=="userauth")
   {
-//exit(0);
      if(isset($_POST["id"])) $id=$_POST["id"];
      print("<SCRIPT>\n");
      print("        parent.lframe.location.href=\"lframe.php\";\n");
@@ -290,7 +279,6 @@ if($function=="autherror")
           print("<h2>next logon after $time2 second</h2> \n");
        }   
   }   
-//$SAMSConf->PrintSAMSSettings();
 print("</center>\n");
 print("</body></html>\n");
 

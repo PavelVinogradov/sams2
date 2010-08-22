@@ -46,18 +46,8 @@ function SAMSTRANGE($trangeid)
    if(strstr($row['s_days'], "F"))   $this->s_days[5]="CHECKED"; 
    if(strstr($row['s_days'], "A"))   $this->s_days[6]="CHECKED";
    if(strstr($row['s_days'], "S"))   $this->s_days[7]="CHECKED"; 
-//echo "$row[s_days]:<BR>";
-//for($i=1;$i<8;$i++)
-//{
-//       $rrr=$this->trangeday("$i");
-//	echo "$i=$rrr ";
-//}
+
   $DB->free_samsdb_query();
-//select extract('hour' from s_timestart) from timerange;
-
-//  $num_rows=$DB->samsdb_query_value("SELECT * trange, extract('hour' from s_timestart) as s_hour, extract('hour' from s_timeend) as e_hour, extract('minute' from s_timestart) as s_min, extract('minute' from s_timeend) as e_min  FROM timerange WHERE s_trange_id='$trangeid' ");
-//  $row=$DB->samsdb_fetch_array();
-
 }
 
 }
