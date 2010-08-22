@@ -162,11 +162,9 @@ function ExecuteFunctions($path, $mask, $id)
 	sort($files);  
 	for($i=0;$i<$count;$i++)
 		{
-			//echo "$i/$count: $files[$i] <BR>";
 			if(strstr($files[$i],"~")==NULL)
 				{ 	
 					$funcname=str_replace(".php","",$files[$i]);		
-					//echo "// ============-$path/$files[$i]- ===========\n";
 					require("$path/$files[$i]");
 					if($id!=1)
 						$result .= $funcname($id);

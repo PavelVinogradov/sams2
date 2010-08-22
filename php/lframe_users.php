@@ -8,8 +8,6 @@
 function lframe_users()
 {
 
-//  $DB=new SAMSDB(&$SAMSConf);
-
  global $SAMSConf;
  global $USERConf;
  global $SquidUSERConf;
@@ -84,12 +82,11 @@ if($USERConf->ToWebInterfaceAccess("SAC")==1 ||
  ( $USERConf->ToWebInterfaceAccess("G")==1 && $USERConf->s_group_id==$row['s_group_id'] )
 )
 {
-//	    echo "<li class=\"collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\">$row[s_name]</span>\n";
 	    echo "<li class=\"closed collapsable\"> <div class=\"hitarea collapsable-hitarea\"></div> <span class=\"groups\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=grouptray.php&function=grouptray&id=$row[s_group_id]\">$row[s_name]</A></span>\n";
 	    echo "<ul id=\"group_$row[s_group_id]\">\n";
 
             $num_rows_=$DB2->samsdb_query_value("SELECT squiduser.* , shablon.s_auth as s_auth FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE s_group_id='$row[s_group_id]' ORDER BY $SORDER");
-/**/
+
             while($row_=$DB2->samsdb_fetch_array())
                {
                 if($row_['s_enabled']==1)
@@ -128,7 +125,7 @@ if($USERConf->ToWebInterfaceAccess("SAC")==1 ||
 		echo "<li><span class=\"$class\"><A TARGET=\"tray\" HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row_[s_user_id]&auth=$row_[s_auth]\">$name</A></span></li>\n";
 
                }
-/**/
+
 	     $count++;  
 	    echo "</ul>";
 	    echo "</li>";

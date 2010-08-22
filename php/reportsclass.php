@@ -25,8 +25,6 @@ print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
 print("function SetDescMode(descvalue) \n");
 print("{\n");
 print("  document.getElementById('desc').value = descvalue; \n");
-//print("  var descv = document.getElementById('desc').value; \n");
-//print("  window.confirm( descvalue + ' + ' + descv );\n");
 print("}\n");
 print("</SCRIPT>\n");
 
@@ -147,7 +145,6 @@ function DATESELECT($sdate, $edate)
 		$this->e_month=date("n");
 		$this->e_year=date("Y");
 	}
-//echo "$this->s_year-$this->s_month-$this->s_day $this->e_year-$this->e_month-$this->e_day<BR>";
 }
 
 }

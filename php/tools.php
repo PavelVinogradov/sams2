@@ -536,19 +536,4 @@ function GraphButton($url,$target,$img_small,$img_big,$title)
   print("</A></TD>\n");
 }
 
-/*
-function GraphButton($url,$target,$img_small,$img_big,$title)
-{
-  global $SAMSConf;
-
-  print("<A HREF=\"$url\" target=\"$target\">\n");
-  print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/$img_small\" BORDER=0 \n ");
-  print("TITLE=\"$title\" border=0\n");
-  print("onmouseover=\"this.src='$SAMSConf->ICONSET/$img_big'\" \n");
-  print("onmouseout= \"this.src='$SAMSConf->ICONSET/$img_small'\"> \n");
-  print("</A>\n");
-}
-
-*/
-
 ?>
