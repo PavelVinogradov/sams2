@@ -17,16 +17,11 @@ function AddGroup()
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
 
-//  $groupname=TempName();
-
   $result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$groupnick'");
-//  $result=mysql_query("SELECT nick FROM groups where nick = '$groupnick';");
   if($result == 0) 
   {
     $result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$groupnick') ");
     $result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('ntlm', 'ntlmgroup', '$groupnick') ");
-//    if($result!=FALSE)
-//      UpdateLog("$SAMSConf->adminname","Added group  $groupnick ","02");
 
     print("<SCRIPT>\n");
     print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -75,7 +70,6 @@ function AddShablon()
   $sid=$row['s_shablon_id'];
   $DB->free_samsdb_query();
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-//  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -96,13 +90,7 @@ function ImportFromNTLM()
 
   if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
-/*
-echo "Import From NTLM<BR>";
-$z1=urlencode("sams интернет","UTF-8");
-$z2=urldecode($z2,"Windows-1251");
-$z3 = urlencode(urldecode("sams интернет", "Windows-1251"), "UTF-8"); 
-echo "$z1 = $z2 = $z3<BR>";
-*/ 
+
   if(isset($_GET["addtemplates"])) $addtemplates=$_GET["addtemplates"];
   if(isset($_GET["addgroups"])) $addgroups=$_GET["addgroups"];
   if(isset($_GET["addgroupname"])) $addgroupname=$_GET["addgroupname"];
@@ -152,8 +140,6 @@ echo "$z1 = $z2 = $z3<BR>";
 echo "$i: $addgroupname[$i]<BR>";
 		if($addtemplates=="on")
 		{
-
-
 			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
@@ -205,7 +191,6 @@ echo "user $g[0] added <BR>";
 						$result=$DB->samsdb_query_value($QUERY);
 						if($result==0)
 						{
-//print("<B>$g[0]</B> group: $g[$j]: Ok <BR>");
 							if($enabled=="")
 								$enabled=0;
 							$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$g[0]', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
@@ -253,13 +238,10 @@ function ImportFromNTLMForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"importfromntlm\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authntlmbuttom_3_importfromntlm.php\">\n"); 
-/* */
-//	$e = escapeshellcmd("$ntlmadmin $ntlmadminpasswd");
-//	$value=ExecuteShellScript("ntlm_groups.sh", $e);
-//	$a=explode(";",$value);
+
 	$users=ExecuteShellScript("getntlmgroups","$ntlmserver $ntlmadmin $ntlmadminpasswd");
 	$a=explode("|",$users);
-//  $acount=count($a);
+
 	$acount=count($a);
 	$aflag=0;
 
@@ -279,38 +261,6 @@ function ImportFromNTLMForm()
 	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
 
-/*
-	print("<TR><TD WIDTH=30%><B>Create SAMS templates with AD groups name:\n");
-	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");
-
-           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
-           print("function ADTempaletesEnabled(formname) \n");
-           print("{ \n");
-           print("  if(formname.addtemplates.checked==true) \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=false;  \n");
-           print("      formname.period.disabled=false;  \n");
-	   print("      EnterPeriod(formname);  \n");
-           print("      formname.trange.disabled=false;  \n");
-//           print("      formname.newperiod.disabled=false;  \n");
-//           print("      formname.clryear.disabled=false;  \n");
-//           print("      formname.clrmonth.disabled=false;  \n");
-//           print("      formname.clrday.disabled=false;  \n");
-           print("    }\n");
-           print("  else \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=true;  \n");
-           print("      formname.period.disabled=true;  \n");
-//	   print("      EnterPeriod(formname);  \n");
-           print("      formname.newperiod.disabled=true;  \n");
-           print("      formname.clryear.disabled=true;  \n");
-           print("      formname.clrmonth.disabled=true;  \n");
-           print("      formname.clrday.disabled=true;  \n");
-           print("      formname.trange.disabled=true;  \n");
-           print("    }\n");
-           print("}\n");
-           print("</SCRIPT> \n");
-*/
 	print("<TR>\n");
 	print("<TD>\n");
 	print("$shablonnew_NewShablonForm_3:\n");
@@ -334,7 +284,7 @@ function ImportFromNTLMForm()
         print("  var clryear=formname.clryear.value; \n");
         print("  var clrmonth=formname.clrmonth.value; \n");
         print("  var clrday=formname.clrday.value; \n");
-      //print("  value=window.confirm(\"1? \" );\n");
+
          print("  if(period==\"A\") \n");
         print("    {\n");
         print("      formname.newperiod.disabled=false;  \n");
@@ -385,12 +335,6 @@ function ImportFromNTLMForm()
 	}
 	print("</SELECT>\n");
 
-
-
-/*
-	print("<TR><TD WIDTH=30%><B>Create SAMS groups with NTLM groups name:\n");
-	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addgroups\" CHECKED>");
-*/
 	echo "</TABLE>";
 	print("<INPUT TYPE=\"SUBMIT\" value=\"Import\">\n");
 	print("</FORM>\n");

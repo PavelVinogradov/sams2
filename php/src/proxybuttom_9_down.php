@@ -5,35 +5,6 @@
  * (see the file 'main.php' for license details)
  */
 
-function DownSquid()
-{
-  global $SAMSConf;
-  global $USERConf;
- 
- if(isset($_GET["cache"])) $cache=$_GET["cache"];
-   
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-  if($USERConf->ToWebInterfaceAccess("C")==1)
-    {
-       PageTop("reconfig_48.jpg","Shutdown proxy server");
-       
-       if($SAMSConf->PROXYCOUNT>1)
-         {
-            for($i=0;$i<$SAMSConf->PROXYCOUNT;$i++)
-	       {
-	           if($cache[$i]=="on")
-	              {
-	                 //echo "remove cache $row[id] $row[description]<BR>";
-                         $result=mysql_query("INSERT INTO reconfig SET number=\"$i\",service=\"squid\",action=\"shutdown\" ");
-                      }
-                }
-          
-         }
-      }
-}
-
 function shutdown_proxy()
 {
   global $SAMSConf;

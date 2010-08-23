@@ -36,13 +36,11 @@ function UpdateShablon()
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
 
 $tc=count($trange);
-//echo "$trange [$tc]<BR>";
 for($i=0;$i<$tc;$i++)
   echo "$trange[$i] ";
-//exit(0);
+
    if($alldenied=="on")   $alldenied="1"; else $alldenied="0";  
 
-//  if($clrday=="") $clrday="0000-00-00";
    $clrdate="$clryear-$clrmonth-$clrday";
    if($clrdate="=--") $clrdate="1980-01-01";
    if($period=="A")
@@ -60,7 +58,6 @@ for($i=0;$i<$tc;$i++)
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect");
   while($row=$DB->samsdb_fetch_array())
      {
-//$qqq=$_GET["$row[s_redirect_id]"];
        if($_GET["d$row[s_redirect_id]"]=="on")
           {
             $num_rows=$DB2->samsdb_query("INSERT INTO sconfig VALUES('$sname','$row[s_redirect_id]') ");
@@ -105,14 +102,11 @@ function UpdateShablonForm()
    $ALLOWDISABLED="";
    $NTLMSELECTED="";
    $IPSELECTED="";
-//  $num_rows=$DB->samsdb_query_value("SELECT s_name FROM shablon WHERE s_shablon_id='$id' ");
-//  $row=$DB->samsdb_fetch_array($result2);
-//  $alldenied=$row2['alldenied'];
+
   PageTop("shablon.jpg","$shablon_1<BR>$shablonbuttom_1_prop_UpdateShablonForm_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
   print("<P>\n");
-//  $result=mysql_query("SELECT name,filename,type FROM redirect ORDER BY type DESC");
   print("<FORM NAME=\"UPDATESHABLON\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"updateshablon\">\n");
@@ -457,8 +451,6 @@ function UpdateShablonForm()
   print("</SELECT>\n");
    
   print("<TR><TD>\n");
-//  if($SAMSConf->CCLEAN!="Y")
-//    print("<FONT COLOR=\"RED\"> $shablonbuttom_1_prop_UpdateShablonForm_26</FONT>\n");
   print("<TD> $shablonbuttom_1_prop_UpdateShablonForm_16: \n");
   print("<INPUT TYPE=\"TEXT\" NAME=\"newperiod\" SIZE=5 $ADISABLED VALUE=\"$AVALUE\"> $shablonbuttom_1_prop_UpdateShablonForm_17\n");
   
@@ -501,7 +493,6 @@ function UpdateShablonForm()
   	while($row2=$DB2->samsdb_fetch_array())
 		{
 		print("<TR><TD ALIGN=\"RIGHT\" > <B>$row2[s_name]</B> ($row2[s_timestart] - $row2[s_timeend] ) ");
-//		print("<TD > <INPUT TYPE=\"CHECKBOX\" NAME=\"trange[$row2[s_trange_id]]\" CHECKED>");
 		print("<INPUT TYPE=\"BUTTON\" value=\"$redir_filetypesform2\" Onclick=RemoveTRange($row2[s_trange_id])>\n");
 		}
 	}
@@ -513,7 +504,6 @@ function UpdateShablonForm()
        print("function RemoveTRange(id)\n");
        print("{\n");
        print("  var href=\"main.php?show=exe&function=removetrange2shablon&filename=shablonbuttom_1_prop.php&shablon_id=$SHABLONConf->s_shablon_id&id=\"+id; ");
-//       print("  value=window.confirm(\"Remove time range?\n \" );\n");
        print("  value=window.confirm(\"$shablonbuttom_1_prop_UpdateShablonForm_30\");\n");
        print("  if(value==true) \n");
        print("     {\n");
@@ -538,8 +528,6 @@ function UpdateShablonForm()
   }
 
   $DB2->free_samsdb_query();
-  //$DB->free_samsdb_query();
-
 
   print("<P><B>$shablonbuttom_1_prop_UpdateShablonForm_29: </B>\n");
   print("<TABLE>\n");
@@ -587,7 +575,6 @@ function RemoveTRange2Shablon()
    
   echo "DELETE FROM sconfig_time WHERE  s_shablon_id='$shablon_id' .AND. s_trange_id='$id' <BR>";
   $DB->samsdb_query("DELETE FROM sconfig_time WHERE  s_shablon_id='$shablon_id' AND s_trange_id='$id' ");
-//  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
   print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$shablon_id\"; \n");
@@ -610,7 +597,6 @@ function AddTRange2Shablon()
 	exit;
   
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$id', '$trange' ) ");
-//  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
   print("  parent.basefrm.location.href=\"main.php?show=exe&function=updateshablonform&filename=shablonbuttom_1_prop.php&id=$id\"; \n");

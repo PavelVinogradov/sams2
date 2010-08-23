@@ -87,7 +87,6 @@ function UserTrafficPeriodGB()
 	$g->DataMax = $ymax;
 	$g->DataMin = 0;
 	$g->DataShowValue = FALSE;
-// #################################################
 
 // #ITS DRAWING TIME################################
 	$g->MakeLinePointChart();
@@ -114,8 +113,6 @@ function UserTrafficPeriod()
 		exit(0);
 	}
 
-//echo "id=$id $SquidUSERConf->s_user_id $SquidUSERConf->s_nick<BR>";
-//exit(0);
   $DB=new SAMSDB();
  
   $sdate=$DATE->sdate();
@@ -145,7 +142,6 @@ function UserTrafficPeriod()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-//  if($SAMSConf->SHOWGRAPH=="Y")
     printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate\"><P>");
   $count=1;
   $cache=0;

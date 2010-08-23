@@ -5,53 +5,6 @@
  * (see the file 'main.php' for license details)
  */
  
- 
-
-function GroupsPercentTrafficGB()
-{
-  require('lib/chart.php');
-  
-  global $SAMSConf;
-  global $DATE;
-  
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-  $sdate=$DATE->sdate();
-  $edate=$DATE->edate();
-  $bdate=$DATE->BeginDate();
-  $eddate=$DATE->EndDate();
-
-  db_connect($SAMSConf->LOGDB) or exit();
-  mysql_select_db($SAMSConf->LOGDB);
-
-  $cresult=mysql_query("CREATE TEMPORARY TABLE cache_ SELECT user,domain,sum(size) as user_size,sum(hit) as user_hit FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user");
-  $cresult=mysql_query("SELECT sum(user_size),sum(user_hit) FROM cache_ ");
-  $row=mysql_fetch_array($cresult);
-  if($SAMSConf->realtraffic=="real")
-	$all=$row[0] - $row[1];
-  else
-	$all=$row[0];
-  if($all==0) $all=1;
-	$percent=$all/100;
-  
-  $result=mysql_query("SELECT groups.nick,sum(user_size) as grp_size,sum(user_hit) as grp_hit FROM $SAMSConf->SAMSDB.squidusers,$SAMSConf->SAMSDB.groups,cache_ where cache_.user=squidusers.nick && squidusers.group=groups.name group by groups.nick order by grp_size DESC");
-  $count=0;
-  while($row=mysql_fetch_array($result))
-    {
-	if($SAMSConf->realtraffic=="real")
-          $SIZE[$count]=$row['grp_size']-$row['grp_hit'];
-	else
-          $SIZE[$count]=$row['grp_size'];
-      $USERS[$count]=$count+1;
-      $count++;
-    }
-$circlesize=15;
-$circlesize=100;
-//   $circle=new CIRCLE3D(500, $count*$circlesize, $SIZE, $count, $USERS);
-   $circle=new CIRCLE3D(500, 250, $SIZE, $count, $USERS);
-   $circle->ShowCircle();
-}
-
 
 function UsersChartGB()
 {

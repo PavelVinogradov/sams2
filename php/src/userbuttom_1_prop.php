@@ -48,7 +48,6 @@ function UpdateUser()
   else
      $gauditor=0;
 
-/* *************************************************** */
   if($W_access=="on") $W_access="W";
   if($G_access=="on") $G_access="G";
   if($S_access=="on") $S_access="S";
@@ -57,7 +56,6 @@ function UpdateUser()
   if($L_access=="on") $L_access="L";
   if($C_access=="on") $C_access="C";
 
-/* *************************************************** */
   $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
 
   if($domain=="") 
@@ -99,7 +97,7 @@ function UpdateUserForm()
 
   
   PageTop("user.jpg","$userbuttom_1_prop_UpdateUserForm_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT>");
-//exit(0);
+
   print("<FORM NAME=\"UPDATEUSER\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"updateuser\">\n");
@@ -120,23 +118,11 @@ function UpdateUserForm()
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_domain\" NAME=\"domain\" SIZE=15> \n");
 
-/*
-//  if( $SquidUSERConf->auth=="ncsa"||$SquidUSERConf->auth=="ip")
-//    {
-       print("<TR>\n");
-       print("<TD>\n");
-       print("<B>$userbuttom_1_prop_UpdateUserForm_3:");
-       print("<TD>\n");
-       //print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$row[passwd]\">");
-       print("<INPUT TYPE=\"PASSWORD\" NAME=\"passwd\" SIZE=20 VALUE=\"$SquidUSERConf->s_passwd\">");
-//    }
-*/
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_4: \n");
   print("<TD>\n");
   print("<INPUT TYPE=\"TEXT\" VALUE=\"$SquidUSERConf->s_ip\" NAME=\"userip\" SIZE=15>/ \n");
-//  print("<INPUT TYPE=\"TEXT\" VALUE=\"$row[ipmask]\" NAME=\"useripmask\" SIZE=15> \n");
 
   print("<TR>\n");
   print("<TD>\n");
@@ -160,8 +146,7 @@ function UpdateUserForm()
   print("<SELECT NAME=\"usergroup\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
 
   $num_rows=$DB2->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup");
-//  $result_u=mysql_query("SELECT * FROM squidusers WHERE id=\"$row[id]\" ");
-//  $row_u=mysql_fetch_array($result_u);
+
   while($row2=$DB2->samsdb_fetch_array())
       {
        if($row2['s_group_id']==$SquidUSERConf->s_group_id)
@@ -215,7 +200,6 @@ function UpdateUserForm()
   print("<INPUT TYPE=\"TEXT\" NAME=\"userquote\" SIZE=10 VALUE=\"$uquote\" $QDISABLED> <B>0 - unlimited traffic \n");
   print("<TD>\n");
   
-  
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"saveenabled\" value=\"$SquidUSERConf->s_enabled\">\n");
   print("<TR>\n");
   print("<TD>\n");
@@ -240,11 +224,6 @@ function UpdateUserForm()
     print("<OPTION VALUE=\"-1\"> $userbuttom_1_prop_UpdateUserForm_17");
   print("</SELECT>\n");
 
-//  if($row['enabled']>0)
-//     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED> \n");
-//  else
-//     print("<INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" > \n");
-
   print("<TR>\n");
   print("<TD>\n");
   print("<B>$userbuttom_1_prop_UpdateUserForm_12: \n");
@@ -256,18 +235,15 @@ function UpdateUserForm()
       {
        if($row2['s_shablon_id']==$SquidUSERConf->s_shablon_id)
          {
-//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$SquidUSERConf->s_defquote\" SELECTED> $row2[s_name]");
             print("<OPTION VALUE=\"$row2[s_shablon_id]\" SELECTED> $row2[s_name]");
          }
        else
          {
-//            print("<OPTION VALUE=\"$row2[s_shablon_id]+$row2[s_quote]+$SquidUSERConf->s_defquote\"> $row2[s_name]");
             print("<OPTION VALUE=\"$row2[s_shablon_id]\"> $row2[s_name]");
          }
       }
   print("</SELECT>\n");
 
-/* *************************************************** */
   print("<TR><TD><B>$userbuttom_1_prop_UpdateUserForm_18 (W)\n");
   print("<TD>\n");
   $WCHECKED="";
@@ -317,8 +293,6 @@ function UpdateUserForm()
 	$CCHECKED="CHECKED";
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"C_access\" $CCHECKED> \n");
 
-/* *************************************************** */
-  
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$userbuttom_1_prop_UpdateUserForm_13\">\n");
   print("</FORM>\n");

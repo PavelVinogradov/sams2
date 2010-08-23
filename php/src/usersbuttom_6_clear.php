@@ -17,7 +17,6 @@ function ClearUsersTrafficCounter()
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
       $num_rows=$DB->samsdb_query("UPDATE squiduser SET s_size='0', s_hit='0' ");
-//      UpdateLog("$SAMSConf->adminname","$usersbuttom_6_clear_ClearUsersTrafficCounter","01");
 	print("<SCRIPT>\n");
 	print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
 	print("</SCRIPT> \n");
@@ -52,7 +51,6 @@ function usersbuttom_6_clear()
        print("}\n");
        print("</SCRIPT> \n");
 
-//       print("<TD  WIDTH=50 HEIGHT=50 VALIGN=CENTER ALIGN=CENTER>\n");
        print("<TD CLASS=\"samstraytd\">\n");
        print("<IMAGE id=Trash name=\"Clear\" src=\"$SAMSConf->ICONSET/erase_32.jpg\" \n ");
        print("TITLE=\"$usersbuttom_6_clear_usersbuttom_6_clear_2\"  border=0 ");
