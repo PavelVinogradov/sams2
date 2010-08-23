@@ -42,7 +42,7 @@
 Name:          sams2
 Version:       2.0.0
 Epoch:         667
-Release:       b1.%{epoch}%{disttag}
+Release:       b2.%{epoch}%{disttag}
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
@@ -127,7 +127,7 @@ mkdir %{buildroot}
 make DESTDIR=$RPM_BUILD_ROOT install
 
 install -d "${RPM_BUILD_ROOT}%{_initrddir}"
-install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}
+#install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}
 install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/sysconfig
 install -d "${RPM_BUILD_ROOT}%{_sysconfdir}"/logrotate.d
 
@@ -145,14 +145,14 @@ install -m644 "redhat/sysconfig"				\
 	"${RPM_BUILD_ROOT}%{_sysconfdir}"/sysconfig/sams2
 install -m644 "redhat/logrotate"				\
 	"${RPM_BUILD_ROOT}%{_sysconfdir}"/logrotate.d/sams2
-install -m644 "etc/httpd_conf"				\
-    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
-sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name},g'	\
-    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
-install -m644 etc/doc_sams2_conf			\
-    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
-sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-%{version},g'	\
-	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
+#install -m644 "etc/httpd_conf"				\
+#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
+#sed -i -e 's,__WEBPREFIX,%{_datadir}/%{name},g'	\
+#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/sams2.conf
+#install -m644 etc/doc_sams2_conf			\
+#    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
+#sed -i -e 's,__DOCPREFIX,%{_docdir}/%{name}-%{version},g'	\
+#	    "${RPM_BUILD_ROOT}%{_sysconfdir}"%{apacheconf}/doc4sams2.conf
 sed -i -e 's,^SQUIDCACHEDIR=.*$,SQUIDCACHEDIR=/var/spool/squid,g'	\
 	    "${RPM_BUILD_ROOT}%{_sysconfdir}"/sams2.conf
 sed -i -e 's,^SAMSPATH=.*$,SAMSPATH=/usr,g'	\

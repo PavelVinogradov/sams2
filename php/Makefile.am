@@ -24,6 +24,7 @@ install-data-local:
 	done
 	sed -i -e 's,__VERSION,$(VERSION),g' $(DESTDIR)/$(datadir)/$(distdir)/dbclass.php
 	sed -i -e 's,/etc/sams2.conf,${sysconfdir}/sams2.conf,g' $(DESTDIR)/$(datadir)/$(distdir)/config.php
+	chmod 0777 $(DESTDIR)/$(datadir)/$(distdir)/data
 
 uninstall-local:
 	rm -fr $(DESTDIR)/$(datadir)/$(distdir)
