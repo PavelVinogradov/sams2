@@ -38,7 +38,6 @@ function UsersImportFromFile()
       exit(0);
     }
 	$QUERY="SELECT s_quote FROM shablon WHERE s_shablon_id='$usershablon'";
-//echo "$QUERY<BR>";
   	$num_rows=$DB->samsdb_query_value($QUERY);
         if($num_rows!=0)  
 	  {
@@ -46,9 +45,6 @@ function UsersImportFromFile()
 		$userquote=$row['s_quote'];
           }
 	$DB->free_samsdb_query();
-//echo "group=$usergroup shablon=$usershablon enabled=$enabled quote=$userquote<BR>";
-//echo "userquote: $userquote<BR>";
-//exit;
   while(feof($finp)==0)
     {
        $string=fgets($finp, 10000);
@@ -58,7 +54,6 @@ function UsersImportFromFile()
 		echo "user $string ";
 		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled,s_quote) VALUES('$usergroup', '$usershablon', '$string', '', '$enabled','$userquote')";
 		$DB->samsdb_query($QUERY);
-//		echo "$QUERY<BR>";
 		echo "added<BR>";
 	}
     }
@@ -90,10 +85,6 @@ function UsersImportFromFileForm()
   
 
 	$listfilename=$_FILES["userfile"]["name"];
-
-//echo "filename: ".$_FILES["userfile"]["name"]."<BR>";
-//echo "filename: ".$_FILES["userfile"]["tmp_name"]."<BR>";
- 
 	$aaa=copy($_FILES["userfile"]["tmp_name"], "data/userslist.txt");
 
 		print("<FORM NAME=\"AddUsersFromFile\" ACTION=\"main.php\">\n");
@@ -104,12 +95,7 @@ function UsersImportFromFileForm()
 
 
 		print("<TABLE>\n");
-  
 		print("<TR><TD><TD>\n");
-
-//  print("    <INPUT TYPE=\"HIDDEN\" NAME=\"MAX_FILES_SIZE\" value=\"1048576\">\n");
-//  print("<BR><INPUT TYPE=\"FILE\" NAME=\"userfile\" value=\"$redir_importurllistform1\">\n");
-
 		print("<TR><TD>\n");
 		print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");
 		print("<TD>\n");

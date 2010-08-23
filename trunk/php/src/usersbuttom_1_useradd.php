@@ -63,7 +63,6 @@ function GetDomainUsersList()
 	       $user=$domain;
 	       $domain=$SAMSConf->DEFAULTDOMAIN;
 	     }
-	   //$domain=strtolower($domain);
          }
       else
 	 {
@@ -71,8 +70,6 @@ function GetDomainUsersList()
            $user=trim($a[$i]);
            //$user=strtolower($user);
          }
-
-       //print("$user/$domain domainlen=$domainlen userlen=$userlen<BR>");
 
        $result=mysql_query("SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\" ");
        $row=mysql_fetch_array($result);
@@ -119,24 +116,20 @@ function AddUser()
     { 
       $nick="$newusernick";
       $domain="$userdomain";
-      //print("hand: nick=$nick domain=$domain<BR>");
     }  
   if(($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")&&$SAMSConf->NTLMDOMAIN!="Y"&&strlen($newusernick)>0)
     { 
       $nick="$newusernick";
-      //print("hand: nick=$nick<BR>");
     }  
 
   if(($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")&&$SAMSConf->NTLMDOMAIN!="Y"&&strlen($newusernick)==0)
     { 
       $nick="$usernick";
-      //print("nick=$nick<BR>");
     }  
   if(($SAMSConf->AUTH=="ntlm"||$SAMSConf->AUTH=="adld")&&$SAMSConf->NTLMDOMAIN=="Y"&&strlen($newusernick)==0)
     { 
       $domain=strtok($usernick,"+");
       $nick=strtok("+");
-      //print("nick=$nick domain=$domain<BR>");
     }  
   
    if(strlen($domain)<1)
@@ -213,7 +206,6 @@ function NewUserForm()
            print("    document.forms[\"NEWUSER\"].elements[\"usernick\"].disabled=true\n");
            print("    document.forms[\"NEWUSER\"].elements[\"newusernick\"].disabled=false\n");
            print("    document.forms[\"NEWUSER\"].elements[\"userdomain\"].disabled=false\n");
-           //print("    document.forms[\"NEWUSER\"].elements[\"show\"].value=\"addnewuser\"\n");
            print("  }\n");
            print("if(document.forms[\"NEWUSER\"].elements[\"ud\"].checked==false)\n");
            print("  {\n");
@@ -326,7 +318,6 @@ function NewUserForm()
               print("if(document.forms[\"NEWUSER\"].elements[\"usershablon\"].value==\"$row[s_shablon_id]\" )\n");
               print("   document.forms[\"NEWUSER\"].elements[\"userquote\"].value=\"$row[s_quote]\" \n");
            }
-//       print("   window.location.reload();\n");
        print("}\n");
        print("</SCRIPT> \n");
 

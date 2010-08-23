@@ -5,100 +5,6 @@
  * (see the file 'main.php' for license details)
  */
 
-function UsersTrafficPeriodPDF()
-{
-  require('chart.php');
-  
-  global $SAMSConf;
-  global $DATE;
-  $DB=new SAMSDB();
-  
-  if($SAMSConf->LANG=="KOI8-R")
-    $lang="./lang/lang.WIN1251";
-  else
-    $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-  $sdate=$DATE->sdate();
-  $edate=$DATE->edate();
-  $bdate=$DATE->BeginDate();
-  $eddate=$DATE->EndDate();
-
-
-  $pdfFile=pdf_new();
-  PDF_open_file($pdfFile, "");
-//  pdf_set_info($pdfFile, "Author", "");
-  pdf_set_info($pdfFile, "Creator", "Created by SAMS");
-  pdf_set_info($pdfFile, "Title", "$usersbuttom_2_traffic_UsersTrafficPeriod_1 $usersbuttom_2_traffic_UsersTrafficPeriod_2");
-//  pdf_set_info($pdfFile, "Subject", "");
-  
-  pdf_begin_page($pdfFile, 595, 842);
-  pdf_add_bookmark($pdfFile, "Page 1", 0, 0);
-  
-  $font = pdf_load_font($pdfFile, "Helvetica", "cp1251", "");
-  PDF_setfont($pdfFile, $font, 16);
-  
-  $imagefile = "$SAMSConf->ICONSET/usergroup_48.jpg";
-  $image = PDF_load_image($pdfFile, "auto", $imagefile, "");
-  if (!$image)
-    {
-      die( "Error: " . PDF_get_errmsg($pdfFile) );
-    }
-//  PDF_fit_image($pdfFile, $image, 350, 780, "adjustpage" );
-  PDF_fit_image($pdfFile, $image, 50, 760, "" );
-  PDF_close_image($pdfFile, $image);
-  
-  pdf_show_xy($pdfFile, "$usersbuttom_2_traffic_UsersTrafficPeriod_1", 170, 780);  
-  pdf_show_xy($pdfFile, "$usersbuttom_2_traffic_UsersTrafficPeriod_2", 120, 760);  
-  
-        
-  PDF_setfont($pdfFile, $font, 10);
-  pdf_show_xy($pdfFile, "$traffic_2 $bdate $traffic_3 $eddate", 220, 740);  
-    
-  PDF_setfont($pdfFile, $font, 11);
-  
-  $ycount=700;
-  $result=mysql_query("SELECT sum(size) as all_sum,sum(hit),user,domain FROM cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" group by user,domain order by all_sum desc");
-  while($row=mysql_fetch_array($result))
-       {
-         $result_2=mysql_query("SELECT * FROM ".$SAMSConf->SAMSDB.".squidusers WHERE ".$SAMSConf->SAMSDB.".squidusers.nick=\"$row[user]\"&&".$SAMSConf->SAMSDB.".squidusers.domain=\"$row[domain]\"");
-         $row_2=mysql_fetch_array($result_2);
-         pdf_show_xy($pdfFile, $count+1, 50, $ycount);  
-         pdf_show_xy($pdfFile, "$row[user]", 80, $ycount);  
-         pdf_show_xy($pdfFile, "$row[family]", 150, $ycount);  
-         pdf_show_xy($pdfFile, "$row[0]", 250, $ycount);  
-         pdf_show_xy($pdfFile, "$row[1]", 350, $ycount);  
-         pdf_show_xy($pdfFile, $row[0]-$row[1], 450, $ycount);  
-         
-         
-         $count=$count+1;
-         $size2=$size2+$row[0];
-         $hitsize=$hitsize+$row[1];
-         $traf=$traf+$row[0]-$row[1];
-         $ycount-=20;
-       }
-  
-  
-  
-  
-  
-  pdf_end_page($pdfFile);
-  pdf_close($pdfFile);
-  $pdf = pdf_get_buffer($pdfFile);
-  $pdflen = strlen($pdf);
-  
-  header("Content-type: application/pdf");
-  header("Content-Length: $pdflen");
-  header("Content-Disposition: inline; filename=sams_traffic.pdf");
-  
-  print("$pdf");
-  pdf_delete($pdfFile);
-  
-  //$fout = fopen("data/test.pdf", "w");
-  //fwrite($fout, "$fout");
-  //fclose($fout);     
-} 
- 
 function UsersTrafficPeriodGB()
 {
   require('lib/chart.php');
@@ -120,7 +26,6 @@ function UsersTrafficPeriodGB()
 	$QUERY="SELECT sum(cachesum.s_size),sum(cachesum.s_hit),cachesum.s_user,cachesum.s_domain, squiduser.s_nick, squiduser.s_family, squiduser.s_name, squiduser.s_user_id FROM cachesum LEFT JOIN squiduser ON cachesum.s_user=squiduser.s_nick WHERE cachesum.s_date>='$sdate'AND cachesum.s_date<='$edate' GROUP BY cachesum.s_user,cachesum.s_domain,squiduser.s_nick,squiduser.s_family, squiduser.s_name, squiduser.s_user_id  order by sum(cachesum.s_size) desc";
 	$num_rows=$DB->samsdb_query_value($QUERY);
 
-//  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as all_sum,sum(s_hit),s_user,s_domain FROM cachesum WHERE s_date>='$sdate'&&s_date<='$edate' group by s_user,s_domain order by all_sum desc");
   $count=0;
   while($row=$DB->samsdb_fetch_array())
        {
@@ -210,7 +115,6 @@ function UsersTrafficPeriod()
 
 
   print("<TABLE CLASS=samstable id=\"userstraffic\">\n");
-//  print("<TABLE class=\"sortable\" id=\"userstraffic\">\n");
 
 	$item=array("head"=> "squid",
 		"access" => "pobject.gif",
@@ -257,8 +161,6 @@ function UsersTrafficPeriod()
 			$name="$row[s_nick]";
 		$str="<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\" TARGET=\"tray\">$name</A>\n";
 		LTableCell($str,16);
-//		LTableCell($name,16);
-//		print("<TD>$str</TD>");
 	 
 		if($size=="On")
 		{
@@ -273,10 +175,8 @@ function UsersTrafficPeriod()
 		{
 			$aaa=FormattedString("$row[0]");
 			LTableCell("$aaa",15);
-//			echo "<TD> ".$row[0]." </TD>";
 			$aaa=FormattedString("$row[1]");
 			LTableCell("$aaa",15);
-//			echo "<TD> ".$row[1]." </TD>";
 		}   
 		if($SAMSConf->realtraffic=="real")
 			PrintFormattedSize($row[0]-$row[1]);

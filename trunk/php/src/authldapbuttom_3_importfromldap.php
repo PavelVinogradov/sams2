@@ -17,16 +17,11 @@ function AddGroup()
 
   if(isset($_GET["groupnick"])) $groupnick=$_GET["groupnick"];
 
-//  $groupname=TempName();
-
   $result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$groupnick'");
-//  $result=mysql_query("SELECT nick FROM groups where nick = '$groupnick';");
   if($result == 0) 
   {
     $result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$groupnick') ");
     $result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('ldap', 'ldapgroup', '$groupnick') ");
-//    if($result!=FALSE)
-//      UpdateLog("$SAMSConf->adminname","Added group  $groupnick ","02");
 
     print("<SCRIPT>\n");
     print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -75,7 +70,6 @@ function AddShablon()
   $sid=$row['s_shablon_id'];
   $DB->free_samsdb_query();
   $DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-//  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -273,34 +267,6 @@ function ImportFromLDAPForm()
 	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
 
-/*
-	print("<TR><TD WIDTH=30%><B>Create SAMS templates with LDAP groups name:\n");
-	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");
-
-           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
-           print("function ADTempaletesEnabled(formname) \n");
-           print("{ \n");
-           print("  if(formname.addtemplates.checked==true) \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=false;  \n");
-           print("      formname.period.disabled=false;  \n");
-	   print("      EnterPeriod(formname);  \n");
-           print("      formname.trange.disabled=false;  \n");
-           print("    }\n");
-           print("  else \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=true;  \n");
-           print("      formname.period.disabled=true;  \n");
-//	   print("      EnterPeriod(formname);  \n");
-           print("      formname.newperiod.disabled=true;  \n");
-           print("      formname.clryear.disabled=true;  \n");
-           print("      formname.clrmonth.disabled=true;  \n");
-           print("      formname.clrday.disabled=true;  \n");
-           print("      formname.trange.disabled=true;  \n");
-           print("    }\n");
-           print("}\n");
-           print("</SCRIPT> \n");
-*/
 	print("<TR>\n");
 	print("<TD>\n");
 	print("$shablonnew_NewShablonForm_3:\n");
@@ -324,7 +290,7 @@ function ImportFromLDAPForm()
         print("  var clryear=formname.clryear.value; \n");
         print("  var clrmonth=formname.clrmonth.value; \n");
         print("  var clrday=formname.clrday.value; \n");
-      //print("  value=window.confirm(\"1? \" );\n");
+
          print("  if(period==\"A\") \n");
         print("    {\n");
         print("      formname.newperiod.disabled=false;  \n");
@@ -375,12 +341,6 @@ function ImportFromLDAPForm()
 	}
 	print("</SELECT>\n");
 
-
-
-/*
-	print("<TR><TD WIDTH=30%><B>Create SAMS groups with AD groups name:\n");
-	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addgroups\" CHECKED>");
-*/
 	echo "</TABLE>";
 	print("<INPUT TYPE=\"SUBMIT\" value=\"Import\">\n");
 	print("</FORM>\n");

@@ -52,20 +52,12 @@ function TestTable()
        print("             }\n");
        print("        }\n");
        print("   var strr= \"main.php?show=exe&filename=userstray.php&function=disableselectedusers&disable=\" + disable + \"&delete=\" + userdel + \"&defen=\" + defen + \"&delcount=\"+delcount+\"&discount=\"+discount + \"&defcount=\"+defcount  \n");
-//       print("   var value=window.confirm( \"disable:\" + dis + \" delete: \" + del + \"default:\" + def );\n");
        print("   parent.basefrm.location.href=strr;\n");
        print("}\n");
 
-//       print("  function fullArray(enabled, username, group, quote, period, fio, deleted)\n");
        print("  function fullArray( username)\n");
        print("{\n");
-//       print("          this.enabled = enabled;\n"); 
        print("          this.username = username;\n"); 
-//       print("          this.group = group;\n"); 
-//       print("          this.quote = quote;\n"); 
-//       print("          this.period = period;\n"); 
-//       print("          this.fio = fio;\n"); 
-//       print("          this.deleted = deleted;\n");
        print("}\n");
 
        print("function SortTable(formname)\n");
@@ -73,27 +65,16 @@ function TestTable()
        print("   var table = new Array(); \n");
        print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
        print("       {\n");
-//       print("          table[i] = new fullArray(groupform.enabled[i].value, groupform.username[i].value, groupform.group[i].value, groupform.quote[i].value, groupform.period[i].value, groupform.fio[i].value, groupform.delete[i].value )\n");
        print("          table[i] = new fullArray( groupform.username[i].value )\n");
        print("        }\n");
-//       print("   for(var i= groupform.counter.value-1;  i>=0 ;i +=1 ) \n");
        print("   for(var i=0; i < groupform.counter.value; i +=1 ) \n");
        print("       {\n");
-//       print("          groupform.enabled[i].value=table[groupform.counter.value - i -1][0]\n"); 
        print("          groupform.username[i].value=table[groupform.counter.value - i -1][1]\n"); 
-//       print("          groupform.group[i].value=table[groupform.counter.value - i -1][2]\n"); 
-//       print("          groupform.quote[i].value=table[groupform.counter.value - i -1][3]\n"); 
-//       print("          groupform.period[i].value=table[groupform.counter.value - i -1][4]\n"); 
-//       print("          groupform.fio[i].value=table[groupform.counter.value - i -1][5]\n"); 
-//       print("          groupform.delete[i].value=table[groupform.counter.value - i -1][6]\n");
        print("        }\n");
-//groupform.dusers[i].value
-//       print("   var value=window.confirm( \"disable:\" + dis + \" delete: \" + del + \"default:\" + def );\n");
        print("}\n");
 
 
        print("</SCRIPT> \n");
-//txt[0] = new fullArray("Год", "Книга", "Автор");
   if($SAMSConf->access==2)
     {
       print("<FORM NAME=\"groupform\" ACTION=\"main.php\"  METHOD=\"post\">\n");
@@ -140,7 +121,6 @@ function TestTable()
 	$clrdays=0;
        print("<TR>\n");
 
-       //if($)
         if($row['s_enabled']==2)
           {
              $gif="user_moved.png";
@@ -244,7 +224,6 @@ function usersbuttom_91_test()
 
    if($SAMSConf->access==2||($SAMSConf->USERACCESS=="Y"&&$SAMSConf->domainusername=="$row[domain]+$row[nick]"))
     {
-//       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?show=exe&function=testtable&filename=usersbuttom_91_test.php","basefrm","useradd_32.jpg","useradd_48.jpg","$usersbuttom_1_useradd_usersbuttom_1_useradd_1");
 	}
 

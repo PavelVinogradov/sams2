@@ -30,7 +30,6 @@ function SaveBackUp()
 	if(($fout=gzopen("data/$filename","w9"))!=NULL)
 	{
 		gzwrite($fout,"# ".$SAMSConf->SAMSDB." DUMP FOR ".$SAMSConf->DB_ENGINE." DATABASE\n");
-//		gzwrite($fout,"USE ".$SAMSConf->SAMSDB.";\n");
 		for($tcount=0;$tcount<count($samsdb);$tcount++)
 		{
 			echo "export table: ".$samsdb[$tcount]."<BR>";

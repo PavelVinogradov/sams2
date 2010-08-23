@@ -20,8 +20,6 @@ function ChangeUser()
 	print("  var host=window.location.hostname;\n");
 	print("  var path=window.location.pathname;\n");
 	print("  var hrefstr=\"https://\"+host+path;\n");
-//       print("  value=window.confirm(hrefstr);\n");
-//       print("  formname.form.action=hrefstr; \n");
 	print("  if(username.length==0) \n");
 	print("    {\n");
 	print("       window.confirm(\"$adminbuttom_2_chuser_ChangeUser_3\");\n");
@@ -39,7 +37,6 @@ function ChangeUser()
 	PageTop("getpassword.jpg","$adminbuttom_2_chuser_ChangeUser_1 ");
 	print("<B>$adminbuttom_2_chuser_ChangeUser_2</B>");
 	print("<P>\n");
-//  print("<FORM NAME=\"form1\" ACTION=\"main.php\"  onsubmit=TestUserData(form1)>\n");
 	print("<FORM NAME=\"form1\" ACTION=\"main.php\"  onsubmit=TestUserData(form1) method=\"POST\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"setcookie\">\n");
@@ -68,11 +65,5 @@ function adminbuttom_2_chuser()
 	               "basefrm","usergroup_32.jpg","usergroup_48.jpg","$adminbuttom_2_chuser_adminbuttom_2_chuser_1");
 
 }
-
-
-
-
-
-
 
 ?>

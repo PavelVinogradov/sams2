@@ -45,7 +45,6 @@ function WebInterfaceReConfig()
     $s_showgraph=1;
 
   $DB->samsdb_query("UPDATE websettings SET s_createpdf='$createpdf', s_showname='$showname', s_showutree='$s_showutree', s_iconset='$iconset', s_lang='$lang', s_urlaccess='$s_urlaccess', s_useraccess='$s_useraccess', s_showgraph='$s_showgraph' ");
-  //$result=mysql_query("UPDATE websettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
   $SAMSConf->LoadConfig();
   PageTop("config_48.jpg","$adminbuttom_1_prop_SamsReConfig_1");
   print("<SCRIPT>\n");

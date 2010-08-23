@@ -18,7 +18,6 @@ function DeleteList()
   if(isset($_GET["id"])) $id=$_GET["id"];
 
   $num_rows=$DB->samsdb_query("DELETE FROM redirect WHERE s_redirect_id='$id' ");
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteList_1 $row[name]","02");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -42,11 +41,7 @@ function AddNewList()
 	exit;
 
   $num_rows=$DB->samsdb_query("INSERT INTO redirect (s_name,s_type) VALUES ( '$name', '$type' ) ");
-  //UpdateLog("$SAMSConf->adminname","$urllistfunction_AddNewList_1 $name","02");
 
-  //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
-
-  //tray.php?show=deniedlisttray&id=$row[filename]
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
   print("  parent.tray.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=addurllistform&type=$type\";\n");
@@ -71,8 +66,6 @@ function SaveDestination()
 	exit;
 
   $num_rows=$DB->samsdb_query("UPDATE redirect SET s_dest='$dest' WHERE s_redirect_id='$row_id'");
-
-  //print("<BR>AddNewList(): tray.php?show=exe&function=$execute&id=$id");
 
   print("<SCRIPT>\n");
   print("  parent.lframe.location.href=\"lframe.php\"; \n");
@@ -131,8 +124,6 @@ function AddURLListForm()
        print("}\n");
        print("</SCRIPT> \n");
 
-//      print("   context = insFld(sams, gFld(\"$lframe_sams_FolderContextDenied_1\", \"main.php?show=exe&filename=redirlisttray.php&function=addurllistform&type=regex\", \"stop.gif\"))\n");
- 
   print("<FORM NAME=\"REDIRECT\" ACTION=\"main.php\" onsubmit=\"return TestName(REDIRECT)\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addnewlist\">\n");
@@ -257,9 +248,6 @@ function AddURLFromList()
 	exit;
 
       $DB->samsdb_query("INSERT INTO url (s_url,s_redirect_id) VALUES ('$url', '$id') ");
-//      $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect WHERE filename=\"$type\" ");
-//      $row=$DB->samsdb_fetch_array();
-//      UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row[name] $urllistfunction_AddURLFromList_2 $url","02");
     }
   
   print("<SCRIPT>\n");
@@ -286,9 +274,6 @@ function DeleteURLFromList()
   $deletedurl = UnecranChars ($deletedurl);
 
   $num_rows=$DB->samsdb_query("DELETE FROM url WHERE s_url='$deletedurl' and s_redirect_id='$type' ");
-//  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
-//  $row=mysql_fetch_array($result);
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteURLFromList_1 $row[name] $urllistfunction_DeleteURLFromList_2 $url","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlistform&id=$type\";\n");
@@ -316,9 +301,6 @@ function EditURLFromList()
    $url = UnecranChars ($url);
 
   $num_rows=$DB->samsdb_query("UPDATE url SET s_url='$url' WHERE s_url='$oldvalue' and s_redirect_id='$type' ");
-//  $result=mysql_query("SELECT * FROM redirect WHERE filename=\"$type\" ");
-//  $row=mysql_fetch_array($result);
-//  UpdateLog("$SAMSConf->adminname","$urllistfunction_AddURLFromList_1 $row[name] $urllistfunction_AddURLFromList_2 $url","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlistform&id=$type\";\n");
@@ -341,7 +323,6 @@ function DeleteAllURLFromList()
 	exit;
 
   $num_rows=$DB->samsdb_query("DELETE FROM url WHERE s_redirect_id='$type' ");
-  //UpdateLog("$SAMSConf->adminname","$urllistfunction_DeleteAllURLFromList_1 $type","02");
 
   print("<SCRIPT>\n");
      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=redirlisttray.php&function=redirlistform&id=$type\";\n");
