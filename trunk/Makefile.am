@@ -17,7 +17,7 @@ SERVER_CONFIG_FILE = $(HTTPD_ROOT)/$(shell `/usr/bin/which httpd` -V |grep SERVE
 HTTPD_INCLUDE = $(HTTPD_ROOT)/$(shell grep ^"Include " $(SERVER_CONFIG_FILE) |sed -e 's|/.*$ |/|g'|awk '{print $$2,$$3,$$4}'|sed -e 's, ,,g')
 
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)/$(datadir)/$(distdir)
+#	$(mkinstalldirs) $(DESTDIR)/$(datadir)/$(distdir)
 	$(mkinstalldirs) $(DESTDIR)/$(sysconfdir)
 	if [ ! -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
 	    $(install_sh) -c -m 644 $(top_srcdir)/etc/sams2.conf $(DESTDIR)/$(sysconfdir) ;\
@@ -34,11 +34,11 @@ install-data-local:
 
 uninstall-local:
 	if [ -f $(DESTDIR)/$(sysconfdir)/sams2.conf ] ; then \
-		mv $(DESTDIR)/$(sysconfdir)/sams2.conf $(DESTDIR)/$(sysconfdir)/sams2.conf.save ;\
+		mv -f $(DESTDIR)/$(sysconfdir)/sams2.conf $(DESTDIR)/$(sysconfdir)/sams2.conf.save ;\
 	fi
 	if [ -f $(DESTDIR)/$(HTTPD_INCLUDE)/sams2.conf ] ; then \
-		mv $(DESTDIR)/$(HTTPD_INCLUDE)/sams2.conf $(DESTDIR)/$(HTTPD_INCLUDE)/sams2.conf.save ;\
+		mv -f $(DESTDIR)/$(HTTPD_INCLUDE)/sams2.conf $(DESTDIR)/$(HTTPD_INCLUDE)/sams2.conf.save ;\
 	fi
 	if [ -f  $(DESTDIR)/$(HTTPD_INCLUDE)/doc4sams2.conf ] ; then \
-		mv $(DESTDIR)/$(HTTPD_INCLUDE)/doc4sams2.conf $(DESTDIR)/$(HTTPD_INCLUDE)/doc4sams2.conf.save ;\
+		mv -f $(DESTDIR)/$(HTTPD_INCLUDE)/doc4sams2.conf $(DESTDIR)/$(HTTPD_INCLUDE)/doc4sams2.conf.save ;\
 	fi
