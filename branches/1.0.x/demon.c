@@ -289,18 +289,19 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
                             hitsize=size;
                           }
 
+                        if(REALTRAF==1)
+			  {
+                            users[samsuser-1].traffic+=size-hitsize;
+			    if(DEBUG>0)
+			      printf("REALTRAFfic = %15.0lf - %ld\n", size, hitsize);
+			  }  
+                        else
+		          {
+                            users[samsuser-1].traffic+=size;
+		          }  
+
                         if(users[samsuser-1].quote>0)
 		          {
-                            if(REALTRAF==1)
-			      {
-                                users[samsuser-1].traffic+=size-hitsize;
-				if(DEBUG>0)
-				  printf("REALTRAFfic = %15.0lf - %ld\n", size, hitsize);
-			      }  
-                            else
-			      {
-                                users[samsuser-1].traffic+=size;
-			      }  
                             if(users[samsuser-1].traffic>=users[samsuser-1].quote)
 		              {
 
