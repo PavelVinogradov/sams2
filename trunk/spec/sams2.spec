@@ -110,7 +110,7 @@ The sams2-doc package includes the HTML versions of the "Using SAMS2".
 
 
 %prep
-%setup -q -n %{name}-%{version}-%{epoch}
+%setup -q -n %{name}-%{version}
 
 %build
 make -f Makefile.cvs
