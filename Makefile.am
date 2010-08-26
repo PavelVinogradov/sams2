@@ -12,7 +12,7 @@ dist-hook:
 	find $(distdir) -type d -name .svn | xargs rm -rf
 
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-HTTPD_ROOT = $(shell `/usr/bin/which httpd` -V |grep HTTPD_ROOT|sed -e 's/"//g'|sed -e 's/=/ /g'|awk '{print $$3}' |sed -e 's/\n//g'|sed -e 's/ //g')
+HTTPD_ROOT = $(shell $(httpd_server) -V |grep HTTPD_ROOT|sed -e 's/"//g'|sed -e 's/=/ /g'|awk '{print $$3}' |sed -e 's/\n//g'|sed -e 's/ //g')
 SERVER_CONFIG_FILE = $(HTTPD_ROOT)/$(shell `/usr/bin/which httpd` -V |grep SERVER_CONFIG_FILE|sed -e 's/"//g'|sed -e 's/=/ /g'|awk '{print $$3}' |sed -e 's/\n//g'|sed -e 's/ //g')
 HTTPD_INCLUDE = $(HTTPD_ROOT)/$(shell grep ^"Include " $(SERVER_CONFIG_FILE) |sed -e 's|/.*$ |/|g'|awk '{print $$2,$$3,$$4}'|sed -e 's, ,,g')
 

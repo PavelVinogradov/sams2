@@ -59,6 +59,8 @@ AC_CHECK_PCRE([which_pcre])
 AC_CHECK_MYSQL([use_mysql_dev])
 AC_CHECK_PQ([use_pq_dev])
 AC_CHECK_UNIXODBC([use_unixodbc_dev])
+AC_CHECK_HTTPD([httpd_server])
+AC_SUBST(httpd_server)
 
 use_dl_dev="no"
 if test "$lt_cv_dlopen" = "dlopen"; then
@@ -89,6 +91,7 @@ eval path_bindir=$bindir
 eval path_bindir=$path_bindir
 eval path_datadir=$datadir
 eval path_datadir=$path_datadir
+eval httpd_server=$httpd_server
 
 echo ""
 echo "Use MySQL API:      $use_mysql_dev"
@@ -103,6 +106,7 @@ echo "config file:        $path_sysconfdir/sams2.conf"
 echo "daemons:            $path_bindir"
 echo "web interface:      $path_datadir/${PACKAGE}"
 echo "documentation:      $path_datadir/doc/${PACKAGE}-${VERSION}"
+echo "httpd server:       $httpd_server"
 echo ""
 echo "Note: If later on, you will use"
 echo "      make install exec_prefix=/foo"
