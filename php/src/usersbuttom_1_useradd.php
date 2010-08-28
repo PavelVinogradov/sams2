@@ -283,7 +283,7 @@ function NewUserForm()
 
        print("<TD>\n");
        print("<SELECT NAME=\"usergroup\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
-       $num_rows=$DB->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup");
+       $num_rows=$DB->samsdb_query_value("SELECT s_group_id, s_name FROM sgroup ORDER BY s_name");
       while($row=$DB->samsdb_fetch_array())
            {
             print("<OPTION VALUE=$row[s_group_id]> $row[s_name]");
@@ -328,7 +328,7 @@ function NewUserForm()
        print("<B>$userstray_NewUserForm_15: \n");
        print("<TD>\n");
        print("<SELECT NAME=\"usershablon\" ID=\"usershablon\" SIZE=1 TABINDEX=30 onChange=\"SetQuote()\">\n");
-       $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon");
+       $num_rows=$DB->samsdb_query_value("SELECT * FROM shablon ORDER BY s_name");
       while($row=$DB->samsdb_fetch_array())
            {
             print("<OPTION VALUE=$row[s_shablon_id] > $row[s_name]\n");

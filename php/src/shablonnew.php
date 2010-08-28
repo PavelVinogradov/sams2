@@ -143,6 +143,7 @@ function NewShablonForm()
   print("<SELECT NAME=\"period\" onchange=EnterPeriod(NEWUSER)  $CCLEAN> \n");
   print("<OPTION value=\"M\" SELECTED>$shablonnew_NewShablonForm_11\n");
   print("<OPTION value=\"W\">$shablonnew_NewShablonForm_12\n");
+  print("<OPTION value=\"D\">$shablonbuttom_1_prop_UpdateShablonForm_27\n");
   print("<OPTION value=\"A\">$shablonnew_NewShablonForm_13\n");
   print("</SELECT>\n");
 
