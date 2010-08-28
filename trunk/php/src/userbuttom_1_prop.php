@@ -177,7 +177,7 @@ function UpdateUserForm()
   
   print("<TR>\n");
   print("<TD>\n");
-  print("<B>Individual linit \n");
+  print("<B>$userbuttom_1_prop_UpdateUserForm_25 \n");
   print("<TD>\n");
   if($SquidUSERConf->s_quote!=-1)
   {
