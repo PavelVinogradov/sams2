@@ -969,8 +969,7 @@ VAR $DATA=Array();
                  }
                $prev=$i;
              }
-           if($count>0)
-             $i-=$RW/$count;
+           $i-=$RW/$count;
          }
 
        header("Content-Type:image/png");
@@ -1111,7 +1110,6 @@ class CIRCLE3D
 	$anglesum[]=$anglesum[0];
 
 	// Расчет диаметра
-//	$diametr=$l_x1-10-10;
 	$diametr=$l_x1-10-10;
 
 	// Расчет координат центра эллипса

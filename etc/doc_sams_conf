@@ -1,0 +1,9 @@
+Alias /sams/doc __DOCPREFIX
+ 
+<Directory __DOCPREFIX>
+   Options +FollowSymLinks
+   AllowOverride All
+   order allow,deny
+   allow from all
+</Directory>
+ 

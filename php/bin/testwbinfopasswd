@@ -1,3 +1,5 @@
-AAA=`$1/wbinfo -a $2%"$3"`
+#!/bin/sh
+
+AAA=`$1/wbinfo -a $2%$3`
 
 echo $AAA
