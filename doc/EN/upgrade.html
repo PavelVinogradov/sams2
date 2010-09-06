@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+<H2>The SAMS upgrade to the new version</H2>
+<P>1. Download, unzip and untar the SAMS distribution
+<P>    tar zxf sams-xxxxxx.tar.gz
+<BR> cd sams
+<P>2. Run the configure script with --help option (./configure --help) to see the users selectable settings.
+<P>3. Run the configure (./configure) script with your options. 
+<P>  OPTIONS:
+<P>    You can change the configure options:
+<BR>  --prefix=PATH - prefix root path eg /usr/local
+<BR>  --with-httpd-locations=PATH - path to the http server root directory
+<BR>  --with-mysql-includes=PATH - path to the mysql includes
+<BR>  --with-mysql-libpath=PATH - path to the mysql libraries
+
+<P>4.  "make" ("gmake" for FreeBSD) will now build up SAMS
+<P>5.  "make install" ("gmake install" for FreeBSD)  will create the SAMS directory structure and copy files into the chosen paths.
+
+<P>6.  mv sams.conf.old sams.conf 
+
+<P><B>WARNING!</B>
+<BR>Adding a new function of the SAMS we make modification of a tables structure of the SAMS databases. 
+
+<P>7.  Run the sams/update/upgrade_mysql_table.php sript.
+<BR> php update_mysql_table.php
+
+<P><B> The update_mysql_table.php script make new indexes of the SAMS database and this may be executed a long time 
+</B>
+
+</BODY>
+</HTML>
+
+

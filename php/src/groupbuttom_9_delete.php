@@ -9,12 +9,11 @@
 function NotEmptyGroupWarning($groupnick)
 {
   global $SAMSConf;
-  global $USERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
    
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
-	exit;
+   $SAMSConf->access=UserAccess();
+   if($SAMSConf->access!=2)     {       exit;     }
   
   PageTop("warning.jpg","$groupbuttom_9_delete_NotEmptyGroupWarning_1");
   print("<B>$groupbuttom_9_delete_NotEmptyGroupWarning_2</B>");
@@ -24,73 +23,67 @@ function NotEmptyGroupWarning($groupnick)
 function DeleteGroup()
 {
   global $SAMSConf;
-  global $USERConf;
-  $DB=new SAMSDB();
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if(isset($_GET["id"])) $id=$_GET["id"];
+  if(isset($_GET["groupname"])) $groupname=$_GET["groupname"];
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
-	exit;
-
-  $num_rows=$DB->samsdb_query_value("SELECT count(*) FROM squiduser WHERE s_group_id='$id' ");
-  $row=$DB->samsdb_fetch_array();
-  $count=$row[0];
-  $DB->free_samsdb_query();
+   $SAMSConf->access=UserAccess();
+   if($SAMSConf->access!=2)     {       exit;     }
+  
+  $result=mysql_query("SELECT * FROM squidusers WHERE squidusers.group=\"$groupname\"");
+  $count=0;
+  while($row=mysql_fetch_array($result))
+     {
+        $count++;
+     }
   if($count>0)
-  {
-        NotEmptyGroupWarning($id);
-  }
+     {
+        NotEmptyGroupWarning($groupnick);
+	 }
   else
-  {
-	$num_rows=$DB->samsdb_query_value("SELECT s_name FROM sgroup WHERE s_group_id='$id' ");
-	$row=$DB->samsdb_fetch_array();
-	$gname=$row['s_name'];
-	$DB->free_samsdb_query();
-
-	$QUERY="DELETE FROM sgroup WHERE s_group_id='$id' ";
-        $num_rows=$DB->samsdb_query($QUERY);
-
-	$QUERY="delete from auth_param where (s_param='adldgroup' OR s_param='ntlmgroup' OR s_param='ldapgroup') AND s_value='$gname'";
-        $num_rows=$DB->samsdb_query($QUERY);
+     {
+        $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
+        $row=mysql_fetch_array($result);
+        $result=mysql_query("DELETE FROM groups WHERE name=\"$groupname\" ");
+	if($result!=FALSE)
+                   UpdateLog("$SAMSConf->adminname","Deleted group  $row[nick] ","02");
 
         print("<SCRIPT>\n");
         print("  parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
         print("  parent.lframe.location.href=\"lframe.php\"; \n");
         print("</SCRIPT> \n");
 
-  }
+     }
 }
 
 
 
-function groupbuttom_9_delete()
+function groupbuttom_9_delete($groupname)
 {
   global $SAMSConf;
-  global $USERConf;
-  $DB=new SAMSDB();
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
- if(isset($_GET["id"])) $id=$_GET["id"];
 
   
-  $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
-  $row=$DB->samsdb_fetch_array();
+  $result=mysql_query("SELECT * FROM groups WHERE name=\"$groupname\" ");
+  $row=mysql_fetch_array($result);
 
       print("<SCRIPT language=JAVASCRIPT>\n");
       print("function DeleteUser(username,userid)\n");
       print("{\n");
-      print("  value=window.confirm(\"$groupbuttom_9_delete_groupbuttom_9_delete_1 $row[s_name]? \" );\n");
+      print("  value=window.confirm(\"$groupbuttom_9_delete_groupbuttom_9_delete_1 $row[nick]? \" );\n");
       print("  if(value==true) \n");
       print("     {\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletegroup&filename=groupbuttom_9_delete.php&id=$id\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&function=deletegroup&filename=groupbuttom_9_delete.php&groupname=$groupname\";\n");
       print("     }\n");
       print("}\n");
       print("</SCRIPT> \n");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($SAMSConf->access==2)
     {
-      print("<TD CLASS=\"samstraytd\">\n");
+      print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
       print("<IMAGE id=Trash name=\"Trash\" src=\"$SAMSConf->ICONSET/trash_32.jpg\" \n ");
       print("TITLE=\"$groupbuttom_9_delete_groupbuttom_9_delete_2\"  border=0 ");
       print("onclick=DeleteUser(\"nick\",\"id\") \n");

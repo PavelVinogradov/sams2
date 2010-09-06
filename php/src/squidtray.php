@@ -8,7 +8,6 @@
 function HelpSquidForm()
 {
   global $SAMSConf;
-  global $USERConf;
   $files=array();
   
   $lang="./lang/lang.$SAMSConf->LANG";
@@ -22,7 +21,7 @@ function HelpSquidForm()
   print("<TD>$squidtray_HelpSquidForm_2");
   print("</TABLE>");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($SAMSConf->access==2)
     {
       $squidlogfiles=0;
 
@@ -68,23 +67,22 @@ function HelpSquidForm()
 function SquidTray()
 {
   global $SAMSConf;
-  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
       print("<SCRIPT>\n");
-      print("        parent.basefrm.location.href=\"main.php?show=exe&filename=squidtray.php&function=helpsquidform\";\n");
+      print("        parent.basefrm.location.href=\"main.php?show=exe&function=helpsquidform\";\n");
       print("</SCRIPT> \n");
 
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($SAMSConf->access==2)
     {
-	print("<TABLE border=0 WIDTH=95%>\n");
-	print("<TR HEIGHT=60>\n");
-	print("<TD WIDTH=25%>");
-	print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
+      print("<TABLE border=0 WIDTH=\"100%\">\n");
+      print("<TR>\n");
+      print("<TD VALIGN=\"TOP\" WIDTH=\"30%\">");
+      print("<B><FONT SIZE=\"+1\">SQUID</FONT></B>\n");
 
-	ExecuteFunctions("./src", "squidbuttom","1");
+      ExecuteFunctions("./src", "squidbuttom","1");
 
      }
   print("<TD>\n");

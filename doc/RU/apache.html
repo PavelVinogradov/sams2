@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>Проект SAMS. Документация.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+
+ <H2>Инсталляция и настройка программного обеспечения</H2>
+
+
+<H3>4 Настройка http-сервера APACHE и PHP</H3>
+
+<P>Для работы SAMS необходимо установить http сервер Apache, модуль php для apache
+и консольный php. В php должна быть активирована поддержка mysql.
+
+<P>apache - WEB сервер
+<BR>php - консольный php
+<BR>mod_php (модуль php для apache)
+<BR>php-mysql - библиотека поддержки mysql в php
+<BR>php-ldap - библиотека поддержки ldap в php
+<BR>php-gd - модуль поддержки libgd в php (используется для рисования графиков)
+
+<P>Настройте ваш WEB-сервер на работу с php скриптами.
+<BR>Раскомментируйте или добавьте в httpd.conf следующие строки:
+<BR> LoadModule php4_module libexec/libphp4.so
+<BR>AddModule mod_php4.c
+<BR>AddType application/x-httpd-php .php .phtml
+<P>Разрешите в httpd.conf загрузку файлов на сервер через web
+интерфейс:
+<P><Directory "/var/www/htdocs">
+<BR>   ?
+<BR>   Options ? ExecCGI
+<BR>   ?
+<BR></Directory>
+
+<P>При конфигурировании sams необходимо задать расположение root директории apache.
+Конфигуратор SAMS ищет root директорию apache по пути /var/www/html или /var/www/htdocs.
+Если в вашей системе путь не совпадает, необходимо запустить файл configure sams с ключем
+<BR>--with-httpd-locations=PATH
+<BR>в процессе инсталляции будет создана символическая ссылка из корневой директории сервера APACHE на
+директорию, в которой находятся файлы SAMS. Иначе это можно сделать самому:
+<P>ln -s /usr/local/share/sams /var/www/html/sams
+<P><B> Если у вас возникли проблемы с кодировкой веб интерфейса,</B>
+<BR> надо в конфиге апача задать параметр 
+<BR> AddDefaultCharset Off
+
+<P ID="PHPCONF">В файле php.ini (в директории /etc и директории http сервера) раскомментируйте вызов библиотеки поддержки mysql:
+<BR><B>extensions=mysql.so</B>
+<P>C версии 1.0 SAMS работает в safe_mode php
+<H2>Настриваем php для работы в режиме safe mode</H2>
+Редактируем файл конфигурации php /etc/php.ini (для mod_php файл php.ini может располагаться в /etc/httpd/conf)
+<P>включаем режим safe mode. Для этого выставляем параметр safe_mode:
+<BR>    safe_mode = On
+<P>SAMS для некоторых функций WEB интерфейса использует системные команды, 
+например wbinfo. В режиме safe_mode php блокирует доступ к системным командам. 
+Php позволяет выполнять системные команды, расположенные в каталоге, заданном 
+параметром safe_mode_exec_dir. Изменяем этот параметр:
+<BR>    safe_mode_exec_dir = "/usr/local/share/sams/bin"
+<P>Далее разрешаем исполнение системных скриптов из кода php. Ищем в файле конфигурации параметр
+ <BR>disable_functions = "chdir,dl,ini_get_all,phpinfo,system,shell_exec,popen,proc_open,exec,passthru,pcntl_exec"
+ <BR>и если он не пустой, убираем из него запрет вызова функций phpinfo system shell_exec exec
+<P>также убираем запрет вызова функций phpinfo system shell_exec exec в параметре
+    <BR>hphp.executor.func.blacklist = chdir,dl,ini_get_all,popen,proc_open,passthru,pcntl_exec
+
+
+</BODY>
+</HTML>

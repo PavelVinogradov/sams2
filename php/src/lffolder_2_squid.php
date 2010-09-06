@@ -8,32 +8,11 @@
  function lffolder_2_squid()
  {
   global $SAMSConf;
-  global $USERConf;
-
-  $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
-  {
-	$item=array("classname"=> "squid",
-		"icon" => "pobject.gif",
-		"target"=> "tray",
-		"url"=> "tray.php?show=exe&filename=squidtray.php&function=squidtray",
-		"text"=> "SQUID");
-	treeFolder($item);
+  if($SAMSConf->access==2)
+     print("   licenses = insDoc(sams,gLnk(\"D\",\"SQUID\",\"tray.php?show=exe&function=squidtray\",\"pobject.gif\"))\n");
 
-	$DB->samsdb_query_value("SELECT * FROM proxy");
-	while($row=$DB->samsdb_fetch_array())
-	{
-		$item=array("classname"=> "squid",
-			"target"=> "tray",
-			"url"=> "tray.php?show=exe&function=proxytray&filename=proxytray.php&id=$row[s_proxy_id]",
-			"text"=> "$row[s_description]");
-		treeFolderItem($item);
-         }
- 
-	treeFolderClose();
-  }
  }
  
  

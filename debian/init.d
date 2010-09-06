@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:		sams
-# Required-Start:	$local_fs $network $time $remote_fs
+# Required-Start:	$local_fs $network $time
 # Required-Stop:	
 # Should-Start:		$named $mysql $squid
 # Should-Stop:
@@ -10,20 +10,20 @@
 # Default-Stop:		0 1 6
 # Short-Description:	Starting sams daemon
 # Description:		Squid Account Management System (SAMS)
-#  Starting sams management daemon - sams2daemon
+#  Starting sams management daemon - samsdaemon
 ### END INIT INFO
 #
 # Author:	Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 #
-# /etc/init.d/sams2: start and stop the sams daemon
+# /etc/init.d/sams: start and stop the sams daemon
 
-SAMSPATH=`cat /etc/sams2.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
+SAMSPATH=`cat /etc/sams.conf | grep SAMSPATH | tr "SAMSPATH=" "\0"`
 NAME="sams"
-DAEMON=$SAMSPATH/bin/sams2daemon
+DAEMON=$SAMSPATH/bin/samsdaemon
 LOCKFILE=/var/lock/samsd
-PIDFILE=/var/run/sams2daemon.pid
+PIDFILE=/var/run/samsdaemon.pid
 RETVAL=0
-SAMS_ENABLE=false
+SAMSENABLE=true
 
 test -x $DAEMON || exit 0
 
@@ -38,7 +38,7 @@ fi
 
 case "$1" in 
 	start)
-		if "$SAMS_ENABLE"; then
+		if "$SAMSENABLE"; then
 			log_daemon_msg "Starting $NAME daemon" "$NAME"
 			if [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE) >/dev/null 2>&1; then
 				log_progress_msg "apparently already running"
@@ -47,36 +47,66 @@ case "$1" in
 			fi
       			
 			start-stop-daemon --start --quiet --background \
-				--pidfile $PIDFILE \
+				--pidfile $PIDFILE --make-pidfile \
 				--exec $DAEMON
 			RETVAL=$?
 			[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
 			log_end_msg $RETVAL
 		else
-			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting. Please read /usr/share/doc/sams2/README.Debian"
+			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not starting..."
 		fi
 	;;
 
 	stop)
-		if "$SAMS_ENABLE"; then
-			log_daemon_msg "Stopping $NAME daemon" "$NAME"
-			start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE 
-			RETVAL=$?
-			[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
-			log_end_msg $RETVAL
-		else
-			[ "VERBOSE" != no ] && log_warning_msg "$NAME daemon not enabled, not stoping..."
-		fi
-			
+		log_daemon_msg "Stopping $NAME daemon" "$NAME"
+		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE 
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
+		log_end_msg $RETVAL
 	;;
+esac
 
-	restart|force-reload)
-		/etc/init.d/sams2 stop
-		/etc/init.d/sams2 start
-	;;
-	
+start()
+{
+	echo -n "Starting samsd: "
+	start-stop-daemon --start --quiet --exec $DAEMON
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch "$LOCKFILE"
+        echo
+}
+
+stop()
+{
+	echo -n "Shutting down samsd: "
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && rm -f "$LOCKFILE"
+        echo
+}
+
+restart()
+{
+	stop
+	start
+}
+
+# See how we were called.
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	status)
+	        status "$DAEMON"
+		;;
 	*)
 		echo "Usage: ${0##*/} {start|stop|restart}"
 		RETVAL=1
-	;;
 esac
+
+exit $RETVAL

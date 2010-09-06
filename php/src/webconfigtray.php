@@ -17,8 +17,7 @@ function GetUpTime()
   $value=`uptime`;
   return($value);
 }
-
-function GetSamsHostName()
+function GetHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
      {  $value="N.A."; }
@@ -110,17 +109,67 @@ function FileSystemUsage()
 
 function SysInfo()
 {
-  global $SAMSConf;
-  global $USERConf;
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
+   PageTop("stat_48.jpg","System Information");
 
-   PageTop("stat_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
-  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
-  print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/webinterface.html\">$documentation</A>");
-  print("<P>\n");
+   $hostname=GetHostName();
+   $ipaddr=GetIPAddr();
+   $uptime=`uptime`;
+   print("<TABLE WIDTH=90%  CLASS=samstable>");
+   print("<TR>");
+   print("<TD WIDTH=\"25%\"><B>Hostname</B>");
+   print("<TD WIDTH=\"75%\">$hostname");
+   print("<TR>");
+   print("<TD WIDTH=\"25%\"><B>IP addr</B>");
+   print("<TD WIDTH=\"75%\">$ipaddr");
+   print("<TR>");
+   print("<TD WIDTH=\"25%\"><B>Uptime</B>");
+   print("<TD WIDTH=\"75%\">$uptime");
+   print("</TABLE>");
 
-exit;
+   MemoryUsage();
+   FileSystemUsage();
+   
+  $syea=strftime("%Y");
+  $smon=strftime("%m");
+  $eday=strftime("%d");
+
+  $sdate="$syea-$smon-1";
+  $edate="$syea-$smon-$eday";
+  $stime="0:00:00";
+  $etime="0:00:00";
+  
+   print("<P><TABLE CLASS=samstable>\n");
+   print("<TH>\n");
+   print("<TH width=\"33%\" >All traffic\n");
+   print("<TH width=\"33%\" >From cache\n");
+   print("<TH width=\"33%\" >Traffic\n");
+   
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $row=mysql_fetch_array($result);
+   print("<TR>\n");
+   print("<TD > This month\n");
+   $aaa=FormattedString("$row[0]");
+   RTableCell($aaa,33);
+   $aaa=FormattedString("$row[1]");
+   RTableCell($aaa,33);
+   $aaa=$row[0]-$row[1];
+   $aaa=FormattedString($row[0]-$row[1]);
+   RTableCell($aaa,33);
+   
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
+  $row=mysql_fetch_array($result);
+   print("<TR>\n");
+   print("<TD > This day\n");
+   $aaa=FormattedString("$row[0]");
+   RTableCell($aaa,33);
+   $aaa=FormattedString("$row[1]");
+   RTableCell($aaa,33);
+   $aaa=$row[0]-$row[1];
+   $aaa=FormattedString($row[0]-$row[1]);
+   RTableCell($aaa,33);
+   
+   print("</TABLE>\n");
+   
 }
 
  
@@ -144,13 +193,12 @@ function CUserDoc()
 function WebConfigTray()
 {
   global $SAMSConf;
-  global $USERConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
   print("<SCRIPT>\n");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
-    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=webconfigtray.php\";\n");    }
+  if($SAMSConf->access==2)
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
   else
     {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }
   print("</SCRIPT> \n");
