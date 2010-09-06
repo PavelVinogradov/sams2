@@ -496,19 +496,19 @@ function SamsReConfigForm()
 
   print("<TR bgcolor=blanchedalmond><TD ALIGN=\"RIGHT\"><B> $adminbuttom_1_prop_SamsReConfigForm_40</B>\n");
   print("<TD><SELECT NAME=\"parser\" $DISABLED_PARSER  onchange=DisableParserTime(samsreconfigform)>\n");
-  if($row['parser']=="diskret")
-     print("<OPTION VALUE=\"diskret\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
-  else
-     print("<OPTION VALUE=\"diskret\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
-  if($row['parser']=="analog")
-    {
-	   print("<OPTION VALUE=\"analog\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
-       $DISABLED_PARSER="DISABLED";
-	}
-  else
-    {
-       print("<OPTION VALUE=\"analog\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
-	}
+  //if($row['parser']=="diskret")
+  print("<OPTION VALUE=\"diskret\" SELECTED >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+  //else
+  //   print("<OPTION VALUE=\"diskret\" >  $adminbuttom_1_prop_SamsReConfigForm_34\n");
+  //if($row['parser']=="analog")
+  //  {
+  //	   print("<OPTION VALUE=\"analog\" SELECTED > $adminbuttom_1_prop_SamsReConfigForm_33\n");
+  //     $DISABLED_PARSER="DISABLED";
+  //	}
+  //else
+  //  {
+  //     print("<OPTION VALUE=\"analog\" >  $adminbuttom_1_prop_SamsReConfigForm_33\n");
+  //	}
   print("</SELECT>\n");
   if($row['parser_time']>0)
      $time=$row['parser_time'];
