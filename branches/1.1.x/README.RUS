@@ -1,0 +1,51 @@
+################################################################################
+#
+# SAMS (Squid Account Management System)
+#
+# Copyleft 2007-2010 Dmitry Chemerik
+# Web: http://sams.perm.ru
+#
+# This code is open source and may be copied and modified as long as the source
+# code is always made freely available.
+# Please refer to the General Public Licence http://www.gnu.org/ or Licence.txt
+################################################################################
+
+Для сборки и функционирования SAMS необходимы компоненты:
+
+- MySQL версии 3.23 или выше
+- libmysql-devel 
+- Apache версии 1.3.33 или выше
+- Apache Mod_php
+- libpcre, libpcre-devel
+- libgd, libgd-devel
+- PHP 4.3.2 or higher
+- PHP должен быть собран с поддержкой Zlib
+- php-mysql: поддержка MySQL для PHP.
+- php-gd: поддержка GD для PHP.
+
+Сборка:
+
+./configure
+make
+
+если сбока прошла без ошибок, то:
+
+make install
+
+После установки бинарные файлы SAMS будут находиться в  /usr/local/bin, 
+WEB-интерфейс в каталоге /usr/local/share/sams.
+
+Настройте запуск файла /etc/init.d/samsd при старте системы.
+
+Запустите samsdaemon: service samsd start
+
+В броузере откройте http://yourserver/sams/index.html.Если базы SAMS еще 
+небыли созданы, WEB-интерфейс предложит вам диалог создания баз, иначе 
+будет выведен WEB-интерфейс SAMS. Нажмите на иконку внизу веб-интерфейса
+и вам будет выведен диалог входа администратора в WEB-интерфейс. В 
+WEB-интерфейсе SAMS зарегистрирован пользователь-администратор "Admin" 
+с паролем qwerty.
+
+Спасибо за ваш интерес к SAMS ;-)
+
+SAMS Team
