@@ -163,9 +163,8 @@
   $usertray_UserForm_8=" Download quote ";
   $usertray_UserForm_9=" Accepted "; 
   $usertray_UserForm_10=" Activated "; 
-  $usertray_UserForm_11=" Disabled "; 
+  $usertray_UserForm_11=" Switch off "; 
   $usertray_UserForm_12=" Template "; 
-  $usertray_UserForm_13=" Active ";
   $usertray_UserTray_1=" User "; 
 
   $userstray_AddUser_1=" The user has been added "; 
@@ -177,7 +176,7 @@
   $userstray_NewUserForm_4=" Domain "; 
   $userstray_NewUserForm_5=" Internet and statistics look-up password "; 
   $userstray_NewUserForm_6=" User statistics password ";
-  $userstray_NewUserForm_7="IP address "; 
+  $userstray_NewUserForm_7="IP address/mask "; 
   $userstray_NewUserForm_8=" Name "; 
   $userstray_NewUserForm_9=" Middle name"; 
   $userstray_NewUserForm_10=" Last name "; 
@@ -272,7 +271,7 @@
   $userbuttom_1_prop_UpdateUserForm_1=" User data change "; 
   $userbuttom_1_prop_UpdateUserForm_2=" Domain "; 
   $userbuttom_1_prop_UpdateUserForm_3=" Password "; 
-  $userbuttom_1_prop_UpdateUserForm_4=" IP address "; 
+  $userbuttom_1_prop_UpdateUserForm_4=" IP address/mask "; 
   $userbuttom_1_prop_UpdateUserForm_5=" Name "; 
   $userbuttom_1_prop_UpdateUserForm_6=" Middle name "; 
   $userbuttom_1_prop_UpdateUserForm_7=" Last name ";
@@ -339,7 +338,7 @@
   $shablonbuttom_1_prop_UpdateShablonForm_1=" Template editing "; 
   $shablonbuttom_1_prop_UpdateShablonForm_2=" SAMS lists:"; 
   $shablonbuttom_1_prop_UpdateShablonForm_3=" SquidGuard lists:"; 
-  $shablonbuttom_1_prop_UpdateShablonForm_4=" Value of restriction the traffic of the user to default (Mb)"; 
+  $shablonbuttom_1_prop_UpdateShablonForm_4=" Value of restriction the traffic of the user to default (Kb)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_5=" (byte/s)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_6=" Speed channel for the separate user (byte/s)"; 
   $shablonbuttom_1_prop_UpdateShablonForm_7=" Save changes "; 
@@ -352,8 +351,7 @@
   $redirlisttray_AddRedirListForm_2=" List name "; 
   $redirlisttray_AddRedirListForm_3=" Set up "; 
   $redirlisttray_AddRedirListForm_4=" List contains URL, to which user's demands would be redirected "; 
-  $redirlisttray_RedirListTray_1=" List"; 
-  $redirlisttray_ReplaceListTray_1=" Substitute List";
+  $redirlisttray_RedirListTray_1=" Demand redirection <BR> List"; 
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1=" Delete the list "; 
 
@@ -502,7 +500,7 @@
   $admintray_UserDoc_3=" To look up the internet work statistics choose the left user frame "; 
   $admintray_UserDoc_4=" under which you authorize in the windows domain (or enter in the browser to work in the Internet), and enter the password
 "; 
-  $admintray_AdminTray_1=" Administrator ";
+$admintray_AdminTray_1=" Administrator ";
 
   $adminbuttom_5_deladmin_DeleteAdmin_1=" User "; 
   $adminbuttom_5_deladmin_DeleteAdmin_2=" deleted "; 
@@ -532,7 +530,7 @@
   $adminbuttom_3_addadm_AddAdminForm_6=" Entered passwords do not coincide "; 
   $adminbuttom_3_addadm_adminbuttom_3_addadm_1=" Add user with administrating rights "; 
 
-  $adminbuttom_2_chuser_ChangeUser_1=" SAMS management interface "; 
+  $adminbuttom_2_chuser_ChangeUser_1=" Change user "; 
   $adminbuttom_2_chuser_ChangeUser_2=" Enter password of the user \" Administrator \""; 
   $adminbuttom_2_chuser_ChangeUser_3=" User name has not been entered "; 
   $adminbuttom_2_chuser_adminbuttom_2_chuser_1=" Access under the name of another superuser "; 
@@ -569,7 +567,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_31=" Check for the reconfiguration squid command every ..."; 
   $adminbuttom_1_prop_SamsReConfigForm_32=" second "; 
   $adminbuttom_1_prop_SamsReConfigForm_33=" Constant parser "; 
-  $adminbuttom_1_prop_SamsReConfigForm_34=" Discret parser "; 
+  $adminbuttom_1_prop_SamsReConfigForm_34=" Analog parser (deprecated)"; 
   $adminbuttom_1_prop_SamsReConfigForm_35=" Read through "; 
   $adminbuttom_1_prop_SamsReConfigForm_36=" minute "; 
   $adminbuttom_1_prop_SamsReConfigForm_37=" Automatically clear up the users traffic"; 
@@ -589,27 +587,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $lframe_sams_FileDenied_1=" File types "; 
   $lframe_sams_FolderDenied_1=" URL access forbidden "; 
   $lframe_sams_FolderRedirect_1=" Redirection ";
-  $lframe_sams_FolderSubstitute_1="Substitute";
-  $lframe_sams_Authorisation="Authorisation";
-  $lframe_sams_Auth_Title_LDAP_Config="LDAP configuration";
-  $lframe_sams_Auth_L1DAP_connections_test="test connections to LDAP";
-  $lframe_sams_Auth_Title_NTLM_Config="NTLM configuration";
-  $lframe_sams_Auth_NTLM_config_test="test ntlm configurations";
-  $lframe_sams_Auth_ConfigureButton="Configure";
-  $lframe_sams_DelayPools="Delay Pools";
-  $lframe_sams_DelayPools_Add="Add delay pool";
-  $lframe_sams_DelayPools_Field_Name="Name";
-  $lframe_sams_DelayPools_Field_Class="Class";
-  $lframe_sams_DelayPools_AgrBucket_Restore="Aggregate bucket restore";
-  $lframe_sams_DelayPools_AgrBucket_Size="Aggregate bucket size";
-  $lframe_sams_DelayPools_NetBucket_Restore="Network bucket restore";
-  $lframe_sams_DelayPools_NetBucket_Size="Network bucket size";
-  $lframe_sams_DelayPools_IndBucket_Restore="Individual bucket restore";
-  $lframe_sams_DelayPools_IndBucket_Size="Individual bucket size";
-  $lframe_sams_DelayPool="Delay Pool";
-  $lframe_sams_DelayPools_AddButton="Add";
-  $lframe_sams_DelayPools_EditButton="Edit delay pool";
-  $lframe_sams_DelayPools_DeleteButton="Delete Pool";
 
   $userbuttom_4_site_SiteUserList_1=" URL list received from "; 
   $userbuttom_4_site_SiteUserList_2=" Edit the URL "; 
@@ -655,12 +632,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $userstray_AllUsersForm_6="Username";
   $userstray_AllUsersForm_7="Delete user";
   $userstray_AllUsersForm_8="Change";
-  $userstray_AllUsersForm_9="Period of limit";
-  $userstray_AllUsersForm_10="days";
-  $userstray_AllUsersForm_11="Month";  
-  $userstray_AllUsersForm_12="Week";  
-  $userstray_AllUsersForm_13="Users search:";  
-  $userstray_AllUsersForm_14="Day";  
 
   $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="URL access allowed";
   $allowlisttray_AddAllowListForm_1="The list contains the URL expressions that are allowed for the users."; 
@@ -726,6 +697,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $adminbuttom_1_prop_SamsReConfigForm_20c="no change";
   $adminbuttom_1_prop_SamsReConfigForm_20d=" letters";
   $adminbuttom_1_prop_SamsReConfigForm_22="User name is entered with the ";
+  $usertray_UserForm_13="Switch on";
   
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Insert NCSA users from file ";
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_2="Select file";
@@ -746,7 +718,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $lframe_0ident_lframe_0ident_1="User authenticate";
   $lframe_1webconf_lframe_1webconf_1="WEB interface settings";
-  $lframe_2sysplug_lframe_1webconf_1="System plugin settings";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_2="Show users as"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_3="User"; 
@@ -754,7 +725,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_5="Family"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_6="Family Name"; 
   $adminbuttom_1_prop_SamsReConfigForm_45="Users traffic";
-  $adminbuttom_1_prop_SamsReConfigForm_46="Traffic";
+  $adminbuttom_1_prop_SamsReConfigForm_46="Trafficк";
   $adminbuttom_1_prop_SamsReConfigForm_47="Real (get on squid)";
   $adminbuttom_1_prop_SamsReConfigForm_48=" Full (get on squid + squid cache)";
   $adminbuttom_1_prop_SamsReConfigForm_49=" Bind DNS name";
@@ -777,16 +748,13 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $configbuttom_1_prop_SamsReConfigForm_56="Select script for send message about deactivate user:";
 
   $logbuttom_4_logbuttom_5_1=" Journal of events, connected with the SAMS exexcutes "; 
-  $configbuttom_1_prop_SamsReConfigForm_57="Administrator e-mail address";
-
-  $configbuttom_1_prop_SamsReConfigForm_58="Create unknown users";
-  $configbuttom_1_prop_SamsReConfigForm_59="Template for unknown user";
-  $configbuttom_1_prop_SamsReConfigForm_60="Group for unknown user";
+  $configbuttom_1_prop_SamsReConfigForm_57="Enter Admiistrator address";
   
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Groups added";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Loading groups from Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Active Directory groups found";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Add users group";
+  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Group already exists";
   $newgrouptray_NewGrpTray_1="Users group creating";
   $URLTimeForm_userbuttom_4_time_1="URL list";
   $userbuttom_9_logoff_userbuttom_9_logoff_1="logoff";  
@@ -864,8 +832,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $shablonbuttom_1_prop_UpdateShablonForm_24="Month";
   $shablonbuttom_1_prop_UpdateShablonForm_25="Week";
-  $shablonbuttom_1_prop_UpdateShablonForm_26=" Automatically clear up the users traffic disabled in the SAMS settings";
-  $shablonbuttom_1_prop_UpdateShablonForm_27="Day";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Old password";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="New passwd";
@@ -879,201 +845,18 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Enter name of AD group manually";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Field of manual input of group";
 
+  $userstray_AllUsersForm_13="Users search:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="SAMS configuration";
 
-  $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
-  $shablonnew_NewShablonForm_19="Users template name has not been entered";
-  $redirlisttray_AddRedirListForm_5="List name has not been entered";
-  $CacheForm_squidbuttom_4_addcache_1="Proxy servers registered in system"; 
-  $CacheForm_squidbuttom_4_addcache_2="Number"; 
-  $CacheForm_squidbuttom_4_addcache_3="Description"; 
-  $CacheForm_squidbuttom_4_addcache_4="Remove"; 
-  $CacheForm_squidbuttom_4_addcache_5 ="Remove";
-  $CacheForm_squidbuttom_4_addcache_6 ="Add proxy server to SAMS";
-  $CacheForm_squidbuttom_4_addcache_7 ="Description";
-  $CacheForm_squidbuttom_4_addcache_8 ="Add";
-  $CacheForm_squidbuttom_4_addcache_9="Description has not been entered";
-  $grouptray_NewGroupForm_12="User group name has not been entered";
-  $usersbuttom_1_useradd_AddUser_1="The user with ip address ";
-  $usersbuttom_1_useradd_AddUser_2=" is already registered in system";
+  $lang_pdfReport_page="Page";
+  $lang_pdfReport_user="User";
+  $lang_pdfReport_date="Date";
+  $lang_pdfReport_site="Site";
+  $lang_pdfReport_size="Download";
+  $lang_pdfReport_cache="Cache";
+  $lang_pdfReport_traffic="Traffic";
+//  global $LANG;
+//  $lang="./lang/lang.$LANG";
+//  require($lang);
 
-  $filedeniedlisttray_filedeniedlisttray_1="File extensions.  <BR>List";
-  $regexlisttray_regexlisttray_1="Regular expressions.  <BR>List";
-
-  $shablonbuttom_9_delete_DeleteShablon_1="Template contains";
-  $shablonbuttom_9_delete_DeleteShablon_2="users";
-  $shablonbuttom_9_delete_DeleteShablon_3="Error of removal a template";
-
-  $userbuttom_1_prop_UpdateUserForm_18="This user see statistic";
-  $userbuttom_1_prop_UpdateUserForm_19="This user see statistic of his group users";
-  $userbuttom_1_prop_UpdateUserForm_20="This user see statistic of all users";
-  $userbuttom_1_prop_UpdateUserForm_21="This user has the right to activate/deactivate users";
-  $userbuttom_1_prop_UpdateUserForm_22="This user has the right to add users in SAMS";
-  $userbuttom_1_prop_UpdateUserForm_23="This user has the right to change URL lists";
-  $userbuttom_1_prop_UpdateUserForm_24="This user has the right to configure SAMS";
-
-  $usersbuttom_2_traffic_UsersTrafficForm_3="select sorting method";
-  $usersbuttom_2_traffic_UsersTrafficForm_4="The size of the received traffic";
-  $usersbuttom_2_traffic_UsersTrafficForm_5="Names of users";
-
-  $AuthADLDValues_authadldtray_1="Active Directory configuration";
-  $AuthADLDValues_authadldtray_2="SAMS users synchronize with Active Directory groups";
-
-  $AuthLDAPValues_authldaptray_1="To remove the chosen groups of synchronisation with domain LDAP";
-  $AuthLDAPValues_authldaptray_2="To add the chosen groups in synchronisation with domain LDAP";
-  $AddSyncGroup_authldaptray_1="In synchronisation with domain LDAP groups are added:";
-  $RemoveSyncGroup_authldaptray_1="In synchronisation with domain LDAP groups are added:";
-
-  $AuthADLDValues_authadldtray_3="To remove the chosen groups of synchronisation with domain AD";
-  $AuthADLDValues_authadldtray_4="To add the chosen groups in synchronisation with domain AD";
-  $AddSyncGroup_authadldtray_1="In synchronisation with domain AD groups are added:";
-  $RemoveSyncGroup_authadldtray_1="In synchronisation with domain AD groups are added:";
-
-  $AuthNTLMValues_authntlmtray_1="To remove the chosen groups of synchronisation with Windows domain";
-  $AuthNTLMValues_authntlmtray_2="To add the chosen groups in synchronisation with Windows domain";
-  $AddSyncGroup_authntlmtray_1="In synchronisation with Windows domain groups are added:";
-  $RemoveSyncGroup_authntlmtray_1="In synchronisation with Windows domain groups are added:";
-
-  $AuthADLDValues_authadldtray_AD_connections_test="test connections to Active Directory";
-
-  $lffolder_5_z0_trange_lfforder_5_z0_trange_1="Time range";
-  $AddTRangeForm_trangetray_1="Time range";
-  $JSTRangeInfo_trangetray_1="Time range";
-  $TRangeTray_trangetray_1="Time range";
-  $redirlisttray_RedirListTray_2=" Local domains <BR> List ";
-  $authtray_AuthEnabledForm_1="Enabled authorisation type";
-  $authtray_AuthEnabledForm_2="Authorisation type";
-  $authtray_AuthEnabledForm_3="Enabled";
-  $authadldbuttom_1_AuthADLDReConfigForm_1="Active Directory connection";
-  $shablonbuttom_1_prop_UpdateShablonForm_29="Add a time range";
-  $configbuttom_3_import_importdataform_1="Import database from SAMS 1";
-  $configbuttom_3_import_importdataform_2="SAMS 1 templates, groups, users";
-  $configbuttom_3_import_importdataform_3="SAMS 1 url access lists";
-  $configbuttom_3_import_importdataform_5="Import data";
-
-  $authadldbuttom_3_importfromad_ImportFromADForm_1="Import from Active Directory";
-  $authadldbuttom_3_importfromad_ImportFromADForm_2="Select imported AD groups";
-  $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1="Import from LDAP";
-  $authadldbuttom_3_importfromldap_ImportFromLDAPForm_2="Select imported LDAP groups";
-  $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1="Import from Windows Domain";
-  $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_2="Select imported Windows Domain groups";
-  $authadldbuttom_1_prop_AuthLDAPReConfigForm_1="LDAP Configuration";
-  $authntlmbuttom_1_prop_AuthNTLMReConfigForm_1="NTLM Configuration";
-  $proxybuttom_9_delete_proxybuttom_9_delete_1="Remove proxy server";
-  $ad_server="Active Directory server";
-  $ad_domain="Base DN";
-  $ad_admin="AD administrator";
-  $ad_passwd="AD administrator password";
-  $ad_group="AD user group";
-  $ntlm_group="Windows domain server";
-  $ntlm_group="Windows domain";
-  $ntlm_group="Windows domain administrator";
-  $ntlm_group="Windows domain administrator password";
-  $ntlm_group="Windows domain user group";
-  $proxybuttom_1_prop_proxybuttom_1_prop_1="Proxy server configuration";
-  $proxybuttom_1_down_proxybuttom_1_down_1="Shutdown the proxy server?";
-  $proxybuttom_1_down_proxybuttom_1_down_2="Shutdown the proxy server";
-  $trangebuttom_1_prop_trangebuttom_1_prop_1="Time range configure";
-  $trangebuttom_9_delete_trangebuttom_9_delete_1="Delete time range";
-  $trangebuttom_9_delete_trangebuttom_9_delete_2="Delete time range";
-  $shablonbuttom_1_prop_UpdateShablonForm_28="Second template";
-  $authbuttom_1_usersimport_LoadFileForm_1="Loading of the list of users from a file";
-  $documentation="Documentation";
-  $blocked_php_14="Access time:";
-  $activate_user="Activate the user";
-  $MoveUserTrafficDataForm_1="To move the data about traffic of the user";
-  $MoveUserTrafficDataForm_2="Move traffic data from user";
-  $MoveUserTrafficDataForm_3="to user";
-  $MoveUserTrafficDataForm_4="To move the traffic data";
-  $authbuttom_1_ncsaimport_LoadFileForm_1="Loading of the list of users from a file with passwords";
-
-  $shablonbuttom_1_prop_UpdateShablonForm_30="Remove a time range";
-  $shablonbuttom_1_prop_UpdateShablonForm_31="You cannot remove a unique time range in a template";
-  $configbuttom_3_import_importsamsusers_1="Import of users";
-  $configbuttom_3_import_importshablons_1="Import of tamplates";
-  $configbuttom_3_import_importgroups_1="Import of user groups";
-  $configbuttom_3_import_importurllists_1="Import of URL lists";
-  $configbuttom_3_import_importtimerange_1="Import of time ranges";
-
-
-  $setup_1="Choose language";
-  $setup_2="Verify requirements";
-  $setup_3="Set up database";
-  $setup_4="Finished";
-  $setup_5="Requirements problem";
-  $setup_6="The following errors must be resolved before you can continue the installation process:";
-   $setup_7="Web interface SAMS demands the right to record in the catalogue ./data";
-   $setup_8="Каталог ./data закрыт для записи. Чтобы продолжить установку, настройте разрешения вручную.";
-   $setup_9="Пожалуйста, проверьте сообщение об ошибке и попробуйте снова.";
-   $setup_10="Для создания вашей базы данных SAMS2 укажите следующую информацию.";
-   $setup_11="database engine";
-   $setup_12="database user";
-   $setup_13="Password";
-   $setup_14="hostname";
-   $setup_15="database name";
-
-   $setup_16="Next";
-   $setup_17="Back";
-   $setup_18="Check up again";
-   $setup_19="Access rights";
-   $setup_20="php settings";
-   $setup_21="php modules";
-   $setup_22="Zlib module";
-   $setup_23="GD2 module";
-   $setup_24="MySQL support";
-   $setup_25="installed";
-   $setup_26="accessible to record";
-   $setup_27="inaccessible to record";
-   $setup_28="not installed";
-   $setup_29="Recommended";
-   $setup_30="Installed";
-   $setup_31="Options";
-   $setup_32="Create SAMS DB user";
-   $setup_33="SAMS DB user";
-   $setup_34="SAMS DB user password";
-   $setup_35="PostgreSQL support";
-   $setup_36="Start SAMS web interface";
-   $setup_37="Creation of SAMS database";
-   $setup_38="Database SAMS is found";
-   $setup_39="database creation is not required";
-   $adminbuttom_1_prop_SamsReConfigForm_53="Proxy server ID";
-
-   $configtray_0_Head="System Information";
-   $configtray_0_Hostname="Hostname";
-   $configtray_0_IP="IP-address";
-   $configtray_0_Uptime="Uptime";
-
-   $configtray_1_Mem="Memory";
-   $configtray_1_Swap="Swap";
-   $configtray_1_MemTotal="Total";
-   $configtray_1_MemUsed="Used";
-   $configtray_1_MemFree="Free";
-
-   $configtray_2_FS="Filesystem";
-   $configtray_2_Size="Size";
-   $configtray_2_Used="Used";
-   $configtray_2_Avail="Available";
-   $configtray_2_Percent="Use, %";
-   $configtray_2_Mnt="Mounted on";
-
-   $configtray_3_M="This month";
-   $configtray_3_D="This day";
-   $configtray_3_SumTraffic="All traffic";
-   $configtray_3_FromCache="From cache";
-   $configtray_3_Traffic="Traffic";
-
-   $confogbuttom_3_importcache_importcachesumtable_1="Import data about the traffic of users";
-   $confogbuttom_3_importcache_importcachesumtable_2="records is imported";
-   $confogbuttom_3_importcache_importcachesumtable_2="records it is imported";
-   $confogbuttom_3_importcache_importcachetable_1="Import data about the traffic of users for";
-   $confogbuttom_3_importcache_importcachetable_2="records is imported";
-   $confogbuttom_3_importcache_importcachetable_3="Import data is finished";
-   $confogbuttom_3_importcache_importcachetable_4="records it is imported";
-   $configbuttom_3_importcache_configbuttom_3_importcache_1="Import data about the traffic of users from database SAMS 1.x";
-   $configbuttom_3_import_importdataform_4="To create a proxy a server and to import options";
-   $configbuttom_3_importcache_selectimportdateform_1="Import of the data about the traffic of users";
-   $configbuttom_3_importcache_selectimportdateform_2="The traffic of users is found from ";
-   $configbuttom_3_importcache_selectimportdateform_3="till";
-   $configbuttom_3_importcache_selectimportdateform_4="Choose the period the traffic for which will be imported";
-   $usersbuttom_1_useradd_AddUser_3="The user with login ";
 ?>

@@ -12,14 +12,14 @@
  $urlregex_addform1="Запрет доступа по регулярному выражению.<BR>Создание нового списка";
  $urlregex_addform2="Название списка:";
  $urlregex_addform3="Создать";
- $urlregex_addform4="Список содержит выражения, содержащиеся в URL, доступ к которым пользователям будет запрещён.";
+ $urlregex_addform4="Список содержит выражения, содержащиеся в URL, доступ к которым пользователям будет запрещен.";
  $urlregex_add1="В список запрета по регулярному выражению добавлена новая группа";
 // $urlregex_="";
 
 //file user.php
   $user_usertray8="Удалить пользователя";
   $user_usergrouptray1="Статистика группы по пользователям";
-  $user_usergrouptray2="Статистика по размерам файлов";
+  $user_usergrouptray2="Статиcтика по размерам файлов";
   $user_usergrouptray3="Статистика по посещаемым сайтам";
 
   $user_usergroupform3="Изменить свойства пользователя";
@@ -45,9 +45,9 @@
   $denied_quickadddeniedurlform4="Добавить";
   $denied_adddeniedform1="Запрет доступа.<BR>Создание нового списка URL";
   $denied_adddeniedform2=" Название списка:";
-  $denied_adddeniedform3="Данный список РАЗРЕШЁН к доступу";
+  $denied_adddeniedform3="Данный список РАЗРЕШЕН к доступу";
   $denied_adddeniedform4="Создать";
-  $denied_adddeniedform5="Список содержит URL, доступ пользователей к которым будет запрещён.";
+  $denied_adddeniedform5="Список содержит URL, доступ пользователей к которым будет запрещен.";
   $denied_adddeniedgroup1="В список запрета добавлена новая группа URL";
   $denied_showdenied1="Запрет доступа";
 
@@ -60,7 +60,7 @@
 
 // file log.php
   $log_showalllogform1="Изменение групп URL";
-  $log_showalllogform2="Изменение базы записей Squid";
+  $log_showalllogform2="Изменение базы записей SQUID";
   $log_showalllogform3="Показать журнал";
 
 // file grptraffic.php
@@ -70,8 +70,8 @@
   $grptraffic_groupsitetrafficform="Список ресурсов, к которым обращались пользователи";
 
 // file alltraffic.php
-  $alltraffic_showgrpercenttrafficform1="Объём информации, полученной пользователями, в %";
-  $alltraffic_allfilesizeform1="Список файлов, больших ... КБ";
+  $alltraffic_showgrpercenttrafficform1="Объем информации, полученной пользователями, в %";
+  $alltraffic_allfilesizeform1="Список файлов, больших ... Кб";
 
 // file admin.php
 
@@ -91,12 +91,12 @@
   $traffic_new="за период с \$bdate по \$eddate";
   
 // file mysqltools.php
-  $month=array("", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь");
+  $month=array("", "Январь", "Февраль","Март", "Апрель", "Май", "Июнь","Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь");
   $mysqltools_dateselect1="Начало периода";
   $mysqltools_dateselect2="Ok";
   $mysqltools_dateselect3="Конец периода";
   $mysqltools_dateselect4="Показать";
-  $mysqltools_dateselect5="Список файлов, больших  ... КБ";
+  $mysqltools_dateselect5="Список файлов, больших  ... кб";
   $mysqltools_dateselect6="Пользователей, посетивших URI";
 
 
@@ -118,14 +118,14 @@
   $redir_quickaddurlform1="Перенаправление запроса";
   $redir_quickaddurlform2="Добавить";
   $redir_openurlbase2="Локальные домены";
-  $redir_openurlbase3="Доступ к URL, содержащим регулярные выражения, запрещён";
+  $redir_openurlbase3="Доступ к URL, содержащим регулярные выражения, запрещен";
   $redir_openurlbase4="Перенаправление запроса.";
-  $redir_openurlbase5="Доступ к URL разрешён";
-  $redir_openurlbase6="Доступ к URL запрещён";
+  $redir_openurlbase5="Доступ к URL разрешен";
+  $redir_openurlbase6="Доступ к URL запрещен";
   $redir_openurlbase7="Удалить URL";
   $redir_openurlbase8="Добавить URL";
   $redir_openurlbase9="Очистить список";
-  $redir_openurlbase10="Список содержит домены, данные по доступу к которым пользователей НЕ ЗАНОСЯТСЯ в базу логов Squid.";
+  $redir_openurlbase10="Список содержит домены, данные по доступу к которым пользователей НЕ ЗАНОСЯТСЯ в базу логов SQUID.";
   $redir_openurlbase11="Трафик пользователей по этим доменам не учитывается.";
   $redir_openurlbase12="пример:";
   $redir_openurlbase13="linux.perm.ru - трафик с домена linux.perm.ru в базу не вносится";
@@ -142,8 +142,6 @@
   $redir_addredirectform3="Создать";
   $redir_addredirectform4="Список содержит URL, запросы пользователей к которым будет перенаправлены на";
 
-  $redir_addreplaceform1="Подстановка запроса.<BR>Создание нового списка URL";
-
   $redir_filetypesform1="Запрет доступа.<br>Создание нового списка расширений файлов";
   $redir_filetypesform2="Удалить";
   $redir_filetypesform3="Изменить";
@@ -154,17 +152,16 @@
   $usertray_UserAuthForm_1="Введите пароль пользователя";
   $usertray_UserForm_1="Пользователь";
   $usertray_UserForm_2="Домен:";
-  $usertray_UserForm_3="IP-адрес";
+  $usertray_UserForm_3="IP адрес/маска";
   $usertray_UserForm_4="Имя";
   $usertray_UserForm_5="Отчество";
   $usertray_UserForm_6="Фамилия";
   $usertray_UserForm_7="Группа";
   $usertray_UserForm_8="Квота на скачивание";
   $usertray_UserForm_9="Получено";
-  $usertray_UserForm_10="Статус";
+  $usertray_UserForm_10="Активен";
   $usertray_UserForm_11="Отключен";
   $usertray_UserForm_12="Шаблон";
-  $usertray_UserForm_13="Активен";
   $usertray_UserTray_1="Пользователь";
 
   $userstray_AddUser_1="Добавлен пользователь";
@@ -176,61 +173,61 @@
   $userstray_NewUserForm_4="Домен";
   $userstray_NewUserForm_5="Пароль для допуска пользователя<BR> в интернет и просмотра статистики";
   $userstray_NewUserForm_6="Пароль для просмотра<BR> статистики пользователем";
-  $userstray_NewUserForm_7="IP адрес";
+  $userstray_NewUserForm_7="IP адрес/маска";
   $userstray_NewUserForm_8="Имя";
   $userstray_NewUserForm_9="Отчество";
   $userstray_NewUserForm_10="Фамилия";
   $userstray_NewUserForm_11="Группа";
-  $userstray_NewUserForm_12="Разрешённый";
-  $userstray_NewUserForm_13="трафик (МБ)";
+  $userstray_NewUserForm_12="Разрешенный";
+  $userstray_NewUserForm_13="трафик (Мб)";
   $userstray_NewUserForm_14="Пользователь активен";
   $userstray_NewUserForm_15="Шаблон";
   $userstray_NewUserForm_16="Добавить пользователя";
 
   $userstray_UsersTray_1="Все пользователи";
 
-  $usersbuttom_6_clear_ClearUsersTrafficCounter="Очищены счётчики трафика всех пользователей";
-  $usersbuttom_6_clear_usersbuttom_6_clear_1="Очистить счётчики трафика ВСЕХ пользователей";
-  $usersbuttom_6_clear_usersbuttom_6_clear_2="Очистить счётчики трафика пользователей";
+  $usersbuttom_6_clear_ClearUsersTrafficCounter="Очищены счетчики трафика всех пользователей";
+  $usersbuttom_6_clear_usersbuttom_6_clear_1="Очистить счетчики трафика ВСЕХ пользователей";
+  $usersbuttom_6_clear_usersbuttom_6_clear_2="Очистить счетчики трафика пользователей";
 
-  $usersbuttom_5_recalc_RecalcUsersTraffic_1="Объём информации, полученной пользователями с";
+  $usersbuttom_5_recalc_RecalcUsersTraffic_1="Объем информации, полученной пользователями с";
   $usersbuttom_5_recalc_RecalcUsersTraffic_2=", пересчитан";
-  $usersbuttom_5_recalc_RecalcUsersTraffic_3="Пересчитан объём трафика пользователей за месяц";
+  $usersbuttom_5_recalc_RecalcUsersTraffic_3="Пересчитан объем трафика пользователей за месяц";
 
   $usersbuttom_5_recalc_usersbuttom_5_recalc_1="Пересчитать трафик пользователей?";
   $usersbuttom_5_recalc_usersbuttom_5_recalc_2="Пересчитать трафик пользователей";
 
   $usersbuttom_4_percent_UsersPercentTraffic_1="Статистика пользователей";
-  $usersbuttom_4_percent_UsersPercentTraffic_2="Объём информации, полученной пользователями, в %";
+  $usersbuttom_4_percent_UsersPercentTraffic_2="Объем информации, полученной пользователями, в %";
   $usersbuttom_4_percent_UsersPercentTraffic_3="Пользователь";
   $usersbuttom_4_percent_UsersPercentTraffic_4="Домен";
   $usersbuttom_4_percent_UsersPercentTraffic_5="Размер (байт)";
-  $usersbuttom_4_percent_UsersPercentTraffic_6="Размер (МБ)";
+  $usersbuttom_4_percent_UsersPercentTraffic_6="Размер (Мб)";
   $usersbuttom_4_percent_UsersPercentTraffic_7="Всего:";
   $usersbuttom_4_percent_UsersPercentTraffic_8="Группа";
 
   $usersbuttom_4_percent_UsersPercentTrafficForm_1="Статистика пользователей";
-  $usersbuttom_4_percent_UsersPercentTrafficForm_2="Объём информации, полученной пользователями, в %";
+  $usersbuttom_4_percent_UsersPercentTrafficForm_2="Объем информации, полученной пользователями, в %";
   $usersbuttom_4_percent_usersbuttom_4_percent_1="Статистика всех пользователей по % полученной информации";
 
   $usersbuttom_3_file_UsersFileSizePeriod_1="Статистика пользователей";
   $usersbuttom_3_file_UsersFileSizePeriod_2="Список файлов, больших";
-  $usersbuttom_3_file_UsersFileSizePeriod_3="Размер файла (КБ)";
+  $usersbuttom_3_file_UsersFileSizePeriod_3="Размер файла (кб)";
   $usersbuttom_3_file_UsersFileSizePeriod_4="Пользователь";
   $usersbuttom_3_file_UsersFileSizePeriod_5="Дата";
   $usersbuttom_3_file_UsersFileSizePeriod_6="Размер";
   $usersbuttom_3_file_UsersFileSizePeriod_7="Время";
   $usersbuttom_3_file_usersbuttom_3_file_1="Статистика всех пользователей по размеру полученных файлов";
-  $usersbuttom_3_file_usersbuttom_3_file_2="Размер файла (КБ)";
+  $usersbuttom_3_file_usersbuttom_3_file_2="Размер файла (кб)";
 
   $usersbuttom_2_traffic_UsersTrafficPeriod_1="Статистика пользователей";
-  $usersbuttom_2_traffic_UsersTrafficPeriod_2="Объём информации, полученной пользователями, в КБ";
+  $usersbuttom_2_traffic_UsersTrafficPeriod_2="Объем информации, полученной пользователями, в Кб";
   $usersbuttom_2_traffic_UsersTrafficPeriod_3="Вывести фамилии пользователей";
   $usersbuttom_2_traffic_UsersTrafficPeriod_4="Пользователь";
-  $usersbuttom_2_traffic_UsersTrafficPeriod_5="Взято из кэша";
+  $usersbuttom_2_traffic_UsersTrafficPeriod_5="Взято из КЭШ";
   $usersbuttom_2_traffic_UsersTrafficPeriod_6="Получено";
   $usersbuttom_2_traffic_UsersTrafficPeriod_7="Трафик";
-  $usersbuttom_2_traffic_UsersTrafficForm_1="Объём информации, полученной пользователями, в КБ";
+  $usersbuttom_2_traffic_UsersTrafficForm_1="Объем информации, полученной пользователями, в Кб";
   $usersbuttom_2_traffic_UsersTrafficForm_2="Вывести фамилии пользователей";
   $usersbuttom_2_traffic_usersbuttom_2_traffic_1="Статистика всех пользователей домена";
 
@@ -243,11 +240,11 @@
   $usersbuttom_1_domain_AddUsersFromDomainForm_5="Добавить";
   $usersbuttom_1_domain_usersbuttom_1_domain_1="Загрузить всех пользователей домена";
 
-  $userbuttom_1_delete_deleteuser_1="Удалён пользователь";
+  $userbuttom_1_delete_deleteuser_1="Удален пользователь";
   $userbuttom_1_delete_deleteuser_2="домен";
   $userbuttom_1_delete_userbuttom_9_delete="Удалить пользователя";
-  $userbuttom_5_clear_ClearUserTrafficCounter_1="Очищен счётчик трафика пользователя";
-  $userbuttom_5_clear_userbuttom_5_clear_1="Очистить счётчик трафика пользователя";
+  $userbuttom_5_clear_ClearUserTrafficCounter_1="Очищен счетчик трафика пользователя";
+  $userbuttom_5_clear_userbuttom_5_clear_1="Очистить счетчик трафика пользователя";
 
   $userbuttom_4_site_UserSitesPeriod_2="Список ресурсов, к которым обращался пользователь";
   $userbuttom_4_site_UserSitesPeriod_3="Размер";
@@ -261,23 +258,23 @@
   $userbuttom_3_file_UserFileSizeForm_2="Размер файла (kb)";
   $userbuttom_3_file_userbuttom_3_file_3="Статистика пользователя по размеру полученных файлов";
 
-  $userbuttom_2_traffic_UserTrafficPeriod_2="Объём информации, полученной пользователем, в КБ";
+  $userbuttom_2_traffic_UserTrafficPeriod_2="Объем информации, полученной пользователем, в Кб";
   $userbuttom_2_traffic_UserTrafficPeriod_6="Размер";
-  $userbuttom_2_traffic_UserTrafficForm_1="Объём информации, полученной пользователем, в kb";
+  $userbuttom_2_traffic_UserTrafficForm_1="Объем информации, полученной пользователем, в kb";
   $userbuttom_2_traffic_userbuttom_2_traffic_1="Статистика пользователя";
 
   $userbuttom_1_prop_UpdateUser_1="Изменена информация о пользователе";
   $userbuttom_1_prop_UpdateUserForm_1="Изменение данных о пользователе";
   $userbuttom_1_prop_UpdateUserForm_2="Домен";
   $userbuttom_1_prop_UpdateUserForm_3="Пароль";
-  $userbuttom_1_prop_UpdateUserForm_4="IP-адрес";
+  $userbuttom_1_prop_UpdateUserForm_4="IP адрес/маска";
   $userbuttom_1_prop_UpdateUserForm_5="Имя";
   $userbuttom_1_prop_UpdateUserForm_6="Отчество";
   $userbuttom_1_prop_UpdateUserForm_7="Фамилия";
   $userbuttom_1_prop_UpdateUserForm_8="Группа";
-  $userbuttom_1_prop_UpdateUserForm_9="Разрешённый";
-  $userbuttom_1_prop_UpdateUserForm_10="трафик (МБ)";
-  $userbuttom_1_prop_UpdateUserForm_11="Статус";
+  $userbuttom_1_prop_UpdateUserForm_9="Разрешенный";
+  $userbuttom_1_prop_UpdateUserForm_10="трафик (Мб)";
+  $userbuttom_1_prop_UpdateUserForm_11="Пользователь активен";
   $userbuttom_1_prop_UpdateUserForm_12="Шаблон";
   $userbuttom_1_prop_UpdateUserForm_13="Изменить данные";
   $userbuttom_1_prop_UpdateUserForm_14="Имеет право смотреть статистику<BR> пользователей своей группы:";
@@ -285,7 +282,7 @@
   
   $userbuttom_1_prop_userbuttom_1_prop_1="Изменить данные о пользователе";
 
-  $urllistfunction_DeleteList_1="Удалён список";
+  $urllistfunction_DeleteList_1="Удален список";
   $urllistfunction_AddNewList_1="В список перенаправления добавлена новая группа URL";
   $urllistfunction_DeleteAllURLFromList_1="Очищен список URL";
   $urllistfunction_AddURLFromList_1="В группу";
@@ -293,31 +290,31 @@
   $urllistfunction_DeleteURLFromList_1="Из группы";
   $urllistfunction_DeleteURLFromList_2="удален URL";
 
-  $squidtray_HelpSquidForm_1="Реконфигурирование Squid";
-  $squidtray_HelpSquidForm_2="Реконфигурирование Squid и сохранение базы логов Squid в файл";
+  $squidtray_HelpSquidForm_1="Реконфигурирование SQUID";
+  $squidtray_HelpSquidForm_2="Реконфигурирование SQUID и сохранение базы логов SQUID в файл";
 
-  $squidbuttom_3_delete_ClearSquidLog_1="Удалены записи из базы логов Squid";
-  $squidbuttom_3_delete_ClearSquidLogForm_1="Очистка базы логов Squid";
-  $squidbuttom_3_delete_squidbuttom_3_delete_1="Очистить базу логов Squid";
+  $squidbuttom_3_delete_ClearSquidLog_1="Удалены записи из базы логов SQUID";
+  $squidbuttom_3_delete_ClearSquidLogForm_1="Очистка базы логов SQUID";
+  $squidbuttom_3_delete_squidbuttom_3_delete_1="Очистить базу логов SQUID";
 
-  $squidbuttom_2_loadbase_LoadSquidLogForm_1="Загрузка логов Squid в базу из архива";
+  $squidbuttom_2_loadbase_LoadSquidLogForm_1="Загрузка логов SQUID в базу из архива";
   $squidbuttom_2_loadbase_LoadSquidLogForm_2="Выберите файл с архивом базы данных.";
   $squidbuttom_2_loadbase_LoadSquidLogForm_3="Открыть файл";
   $squidbuttom_2_loadbase_LoadSquidLogForm_4="Загрузить файл";
-  $squidbuttom_2_loadbase_squidbuttom_2_loadbase_1="Загрузить в базу логи Squid";
+  $squidbuttom_2_loadbase_squidbuttom_2_loadbase_1="Загрузить в базу логи SQUID";
 
-  $squidbuttom_1_savebase_SaveSquidLogForm_1="Архивирование базы логов Squid";
-  $squidbuttom_1_savebase_squidbuttom_1_savebase_1="Сохранить логи Squid в архиве";
+  $squidbuttom_1_savebase_SaveSquidLogForm_1="Архивирование базы логов SQUID";
+  $squidbuttom_1_savebase_squidbuttom_1_savebase_1="Сохранить логи SQUID в архиве";
   $squidbuttom_1_savebase_SaveSquidLog_1="Загрузить файл";
 
 
-  $squidbuttom_0_reconfig_ReconfigSquid_1="Реконфигурирование Squid";
-  $squidbuttom_0_reconfig_ReconfigSquid_2="Команда на реконфигурирование Squid отправлена ";
-  $squidbuttom_0_reconfig_ReconfigSquid_3="Команда на реконфигурирование Squid получена  демоном";
-  $squidbuttom_0_reconfig_ReconfigSquid_4="Команда на реконфигурирование Squid не получена демоном<BR> проверьте, запущен ли samsdaemon";
-  $squidbuttom_0_reconfig_ReconfigSquidForm_1="Реконфигурирование Squid";
+  $squidbuttom_0_reconfig_ReconfigSquid_1="Реконфигурирование SQUID";
+  $squidbuttom_0_reconfig_ReconfigSquid_2="Команда на реконфигурирование SQUID отправлена ";
+  $squidbuttom_0_reconfig_ReconfigSquid_3="Команда на реконфигурирование SQUID получена  демоном";
+  $squidbuttom_0_reconfig_ReconfigSquid_4="Команда на реконфигурирование SQUID не получена демоном<BR> проверьте, запущен ли samsdaemon";
+  $squidbuttom_0_reconfig_ReconfigSquidForm_1="Реконфигурирование SQUID";
   $squidbuttom_0_reconfig_ReconfigSquidForm_2="Реконфигурировать";
-  $squidbuttom_0_reconfig_squidbuttom_0_reconfig_1="Реконфигурировать Squid";
+  $squidbuttom_0_reconfig_squidbuttom_0_reconfig_1="Реконфигурировать SQUID";
 
   $shablontray_ShablonUsers_1="Шаблон";
   $shablontray_ShablonTray_1="Шаблон";
@@ -325,12 +322,12 @@
   $shablonnew_AddShablon_1="Добавлен новый шаблон";
   $shablonnew_NewShablonForm_1="Создание нового шаблона";
   $shablonnew_NewShablonForm_2="Название шаблона";
-  $shablonnew_NewShablonForm_3="Объём трафика пользователя шаблона по умолчанию (МБ)";
-  $shablonnew_NewShablonForm_4="Скорость канала для всего шаблона (байт/с)";
-  $shablonnew_NewShablonForm_5="Скорость канала для отдельного пользователя (байт/с)";
+  $shablonnew_NewShablonForm_3="Объем трафика пользователя шаблона по умолчанию (Mb)";
+  $shablonnew_NewShablonForm_4="Скорость канала для всего шаблона (byte/s)";
+  $shablonnew_NewShablonForm_5="Скорость канала для отдельного пользователя (byte/s)";
   $shablonnew_NewShablonForm_6="Добавить шаблон";
   $shablonnew_NewShablonForm_7="Шаблоны предназначены для управления доступом пользователей к ресурсам Интернет.";
-  $shablonnew_NewShablonForm_8="Шаблон содержит информацию, какие списки запрета доступа или перенаправления заданы для данного пользователя.";
+  $shablonnew_NewShablonForm_8="Шаблон несет информацию, какие списки запрета доступа или перенаправления заданы для данного пользователя.";
 
   $shablonbuttom_9_delete_DeleteShablon_1="Удален шаблон";
   $shablonbuttom_9_delete_shablonbuttom_9_delete_1="Удалить шаблон";
@@ -338,32 +335,10 @@
   $shablonbuttom_1_prop_UpdateShablonForm_1="Редактирование шаблона";
   $shablonbuttom_1_prop_UpdateShablonForm_2="Cписки SAMS:";
   $shablonbuttom_1_prop_UpdateShablonForm_3="списки SquidGuard:";
-  $shablonbuttom_1_prop_UpdateShablonForm_4="Объём трафика пользователя шаблона по умолчанию (Mb)";
+  $shablonbuttom_1_prop_UpdateShablonForm_4="Объем трафика пользователя шаблона по умолчанию (Mb)";
   $shablonbuttom_1_prop_UpdateShablonForm_5="Скорость канала для всего шаблона (byte/s)";
   $shablonbuttom_1_prop_UpdateShablonForm_6="Скорость канала для отдельного пользователя (byte/s)";
   $shablonbuttom_1_prop_UpdateShablonForm_7="Сохранить изменения";
-  $shablonbuttom_1_prop_UpdateShablonForm_8="Перенаправление запроса";
-  $shablonbuttom_1_prop_UpdateShablonForm_9="Запрет доступа";
-  $shablonbuttom_1_prop_UpdateShablonForm_10="Запрет доступа по регулярным выражениям";
-  $shablonbuttom_1_prop_UpdateShablonForm_11="Доступ к URL разрешён";
-  $shablonbuttom_1_prop_UpdateShablonForm_12="Встроенные";
-  $shablonbuttom_1_prop_UpdateShablonForm_13="Временной период";
-  $shablonbuttom_1_prop_UpdateShablonForm_14="Дни недели";
-  $shablonbuttom_1_prop_UpdateShablonForm_15="Другой период";
-  $shablonbuttom_1_prop_UpdateShablonForm_16="период";
-  $shablonbuttom_1_prop_UpdateShablonForm_17=" дней";
-  $shablonbuttom_1_prop_UpdateShablonForm_18="Дата следующего обнуления счётчика трафика";
-  $shablonbuttom_1_prop_UpdateShablonForm_19="Способ авторизации пользователей: ";
-  $shablonbuttom_1_prop_UpdateShablonForm_20="Период лимита трафика: ";
-  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
-  $shablonbuttom_1_prop_UpdateShablonForm_22="Доступ запрещён ко всем URL";
-  $shablonbuttom_1_prop_UpdateShablonForm_23="Запрет загрузки файлов по расширениям";
-  $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
-  $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
-  $shablonbuttom_1_prop_UpdateShablonForm_26="Автоматическая очистка счётчиков трафика отключена в настройках SAMS";
-  $shablonbuttom_1_prop_UpdateShablonForm_27="День";
-  $shablonbuttom_1_prop_UpdateShablonForm_28="Вторичный шаблон";
-
   $shablonbuttom_1_prop_shablonbuttom_1_prop_1="Изменить шаблон";
 
   $redirlisttray_RedirListForm_1="Удалить URL";
@@ -373,9 +348,7 @@
   $redirlisttray_AddRedirListForm_2="Название списка";
   $redirlisttray_AddRedirListForm_3="Создать";
   $redirlisttray_AddRedirListForm_4="Список содержит URL, запросы пользователей к которым будет перенаправлены";
-  $redirlisttray_RedirListTray_1=" Перенаправление запроса <BR> Список ";
-  $redirlisttray_ReplaceListTray_1=" Подстановка запроса <BR> Список ";
-  $redirlisttray_ReplaceListTray_2="Адрес для подстановки";
+  $redirlisttray_RedirListTray_1="Перенаправление запроса.<BR> Список";
 
   $redirbuttom_3_deletelist_redirbuttom_3_deletelist_1="Удалить список";
 
@@ -383,7 +356,7 @@
   $contextlisttray_RedirListForm_2="Добавить URL";
   $contextlisttray_RedirListForm_3="Очистить список";
 
-  $redirlisttray_RedirListForm_4="Список содержит домены, данные по доступу к которым пользователей НЕ ЗАНОСЯТСЯ в базу логов Squid.";
+  $redirlisttray_RedirListForm_4="Список содержит домены, данные по доступу к которым пользователей НЕ ЗАНОСЯТСЯ в базу логов SQUID.";
   $redirlisttray_RedirListForm_5="Трафик пользователей по этим доменам не учитывается.";
   $redirlisttray_RedirListForm_6="пример:";
   $redirlisttray_RedirListForm_7="linux.perm.ru - трафик с домена linux.perm.ru в базу не вносится";
@@ -401,11 +374,11 @@
   $log_5="Время:";
   $log_6="Суперпользователь:";
   $logtray_LogTray_1="Журнал";
-  $logbuttom_4_logbuttom_4_1="Журнал событий, связанных с изменением базы данных логов Squid";
+  $logbuttom_4_logbuttom_4_1="Журнал событий, связанных с изменением базы данных логов SQUID";
   $logbuttom_3_logbuttom_3_1="Журнал событий, связанных с изменением групп пользователей";
   $logbuttom_2_logbuttom_2_1="Журнал событий, связанных с изменением состояния пользователей";
   $logbuttom_1_ShowAllLogForm_2="Изменение групп URL";
-  $logbuttom_1_ShowAllLogForm_3="Изменение базы записей Squid";
+  $logbuttom_1_ShowAllLogForm_3="Изменение базы записей SQUID";
   $logbuttom_1_ShowAllLogForm_4="Пользователь администратор";
   $logbuttom_1_logbuttom_1_1="Журнал всех событий";
 
@@ -433,13 +406,13 @@
   $groupbuttom_2_file_GroupFileSizePeriod_2="Размер файла";
   $groupbuttom_2_file_GroupFileSizeForm_1="Список файлов, больших ... kb";
   $groupbuttom_2_file_GroupFileSizeForm_2="Размер файла (kb)";
-  $groupbuttom_2_file_groupbuttom_2_file_1="Статитстика по размеру полученных файлов";
+  $groupbuttom_2_file_groupbuttom_2_file_1="Статистика по размеру полученных файлов";
 
-  $groupbuttom_1_traffic_GroupTrafficPeriod_1="Объём информации, полученной пользователями, в КБ";
-  $groupbuttom_1_traffic_GroupTrafficPeriod_2="Из кэша";
+  $groupbuttom_1_traffic_GroupTrafficPeriod_1="Объем информации, полученной пользователями, в Кб";
+  $groupbuttom_1_traffic_GroupTrafficPeriod_2="Из кэш";
   $groupbuttom_1_traffic_GroupTrafficPeriod_3="Размер";
   $groupbuttom_1_traffic_GroupTrafficPeriod_4="Трафик";
-  $groupbuttom_1_traffic_GroupTrafficForm_1="Объём информации, полученной пользователями, в КБ";
+  $groupbuttom_1_traffic_GroupTrafficForm_1="Объем информации, полученной пользователями, в Кб";
   $groupbuttom_1_traffic_groupbuttom_1_traffic_1="Статистика пользователя";
 
   $dbtray_HelpDBForm_1="База данных SAMS";
@@ -461,7 +434,7 @@
   $dbbuttom_6_statdb_DBStat_5="в группе";
   $dbbuttom_6_statdb_DBStat_6="Всего URL в списках перенаправления и запрета доступа:";
   $dbbuttom_6_statdb_DBStat_7="В списке";
-  $dbbuttom_6_statdb_DBStat_8="Всего в базе сообщений прокси-сервера Squid:";
+  $dbbuttom_6_statdb_DBStat_8="Всего в базе сообщений прокси-сервера SQUID:";
   $dbbuttom_6_statdb_DBStat_9="пользователя";
   $dbbuttom_6_statdb_dbbuttom_6_statdb_1="Статистика базы данных";
 
@@ -481,9 +454,9 @@
   $backuptray_HelpBackUpForm_2="Сохранение конфигурации SAMS в файл.";
   $backuptray_BackUpTray_1="Сохранение<BR>конфигурации";
 
-  $backupbuttom_2_loadbase_CountUserTraffic_1="Объём информации, полученной пользователями с";
+  $backupbuttom_2_loadbase_CountUserTraffic_1="Объем информации, полученной пользователями с";
   $backupbuttom_2_loadbase_CountUserTraffic_2=", пересчитан";
-  $backupbuttom_2_loadbase_CountUserTraffic_3="Пересчитан объём трафика пользователей за месяц";
+  $backupbuttom_2_loadbase_CountUserTraffic_3="Пересчитан объем трафика пользователей за месяц";
   $backupbuttom_2_loadbase_LoadBackUp_1="Восстановление конфигурации из файла";
   $backupbuttom_2_loadbase_LoadBackUp_2="Открыть файл";
   $backupbuttom_2_loadbase_LoadBackUp_3="Загрузить файл";
@@ -522,12 +495,12 @@
 
   $admintray_UserDoc_1="Добро пожаловать!";
   $admintray_UserDoc_2="Просмотр статистики работы в Интернет";
-  $admintray_UserDoc_3="Для просмотра статистики работы в интернет выберите в левом фрейме пользователя,";
-  $admintray_UserDoc_4="под которым вы авторизуетесь в домене Windows (или вводите в браузере для работы в интернет), и введите пароль";
+  $admintray_UserDoc_3="Для просмотра статистики работы в интернет выберите в левом фрейме пользователя, ";
+  $admintray_UserDoc_4="под которым вы авторизуетесь в домене windows (или вводите в броузере для работы в интернет), и введите пароль";
   $admintray_AdminTray_1="Администратор";
 
   $adminbuttom_5_deladmin_DeleteAdmin_1="Пользователь";
-  $adminbuttom_5_deladmin_DeleteAdmin_2="удалён";
+  $adminbuttom_5_deladmin_DeleteAdmin_2="удален";
   $adminbuttom_5_deladmin_DeleteAdmin_3="Вы не можете удалить другого суперпользователя";
   $adminbuttom_5_deladmin_DeleteAdminForm_1="Удаление пользователя \"Администратор\"";
   $adminbuttom_5_deladmin_DeleteAdminForm_2="Удалить";
@@ -535,7 +508,7 @@
   $adminbuttom_5_deladmin_adminbuttom_5_deladmin_1="Удалить пользователя с правами Администратора";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswd_1="Пароль пользователя";
-  $adminbuttom_4_chpasswd_ChangeAdminPasswd_2="сменён";
+  $adminbuttom_4_chpasswd_ChangeAdminPasswd_2="сменен";
   $adminbuttom_4_chpasswd_ChangeAdminPasswd_3="Вы не можете сменить пароль другого суперпользователя";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_1="Смена пароля пользователя \"Администратор\"";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_2="Изменить";
@@ -550,8 +523,8 @@
   $adminbuttom_3_addadm_AddAdminForm_2="Добавить";
   $adminbuttom_3_addadm_AddAdminForm_3="Вы не можете создать другого суперпользователя";
   $adminbuttom_3_addadm_AddAdminForm_4="Не задано имя пользователя";
-  $adminbuttom_3_addadm_AddAdminForm_5="Длина введённых паролей не совпадает";
-  $adminbuttom_3_addadm_AddAdminForm_6="Введённые пароли не совпадают";
+  $adminbuttom_3_addadm_AddAdminForm_5="Длина введенных паролей не совпадает";
+  $adminbuttom_3_addadm_AddAdminForm_6="Введенные пароли не совпадают";
   $adminbuttom_3_addadm_adminbuttom_3_addadm_1="Добавить пользователя с правами Администратора";
 
   $adminbuttom_2_chuser_ChangeUser_1="Смена пользователя";
@@ -567,7 +540,7 @@
   $adminbuttom_1_prop_SamsReConfigForm_5="Путь к каталогу, где лежат файлы запрета запроса";
   $adminbuttom_1_prop_SamsReConfigForm_6="Редиректор";
   $adminbuttom_1_prop_SamsReConfigForm_7="встроенный SAMS";
-  $adminbuttom_1_prop_SamsReConfigForm_8="встроенный Squid";
+  $adminbuttom_1_prop_SamsReConfigForm_8="встроенный SQUID";
   $adminbuttom_1_prop_SamsReConfigForm_9="Включить ограничение скорости доступа пользователей (delaypool)";
   $adminbuttom_1_prop_SamsReConfigForm_10="Разрешить доступ пользователей к своей статистике по дням";
   $adminbuttom_1_prop_SamsReConfigForm_11="Разрешить доступ пользователей к своей статистике по URL";
@@ -577,26 +550,26 @@
 
   $adminbuttom_1_prop_SamsReConfigForm_14="Разрешить доступ пользователей к своей статистике:";
   $adminbuttom_1_prop_SamsReConfigForm_15="по трафику за день";
-  $adminbuttom_1_prop_SamsReConfigForm_16="по посещённым URL";
+  $adminbuttom_1_prop_SamsReConfigForm_16="по посещенным URL";
   $adminbuttom_1_prop_SamsReConfigForm_17="Настройка авторизации пользователя:";
   $adminbuttom_1_prop_SamsReConfigForm_18="Включить использование домена пользователя";
   $adminbuttom_1_prop_SamsReConfigForm_19="Включить использование домена пользователя";
-  $adminbuttom_1_prop_SamsReConfigForm_24="При NTLM-авторизации пользователей:";
+  $adminbuttom_1_prop_SamsReConfigForm_24="При NTLM авторизации пользователей:";
   $adminbuttom_1_prop_SamsReConfigForm_25="Если у вас в сети несколько доменов, или ваш контроллер домена возвращет название домена, включите \"Использование домена пользователя\"";
-  $adminbuttom_1_prop_SamsReConfigForm_26="Если название домена пишется в логах Squid заглавными буквами, включите \"Домен пользователя выводится ПРОПИСНЫМИ буквами\"";
-  $adminbuttom_1_prop_SamsReConfigForm_27="Если имя пользователя пишется в логах Squid заглавными буквами, включите \"Имя пользователя выводится ПРОПИСНЫМИ буквами\"";
+  $adminbuttom_1_prop_SamsReConfigForm_26="Если название домена пишется в логах squid заглавными буквами, включите \"Домен пользователя выводится ПРОПИСНЫМИ буквами\"";
+  $adminbuttom_1_prop_SamsReConfigForm_27="Если имя пользователя  пишется в логах squid заглавными буквами, включите \"Имя пользователя выводится ПРОПИСНЫМИ буквами\"";
 
   $adminbuttom_1_prop_SamsReConfigForm_28="Перекодировать имена пользователей домена";
-  $adminbuttom_1_prop_SamsReConfigForm_29="Команда перекодировки файлов Squid должна быть прописана в файле sams.conf";
+  $adminbuttom_1_prop_SamsReConfigForm_29="Команда перекодировки файлов SQUID должна быть прописана в файле sams.conf";
   $adminbuttom_1_prop_SamsReConfigForm_30="Настройка samsdaemon";
-  $adminbuttom_1_prop_SamsReConfigForm_31="Проверять наличие команды на реконфигурирование Squid каждые";
+  $adminbuttom_1_prop_SamsReConfigForm_31="Проверять наличие команды на реконфигурирование squid каждые";
   $adminbuttom_1_prop_SamsReConfigForm_32="секунд";
-  $adminbuttom_1_prop_SamsReConfigForm_33="Обрабатывать логи непрерывно";
+  $adminbuttom_1_prop_SamsReConfigForm_33="Обрабатывать логи непрерывно (работает нестабильно)";
   $adminbuttom_1_prop_SamsReConfigForm_34="Запускать обработчик логов через N минут";
   $adminbuttom_1_prop_SamsReConfigForm_35="обрабатывать через";
   $adminbuttom_1_prop_SamsReConfigForm_36="минут";
-  $adminbuttom_1_prop_SamsReConfigForm_37="Автоматически очищать счётчики трафика пользователей";
-  $adminbuttom_1_prop_SamsReConfigForm_38="Обрабатывать логи Squid";
+  $adminbuttom_1_prop_SamsReConfigForm_37="Автоматически очищать счетчики трафика пользователей";
+  $adminbuttom_1_prop_SamsReConfigForm_38="Обрабатывать логи SQUID";
 
   $adminbuttom_1_prop_adminbuttom_1_propadmintray_1="Настройки SAMS";
 
@@ -613,27 +586,6 @@
   $lframe_sams_FileDenied_1="Расширения файлов"; 
   $lframe_sams_FolderDenied_1="Запрет доступа по URL";
   $lframe_sams_FolderRedirect_1="Перенаправление";
-  $lframe_sams_FolderSubstitute_1="Подстановка";
-  $lframe_sams_Authorisation="Авторизация";
-  $lframe_sams_Auth_Title_LDAP_Config="Конфигурация LDAP";
-  $lframe_sams_Auth_LDAP_connections_test="Тестировать LDAP-подключение";
-  $lframe_sams_Auth_Title_NTLM_Config="Конфигурация NTLM";
-  $lframe_sams_Auth_NTLM_config_test="Тестировать NTLM-подключение";
-  $lframe_sams_Auth_ConfigureButton="Конфигурировать";
-  $lframe_sams_DelayPools="Пулы ограничения скорости";
-  $lframe_sams_DelayPools_Add="Добавить пул ограничения скорости";
-  $lframe_sams_DelayPools_Field_Name="Название";
-  $lframe_sams_DelayPools_Field_Class="Класс";
-  $lframe_sams_DelayPools_AgrBucket_Restore="Общая скорость";
-  $lframe_sams_DelayPools_AgrBucket_Size="Порог общей скорости";
-  $lframe_sams_DelayPools_NetBucket_Restore="Скорость подсети";
-  $lframe_sams_DelayPools_NetBucket_Size="Порог скорости подсети";
-  $lframe_sams_DelayPools_IndBucket_Restore="Скорость индивидуального хоста";
-  $lframe_sams_DelayPools_IndBucket_Size="Порог скорости индивидуального хоста";
-  $lframe_sams_DelayPool="Пул ограничения скорости";
-  $lframe_sams_DelayPools_AddButton="Добавить";
-  $lframe_sams_DelayPools_EditButton="Редактировать пул";
-  $lframe_sams_DelayPools_DeleteButton="Удалить пул";
 
   $userbuttom_4_site_SiteUserList_1="Список URL, полученных с ";
   $userbuttom_4_site_SiteUserList_2="редактирование URL";
@@ -653,20 +605,20 @@
 
   $adminbuttom_1_prop_SamsReConfigForm_39="Тестировать ответ PDC";
   $adminbuttom_1_prop_SamsReConfigForm_40="используя:";
-  $adminbuttom_1_prop_SamsReConfigForm_41="Настройка web-интерфейса";
+  $adminbuttom_1_prop_SamsReConfigForm_41="Настройка WEB интерфейса";
   $adminbuttom_1_prop_SamsReConfigForm_42="Тема иконок:";
   $adminbuttom_1_prop_SamsReConfigForm_43="Не использовать редиректор";
 
   $usertray_UserTray_1="Пользователь";
   $deniedlisttray_DeniedListTray_1="Запрет доступа.  <BR>Список";
-  $allowlisttray_allowlisttray_1="Доступ разрешён.  <BR>Список";
-  $addallowlistform_AddAllowListForm_1="Доступ разрешён<BR> Создание нового списка ";
+  $allowlisttray_allowlisttray_1="Доступ разрешен.  <BR>Список";
+  $addallowlistform_AddAllowListForm_1="Доступ разрешен<BR> Создание нового списка ";
 
   $grouptray_NewGroupForm_3="Активен";
   $grouptray_NewGroupForm_4="Пользователь";
   $grouptray_NewGroupForm_5="Домен";
   $grouptray_NewGroupForm_6="Трафик";
-  $grouptray_NewGroupForm_7="Разрешённый трафик";
+  $grouptray_NewGroupForm_7="Разрешенный трафик";
   $grouptray_NewGroupForm_8="Имя пользователя";
   $grouptray_NewGroupForm_9="Изменить";
 
@@ -674,26 +626,20 @@
   $userstray_AllUsersForm_2="Пользователь";
   $userstray_AllUsersForm_3="Группа";
   $userstray_AllUsersForm_4="Трафик";
-  $userstray_AllUsersForm_5="Разрешённый трафик";
+  $userstray_AllUsersForm_5="Разрешенный трафик";
   $userstray_AllUsersForm_6="Имя пользователя";
   $userstray_AllUsersForm_7="Удалить пользователя";
   $userstray_AllUsersForm_8="Изменить";
-  $userstray_AllUsersForm_9="Период ограничения трафика";
-  $userstray_AllUsersForm_10="дней";
-  $userstray_AllUsersForm_11="Месяц";  
-  $userstray_AllUsersForm_12="Неделя";  
-  $userstray_AllUsersForm_13="Искать пользователей:";  
-  $userstray_AllUsersForm_14="День";  
 
-  $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="Доступ разрешён";
-  $allowlisttray_AddAllowListForm_1="Список содержит URL, доступ пользователей к которым разрешён."; 
+  $lffolder_4_z3_urlallow_lffolder_4_z3_urlallow_1="Доступ разрешен";
+  $allowlisttray_AddAllowListForm_1="Список содержит URL, доступ пользователей к которым разрешен."; 
   
   $userbuttom_2_traffic_UserTrafficPeriod_3="Получено пользователем";
-  $userbuttom_2_traffic_UserTrafficPeriod_4="Из кэша";
+  $userbuttom_2_traffic_UserTrafficPeriod_4="Из КЭШ";
   $userbuttom_2_traffic_UserTrafficPeriod_5="Трафик";
 
-  $userbuttom_4_site_UserSitesPeriod_4="Из кэша";
-  $userbuttom_4_site_UserSitesPeriod_5="Суммарный трафик";
+  $userbuttom_4_site_UserSitesPeriod_4="Из КЭШ";
+  $userbuttom_4_site_UserSitesPeriod_5="Трафик";
 
   $DateTimeSelect_mysqltools_1="Дата";
   $DateTimeSelect_mysqltools_2="Время";
@@ -705,7 +651,7 @@
 
   $groupbuttom_2_file_GroupFileSizePeriod_3="Размер";
 
-  $adminbuttom_9_logoff_logoff_1="Выйти из web-интерфейса";         
+  $adminbuttom_9_logoff_logoff_1="Выйти из web интерфейса";         
 
   $user_usertray4="Сохранить список";
   $user_usertray3="загрузить список";
@@ -713,22 +659,30 @@
   $vsego="Всего";
   $usersbuttom_1_useradd_usersbuttom_1_useradd_1="Добавить пользователя";
 
-  $week=array("", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс");
+  $week=array("", "Пон", "Вт","Ср", "Чт", "Пт", "Сб","Вск");
 
+  $shablonbuttom_1_prop_UpdateShablonForm_8="Перенаправление запроса";
+  $shablonbuttom_1_prop_UpdateShablonForm_9="Запрет доступа";
+  $shablonbuttom_1_prop_UpdateShablonForm_10="Запрет доступа по регулярным выражениям";
+  $shablonbuttom_1_prop_UpdateShablonForm_11="Доступ к URL разрешен";
+  $shablonbuttom_1_prop_UpdateShablonForm_12="Встроенные";
+  $shablonbuttom_1_prop_UpdateShablonForm_13="Временной период";
+  $shablonbuttom_1_prop_UpdateShablonForm_14="Дни недели";
 
   $userbuttom_6_chpasswd_userbuttom_6_chpasswd_1="Смена пароля пользователя";
   $userbuttom_6_chpasswd_ChUserPasswdForm_1="Смена пароля пользователя ";
   $userbuttom_6_chpasswd_ChUserPasswd_1="Сменен пароль пользователя ";
 
   $adminbuttom_1_prop_SamsReConfigForm_44="Домен пользователя в access.log записывается МАЛЕНЬКИМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_20="Регистр домена пользователя в access.log";
-  $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫЕ БУКВЫ";
-  $adminbuttom_1_prop_SamsReConfigForm_20b="строчные буквы";
-  $adminbuttom_1_prop_SamsReConfigForm_20c="Без Изменения";
+  $adminbuttom_1_prop_SamsReConfigForm_20="Домен пользователя в access.log записывать";
+  $adminbuttom_1_prop_SamsReConfigForm_20a="ЗАГЛАВНЫМИ";
+  $adminbuttom_1_prop_SamsReConfigForm_20b="строчными";
+  $adminbuttom_1_prop_SamsReConfigForm_20c="Без изменения";
   $adminbuttom_1_prop_SamsReConfigForm_20d=" буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_21="Домен пользователя в Squid.log записывается ПРОПИСНЫМИ буквами";
-  $adminbuttom_1_prop_SamsReConfigForm_22="Регистр имени пользователя в access.log";
+  $adminbuttom_1_prop_SamsReConfigForm_21="Домен пользователя в squid.log записывается ПРОПИСНЫМИ буквами";
+  $adminbuttom_1_prop_SamsReConfigForm_22="Имя пользователя в access.log записывать";
   $adminbuttom_1_prop_SamsReConfigForm_23="Имя пользователя в access.log записывается ПРОПИСНЫМИ буквами";
+    $usertray_UserForm_13="Да";
   
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_1="Загрузить NCSA пользователей из файла";
    $usersbuttom_1_ncsa_LoadNCSAUsersForm_2="Выберите файл";
@@ -738,18 +692,17 @@
    $usersbuttom_1_ncsa_SelectNCSAUsersForm_2="Активировать пользователей";   
    $usersbuttom_1_ncsa_SelectNCSAUsersForm_3="Загрузить";
    
-   $dbbuttom_7_chname_dbbuttom_7_chname_1="Изменить имя пользователя в базе логов Squid ";
-   $dbbuttom_7_chname_ChUserForm_1="Изменить имя пользователя в базе логов Squid за период";
+   $dbbuttom_7_chname_dbbuttom_7_chname_1="Изменть имя пользователя в базе логов squid ";
+   $dbbuttom_7_chname_ChUserForm_1="Изменить имя пользователя в базе логов squid за период";
    $dbbuttom_7_chname_ChUserForm_2="изменить пользователя";
    $dbbuttom_7_chname_ChUserForm_3="на:";
    $dbbuttom_7_chname_ChUser_1="Данные о трафике пользователя перенесены";
    
-  $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1="Настройки web-интерфейса";
+  $webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1="Настройки WEB-интерфейса";
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_1="Показывать дерево пользователей"; 
 
   $lframe_0ident_lframe_0ident_1="Авторизация пользователя";
-  $lframe_1webconf_lframe_1webconf_1="Настройки web-интерфейса";
-  $lframe_2sysplug_lframe_1webconf_1="Настройки системных плагинов";
+  $lframe_1webconf_lframe_1webconf_1="Настройки WEB интерфейса";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_2="Показывать пользователей как"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_3="Пользователь"; 
@@ -757,23 +710,23 @@
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_5="Фамилия"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_6="Фамилия Имя"; 
 
-  $adminbuttom_1_prop_SamsReConfigForm_45="Подсчёт трафика пользователей";
+  $adminbuttom_1_prop_SamsReConfigForm_45="Подсчет трафика пользователей";
   $adminbuttom_1_prop_SamsReConfigForm_46="Считать трафик";
-  $adminbuttom_1_prop_SamsReConfigForm_47="Реальный (Полученный прокси-сервером)";
-  $adminbuttom_1_prop_SamsReConfigForm_48=" Полный (Полученный прокси-сервером + кэш)";
-  $adminbuttom_1_prop_SamsReConfigForm_49=" Преобразовывать DNS-имена";
+  $adminbuttom_1_prop_SamsReConfigForm_47="Реальный (Полученный прокси сервером)";
+  $adminbuttom_1_prop_SamsReConfigForm_48=" Полный (Полученный прокси сервером + КЭШ)";
+  $adminbuttom_1_prop_SamsReConfigForm_49=" Преобразовывать DNS имена";
   $adminbuttom_1_prop_SamsReConfigForm_50=" Используемый сепаратор";
 
   $usersbuttom_1_domain_AddUsersFromDomainForm_6="Активировать пользователей";
   $usersbuttom_1_domain_AddUsersFromDomainForm_7="Домен <BR>(ввести, если ваш PDC не возвращает название домена)";
 
-  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_7="Размер килобайта, учитываемого вашим провайдером"; 
-  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_8="Размер мегабайта, учитываемого вашим провайдером"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_7="Размер Килобайта, учитываемого вашим провайдером"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_8="Размер Мегабайта, учитываемого вашим провайдером"; 
 
   $adminbuttom_1_prop_SamsReConfigForm_51="Уровень детализации записей в журнале";
   $adminbuttom_1_prop_SamsReConfigForm_52="Домен по умолчанию";
   
-  $squidtray_HelpSquidForm_3="Найдены файлы с архивами базы логов Squid:";
+  $squidtray_HelpSquidForm_3="Найдены файлы с архивами базы логов SQUID:";
   $configbuttom_1_prop_SamsReConfigForm_53="Сохранять данные о трафике в базе за последние";
   $configbuttom_1_prop_SamsReConfigForm_54="Не сохранять";
   $configbuttom_1_prop_SamsReConfigForm_55="месяцев. <BR>Данные сохраняются в файл и удаляются из базы.";
@@ -782,32 +735,29 @@
   $logbuttom_4_logbuttom_5_1="Журнал событий, связанных с работой программ sams";
   $configbuttom_1_prop_SamsReConfigForm_57="Введите адрес администратора, на который следует посылать сообщения";
 
-  $configbuttom_1_prop_SamsReConfigForm_58="Автоматически создавать новых пользователей";
-  $configbuttom_1_prop_SamsReConfigForm_59="Шаблон у создаваемого пользователя";
-  $configbuttom_1_prop_SamsReConfigForm_60="Группа у создаваемого пользователя";
-
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAP_1="Добавлены группы";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_1="Загрузка групп пользователей из домена  Active Directory";
   $newgroupbuttom_1_adldap_AddGroupsFromAdLDAPForm_2="Найдены группы Active Directory";
   $newgroupbuttom_5_addgroup_newgrpbuttom_5_addgroup_1="Добавить группу пользователей";
+  $newgroupbuttom_5_addgroup_newgrpbuttom_5_groupexist="Такая группа уже существует.";
   $newgrouptray_NewGrpTray_1="Создание группы пользователей";
-  $URLTimeForm_userbuttom_4_time_1="Список ресурсов, к которым обращался пользователь в течение дня";
-  $userbuttom_9_logoff_userbuttom_9_logoff_1="Выйти из web-интерфейса";  
+  $URLTimeForm_userbuttom_4_time_1="Список ресурсов, к которым обращался пользователь в течении дня";
+  $userbuttom_9_logoff_userbuttom_9_logoff_1="Выйти из web интерфейса";  
   $dbbuttom_6_statdb_ShowReplaceURLTable_1="Удалить";
 
   $blocked_php_1="Пользователь";
-  $blocked_php_2="Доступ к прокси-серверу запрещён";
+  $blocked_php_2="Доступ к прокси-серверу запрещен";
   $blocked_php_3="Доступ к URL";
-  $blocked_php_4="запрещён";
+  $blocked_php_4="запрещен";
   $blocked_php_5="Вы отключены";
-  $blocked_php_6="Превышено ограничение объёма полученной информации";
+  $blocked_php_6="Превышено ограничение объема полученной информации";
   $blocked_php_7="получено:";
-  $blocked_php_8="Доступ к данному URL запрещён";
-  $blocked_php_9="Вы не можете получить доступ к прокси-серверу в этот день недели";
+  $blocked_php_8="Доступ к данному URL запрещен";
+  $blocked_php_9="Вы не можете получить доступ к прокси серверу в этот день недели";
   $blocked_php_10="или истекло время доступа к прокси-серверу";
   $blocked_php_11="лимит:";
-  $blocked_php_12="МБ";
-  $blocked_php_13="КБ";
+  $blocked_php_12="Мб";
+  $blocked_php_13="Кб";
 
   $usersbuttom_2_traffic_UsersTrafficPeriod_8="Фамилия";
   
@@ -815,6 +765,10 @@
   $groupbuttom_0_prop_UpdateGroupForm_2="Название группы";
   $groupbuttom_0_prop_groupbuttom_0_prop_1="Изменить свойства группы";    
 
+  $shablonbuttom_1_prop_UpdateShablonForm_15="Другой период";
+  $shablonbuttom_1_prop_UpdateShablonForm_16="период";
+  $shablonbuttom_1_prop_UpdateShablonForm_17=" дней";
+  $shablonbuttom_1_prop_UpdateShablonForm_18="Дата следующего обнуления счетчика трафика";
   
   $shablonnew_NewShablonForm_9="Способ авторизации пользователей";
   $shablonnew_NewShablonForm_10="Период лимита трафика";
@@ -823,40 +777,50 @@
   $shablonnew_NewShablonForm_13="Другой период";
   $shablonnew_NewShablonForm_14="период";
   $shablonnew_NewShablonForm_15=" дней";
-  $shablonnew_NewShablonForm_16="Дата следующего обнуления счётчика трафика";
+  $shablonnew_NewShablonForm_16="Дата следующего обнуления счетчика трафика";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_19="Способ авторизации пользователей: ";
+  $shablonbuttom_1_prop_UpdateShablonForm_20="Период лимита трафика: ";
 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_9="Показывать графики в отчетах"; 
-  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_10="Создавать PDF-отчеты"; 
+  $webconfigbuttom_1_prop_WebInterfaceReConfigForm_10="Создавать PDF отчеты"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_11="Не создавать"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_12="С помошью fpdf"; 
   $webconfigbuttom_1_prop_WebInterfaceReConfigForm_13="С помошью pdflib"; 
   
   $AdminTray_UserDoc_5="Введите имя пользователя и пароль, используемые вами для доступа в интернет";
 
-  $shablonnew_NewShablonForm_17="не забудьте выставить способ авторизации по умолчанию в настройках SAMS";
+  $shablonnew_NewShablonForm_17="незабудьте выставить способ авторизации по-умолчанию внастройках SAMS";
 
-  $proxybuttom_1_down_proxybuttom_1_down_1="Выключить прокси-сервер?";
-  $shutdown_proxy_proxybuttom_1_down_1="Прокси-сервер";
+  $userstray_AllUsersForm_9="Период ограничения трафика";
+  $userstray_AllUsersForm_10="дней";
+  $userstray_AllUsersForm_11="Месяц";  
+  $userstray_AllUsersForm_12="Неделя";  
+  $proxybuttom_1_down_proxybuttom_1_down_1="Выключить прокси сервер?";
+  $shutdown_proxy_proxybuttom_1_down_1="Прокси сервер";
   $shutdown_proxy_proxybuttom_1_down_2="Выключить";
   $shutdown_proxy_proxybuttom_1_down_3="Выключить";    
-  $squidbuttom_4_addcache_squidbuttom_4_addcache_1="Добавить прокси-сервер";
-  $CacheForm_squidbuttom_4_addcache_1="Прокси-серверы, зарегистрированные в системе"; 
+  $squidbuttom_4_addcache_squidbuttom_4_addcache_1="Добавить прокси сервер";
+  $CacheForm_squidbuttom_4_addcache_1="Прокси серверы, зарегистрированные в системе"; 
   $CacheForm_squidbuttom_4_addcache_2="Номер"; 
   $CacheForm_squidbuttom_4_addcache_3="Описание"; 
   $CacheForm_squidbuttom_4_addcache_4="Удалить из системы"; 
   $CacheForm_squidbuttom_4_addcache_5 ="Удалить";
-  $CacheForm_squidbuttom_4_addcache_6 ="Зарегистрировать прокси-сервер в системе";
+  $CacheForm_squidbuttom_4_addcache_6 ="Зарегистрировать прокси сервер в системе";
   $CacheForm_squidbuttom_4_addcache_7 ="Описание";
   $CacheForm_squidbuttom_4_addcache_8 ="Зарегистрировать";
-  $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси-сервер";
+  $squidbuttom_0_reconfig_ReconfigSquidForm_3="Прокси сервер";
   $squidbuttom_0_reconfig_ReconfigSquidForm_4="Реконфигурировать";
+
+  $shablonbuttom_1_prop_UpdateShablonForm_21="Запрет загрузки файлов по расширениям ";
 
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_1="Найдены группы домена:";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_2="Выбрать группу пользователей";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_3="Найдены пользователи группы Active Directory";
 
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4="Найдены пользователи группы Active Directory";
+  $shablonbuttom_1_prop_UpdateShablonForm_22="Доступ запрещен ко всем URL";
+  $shablonbuttom_1_prop_UpdateShablonForm_23="Запрет загрузки файлов по расширениям";
   $logbuttom_9_delete_ClearLog_1="Удалены логи";
 
   $shablontray_ShablonUsers_2="Выберите пользователей для назначения шаблона";
@@ -865,21 +829,21 @@
   $grouptray_NewGroupForm_11="Переместить выбранных пользователей в группу";
 
   $squidbuttom_5_readcache_LoadFileForm_1="Загружается файл";
-  $squidbuttom_5_readcache_LoadFileForm_2="из кэша";
+  $squidbuttom_5_readcache_LoadFileForm_2="из кэш";
   $squidbuttom_5_readcache_LoadFileForm_3="Идет загрузка файла";
   $squidbuttom_5_readcache_LoadFileForm_4="Файл не загружен";
   $squidbuttom_5_readcache_LoadFileForm_5="Проверьте, запущен ли samsdaemon";
   $squidbuttom_5_readcache_LoadFileForm_6="Файл скопирован в";
   $squidbuttom_5_readcache_ReadCacheFilesList_1="Идет сканирование директорий кэша";
   $squidbuttom_5_readcache_ReadCacheFilesList_2="Сканирование окончено";
-  $squidbuttom_5_readcache_ReadCacheFiles_1="Сканируются файлы в кэше Squid";
+  $squidbuttom_5_readcache_ReadCacheFiles_1="Сканируются файлы в кэше SQUID";
   $squidbuttom_5_readcache_ReadCacheFiles_2="Идет сканирование...";
   $squidbuttom_5_readcache_ReadCacheFiles_3="Идет сканирование директорий кэша";
-  $squidbuttom_5_readcache_ReadCacheFiles_4="Команда на сканирование кэша Squid не получена демоном<BR>проверьте, запущен ли samsdaemon";
-  $squidbuttom_5_readcache_ReadCacheSquidForm_1="Сканирование файлов в кэше Squid";
+  $squidbuttom_5_readcache_ReadCacheFiles_4="Команда на сканирование кэша SQUID не получена демоном<BR>проверьте, запущен ли samsdaemon";
+  $squidbuttom_5_readcache_ReadCacheSquidForm_1="Сканирование файлов в кэше SQUID";
   $squidbuttom_5_readcache_ReadCacheSquidForm_2="Показать все файлы, размером не менее";
   $squidbuttom_5_readcache_ReadCacheSquidForm_3="Сканировать";
-  $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Достать файлы, сохраненные в кэше Squid";
+  $squidbuttom_5_readcache_squidbuttom_5_readcache_1="Достать файлы, сохраненные в кеше SQUID";
   $squidbuttom_6_readcache_ReadCacheSquidForm_4="В каталоге ";
   $squidbuttom_6_readcache_ReadCacheSquidForm_5="найдены файлы";
 
@@ -887,6 +851,8 @@
   $logbuttom_9_delete_ClearLogForm_1="Очистить логи";
   $redirbuttom_4_redirstat_ShowRedirStat_1="Статистика списка перенаправления запросов";
 
+  $shablonbuttom_1_prop_UpdateShablonForm_24="Месяц";
+  $shablonbuttom_1_prop_UpdateShablonForm_25="Неделя";
 
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_6="Старый пароль";
   $adminbuttom_4_chpasswd_ChangeAdminPasswdForm_7="Новый пароль";
@@ -895,196 +861,28 @@
   $shablontray_ShablonUsers_4="Шаблон присвоен пользователям";
 
   $userbuttom_1_prop_UpdateUserForm_15="Активен";
-  $userbuttom_1_prop_UpdateUserForm_16="Отключён за превышение трафика";
-  $userbuttom_1_prop_UpdateUserForm_17="Отключён";
+  $userbuttom_1_prop_UpdateUserForm_16="Отключен за превышение трафика";
+  $userbuttom_1_prop_UpdateUserForm_17="Отключен";
 
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5="Показать пользователей всех групп домена";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6="Ввести название группы вручную";
   $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7="Поле ручного ввода группы";
 
+  $userstray_AllUsersForm_13="Искать пользователей:";  
   $backupbuttom_2_loadbase_LoadBackUp_10="Настройки SAMS";
 
-  $shablonnew_NewShablonForm_18="Автоматическая очистка счётчиков трафика отключена в настройках SAMS";
-  $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
-  $redirlisttray_AddRedirListForm_5="Не задано имя списка";
-  $CacheForm_squidbuttom_4_addcache_9="Не задано описание прокси-сервера";
-  $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
-  $usersbuttom_1_useradd_AddUser_1="Пользователь с IP-адресом ";
-  $usersbuttom_1_useradd_AddUser_2=" уже зарегистрирован в системе";
+  $lang_pdfReport_page="Стр.";
+  $lang_pdfReport_user="Пользователь";
+  $lang_pdfReport_date="Дата";
+  $lang_pdfReport_site="Сайт";
+  $lang_pdfReport_size="Скачано";
+  $lang_pdfReport_cache="Кэш";
+  $lang_pdfReport_traffic="Трафик";
+//  global $LANG;
+//  $lang="./lang/lang.$LANG";
+//  require($lang);
 
-  $filedeniedlisttray_filedeniedlisttray_1="Расширения файлов.  <BR>Список";
-  $regexlisttray_regexlisttray_1="Регулярные выражения.  <BR>Список";
 
-  $shablonbuttom_9_delete_DeleteShablon_1="Шаблон присвоен";
-  $shablonbuttom_9_delete_DeleteShablon_2="пользователям";
-  $shablonbuttom_9_delete_DeleteShablon_3="Ошибка удаления шаблона";
 
-  $userbuttom_1_prop_UpdateUserForm_18="Имеет право смотреть свою статистику";
-  $userbuttom_1_prop_UpdateUserForm_19="Имеет право смотреть статистику пользователей своей группы";
-  $userbuttom_1_prop_UpdateUserForm_20="Имеет право смотреть статистику Всех пользователей";
-  $userbuttom_1_prop_UpdateUserForm_21="Имеет право активировать/отключать пользователей";
-  $userbuttom_1_prop_UpdateUserForm_22="Имеет право добавлять пользователей в SAMS";
-  $userbuttom_1_prop_UpdateUserForm_23="Имеет право изменять списки URL";
-  $userbuttom_1_prop_UpdateUserForm_24="Имеет право настраивать SAMS";
 
-  $usersbuttom_2_traffic_UsersTrafficForm_3="Сортировать по:";
-  $usersbuttom_2_traffic_UsersTrafficForm_4="размеру полученного трафика";
-  $usersbuttom_2_traffic_UsersTrafficForm_5="именам пользователей";
-
-  $AuthADLDValues_authadldtray_1="Настройки доступа к Active Directory";
-  $AuthADLDValues_authadldtray_2="Пользователи SAMS синхронизируются с группами Active Directory";
-
-  $AuthLDAPValues_authldaptray_1="Удалить выбранные группы из синхронизации с доменом LDAP";
-  $AuthLDAPValues_authldaptray_2="Добавить выбранные группы в синхронизацию с доменом LDAP";
-  $AddSyncGroup_authldaptray_1="В синхронизацию с доменом LDAP добавлены группы";
-  $RemoveSyncGroup_authldaptray_1="Из синхронизации с доменом LDAP выведены группы:";
-
-  $AuthADLDValues_authadldtray_3="Удалить выбранные группы из синхронизации с доменом AD";
-  $AuthADLDValues_authadldtray_4="Добавить выбранные группы в синхронизацию с доменом AD";
-  $AddSyncGroup_authadldtray_1="В синхронизацию с доменом AD добавлены группы";
-  $RemoveSyncGroup_authadldtray_1="Из синхронизации с доменом AD выведены группы:";
-
-  $AuthNTLMValues_authntlmtray_1="Удалить выбранные группы из синхронизации с доменом Windows";
-  $AuthNTLMValues_authntlmtray_2="Добавить выбранные группы в синхронизацию с доменом Windows";
-  $AddSyncGroup_authntlmtray_1="В синхронизацию с доменом Windows добавлены группы";
-  $RemoveSyncGroup_authntlmtray_1="Из инхронизации с доменом Windows выведены группы:";
-
-  $AuthADLDValues_authadldtray_AD_connections_test="Тестировать подключение к Active Directory";
-
-  $lffolder_5_z0_trange_lfforder_5_z0_trange_1="Временные диапазоны";
-  $AddTRangeForm_trangetray_1="Временные диапазоны";
-  $JSTRangeInfo_trangetray_1="Временной диапазон";
-  $TRangeTray_trangetray_1="Временной диапазон";
-  $redirlisttray_RedirListTray_2=" Локальные домены <BR> Список ";
-  $authtray_AuthEnabledForm_1="Активируйте тип авторизации";
-  $authtray_AuthEnabledForm_2="Тип авторизации";
-  $authtray_AuthEnabledForm_3="Активирован";
-  $authtype_AuthTray="Тип авторизации";
-  $authadldbuttom_1_AuthADLDReConfigForm_1="Настройка соединения с сервером Active Directory";
-  $shablonbuttom_1_prop_UpdateShablonForm_29="Добавить временной диапазон";
-  $configbuttom_3_import_importdataform_1="Импорт данных из SAMS версии 1.0.x";
-  $configbuttom_3_import_importdataform_2="Импортировать пользователей, группы пользователей и шаблоны из SAMS версии 1.0.x";
-  $configbuttom_3_import_importdataform_3="Импортировать списки запрета доступа из SAMS версии 1.0.x";
-  $configbuttom_3_import_importdataform_5="Импортировать";
-
-  $authadldbuttom_3_importfromad_ImportFromADForm_1="Импорт пользователей из домена Active Directory";
-  $authadldbuttom_3_importfromad_ImportFromADForm_2="Выберите группы AD, из которых будут импортированны пользователи";
-  $authadldbuttom_3_importfromldap_ImportFromLDAPForm_1="Импорт пользователей из LDAP домена";
-  $authadldbuttom_3_importfromldap_ImportFromLDAPForm_2="Выберите группы LDAP, из которых будут импортированны пользователи";
-  $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_1="Импорт пользователей из Windows домена";
-  $authadldbuttom_3_importfromntlm_ImportFromNTLMForm_2="Выберите группы Windows домена, из которых будут импортированны пользователи";
-  $authadldbuttom_1_prop_AuthLDAPReConfigForm_1="Настройка соединения с сервером LDAP";
-  $authntlmbuttom_1_prop_AuthNTLMReConfigForm_1="Настройка соединения с сервером домена Windows";
-  $proxybuttom_9_delete_proxybuttom_9_delete_1="Удалить прокси-сервер";
-  $ad_server="Active Directory сервер";
-  $ad_domain="Active Directory домен";
-  $ad_admin="Active Directory администратор";
-  $ad_passwd="Пароль администратора Active Directory";
-  $ad_group="Группа пользователей Active Directory";
-  $ntlm_server="Сервер домена Windows";
-  $ntlm_domain="Домен Windows";
-  $ntlm_admin="Администратор домена Windows";
-  $ntlm_passwd="Пароль администратора домена Windows";
-  $ntlm_group="Группа пользователей домена Windows";
-  $proxybuttom_1_prop_proxybuttom_1_prop_1="Настройка прокси-сервера";
-  $proxybuttom_1_down_proxybuttom_1_down_2="Выключить прокси-сервер";
-  $trangebuttom_1_prop_trangebuttom_1_prop_1="Конфигурирование временного диапазона";
-  $trangebuttom_9_delete_trangebuttom_9_delete_1="Удаление временного диапазона";
-  $trangebuttom_9_delete_trangebuttom_9_delete_2="Удалить временной диапазон";
-  $authbuttom_1_usersimport_LoadFileForm_1="Загрузка списка пользователей из файла";
-   $documentation="Документация";
-   $blocked_php_14="Время доступа к прокси-серверу:";
-   $activate_user="Активировать пользователя";
-   $MoveUserTrafficDataForm_1="Переместить данные о трафике другому пользователю";
-   $MoveUserTrafficDataForm_2="Переместить данные о трафике пользователя";
-   $MoveUserTrafficDataForm_3="пользователю";
-   $MoveUserTrafficDataForm_4="Переместить";
-   $authbuttom_1_ncsaimport_LoadFileForm_1="Загрузка списка пользователей из файла с паролями";
-
-   $shablonbuttom_1_prop_UpdateShablonForm_30="Удалить временной диапазон?";
-   $shablonbuttom_1_prop_UpdateShablonForm_31="Вы не можете удалить единственный временной диапазон в шаблоне";
-   $configbuttom_3_import_importsamsusers_1="Импорт пользователей";
-   $configbuttom_3_import_importshablons_1="Импорт шаблонов";
-   $configbuttom_3_import_importgroups_1="Импорт групп пользователей";
-   $configbuttom_3_import_importurllists_1="Импорт списков URL";
-   $configbuttom_3_import_importtimerange_1="Импорт временных диапазонов";
-
-   $setup_1="Выбор языка";
-   $setup_2="Проверка требований";
-   $setup_3="Установка базы данных";
-   $setup_4="Завершено";
-   $setup_5="Начальная проверка";
-   $setup_6="Следующие ошибки нужно исправить перед продолжением процесса инсталляции:";
-   $setup_7="Web-интерфейс SAMS требует права на запись в каталог ./data.";
-   $setup_8="Каталог ./data закрыт для записи. Чтобы продолжить установку, настройте разрешения вручную.";
-   $setup_9="Пожалуйста, проверьте сообщение об ошибке и попробуйте снова.";
-   $setup_10="Для создания вашей базы данных SAMS2 укажите следующую информацию.";
-   $setup_11="Название базы данных";
-   $setup_12="Имя пользователя БД";
-   $setup_13="Пароль к базе данных";
-   $setup_14="Хост базы данных";
-   $setup_15="Имя базы данных";
-   $setup_16="Далее";
-   $setup_17="Назад";
-   $setup_18="Проверить снова";
-   $setup_19="Права доступа";
-   $setup_20="Установки php";
-   $setup_21="Библиотеки php";
-   $setup_22="Поддержка библиотеки сжатия Zlib";
-   $setup_23="Поддержка библиотеки GD2";
-   $setup_24="Поддержка MySQL";
-   $setup_25="установлена";
-   $setup_26="доступен для записи";
-   $setup_27="недоступен для записи";
-   $setup_28="не установлена";
-   $setup_29="Рекомендуется";
-   $setup_30="Установлено";
-   $setup_31="Директива";
-   $setup_32="Создать пользователя SAMS для доступа к базе данных";
-   $setup_33="имя пользователя SAMS";
-   $setup_34="пароль";
-   $setup_35="Поддержка PostgreSQL";
-   $setup_36="Запустить WEB интерфейс SAMS";
-   $setup_37="Создание базы данных SAMS";
-   $setup_38="База данных SAMS найдена";
-   $setup_39="создание базы данных не требуется";
-   $adminbuttom_1_prop_SamsReConfigForm_53="Идентификатор прокси сервера";
-
-   $confogbuttom_3_importcache_importcachesumtable_1="Импорт данных о трафике пользователей";
-   $confogbuttom_3_importcache_importcachesumtable_2="записей импортировано";
-   $confogbuttom_3_importcache_importcachesumtable_3="записей импортируется";
-   $confogbuttom_3_importcache_importcachetable_1="Импорт данных о трафике пользователей за";
-   $confogbuttom_3_importcache_importcachetable_2="записей импортировано";
-   $confogbuttom_3_importcache_importcachetable_3="Импорт данных закончен";
-   $confogbuttom_3_importcache_importcachetable_4="записей импортируется";
-   $configbuttom_3_importcache_configbuttom_3_importcache_1="Импорт данных о трафике пользователей из базы данных SAMS 1.x";
-   $configbuttom_3_import_importdataform_4="Создать прокси сервер и импортировать настройки";
-   $configbuttom_3_importcache_selectimportdateform_1="Импорт данных о трафике пользователей";
-   $configbuttom_3_importcache_selectimportdateform_2="Найден трафик пользователей с";
-   $configbuttom_3_importcache_selectimportdateform_3="по";
-   $configbuttom_3_importcache_selectimportdateform_4="Выберите период, трафик за который будет импортирован";
-   $usersbuttom_1_useradd_AddUser_3="Пользователь с логином ";
-
-   $configtray_0_Head="Системная информация";
-   $configtray_0_Hostname="Имя хоста";
-   $configtray_0_IP="IP-адрес";
-   $configtray_0_Uptime="Время работы";
-   $configtray_1_Mem="Оперативная память";
-   $configtray_1_Swap="Раздел подкачки";
-   $configtray_1_MemTotal="Всего";
-   $configtray_1_MemUsed="Занято";
-   $configtray_1_MemFree="Свободно";
-
-   $configtray_2_FS="Файловая система";
-   $configtray_2_Size="Размер";
-   $configtray_2_Used="Использовано";
-   $configtray_2_Avail="Доступно";
-   $configtray_2_Percent="Занято, %";
-   $configtray_2_Mnt="Смонтировано в";
-
-   $configtray_3_M="За текущий месяц";
-   $configtray_3_D="За этот день";
-   $configtray_3_SumTraffic="Суммарный трафик";
-   $configtray_3_FromCache="Из кэша";
-   $configtray_3_Traffic="Трафик";
 ?>

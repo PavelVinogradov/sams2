@@ -10,16 +10,19 @@ function logoff()
  print("<h1>LOGOFF</h1>");
 }
 
-function userbuttom_9_logoff()
+function userbuttom_9_logoff($userid)
 {
   global $SAMSConf;
-  global $USERConf;
-    
+  
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-  if(isset($_GET["id"])) $id=$_GET["id"];
-   if($USERConf->s_user_id==$id)
+  
+  $result=mysql_query("SELECT * FROM squidusers WHERE id=\"$userid\" ");
+  $row=mysql_fetch_array($result);
+   
+  if($SAMSConf->access==0&&$SAMSConf->domainusername=="$row[nick]")
     {
+       print("<TD VALIGN=\"TOP\" WIDTH=\"50\">\n");
        GraphButton("main.php?function=logoff",	               "basefrm","logoff_32.jpg","logoff_48.jpg","$userbuttom_9_logoff_userbuttom_9_logoff_1");
     }
 }

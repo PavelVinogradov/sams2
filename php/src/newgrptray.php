@@ -9,13 +9,11 @@
 function NewGrpTray()
 {
   global $SAMSConf;
-  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")!=1)
-	exit;
+  $SAMSConf->access=UserAccess();
 
   print("<SCRIPT>\n");
   print("        parent.basefrm.location.href=\"main.php?show=exe&function=blankpage\";\n");

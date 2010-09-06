@@ -1,0 +1,67 @@
+#!/bin/sh
+
+
+MYSQLHOSTNAME=`cat /etc/sams.conf | grep MYSQLHOSTNAME | cut -d "=" -f 2`
+MYSQLUSER=`cat /etc/sams.conf | grep MYSQLUSER | cut -d "=" -f 2`
+MYSQLPASSWORD=`cat /etc/sams.conf | grep MYSQLPASSWORD | cut -d "=" -f 2`
+
+PHPMYSQL=`php -r 'phpinfo();' | grep "MySQL Support => enabled" | cut -d ">" -f 2`
+PHPLDAP=`php -r 'phpinfo();' | grep "LDAP Support => enabled" | cut -d ">" -f 2`
+PHPGD=`php -r 'phpinfo();' | grep "GD Support => enabled" | cut -d ">" -f 2`
+
+echo $MYSQLHOSTNAME
+echo $MYSQLUSER
+echo $MYSQLPASSWORD
+
+
+echo "Test PHP extensios:"
+
+if [ "$PHPMYSQL" = "enabled" ]; then
+    echo "  MySQL support to PHP not $PHPMYSQL. "
+    echo "  install php-mysql module and uncomment "
+    echo "  extension=mysql.so into php.ini"
+else
+    echo "  MySQL support to PHP $PHPMYSQL"
+fi
+
+if [ "$PHPLDAP" = "enabled" ]; then
+    echo "  LDAP support to PHP not $PHPLDAP"
+    echo "  install php-ldap module and uncomment"
+    echo "  extension=ldap.so into php.ini"
+else
+    echo "  LDAP support to PHP $PHPLDAP"
+fi
+
+if [ "$PHPGD" = "enabled" ]; then
+    echo "  GD support to PHP not $PHPGD"
+    echo "  install php-gd module and uncomment"
+    echo "  extension=gd.so into php.ini"
+else
+    echo "  GD support to PHP $PHPGD"
+fi
+			  
+mysql --user="$MYSQLUSER" --password="$MYSQLPASSWORD" -e "SELECT name FROM groups WHERE nick='Users'" squidctrl &> /tmp/mysql-test.err
+MYSQL_RESULT=`cat /tmp/mysql-test.err`
+
+echo "Test connectios to MySQL server:"
+NOMYSQL=`grep "t connect to local MySQL server"  /tmp/mysql-test.err -c `
+if [ "$NOMYSQL" -gt "0" ]
+  then
+    echo "  $MYSQL_RESULT"
+    echo "  It is not started mysql a server. Start it."
+  else
+    echo "  Ok"
+fi
+
+echo "Test user access '$MYSQLUSER' to MySQL server $MYSQLHOSTNAME:"
+ACCESSDENIED=`grep "Access denied for user"  /tmp/mysql-test.err -c `
+if [ "$ACCESSDENIED" -gt "0" ]
+  then
+    echo "  $MYSQL_RESULT"
+    echo "  Set users and password into file /etc/sams.conf"
+  else
+    echo "  Ok"
+fi
+			  
+
+

@@ -1,0 +1,44 @@
+<HTML>
+<HEAD>
+<TITLE>The SAMS documentation.</TITLE>
+<META  content="text/html; charset=koi8-r" http-equiv="Content-Type">
+</HEAD>
+<BODY>
+<H2>SAMS quick installation</H2>
+<P>1. Download, unzip and untar the SAMS distribution
+<P>    tar zxf sams-xxxxxx.tar.gz
+<BR> cd sams
+<P>2. Run the configure script with the --help option (./configure --help) to see the users selectable settings.
+<P>3. Run the configure (./configure) script with your options. 
+<P>  OPTIONS:
+<P>    You may change with the configure options:
+<BR>  --prefix=PATH - prefix root path eg /usr/local
+<BR>  --with-httpd-locations=PATH - path to the http server root directory
+<BR>  --with-mysql-includes=PATH - path to the mysql includes
+<BR>  --with-mysql-libpath=PATH - path to the mysql libraries
+
+<P>4.  "make" ("gmake" for FreeBSD) will now build up SAMS
+<P>5  ."make install" ("gmake install" for FreeBSD)  will create the SAMS directory structure and copy files in the chosen paths.
+
+<P>6. <B>Create MySQL user who can read/write only the SAMS database.</B>
+<P>    mysql -u root -p
+<BR>  GRANT ALL PRIVILEGES ON squidctrl.* TO sams@localhost IDENTIFIED BY "samsuserpassword";
+<BR>  GRANT ALL PRIVILEGES ON squidlog.* TO sams@localhost IDENTIFIED BY "samsuserpassword";
+<P>Open the file /etc/sams.conf and change the meanings for host, user, password. Here, "host" means the MySQL server.
+<BR>Example:
+<BR>MYSQLHOSTNAME=localhost
+<BR>MYSQLUSER=sams
+<BR>MYSQLPASSWORD=sams_password
+
+<P>7.<B>Create SAMS databases in MySQL</B>
+<BR>cd sams/mysql
+<P>Run the create_sams_db and create_squid_db scripts
+<BR>or run
+<BR>mysql -u samsuser -p < sams_db.sql
+<BR>mysql -u samsuser -p < squid_db.sql
+
+<P>8. If you are using NTLM authentication, set up winbind.
+<P>9. Fix the /etc/init.d/samsd startup file.
+
+<P>10. Open the file http://yourserver/sams/index.html in your browser. SAMS should now display a welcome screen and a login dialog.
+You can be reading the user "Admin" password in the file INSTALL.

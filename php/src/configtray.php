@@ -12,7 +12,7 @@ class UpTime
   var $minits="";
 }
 
-function GetSamsHostName()
+function GetHostName()
 {
   if(!($value=getenv('SERVER_NAME')))
      {  $value="N.A."; }
@@ -28,11 +28,6 @@ function GetIPAddr()
 
 function MemoryUsage()
 {
-  global $SAMSConf;
-
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
   $phpos=PHP_OS;
   $value=ExecuteShellScript("freemem",$phpos);
   $swapvalue=ExecuteShellScript("freeswap",$phpos);
@@ -51,16 +46,16 @@ function MemoryUsage()
   print("<P><TABLE CLASS=samstable>");
   print("<TR >");
   print("<TH>");
-  print("<TH><B>$configtray_1_MemTotal</B>");
-  print("<TH><B>$configtray_1_MemUsed</B>");
-  print("<TH><B>$configtray_1_MemFree</B>\n");
+  print("<TH><B>Total</B>");
+  print("<TH><B>Used</B>");
+  print("<TH><B>Free</B>\n");
   print("<TR >");
-  print("<TD>$configtray_1_Mem");
+  print("<TD>Memory");
   print("<TD>$mem[0]");
   print("<TD>$mem[1]");
   print("<TD>$mem[2]\n");
   print("<TR >");
-  print("<TD>$configtray_1_Swap");
+  print("<TD>Swap");
   print("<TD>$swap[0]");
   print("<TD>$swap[1]");
   print("<TD>$swap[2]\n");
@@ -69,23 +64,18 @@ function MemoryUsage()
 
 function FileSystemUsage()
 {
-  global $SAMSConf;
-
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
     $fstest=ExecuteShellScript("fsusage","");
     $a=explode(" ",$fstest);
     $acount=count($a)/6;
 
       print("<P><TABLE CLASS=samstable>");
       print("<TR>");
-      print("<TH><B>$configtray_2_FS</B>");
-      print("<TH><B>$configtray_2_Size</B>");
-      print("<TH><B>$configtray_2_Used</B>");
-      print("<TH><B>$configtray_2_Avail</B>");
-      print("<TH><B>$configtray_2_Percent</B>");
-      print("<TH><B>$configtray_2_Mnt</B>");
+      print("<TH><B>Filesystem</B>");
+      print("<TH><B>Size</B>");
+      print("<TH><B>Used</B>");
+      print("<TH><B>Available</B>");
+      print("<TH><B>Use%</B>");
+      print("<TH><B>Mounted on</B>");
 
       for($i=0;$i<$acount;$i++)
         {
@@ -105,26 +95,22 @@ function FileSystemUsage()
 function SysInfo()
 {
   global $SAMSConf;
-  $DB=new SAMSDB();
+   PageTop("stat_48.jpg","System Information");
 
-  $lang="./lang/lang.$SAMSConf->LANG";
-  require($lang);
-
-   PageTop("stat_48.jpg","$configtray_0_Head");
-
-   $hostname=GetSamsHostName();
+   $hostname=GetHostName();
    $ipaddr=GetIPAddr();
+   //$uptime=system("uptime | cut -d',' -f 1 ");
 
-   $uptime=ExecuteShellScript("uptime","");
+   $uptime=ExecuteShellScript("getuptime","");
    print("<TABLE WIDTH=90%>");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>$configtray_0_Hostname</B>");
+   print("<TD WIDTH=\"25%\"><B>Hostname</B>");
    print("<TD WIDTH=\"75%\">$hostname");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>$configtray_0_IP</B>");
+   print("<TD WIDTH=\"25%\"><B>IP addr</B>");
    print("<TD WIDTH=\"75%\">$ipaddr");
    print("<TR>");
-   print("<TD WIDTH=\"25%\"><B>$configtray_0_Uptime</B>");
+   print("<TD WIDTH=\"25%\"><B>Uptime</B>");
    print("<TD WIDTH=\"75%\">$uptime");
    print("</TABLE>");
 
@@ -139,17 +125,17 @@ function SysInfo()
   $edate="$syea-$smon-$eday";
   $stime="0:00:00";
   $etime="0:00:00";
-
+  
    print("<P><TABLE CLASS=samstable>\n");
    print("<TH>\n");
-   print("<TH width=\"33%\" >$configtray_3_SumTraffic\n");
-   print("<TH width=\"33%\" >$configtray_3_FromCache\n");
-   print("<TH width=\"33%\" >$configtray_3_Traffic\n");
-
-   $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date>='$sdate' AND s_date<='$edate' ");
-   $row=$DB->samsdb_fetch_array();
+   print("<TH width=\"33%\" >All traffic\n");
+   print("<TH width=\"33%\" >From cache\n");
+   print("<TH width=\"33%\" >Traffic\n");
+   
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date>=\"$sdate\"&&date<=\"$edate\" ");
+  $row=mysql_fetch_array($result);
    print("<TR>\n");
-   print("<TD >$configtray_3_M\n");
+   print("<TD > This month\n");
    $aaa=FormattedString("$row[0]");
    RTableCell($aaa,33);
    $aaa=FormattedString("$row[1]");
@@ -158,10 +144,10 @@ function SysInfo()
    $aaa=FormattedString($row[0]-$row[1]);
    RTableCell($aaa,33);
    
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),sum(s_hit) FROM cachesum WHERE s_date='$edate' ");
-  $row=$DB->samsdb_fetch_array();
+  $result=mysql_query("SELECT sum(size),sum(hit) FROM ".$SAMSConf->LOGDB.".cachesum WHERE date=\"$edate\" ");
+  $row=mysql_fetch_array($result);
    print("<TR>\n");
-   print("<TD >$configtray_3_D\n");
+   print("<TD > This day\n");
    $aaa=FormattedString("$row[0]");
    RTableCell($aaa,33);
    $aaa=FormattedString("$row[1]");
@@ -195,33 +181,27 @@ function CUserDoc()
 function ConfigTray()
 {
   global $SAMSConf;
-  global $USERConf;
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  if($USERConf->ToWebInterfaceAccess("C")==1 )
-  {
-	print("<SCRIPT>\n");
-	print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    
-	print("</SCRIPT> \n");
-	print("<TABLE WIDTH=\"95%\" BORDER=0>\n");
-	print("<TR HEIGHT=60>\n");
-	print("<TD WIDTH=\"25%\"\">");
-	print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
-
-	ExecuteFunctions("./src", "configbuttom","1");
-
-	print("<TD>\n");
-	print("</TABLE>\n");
-  }
+  print("<SCRIPT>\n");
+  if($SAMSConf->access==2)
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=sysinfo&filename=configtray.php\";\n");    }
   else
-  {
-	print("<SCRIPT>\n");
-	 print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    
-	print("</SCRIPT> \n");
-  }
+    {       print("parent.basefrm.location.href=\"main.php?show=exe&function=cuserdoc&filename=configtray.php\";\n");    }
+ print("</SCRIPT> \n");
 
+  print("<TABLE WIDTH=\"100%\" BORDER=0>\n");
+  print("<TR>\n");
+  print("<TD VALIGN=\"TOP\" WIDTH=\"30%\"\">");
+  //print("<B><FONT SIZE=\"+1\" COLOR=\"blue\">$admintray_AdminTray_1</FONT></B>\n");
+  print("<B>$adminbuttom_1_prop_SamsReConfigForm_1</B>\n");
+
+    ExecuteFunctions("./src", "configbuttom","1");
+
+  print("<TD>\n");
+  print("</TABLE>\n");
 
 
 }

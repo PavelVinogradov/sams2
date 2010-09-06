@@ -12,16 +12,11 @@ function lframe_sams()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	$item=array("classname"=> "sams",
-		"icon" => "proxy.gif",
-		"target"=> "basefrm",
-		"url"=> "main.php",
-		"text"=> "SAMS");
-	treeFolder($item);
+  $SAMSConf->access=UserAccess();
+
+  print("   sams = insFld(foldersTree, gFld2(\"SAMS\", \"tray.php?show=exe&function=proxytray&filename=proxytray.php\", \"proxy.gif\"))\n");
 
   ExecuteFunctions("./src", "lffolder_","1");
-
-  treeFolderClose();
 
 return(0);
 }
