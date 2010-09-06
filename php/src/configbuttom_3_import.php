@@ -658,7 +658,7 @@ function configbuttom_3_import()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
     {
        GraphButton("main.php?show=exe&function=importdataform&filename=configbuttom_3_import.php",
-	               "basefrm","importdb_32.jpg","importdb_48.jpg","Импорт настроек из базы данных SAMS 1.x");
+	               "basefrm","importdb_32.jpg","importdb_48.jpg","$configbuttom_3_import_importdataform_6");
     }
 }
 
