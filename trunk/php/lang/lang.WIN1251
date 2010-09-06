@@ -1087,4 +1087,6 @@
    $configtray_3_SumTraffic="Суммарный трафик";
    $configtray_3_FromCache="Из кэша";
    $configtray_3_Traffic="Трафик";
+   $userbuttom_1_prop_UpdateUserForm_25="Индивидуальное ограничение трафика пользователя";
+   $configbuttom_3_import_importdataform_6="Импорт настроек из базы данных SAMS 1.x";
 ?>
