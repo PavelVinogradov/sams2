@@ -92,16 +92,14 @@ EXTRA_DIST =  	COPYING
 
 
 # what to make and install
-bin_PROGRAMS = sams samsf samsredir samsdaemon 
+bin_PROGRAMS = sams samsredir samsdaemon 
 
 # sources for both sams
 base_sources =		demon.c 	define.h 	tools.c 	tools.h
-socket_sources =	daemon.c 	define.h 	tools.c 	tools.h
 samsredir_sources =	redirect.c	define.h	tools.c		tools.h
 samsdaemon_sources =	samsdaemon.c 	define.h 	tools.c 	tools.h
 
 sams_SOURCES = $(base_sources) 
-sock_SOURCES = $(socket_sources) 
 samsredir_SOURCES = $(samsredir_sources)
 samsdaemon_SOURCES = $(samsdaemon_sources)
 
@@ -124,19 +122,15 @@ PROGRAMS =  $(bin_PROGRAMS)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 sams_OBJECTS =  demon.o tools.o
-sock_OBJECTS =  daemon.o tools.o
 samsredir_OBJECTS = redirect.o tools.o
 samsdaemon_OBJECTS = samsdaemon.o tools.o
 sams_LDADD = $(LDADD)
-sock_LDADD = $(LDADD)
 samsredir_LDADD = $(LDADD)
 samsdaemon_LDADD = $(LDADD)
 sams_DEPENDENCIES = 
-sock_DEPENDENCIES = 
 samsredir_DEPENDENCIES =
 samsdaemon_DEPENDENCIES =
 sams_LDFLAGS = 
-sock_LDFLAGS = 
 samsredir_LDFLAGS =
 samsdaemon_LDFLAGS =
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -154,8 +148,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/demon.P .deps/tools.P
-SOURCES = $(sams_SOURCES) $(sock_SOURCES) $(samsredir_SOURCES) $(samsdaemon_SOURCES) 
-OBJECTS = $(sams_OBJECTS) $(sock_OBJECTS) $(samsredir_OBJECTS) $(samsdaemon_OBJECTS)
+SOURCES = $(sams_SOURCES) $(samsredir_SOURCES) $(samsdaemon_SOURCES) 
+OBJECTS = $(sams_OBJECTS) $(samsredir_OBJECTS) $(samsdaemon_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -203,7 +197,6 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	fi
 	cp ./etc/sams.conf $(sysconfdir);
 	cp ./sams $(bindir);
-	cp ./samsf $(bindir);
 	cp ./samsredir $(bindir);
 	cp ./samsdaemon $(bindir);
 	cp ./etc/sams $(RCDPATH);
@@ -250,7 +243,6 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 
 uninstall-binPROGRAMS:
 	rm $(bindir)/sams;
-	rm $(bindir)/samsf;
 	rm $(bindir)/samsredir;
 	rm $(bindir)/samsdaemon;
 	rm $(bindir)/recover_admin_passwd;
@@ -261,7 +253,6 @@ uninstall-binPROGRAMS:
 
 update-binPROGRAMS:
 	cp ./sams $(bindir);
-	cp ./samsf $(bindir);
 	cp ./samsredir $(bindir);
 	cp ./samsdaemon $(bindir);
 	cp ./etc/sams $(RCDPATH);
@@ -312,10 +303,6 @@ maintainer-clean-compile:
 sams: $(sams_OBJECTS) $(sams_DEPENDENCIES)
 	@rm -f sams
 	$(LINK) $(sams_LDFLAGS) $(sams_OBJECTS) $(sams_LDADD) $(LIBS)
-
-samsf: $(sock_OBJECTS) $(sock_DEPENDENCIES)
-	@rm -f samsf
-	$(LINK) $(sock_LDFLAGS) $(sock_OBJECTS) $(sock_LDADD) $(LIBS)
 
 samsdaemon: $(samsdaemon_OBJECTS) $(samsdaemon_DEPENDENCIES)
 	@rm -f samsdaemon
