@@ -335,7 +335,7 @@ void ReadNewData(MYSQL *conn,MYSQL *conn2)
 		              }
                           }
                         if(DEBUG!=0)
-                          printf("user %s/%s, ip=%d.%d.%d.%d  traffic: %.0f+%.0f=%.0f  limit:%.0f\n",users[samsuser-1].domain,users[samsuser-1].user,users[samsuser-1].ip[0],users[samsuser-1].ip[1],users[samsuser-1].ip[2],users[samsuser-1].ip[3],size,users[samsuser-1].traffic,size+users[samsuser-1].traffic,users[samsuser-1].quote);
+			   printf("user %s/%s, ip=%d.%d.%d.%d  traffic: %.0f+%.0f=%.0f  limit:%.0f\n",users[samsuser-1].domain,users[samsuser-1].user,users[samsuser-1].ip[0],users[samsuser-1].ip[1],users[samsuser-1].ip[2],users[samsuser-1].ip[3],size,users[samsuser-1].traffic-size,users[samsuser-1].traffic,users[samsuser-1].quote);
 
                         ReplaceURL(STR[6],user,domain);
                         TestURL(&path[0]);
