@@ -18,13 +18,12 @@ EXTRA_DIST = \
 	COPYING 
 
 # what to make and install
-bin_PROGRAMS = sams samsf samsredir samsdaemon 
+bin_PROGRAMS = sams samsredir samsdaemon 
 
 # sources for both squidlog
 base_sources = \
 	demon.c \
 	redirect.c \
-	daemon.c \
 	samsdaemon.c \
 	define.h \
 	tools.c \
