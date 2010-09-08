@@ -326,7 +326,7 @@ int main (int argc, char *argv[])
       exit (1);
     }
 
-  pid_t found_pid = ProcessManager::isRunning ("samsdaemon");
+  pid_t found_pid = ProcessManager::isRunning ("sams2daemon");
   if ( stop_it && !found_pid )
     {
       WARNING ("Not running");
