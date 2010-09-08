@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 Build-Depends: debhelper (>= 5), autotools-dev, libmysqlclient-dev, libpcre3-dev, quilt
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
 Homepage: http://sams.nixdev.net
 Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
 Vcs-Browser: http://sams.nixdev.net/browser/trunk

@@ -1,3 +1,12 @@
+sams (1.1.0) unstable; urgency=low
+
+  * New upstream release
+  * Remove samsf file
+  * Upgrade to standards version 3.9.1 (no changes)
+  * Add dependency on remote_fs in init.d script
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Wed, 08 Sep 2010 22:13:29 +0400
+
 sams (1.0.5) unstable; urgency=low
 
   * Official 1.0.5 release

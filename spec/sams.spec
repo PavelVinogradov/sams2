@@ -13,16 +13,16 @@ Name: sams-credit
 %else
 Name: sams
 %endif
-Version: 1.0.5
+Version: 1.1.0
 Release: 0
 Group: Applications/Internet
 License: GPL
 Source: http://nixdev.net/release/sams/sams-%{version}.tar.bz2
 #Source1: credit_alarm.gif
 #Source2: change.sql
-Patch0: sams-1.0.5.rpm.patch
+Patch0: sams-1.1.0.rpm.patch
 %if "%{samsrelease}" == "credit"
-Patch1: credit-0.1-sams-1.0.5.patch
+Patch1: credit-0.1-sams-1.1.0.patch
 %endif
 Distribution: Red Hat Linux
 Vendor: Sams community
@@ -131,6 +131,9 @@ rm -f %{_var}/www/html/sams
 exit 0
 
 %changelog
+* Mon Sep 6 2010 Pavel Vinogradov <pavel.vinogradov@nixdev.net> 1.1.0
+New upstream version 1.0.5
+
 * Mon Dec 28 2009 Denis Zagirov <foomail@yandex.ru> 1.0.5
 New upstream version 1.0.5
 
