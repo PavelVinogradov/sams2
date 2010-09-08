@@ -36,7 +36,9 @@
 #include "config.h"
 #include "define.h"
 #include "tools.h"
+#include "sams_sprintf.h"
 
+#include "sams_htpasswd.h"
 
 int ANALOG, DISKRET, COUNTCLEAN,RECODE,DPOOLS,SQUIDBASE, ADLD;
 int sams_step;
@@ -1004,7 +1006,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 		      
@@ -1016,9 +1018,9 @@ int ChangeSQUIDconf(MYSQL *conn)
                            while((row2=mysql_fetch_row(res2)))
 	                     {
                                if(acount>0)
-			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+			         sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
 			       else
-			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
+			         sprintf_sams(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
                        if(acount==0)
@@ -1028,7 +1030,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 			 }  
@@ -1037,11 +1039,11 @@ int ChangeSQUIDconf(MYSQL *conn)
                    if(RSQUID==1||RNONE==1||RREJIK==1)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
-		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
+		         sprintf_sams(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 		       else 
 		         {	 
-		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
-		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
+		           sprintf_sams(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf_sams(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
@@ -1118,7 +1120,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 		      
@@ -1130,9 +1132,9 @@ int ChangeSQUIDconf(MYSQL *conn)
                            while((row2=mysql_fetch_row(res2)))
 	                     {
                                if(acount>0)
-			         sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+			         sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
 			       else
-			         sprintf(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
+			         sprintf_sams(&outstr[0],"%s _sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
                        if(acount==0)
@@ -1142,7 +1144,7 @@ int ChangeSQUIDconf(MYSQL *conn)
                            res2=mysql_store_result(conn);
                            while((row2=mysql_fetch_row(res2)))
 	                     {
-                               sprintf(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
+                               sprintf_sams(&outstr[0],"%s !_sams_%s", &outstr[0], row2[1]);
                              }
                            mysql_free_result(res2);
 			 }  
@@ -1152,12 +1154,12 @@ int ChangeSQUIDconf(MYSQL *conn)
 		     {
                        if(atoi(row[8])<atoi(row[10]))
 		         {	 
-		         sprintf(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
+		         sprintf_sams(&outstr[0],"%s _sams_%s_time ", &outstr[0], row[0]);
 			 }  
 		       else 
 		         {	 
-		           sprintf(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
-		           sprintf(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
+		           sprintf_sams(&outstr[0],"%s _sams_%s_time_1 ", &outstr[0], row[0]);
+		           sprintf_sams(&outstr[0],"%s _sams_%s_time_2 ", &outstr[0], row[0]);
 			 }  
 		     } 
 
@@ -1369,7 +1371,7 @@ int MakeACLFiles(MYSQL *conn)
      sprintf(&shablonname[0],"%s/_sams_banlists/localhosts", conf.rejikpath);
      flag = mkdir(&shablonname[0], 0755);
      chown(&shablonname[0],s.st_uid,s.st_gid);
-     sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+     sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
      if((fout=fopen(&shablonname[0], "wt" ))==NULL)
        {
           return(0);
@@ -1452,7 +1454,7 @@ int MakeACLFiles(MYSQL *conn)
 	      {
 	        sprintf(&shablonname[0],"%s/_sams_banlists/%s_redir", conf.rejikpath, row[0]);
                 mkdir(&shablonname[0], 0755);
-	        sprintf(&shablonname[0],"%s/pcre", &shablonname[0]);
+	        sprintf_sams1(&shablonname[0],"%s/pcre", &shablonname[0]);
                 if((fout=fopen(&shablonname[0], "wt" ))==NULL)
                   {
                     //printf("Don't open file %s\n",&shablonname[0]);
@@ -1484,13 +1486,13 @@ int MakeACLFiles(MYSQL *conn)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.rejikpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/pcre", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/pcre", &shablonname[0]);
 	     }  
            else if(RGUARD==1)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.sgdbpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
 	     }  
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
@@ -1545,7 +1547,7 @@ int MakeACLFiles(MYSQL *conn)
 	      {
 	        sprintf(&shablonname[0],"%s/_sams_banlists/%s_denied", conf.rejikpath, row[0]);
                 mkdir(&shablonname[0], 0755);
-	        sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+	        sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
                 if((fout=fopen(&shablonname[0], "wt" ))==NULL)
                   {
                     //printf("Don't open file %s\n",&shablonname[0]);
@@ -1570,7 +1572,7 @@ int MakeACLFiles(MYSQL *conn)
 	      {
 	        sprintf(&shablonname[0],"%s/_sams_banlists/%s_regex", conf.rejikpath, row[0]);
                 mkdir(&shablonname[0], 0755);
-	        sprintf(&shablonname[0],"%s/pcre", &shablonname[0]);
+	        sprintf_sams1(&shablonname[0],"%s/pcre", &shablonname[0]);
                 if((fout=fopen(&shablonname[0], "wt" ))==NULL)
                   {
                     //printf("Don't open file %s\n",&shablonname[0]);
@@ -1602,13 +1604,13 @@ int MakeACLFiles(MYSQL *conn)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.rejikpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/pcre", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/pcre", &shablonname[0]);
 	     }  
            else if(RGUARD==1)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.sgdbpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
 	     }  
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
@@ -1663,7 +1665,7 @@ int MakeACLFiles(MYSQL *conn)
 	      {
 	        sprintf(&shablonname[0],"%s/_sams_banlists/%s_allow", conf.rejikpath, row[0]);
                 mkdir(&shablonname[0], 0755);
-	        sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+	        sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
                 if((fout=fopen(&shablonname[0], "wt" ))==NULL)
                   {
                     //printf("Don't open file %s\n",&shablonname[0]);
@@ -1696,13 +1698,13 @@ int MakeACLFiles(MYSQL *conn)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.rejikpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/pcre", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/pcre", &shablonname[0]);
 	     }  
            else if(RGUARD==1)
              {
 	       sprintf(&shablonname[0],"%s/_sams_banlists/%s", conf.sgdbpath, row[1]);
                mkdir(&shablonname[0], 0755);
-	       sprintf(&shablonname[0],"%s/urls", &shablonname[0]);
+	       sprintf_sams1(&shablonname[0],"%s/urls", &shablonname[0]);
 	     }  
            else
              sprintf(&shablonname[0],"%s/%s.sams",conf.squidrootdir,row[1]);
@@ -1931,8 +1933,12 @@ int MakeACLFiles(MYSQL *conn)
 			    
 			  if(DEBUG==1)
                             printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                          sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                          flag=system(&str[0]);
+                            
+                          //sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          //flag=system(&str[0]);
+                          sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
+                          set_password(&str[0],row2[1],row2[13]);
+                          
                           if(flag==0)
                             sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
                           else
@@ -1943,8 +1949,12 @@ int MakeACLFiles(MYSQL *conn)
 		       {
                           if(DEBUG==1)
                             printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                          sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                          flag=system(&str[0]);
+                            
+                          //sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          //flag=system(&str[0]);
+                          sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
+                          set_password(&str[0],row2[1],row2[13]);
+                          
                           if(flag==0)
                             sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
                           else
@@ -2012,7 +2022,7 @@ int MakeACLFiles(MYSQL *conn)
 	       FILE *ncsa=NULL;
 
 	       if (DEBUG==1)
-	         printf("Used ncsa auth, but nsca.sams don't exist! Create empty one.\n");
+	         printf("Used ncsa auth, but %s/ncsa.sams don't exist! Create empty one.\n",conf.squidrootdir);
 		   if((ncsa = fopen(&str[0], "wt")) == NULL) {		 
 		     printf("Can't create file %s\n", &str[0]);
 		   }
@@ -2437,7 +2447,7 @@ int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
 	     else 
 	       { 
 		 strncpy(&filename[0],dirname,512);
-		 sprintf(&filename[0],"%s/%s", &filename[0], dirbuf->d_name);
+		 sprintf_sams(&filename[0],"%s/%s", &filename[0], dirbuf->d_name);
 	         //lstat (dirbuf->d_name, &st);
 	         lstat (&filename[0], &st);
                  if(S_ISREG(st.st_mode))
@@ -2454,7 +2464,7 @@ int listdir(char *dirname, int MAXSIZE, MYSQL *conn)
                               //fprintf(fout,"%c",letter);
 				if(letter!=(char)0x00)
                                   {
-				    sprintf(&filebuf[0],"%s%c",&filebuf[0],letter);
+				    sprintf_samsl(&filebuf[0],"%s%c",&filebuf[0],letter);
                                   }
 				else
 				  {
@@ -2847,7 +2857,7 @@ int main (int argc, char *argv[])
 	          { 
 		    if(letter!=(char)0x00&&letter!=(char)0x2F)
                       {
-		        sprintf(&buf[0],"%s%c",&buf[0],letter);
+		        sprintf_samsl(&buf[0],"%s%c",&buf[0],letter);
                       }
 	            else
 		      {
