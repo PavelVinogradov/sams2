@@ -38,7 +38,8 @@
 #include "tools.h"
 #include "sams_sprintf.h"
 
-#include "sams_htpasswd.h"
+//Uncomment to use internal crypt implementation
+//#include "sams_htpasswd.h"
 
 int ANALOG, DISKRET, COUNTCLEAN,RECODE,DPOOLS,SQUIDBASE, ADLD;
 int sams_step;
@@ -1933,11 +1934,12 @@ int MakeACLFiles(MYSQL *conn)
 			    
 			  if(DEBUG==1)
                             printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                            
-                          //sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                          //flag=system(&str[0]);
-                          sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
-                          set_password(&str[0],row2[1],row2[13]);
+                           
+ 			  //Uncomment to use internal crypt implementation 
+                          sprintf(&str[0],"htpasswd -cb %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+			  //sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
+                          //set_password(&str[0],row2[1],row2[13]);
                           
                           if(flag==0)
                             sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
@@ -1949,11 +1951,12 @@ int MakeACLFiles(MYSQL *conn)
 		       {
                           if(DEBUG==1)
                             printf("Creating %s/ncsa.sams user: %s\n",conf.squidrootdir,row2[1]);
-                            
-                          //sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
-                          //flag=system(&str[0]);
-                          sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
-                          set_password(&str[0],row2[1],row2[13]);
+                          
+			  //Uncomment to use internal crypt implementation  
+                          sprintf(&str[0],"htpasswd -b %s/ncsa.sams %s %s",conf.squidrootdir,row2[1],row2[13]);
+                          flag=system(&str[0]);
+                          //sprintf(&str[0],"%s/ncsa.sams",conf.squidrootdir);
+                          //set_password(&str[0],row2[1],row2[13]);
                           
                           if(flag==0)
                             sprintf(&str[0],"Added user %s into ncsa.sams... Ok",row2[1]);
