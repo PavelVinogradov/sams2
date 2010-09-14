@@ -37,30 +37,30 @@ fclose($finp);
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-	$cookie_user="";
-	$cookie_passwd="";
-	$cookie_domainuser="";
-	$cookie_gauditor="";
-	if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
-	if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
-	if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
-	if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+  $cookie_user="";
+  $cookie_passwd="";
+  $cookie_domainuser="";
+  $cookie_gauditor="";
 
- if($SAMSConf->PHPVER<5)
-   {
-//     $SAMSConf->adminname=UserAuthenticate($HTTP_COOKIE_VARS['user'],$HTTP_COOKIE_VARS['passwd']);
-//     $SAMSConf->domainusername=$HTTP_COOKIE_VARS['domainuser'];
-//     $SAMSConf->groupauditor=$HTTP_COOKIE_VARS['gauditor'];
-     $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
-     $SAMSConf->domainusername=$cookie_domainuser;
-     $SAMSConf->groupauditor=$cookie_gauditor;
-   }  
- else
-   {
-     $SAMSConf->adminname=UserAuthenticate($_COOKIE['user'],$_COOKIE['passwd']);
-     $SAMSConf->domainusername=$_COOKIE['domainuser'];
-     $SAMSConf->groupauditor=$_COOKIE['gauditor'];
-   }  
+  if($SAMSConf->PHPVER<5)
+    {
+      if(isset($HTTP_COOKIE_VARS['user'])) $cookie_user=$HTTP_COOKIE_VARS['user'];
+      if(isset($HTTP_COOKIE_VARS['passwd'])) $cookie_passwd=$HTTP_COOKIE_VARS['passwd'];
+      if(isset($HTTP_COOKIE_VARS['domainuser'])) $cookie_domainuser=$HTTP_COOKIE_VARS['domainuser'];
+      if(isset($HTTP_COOKIE_VARS['gauditor'])) $cookie_gauditor=$HTTP_COOKIE_VARS['gauditor'];
+    }
+  else
+    {
+      if(isset($_COOKIE['user'])) $cookie_user=$_COOKIE['user'];
+      if(isset($_COOKIE['passwd'])) $cookie_passwd=$_COOKIE['passwd'];
+      if(isset($_COOKIE['domainuser'])) $cookie_domainuser=$_COOKIE['domainuser'];
+      if(isset($_COOKIE['gauditor'])) $cookie_gauditor=$_COOKIE['gauditor'];
+    }
+
+  $SAMSConf->adminname=UserAuthenticate($cookie_user,$cookie_passwd);
+  $SAMSConf->domainusername=$cookie_domainuser;
+  $SAMSConf->groupauditor=$cookie_gauditor;
+
 
 print("<html><head>\n");
 print("<META  content=\"text/html; charset=$CHARSET\" http-equiv='Content-Type'>");
