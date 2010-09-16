@@ -227,7 +227,7 @@ function ImportFromLDAPForm()
   
 	require_once("src/ldap.php");
 
-	print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
+	//print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
 
   	$adldserver=GetAuthParameter("ldap","ldapserver");
 	$basedn=GetAuthParameter("ldap","basedn");
@@ -341,7 +341,7 @@ function ImportFromLDAPForm()
 	}
 	print("</SELECT>\n");
 
-	echo "</TABLE>";
+	print("</TABLE>\n");
 	print("<INPUT TYPE=\"SUBMIT\" value=\"Import\">\n");
 	print("</FORM>\n");
 
