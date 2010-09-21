@@ -239,7 +239,7 @@ function ImportFromNTLMForm()
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"importfromntlm\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authntlmbuttom_3_importfromntlm.php\">\n"); 
 
-	$users=ExecuteShellScript("getntlmgroups","$ntlmserver $ntlmadmin $ntlmadminpasswd");
+	$users=ExecuteShellScript("getntlmgroups","$LANG");
 	$a=explode("|",$users);
 
 	$acount=count($a);

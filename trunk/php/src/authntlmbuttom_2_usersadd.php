@@ -100,7 +100,7 @@ function AddUsersFromNTLMForm()
     print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><TD>\n");
     print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
     
-    $users=ExecuteShellScript("getntlmusers","$ntlmserver $ntlmadmin $ntlmpasswd");
+    $users=ExecuteShellScript("getntlmusers","$LANG");
     $a=explode("|",$users);
     $acount=count($a);
     for($i=0;$i<$acount;$i++)

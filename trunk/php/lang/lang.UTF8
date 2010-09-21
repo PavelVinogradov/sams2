@@ -4,7 +4,8 @@
 
  $CHARSET="UTF-8";
  $langtest="UTF-8";
-
+ $LANG="ru_RU.UTF-8";
+ 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
 

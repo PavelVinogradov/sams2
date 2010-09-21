@@ -4,6 +4,7 @@
 
  $CHARSET="WINDOWS-1251";
  $langtest="WINDOWS-1251";
+ $LANG="ru_RU.WIN-1251";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
