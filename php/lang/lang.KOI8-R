@@ -4,6 +4,7 @@
 
  $CHARSET="KOI8-R";
  $langtest="KOI8-R";
+ $LANG="ru_RU.KOI8-R";
 
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";

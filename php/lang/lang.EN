@@ -3,7 +3,7 @@
 
  $CHARSET="";
  $langtest="";
-
+ $LANG="C";
 
 //file usergroup.php
  $usergroup_add="The usergroup is added"; 

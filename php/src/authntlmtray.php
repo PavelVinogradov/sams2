@@ -9,6 +9,8 @@ function NTLMtest()
 {
   global $SAMSConf;
   global $USERConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
@@ -20,7 +22,7 @@ function NTLMtest()
   $ntlmadmin=GetAuthParameter("ntlm","ntlmadmin");
   $ntlmpasswd=GetAuthParameter("ntlm","ntlmadminpasswd");
 
-  $users=ExecuteShellScript("getntlmgroups","$ntlmserver $ntlmadmin $ntlmpasswd");
+  $users=ExecuteShellScript("getntlmgroups","$LANG");
   $a=explode("|",$users);
   $acount=count($a);
 
@@ -28,10 +30,11 @@ function NTLMtest()
   print("<TH width=5%>No");
   print("<TH width=95%>NTLM groups");
   for($i=0;$i<$acount;$i++)
-	echo("<TR><TD>$i<TD>$a[$i]<BR>\n");
+	if(strlen($a[$i])>0)
+		echo("<TR><TD>$i<TD>$a[$i]<BR>\n");
   echo "</TABLE><P>";
 
-  $users=ExecuteShellScript("getntlmusers","$ntlmserver $ntlmadmin $ntlmpasswd");
+  $users=ExecuteShellScript("getntlmusers","$LANG");
   $a=explode("|",$users);
   $acount=count($a);
 
@@ -39,9 +42,9 @@ function NTLMtest()
   print("<TH width=5%>No");
   print("<TH width=95%>NTLM users");
   for($i=0;$i<$acount;$i++)
-	echo("<TR><TD>$i<TD>$a[$i]<BR>\n");
+	if(strlen($a[$i])>0)
+		echo("<TR><TD>$i<TD>$a[$i]<BR>\n");
   echo "</TABLE>";
-
 
 }   
  

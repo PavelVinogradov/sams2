@@ -1,1 +1,2 @@
-net group -I $1 -U $2%"$3" | tr '\n' '|'
+export LANG=$1
+wbinfo -g | tr '\n' '|'
