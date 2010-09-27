@@ -1090,6 +1090,6 @@
    $configtray_3_Traffic="Трафик";
    $userbuttom_1_prop_UpdateUserForm_25="Индивидуальное ограничение трафика пользователя";
    $configbuttom_3_import_importdataform_6="Импорт настроек из базы данных SAMS 1.x";
-   $adldtest_1_authldaptray="Группы домена "
-   $adldtest_2_authldaptray="Пользователи домена "
+   $adldtest_1_authldaptray="Группы домена ";
+   $adldtest_2_authldaptray="Пользователи домена ";
 ?>
