@@ -241,20 +241,19 @@ function ImportFromNTLMForm()
 
 	$users=ExecuteShellScript("getntlmgroups","$LANG");
 	$a=explode("|",$users);
-
+	asort($a);
 	$acount=count($a);
 	$aflag=0;
 
 	echo "<TABLE WIDTH=90%>";
 	print("<TR><TD WIDTH=30%><B>$authadldbuttom_3_importfromntlm_ImportFromNTLMForm_2:\n");
 	print("<TD WIDTH=70%><SELECT NAME=\"addgroupname[]\" SIZE=15 TABINDEX=30 MULTIPLE>\n");
-	for($i=0;$i<$acount;$i++)
+	foreach ($a as $group) 
 	{
-		$QUERY="SELECT * FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup' AND s_value='$a[$i]'";
+		$QUERY="SELECT * FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup' AND s_value='$group'";
 		$num_rows=$DB->samsdb_query_value($QUERY);
-		if($num_rows==0)
-			print("<OPTION VALUE=\"$a[$i]\"> $a[$i]\n");
-
+		if($num_rows==0 && strlen($group)>0)
+			print("<OPTION VALUE=\"$group\"> $group\n");
 	}
 	print("</SELECT>\n");
 

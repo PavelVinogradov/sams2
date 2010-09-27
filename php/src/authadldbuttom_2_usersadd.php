@@ -136,22 +136,17 @@ function AddUsersFromADLDForm()
 
 	$ldap=new adLDAP($options);
 
-
-    if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
-      {
-	  $a=$ldap->group_users($ldapgroup);
-	  $acount=count($a);
-      }
-    else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
-      {
-	  $a=$ldap->group_users($getgroup);
-	  $acount=count($a);
-      }
-    else
-      {
-	  $a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
-	  $acount=count($a);
-      }
+	$usersgroupname="Users";
+	$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+	$acount=count($a);
+	if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
+	{
+		$usersgroupname=$ldapgroup;
+	}
+	else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
+	{
+		$usersgroupname=$getgroup;
+	}
 
     $groupinfo=$ldap->all_groups($include_desc = false, $search = "*", $sorted = true);
     $gcount=count($groupinfo);
@@ -189,11 +184,18 @@ function AddUsersFromADLDForm()
     print("<TD WIDTH=60%><SELECT NAME=\"addgroupname\" onChange=EnableTxtInput(AddDomainUsers)>\n");
     print("<OPTION VALUE=\"_allgroups_\" SELECT  onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_5");
     print("<OPTION VALUE=\"_gettxtinput_\" onselect=EnableTxtInput(AddDomainUsers)> $usersbuttom_1_adldap_AddUsersFromAdLDAPForm_6");
+    foreach ($groupinfo as $group) 
+	{
+		$groupname = UTF8ToSAMSLang($group);
+        	print("<OPTION VALUE=\"$groupname\"  onselect=EnableTxtInput(AddDomainUsers)> $groupname");
+	}
+/*
     for($i=0;$i<$gcount;$i++)
       {
 	$groupname = UTF8ToSAMSLang($groupinfo[$i]);
         print("<OPTION VALUE=\"$groupname\"  onselect=EnableTxtInput(AddDomainUsers)> $groupname");
       }
+*/
     print("</SELECT>\n");
     print("<TR><TD WIDTH=40%>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_7\n");
     print("<TD WIDTH=60%><INPUT TYPE=\"TEST\" NAME=\"getgroup\" SIZE=\"20\" DISABLED>\n");
@@ -204,29 +206,37 @@ function AddUsersFromADLDForm()
 
     
     if(strlen($ldapgroup)>0&&$ldapgroup!="_allgroups_"&&$ldapgroup!="_gettxtinput_")
-      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $ldapgroup</B><BR>");
+      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: <FONT COLOR=BLUE>$ldapgroup</FONT></B><BR>");
     else if(strlen($ldapgroup)>0&&$ldapgroup=="_gettxtinput_")
-      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: $getgroup</B><BR>");
+      printf("<B>$usersbuttom_1_adldap_AddUsersFromAdLDAPForm_4: <FONT COLOR=BLUE>$getgroup</FONT></B><BR>");
     else
       print("<BR><B>$usersbuttom_1_domain_AddUsersFromDomainForm_2</B><BR>");
     print("<SELECT NAME=\"username[]\" MULTIPLE>\n");
     
-    for($i=0;$i<$acount;$i++)
-      {
-	$user=$a[$i];
-	$username=$a[$i];
+    asort($a);
+    foreach ($a as $user) 
+	{
+		$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+		$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$samaccountname'");
+		if($num_rows==0)  
+		{
+			$displayname = UTF8ToSAMSLang($user["displayname"]);
+			$memberof = UTF8ToSAMSLang($user["memberof"]);
+			$adldgroups=explode ( "|", $memberof );
+			$cadldgroups=count($adldgroups);
+			$memberofgroup="Users";
+			for($j=0;$j<$cadldgroups;$j++)
+			{
+				$adldgroupname=explode ( "=", $adldgroups[$j] );
+				if(strlen($adldgroupname[1])>3)
+					$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
+			}
+			if(strstr($memberofgroup,$usersgroupname))
+				print("<OPTION VALUE=\"$samaccountname\"> $samaccountname ($displayname)\n");
+		}
+		$DB->free_samsdb_query();
+	}
 
-	$finduser = UTF8ToSAMSLang($user);
-  	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$finduser'");
-        if($num_rows==0)  
-	  {
-		$userinfo=$ldap->user_info( $user, $fields=NULL);
-		$username = UTF8ToSAMSLang($user);
-		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-		print("<OPTION VALUE=\"$user\"> <B>$username</B> ($displayname)");
-          }
-	$DB->free_samsdb_query();
-      }
     print("</SELECT>\n");
     print("<P>" );
 

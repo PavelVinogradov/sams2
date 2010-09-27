@@ -145,7 +145,6 @@ function UserTrafficPeriod()
     printf("<P><IMG SRC=\"main.php?show=exe&function=usertrafficperiodgb&filename=userbuttom_2_traffic.php&id=$SquidUSERConf->s_user_id&gb=1&sdate=$sdate&edate=$edate\"><P>");
   $count=1;
   $cache=0;
-  print("\n<script src=\"lib/sorttable.js\" type=\"text/javascript\"></script>\n");
   print("<TABLE CLASS=samstable>");
   print("<THEAD>\n");
   print("<TH>No");

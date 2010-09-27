@@ -102,22 +102,18 @@ function AddUsersFromNTLMForm()
     
     $users=ExecuteShellScript("getntlmusers","$LANG");
     $a=explode("|",$users);
+    asort($a);
     $acount=count($a);
-    for($i=0;$i<$acount;$i++)
-      {
-//	$user=$a[$i];
-//	$username=$a[$i];
-	$username = UTF8ToSAMSLang($a[$i]);
 
-  	$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$username'");
-        if($num_rows==0)  
-	  {
-//		$username = UTF8ToSAMSLang($a[$i]);
-//		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-		print("<OPTION VALUE=\"$username\"> <B>$username</B>");
-          }
-	$DB->free_samsdb_query();
-      }
+    foreach ($a as $user) 
+	{
+		$num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE s_nick='$user'");
+		if($num_rows==0 && strlen($user)>0 )  
+		{
+			print("<OPTION VALUE=\"$user\"> <B>$user</B>");
+		}
+		$DB->free_samsdb_query();
+	}
     print("</SELECT>\n");
     print("<P>" );
 
