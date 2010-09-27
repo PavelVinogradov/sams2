@@ -479,22 +479,23 @@ class adLDAP {
 		if (!$this->_bind){ return (false); }
 		//perform the search and grab all their details
 		$filter = "(&(objectClass=user)(samaccounttype=". ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)(cn=".$search."))";
-		$fields=array("samaccountname","displayname");
+		$fields=array("samaccountname","displayname","givenname","sn","memberof");
 		$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
 		$entries = ldap_get_entries($this->_conn, $sr);
 		$users_array = array();
 		$acount=$entries["count"];
 		for ($i=0; $i<$entries["count"]; $i++)
 		{
-			if ($include_desc && strlen($entries[$i]["displayname"][0])>0){
-				$users_array[ $entries[$i]["samaccountname"][0] ] = $entries[$i]["displayname"][0];
-			} elseif ($include_desc){
-				$users_array[ $entries[$i]["samaccountname"][0] ] = $entries[$i]["samaccountname"][0];
-			} else {
-				array_push($users_array, $entries[$i]["samaccountname"][0]);
+			$users_array[$i]["samaccountname"] = $entries[$i]["samaccountname"][0];
+			$users_array[$i]["displayname"] = $entries[$i]["displayname"][0];
+			$users_array[$i]["givenname"] = $entries[$i]["givenname"][0];
+			$users_array[$i]["sn"] = $entries[$i]["sn"][0];
+			$mcount=count($entries[$i]["memberof"]);
+			for($j=0;$j<$mcount;$j++)
+			{
+				$users_array[$i]["memberof"] = $users_array[$i]["memberof"]."|".$entries[$i]["memberof"][$j];
 			}
 		}
-
 		if ($sorted){ asort($users_array); }
 		return ($users_array);
 	}

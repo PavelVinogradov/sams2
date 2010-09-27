@@ -50,11 +50,11 @@ function ADLDtest()
 	$gcount=count($groups);
         print("<TABLE CLASS=samstable>");
         print("<TH width=5%>No");
-        print("<TH >AD domain $basedn groups");
-	for($i=0;$i<$gcount;$i++)
+        print("<TH >$adldtest_1_authldaptray $basedn");
+	for($i=0,$j=1;$i<$gcount;$i++,$j++)
 	{
 		$groupname = UTF8ToSAMSLang($groups[$i]);
-		echo "<TR><TD>$i:<TD>$groupname <BR>";
+		echo "<TR><TD>$j:<TD>$groupname <BR>";
 	}
 	echo "</TABLE><P>";
 
@@ -62,16 +62,15 @@ function ADLDtest()
 	$count=count($users);
         print("<TABLE CLASS=samstable>");
         print("<TH width=5%>No");
-        print("<TH >AD domain $basedn users");
+        print("<TH >$adldtest_2_authldaptray $basedn");
         print("<TH > ");
-	for($i=0;$i<$count;$i++)
-   	{
-		$username = UTF8ToSAMSLang($users[$i]);
-        	echo "<TR><TD>$i:<TD> $username ";
-
-		$userinfo=$ldap->user_info( $users[$i], $fields=NULL);
-		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-		echo "<TD>$displayname";
+	$i=0;
+	foreach ($users as $user) 
+	{
+		$i++;
+		$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+		$displayname = UTF8ToSAMSLang($user["displayname"]);
+        	echo "<TR><TD>$i: <TD> $samaccountname <TD> $displayname";
     	}
 	echo "</TABLE>";
 

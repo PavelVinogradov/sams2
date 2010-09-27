@@ -289,49 +289,20 @@ function ImportFromADForm()
 	echo "<TABLE WIDTH=90%>";
 	print("<TR><TD WIDTH=30%><B>$authadldbuttom_3_importfromad_ImportFromADForm_2:\n");
 	print("<TD WIDTH=70%><SELECT NAME=\"addgroupname[]\" SIZE=15 TABINDEX=30 MULTIPLE>\n");
-	for($i=0;$i<$gcount;$i++)
+
+	asort($groupinfo);
+	foreach ($groupinfo as $group) 
 	{
-		$groupname = UTF8ToSAMSLang($groupinfo[$i]);
+		$groupname = UTF8ToSAMSLang($group);
 		if(SearchAuthParameter("adld","adldgroup","$groupname")==0)
 			print("<OPTION VALUE=\"$groupname\"> $groupname \n");
 	}
+
 	print("</SELECT>\n");
 
 	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
 
-/*
-	print("<TR><TD WIDTH=30%><B>Create SAMS templates with AD groups name:\n");
-	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"addtemplates\" CHECKED onclick=ADTempaletesEnabled(AddDomainUsers)>");
-
-           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
-           print("function ADTempaletesEnabled(formname) \n");
-           print("{ \n");
-           print("  if(formname.addtemplates.checked==true) \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=false;  \n");
-           print("      formname.period.disabled=false;  \n");
-	   print("      EnterPeriod(formname);  \n");
-           print("      formname.trange.disabled=false;  \n");
-//           print("      formname.newperiod.disabled=false;  \n");
-//           print("      formname.clryear.disabled=false;  \n");
-//           print("      formname.clrmonth.disabled=false;  \n");
-//           print("      formname.clrday.disabled=false;  \n");
-           print("    }\n");
-           print("  else \n");
-           print("    {\n");
-           print("      formname.defaulttraf.disabled=true;  \n");
-           print("      formname.period.disabled=true;  \n");
-//	   print("      EnterPeriod(formname);  \n");
-           print("      formname.newperiod.disabled=true;  \n");
-           print("      formname.clryear.disabled=true;  \n");
-           print("      formname.clrmonth.disabled=true;  \n");
-           print("      formname.clrday.disabled=true;  \n");
-           print("      formname.trange.disabled=true;  \n");
-           print("    }\n");
-           print("}\n");
-           print("</SCRIPT> \n");
-*/
 	print("<TR>\n");
 	print("<TD>\n");
 	print("$shablonnew_NewShablonForm_3:\n");

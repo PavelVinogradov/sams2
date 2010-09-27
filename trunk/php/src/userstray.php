@@ -159,7 +159,6 @@ function AllUsersForm()
       print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"disableselectedusers\">\n");
       print(" <INPUT TYPE=\"BUTTON\" VALUE=\"$userstray_AllUsersForm_8\" onclick=SendForm(groupform) > \n");
    } 
-  print("<script src=\"lib/sorttable.js\" type=\"text/javascript\"></script>");
   print("<TABLE WIDTH=\"100%\" BORDER=0 CLASS=samstable>\n");
   print("<THEAD>\n");
   print("<TR>\n");
