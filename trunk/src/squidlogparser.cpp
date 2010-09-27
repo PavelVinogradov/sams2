@@ -165,7 +165,7 @@ void SquidLogParser::parseFile (DBConn *conn, const string & fname, bool from_be
   long long s_hit;
   long long cachesum_size;
   long long cachesum_hit;
-  char s_ipaddr[15];
+  char s_ipaddr[16];
   long s_period;
   char s_method[15];
   char s_url[1024];
