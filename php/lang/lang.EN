@@ -1078,7 +1078,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $usersbuttom_1_useradd_AddUser_3="The user with login ";
    $userbuttom_1_prop_UpdateUserForm_25="Individual limit";
    $configbuttom_3_import_importdataform_6="Import SAMS settings from a database SAMS 1.x";
-   $adldtest_1_authldaptray="Groups of the domain "
-   $adldtest_2_authldaptray="Users of the domain "
+   $adldtest_1_authldaptray="Groups of the domain ";
+   $adldtest_2_authldaptray="Users of the domain ";
 
 ?>
