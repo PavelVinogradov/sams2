@@ -27,41 +27,32 @@ function UpdateShablon()
   if(isset($_GET["period"])) $period=$_GET["period"];
   if(isset($_GET["newperiod"])) $newperiod=$_GET["newperiod"];
    
-  if(isset($_GET["clryear"])) $clryear=$_GET["clryear"];
-  if(isset($_GET["clrmonth"])) $clrmonth=$_GET["clrmonth"];
-  if(isset($_GET["clrday"])) $clrday=$_GET["clrday"];
-  if(isset($_GET["alldenied"])) $alldenied=$_GET["alldenied"];
+   if($period=="A")
+     {
+	if(isset($_GET["clryear"])) $clrdate=$_GET["clryear"];
+	if(isset($_GET["clrmonth"])) $clrdate="$clrdate-".$_GET["clrmonth"];
+	if(isset($_GET["clrday"])) $clrdate="$clrdate-".$_GET["clrday"];
+	$period=$newperiod;
+     }  
+  if(isset($clrdate) == FALSE) $clrdate="1980-01-01";
+
+  if(isset($_GET["alldenied"]))
+	$alldenied="1";
+  else
+	$alldenied="0";
   if(isset($_GET["delaypool"])) $delaypool=$_GET["delaypool"];
    
   if(isset($_GET["trange"])) $trange=$_GET["trange"];
-
-$tc=count($trange);
-for($i=0;$i<$tc;$i++)
-  echo "$trange[$i] ";
-
-   if($alldenied=="on")   $alldenied="1"; else $alldenied="0";  
-
-   $clrdate="$clryear-$clrmonth-$clrday";
-   if($clrdate="=--") $clrdate="1980-01-01";
-   if($period=="A")
-     {
-       $period=$newperiod;
-       $clrdate="$clryear-$clrmonth-$clrday";  
-     }  
-  if($smin<0&&smin>60)
-     $smin="00";
-  if($emin<0&&emin>60)
-     $emin="00";
 
   $num_rows=$DB->samsdb_query("DELETE FROM sconfig WHERE s_shablon_id='$sname' ");
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM redirect");
   while($row=$DB->samsdb_fetch_array())
      {
-       if($_GET["d$row[s_redirect_id]"]=="on")
-          {
+	if(isset($_GET["d$row[s_redirect_id]"]))
+	{ 
             $num_rows=$DB2->samsdb_query("INSERT INTO sconfig VALUES('$sname','$row[s_redirect_id]') ");
-          }
+	}
      }
   $num_rows=$DB2->samsdb_query("UPDATE shablon SET s_alldenied='$alldenied', s_quote='$_GET[defaulttraf]', s_auth='$auth', s_period='$period', s_clrdate='$clrdate', s_shablon_id2='$shablon2'  WHERE s_shablon_id='$sname' ");
 

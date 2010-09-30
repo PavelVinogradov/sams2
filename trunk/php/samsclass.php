@@ -178,7 +178,7 @@ class SAMSCONFIG extends MAINCONF
       else
         $this->LANGCODE = "RU";
       $this->ICONSET="icon/$row[s_iconset]";
-      $this->USERACCESS=$row['s_user'];
+      if(isset($row['s_user']))	$this->USERACCESS=$row['s_user'];
       $this->SHOWUTREE=$row['s_showutree'];
       $this->SHOWNAME=$row['s_showname'];
 	if($this->KBSIZE==0) $this->KBSIZE=1024;

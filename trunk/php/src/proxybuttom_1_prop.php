@@ -111,6 +111,7 @@ function ProxyReConfigForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
   
+  $DISABLED_PARSER="";
 
   PageTop("config_48.jpg","Proxy server<BR><FONT COLOR=\"BLUE\">$PROXYConf->s_description</FONT>");
   print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
