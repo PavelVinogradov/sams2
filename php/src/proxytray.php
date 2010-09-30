@@ -34,16 +34,16 @@ function JSProxyInfo()
   if($PROXYConf->s_parser==1)
 	$parser="$adminbuttom_1_prop_SamsReConfigForm_34";
 
-  if($PROXYConf->s_redirector=="none")
-            $redirector="$adminbuttom_1_prop_SamsReConfigForm_43";
   if($PROXYConf->s_redirector=="sams")
             $redirector="$adminbuttom_1_prop_SamsReConfigForm_7";
-  if($PROXYConf->s_redirector=="rejik")
+  else if($PROXYConf->s_redirector=="rejik")
             $redirector="Rejik";
-  if($PROXYConf->s_redirector=="squidguard")
+  else if($PROXYConf->s_redirector=="squidguard")
             $redirector="SquidGuard";
-  if($PROXYConf->s_redirector=="squid")
+  else if($PROXYConf->s_redirector=="squid")
             $redirector="$adminbuttom_1_prop_SamsReConfigForm_8";
+  else
+            $redirector="$adminbuttom_1_prop_SamsReConfigForm_43";
 
   $extrainfo="";
   $DB=new SAMSDB();

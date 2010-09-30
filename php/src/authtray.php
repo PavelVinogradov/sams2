@@ -50,6 +50,10 @@ function AuthEnabledForm()
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit(0);
 
+  $ADLDCHECKED="";
+  $NTLMCHECKED="";
+  $LDAPCHECKED="";
+  $NCSACHECKED="";
   PageTop("config_48.jpg","$authtray_AuthEnabledForm_1");
   print("<P>\n");
 

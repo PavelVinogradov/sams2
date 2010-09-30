@@ -39,28 +39,22 @@ function importcachesumtable()
 
  echo "<IMG SRC=\"$SAMSConf->ICONSET/loading.gif\" ALIGN=CENTER>\n";
  // создаем подключение к базе данных SAMS 1.x
-echo "1<BR>";
  $oldDB=new CREATESAMSDB("MySQL", "0", $hostname, $username, $pass, "squidlog", "0");
  // создаем подключение к базе данных SAMS 2.x
-echo "2<BR>";
  $DB=new SAMSDB();
-echo "3<BR>";
 
  // Выбираем данные трафике пользователей за день из базы SAMS 1.x
  $row_count=$oldDB->samsdb_query_value("SELECT * FROM squidlog.cachesum WHERE date>='$sdate' AND date<='$edate' ");
-echo "4<BR>";
  $ps=0;
  $count=0;
  while($row=$oldDB->samsdb_fetch_array())
  {
-echo "5 ";
 	// Заносим данные о трафике пользователей за день в базу SAMS 2
 	$QUERY="INSERT INTO cachesum (s_proxy_id, s_date, s_user, s_domain, s_size, s_hit) VALUES ('1', '$row[date]', '$row[user]', '$row[domain]', '$row[size]', '$row[hit]' )";
 	$DB->samsdb_query($QUERY);
 	$count++;
 	
  }
-echo "<BR>6<BR>";
  echo "<BR><B>$count $confogbuttom_3_importcache_importcachesumtable_3</B><BR>";
  // Переходим на страницу импорта данных о трафике пользователей
  printf("<SCRIPT LANGUAGE=\"javascript\">\n");

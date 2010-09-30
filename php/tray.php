@@ -128,9 +128,10 @@ $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER,   		
     {
       require($req);
     }
-  if(strlen($function)>0&&$module==null)
+  if( isset($function) && $module == null)
+  {
       $function();
-	
+  }	
   if ($module !== null) {
      $manager = new PluginManager($DB, 1, $SAMSConf);
      print ($manager->dispatch($module, $function));
