@@ -13,36 +13,26 @@ function WebInterfaceReConfig()
   $DB=new SAMSDB();
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
-    $s_urlaccess=0;
-    $s_useraccess=0;
-    $s_showutree=0;
-    $s_showgraph=0;
+  $s_urlaccess=0;
+  $s_useraccess=0;
+  $s_showutree=0;
+  $s_showgraph=0;
 
   if(isset($_GET["lang"])) $lang=$_GET["lang"];
-  if(isset($_GET["urlaccess"])) $urlaccess=$_GET["urlaccess"];
-  if(isset($_GET["useraccess"])) $useraccess=$_GET["useraccess"];
+
+  if(isset($_GET["urlaccess"])) $s_urlaccess=1;
+  if(isset($_GET["useraccess"])) $s_useraccess=1;
+  if(isset($_GET["showutree"])) $s_showutree=1;
+  if(isset($_GET["showgraph"])) $s_showgraph=1;
+
   if(isset($_GET["iconset"])) $iconset=$_GET["iconset"];
-  if(isset($_GET["showutree"])) $showutree=$_GET["showutree"];
   if(isset($_GET["showname"])) $showname=$_GET["showname"];
   if(isset($_GET["kbsize"])) $kbsize=$_GET["kbsize"];
   if(isset($_GET["mbsize"])) $mbsize=$_GET["mbsize"];
-  if(isset($_GET["showgraph"])) $showgraph=$_GET["showgraph"];
   if(isset($_GET["createpdf"])) $createpdf=$_GET["createpdf"];
 
   if($USERConf->ToWebInterfaceAccess("C")!=1)
 	{       exit;     }
-
-  if($urlaccess=="on")
-    $s_urlaccess=1;
-
-  if($useraccess=="on")
-    $s_useraccess=1;
-
-  if($showutree=="on")
-    $s_showutree=1;
-
-  if($showgraph=="on")
-    $s_showgraph=1;
 
   $DB->samsdb_query("UPDATE websettings SET s_createpdf='$createpdf', s_showname='$showname', s_showutree='$s_showutree', s_iconset='$iconset', s_lang='$lang', s_urlaccess='$s_urlaccess', s_useraccess='$s_useraccess', s_showgraph='$s_showgraph' ");
   $SAMSConf->LoadConfig();
@@ -170,12 +160,12 @@ function WebInterfaceReConfigForm()
           print("<OPTION VALUE=\"famn\">$webconfigbuttom_1_prop_WebInterfaceReConfigForm_6");
     
   print("</SELECT>\n");
-  
+/*  
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_7 (byte)</B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"kbsize\" value=\"$row[s_kbsize]\">\n");
   print("<TR><TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_8 (byte)</B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"mbsize\" value=\"$row[s_mbsize]\">\n");
-  
+*/
   print("<TR>\n");
   print("<TD><B>$webconfigbuttom_1_prop_WebInterfaceReConfigForm_9</B>\n");
   if($row['s_showgraph']==1)
@@ -201,7 +191,6 @@ function WebInterfaceReConfigForm()
     
   print("</SELECT>\n");
   
-  
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
   print("</FORM>\n");
@@ -222,13 +211,5 @@ function webconfigbuttom_1_prop()
     {
        GraphButton("main.php?show=exe&function=webinterfacereconfigform&filename=webconfigbuttom_1_prop.php", "basefrm", "config_32.jpg", "config_48.jpg", "$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
     }
-
 }
-
-
-
-
-
-
-
 ?>
