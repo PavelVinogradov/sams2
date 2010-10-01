@@ -16,32 +16,24 @@ function UpdateTRange()
 
   if(isset($_GET["id"])) $id=$_GET["id"];
   if(isset($_GET["name"])) $name=$_GET["name"];
-
-  if(isset($_GET["shour"])) $shour=$_GET["shour"];
-  if(isset($_GET["smin"])) $smin=$_GET["smin"];
-  if(isset($_GET["ehour"])) $ehour=$_GET["ehour"];
-  if(isset($_GET["emin"])) $emin=$_GET["emin"];
-  if(isset($_GET["day1"])) $day1=$_GET["day1"];
-  if(isset($_GET["day2"])) $day2=$_GET["day2"];
-  if(isset($_GET["day3"])) $day3=$_GET["day3"];
-  if(isset($_GET["day4"])) $day4=$_GET["day4"];
-  if(isset($_GET["day5"])) $day5=$_GET["day5"];
-  if(isset($_GET["day6"])) $day6=$_GET["day6"];
-  if(isset($_GET["day7"])) $day7=$_GET["day7"];
+  $timestart="";
+  if(isset($_GET["shour"])) $timestart=$_GET["shour"];
+  if(isset($_GET["smin"])) $timestart=$timestart.":".$_GET["smin"].":00";
+  $timeend="";
+  if(isset($_GET["ehour"])) $timeend=$_GET["ehour"];
+  if(isset($_GET["emin"])) $timeend=$timeend.":".$_GET["emin"].":00";
+  $days="";
+  if(isset($_GET["day1"])) $days="M";
+  if(isset($_GET["day2"])) $days=$days."T";
+  if(isset($_GET["day3"])) $days=$days."W";
+  if(isset($_GET["day4"])) $days=$days."H";
+  if(isset($_GET["day5"])) $days=$days."F";
+  if(isset($_GET["day6"])) $days=$days."A";
+  if(isset($_GET["day7"])) $days=$days."S";
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{       exit;     }
 
-   if($day1=="on")   $day1="M"; else $day1=""; 
-   if($day2=="on")   $day2="T"; else $day2="";  
-   if($day3=="on")   $day3="W"; else $day3="";  
-   if($day4=="on")   $day4="H"; else $day4="";  
-   if($day5=="on")   $day5="F"; else $day5="";  
-   if($day6=="on")   $day6="A"; else $day6="";  
-   if($day7=="on")   $day7="S"; else $day7="";  
-   $days="$day1$day2$day3$day4$day5$day6$day7";  
-   $timestart="$shour:$smin:00";  
-   $timeend="$ehour:$emin:59";  
   $DB->samsdb_query("UPDATE timerange  SET  s_name='$name', s_days='$days', s_timestart='$timestart' , s_timeend='$timeend' WHERE s_trange_id='$id' ");
 //  UpdateLog("$SAMSConf->adminname","$shablonnew_AddShablon_1 $snick","01");
 

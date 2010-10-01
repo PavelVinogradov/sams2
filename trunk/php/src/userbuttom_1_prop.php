@@ -30,13 +30,14 @@ function UpdateUser()
   if(isset($_GET["defstatus"])) $defstatus=$_GET["defstatus"];
   if(isset($_GET["individuallimit"])) $individuallimit=$_GET["individuallimit"];
 
-  if(isset($_GET["W_access"])) $W_access=$_GET["W_access"];
-  if(isset($_GET["G_access"])) $G_access=$_GET["G_access"];
-  if(isset($_GET["S_access"])) $S_access=$_GET["S_access"];
-  if(isset($_GET["A_access"])) $A_access=$_GET["A_access"];
-  if(isset($_GET["U_access"])) $U_access=$_GET["U_access"];
-  if(isset($_GET["L_access"])) $L_access=$_GET["L_access"];
-  if(isset($_GET["C_access"])) $C_access=$_GET["C_access"];
+  $s_webaccess="";
+  if(isset($_GET["W_access"])) $s_webaccess="W";
+  if(isset($_GET["G_access"])) $s_webaccess=$s_webaccess."G";
+  if(isset($_GET["S_access"])) $s_webaccess=$s_webaccess."S";
+  if(isset($_GET["A_access"])) $s_webaccess=$s_webaccess."A";
+  if(isset($_GET["U_access"])) $s_webaccess=$s_webaccess."U";
+  if(isset($_GET["L_access"])) $s_webaccess=$s_webaccess."L";
+  if(isset($_GET["C_access"])) $s_webaccess=$s_webaccess."C";
 
   if($USERConf->ToWebInterfaceAccess("AUC")!=1)
 	{
@@ -47,16 +48,6 @@ function UpdateUser()
      $gauditor=1;
   else
      $gauditor=0;
-
-  if($W_access=="on") $W_access="W";
-  if($G_access=="on") $G_access="G";
-  if($S_access=="on") $S_access="S";
-  if($A_access=="on") $A_access="A";
-  if($U_access=="on") $U_access="U";
-  if($L_access=="on") $L_access="L";
-  if($C_access=="on") $C_access="C";
-
-  $s_webaccess="$W_access$G_access$S_access$A_access$U_access$L_access$C_access";
 
   if($domain=="") 
 	$domain="workgroup";
@@ -182,6 +173,7 @@ function UpdateUserForm()
   if($SquidUSERConf->s_quote!=-1)
   {
 	print("<INPUT TYPE=\"CHECKBOX\" NAME=\"individuallimit\" CHECKED onclick=EnableIndividualQuote(UPDATEUSER)> \n");
+	$QDISABLED="";
   }
   else
   {

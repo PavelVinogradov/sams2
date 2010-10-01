@@ -41,7 +41,7 @@ function AddUsersFromNTLM()
   $row=$DB->samsdb_fetch_array();
   $s_quote=$row['s_quote'];
   $DB->free_samsdb_query();
-  while(strlen($userlist[$i])>0)
+  while(isset($userlist[$i])==TRUE)
      {
        $string=$userlist[$i];
        $i++;
@@ -90,7 +90,7 @@ function AddUsersFromNTLMForm()
   
 
     print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
-    print("<INPUT TYPE=\"HIDDEN\" NAME=\"domain\" id=Show value=\"$domain\">\n");
+    print("<INPUT TYPE=\"HIDDEN\" NAME=\"domain\" id=Show value=\"$ntlmdomain\">\n");
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addusersfromntlm\">\n");
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authntlmbuttom_2_usersadd.php\">\n");

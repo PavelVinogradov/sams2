@@ -52,6 +52,7 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["loglevel"])) $loglevel=$_GET["loglevel"];
   if(isset($_GET["defaultdomain"])) $defaultdomain=$_GET["defaultdomain"];
   if(isset($_GET["squidbase"])) $squidbase=$_GET["squidbase"];
+  $udscript="";
   if(isset($_GET["udscript"])) $udscript=$_GET["udscript"];
   if(isset($_GET["adminaddr"])) $adminaddr=$_GET["adminaddr"];
   if(isset($_GET["kbsize"])) $kbsize=$_GET["kbsize"];
@@ -64,17 +65,16 @@ $group=$PROXYConf->s_autogrp;
   if(isset($_GET["group"])) $group=$_GET["group"];
 
   if(isset($_GET["description"])) $description=$_GET["description"];
-  if(isset($_GET["separator"])) $separator=$_GET["separator"];
+  $separator="";
+  if(isset($_GET["separator"])) 
+  {
+	if($_GET["separator"]==0) $separator="0+";
+	if($_GET["separator"]==1) $separator="0\\\\\\\\";
+	if($_GET["separator"]==2) $separator="0@";
+  }
 
   if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	exit;
-
-  if($separator==0)
-    $separator="0+";
-  if($separator==1)
-    $separator="0\\\\\\\\";
-  if($separator==2)
-    $separator="0@";
 
   $query="UPDATE proxy SET s_description='$description', s_debuglevel='$loglevel', s_checkdns='$checkdns', s_realsize='$traffic', 
       s_nameencode='$nameencode', s_sleep='$sleep', s_count_clean='$count_clean', s_parser='$parser_on',
@@ -283,24 +283,25 @@ function ProxyReConfigForm()
   print("<TR>\n");
   print("<TD><B>$adminbuttom_1_prop_SamsReConfigForm_52</B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"defaultdomain\" value=\"$PROXYConf->s_defaultdomain\">\n");
-            
-  $scount=0;
-    if ($handle2 = opendir("./src/script"))
-        {
-	  while (false !== ($file = readdir($handle2)))
-            {
-		if($file!="."&&$file!=".."&&$file!=".svn")
-		  {
-			       if(strlen($file)>0)
-			         {
-					$script[$scount]=$file;
-					$scount++;
-				}  
-
-		  }
-            }
-        }
   print("<TR>\n");
+
+/*
+  $scount=0;
+  if ($handle2 = opendir("./src/script"))
+  {
+	while (false !== ($file = readdir($handle2)))
+	{
+		if($file!="."&&$file!=".."&&$file!=".svn")
+		{
+			if(strlen($file)>0)
+			{
+				$script[$scount]=$file;
+				$scount++;
+			}
+		}
+	}
+  }
+
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_56</B>\n");
   print("<TD><SELECT NAME=\"udscript\" ID=\"udscript\" >\n");
   $SELECTED="";
@@ -315,7 +316,7 @@ function ProxyReConfigForm()
 	print("<OPTION VALUE=\"$script[$i]\" $SELECTED> $script[$i]\n");
     }
   print("</SELECT>\n");
-  
+*/  
   print("<TR>\n");
   print("<TD><B>$configbuttom_1_prop_SamsReConfigForm_57</B>\n");
   print("<TD><INPUT TYPE=\"TEXT\" NAME=\"adminaddr\" value=\"$PROXYConf->s_adminaddr\">\n");

@@ -78,7 +78,7 @@ function AddSyncGroup()
 {
   global $SAMSConf;
   global $USERConf;
-  $DB=new SAMSDB(&$SAMSConf);
+  $DB=new SAMSDB();
   
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
