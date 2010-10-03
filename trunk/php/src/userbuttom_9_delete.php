@@ -22,11 +22,10 @@ function DeleteUser()
   $query="DELETE FROM squiduser WHERE s_user_id='$userid'";
   $num_rows=$DB->samsdb_query_value($query);
   print("<SCRIPT>\n");
-  print("        parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
+  print("        parent.tray.location.href=\"tray.php?show=exe&filename=userstray.php&function=userstray\";\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
 }
-
 
 
 function userbuttom_9_delete()

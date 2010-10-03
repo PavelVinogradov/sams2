@@ -829,7 +829,7 @@ VAR $DATA=Array();
         //Подсчитаем количество элементов (столбиков) на графике
        $count=count($this->DATA[0]);
        if(count($this->DATA[1])>$count)$count=count($this->DATA[1]);
-       if(count($this->DATA[2])>$count)$count=count($this->DATA[2]);
+//       if(count($this->DATA[2])>$count)$count=count($this->DATA[2]);
 
        //Подсчитаем максимальное значение
        $max=0;
@@ -837,7 +837,7 @@ VAR $DATA=Array();
          {
            $max=$max<$this->DATA[0][$i]?$this->DATA[0][$i]:$max;
            $max=$max<$this->DATA[1][$i]?$this->DATA[1][$i]:$max;
-           $max=$max<$this->DATA[2][$i]?$this->DATA[2][$i]:$max;
+//           $max=$max<$this->DATA[2][$i]?$this->DATA[2][$i]:$max;
          }
 
        //Увеличим максимальное значение на 10% (для того,чтобы столбик,
