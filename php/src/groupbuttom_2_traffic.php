@@ -62,7 +62,7 @@ function GroupTrafficPeriod()
    if(isset($_GET["size"])) $size=$_GET["size"];
    if(isset($_GET["sort"])) $sort=$_GET["sort"];
    if(isset($_GET["desc"])) $desc=$_GET["desc"];
-	if(isset($_GET["id"])) $id=$_GET["id"];
+   if(isset($_GET["id"])) $id=$_GET["id"];
 
   require("reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
@@ -71,7 +71,9 @@ function GroupTrafficPeriod()
 
 	$a = array(array($usersbuttom_2_traffic_UsersTrafficForm_4,'all_sum','desc','CHECKED' ), array($usersbuttom_2_traffic_UsersTrafficForm_5,'s_nick','',''));
 
-  PageTop("usergroup_48.jpg","$grptraffic_1 <FONT COLOR=\"BLUE\"> $aaa </FONT><BR> $groupbuttom_1_traffic_GroupTrafficPeriod_1");
+  $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
+  $row=$DB->samsdb_fetch_array();
+  PageTop("usergroup_48.jpg","$grptraffic_1 <FONT COLOR=\"BLUE\"> $row[s_name] </FONT><BR> $groupbuttom_1_traffic_GroupTrafficPeriod_1");
   print("<BR>\n");
 
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
@@ -196,7 +198,7 @@ function GroupTrafficPeriod()
   print("<TR>\n");
   print("<TD>");
   RBTableCell("$vsego",16);
-  if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$_GET["size"]=="On")
+  if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$size=="On")
     print("<TD>");
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
@@ -231,12 +233,15 @@ function GroupTrafficForm()
   $dateselect=new DATESELECT("","");
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+	$DB=new SAMSDB();
 
 	if(isset($_GET["id"])) $id=$_GET["id"];
 
 	$a = array(array($usersbuttom_2_traffic_UsersTrafficForm_4,'all_sum','desc','CHECKED' ), array($usersbuttom_2_traffic_UsersTrafficForm_5,'s_nick','',''));
 
-	PageTop("traffic_48.jpg","$grptraffic_1 <FONT COLOR=\"BLUE\"> $aaa </FONT><BR> $groupbuttom_1_traffic_GroupTrafficForm_1");
+	$num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup WHERE s_group_id='$id' ");
+	$row=$DB->samsdb_fetch_array();
+	PageTop("traffic_48.jpg","$grptraffic_1 <FONT COLOR=\"BLUE\"> ".$row['s_name']." </FONT><BR> $groupbuttom_1_traffic_GroupTrafficForm_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");

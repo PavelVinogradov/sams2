@@ -267,13 +267,13 @@ function seturllists()
 			echo "<TD>$row_nick\n";
 			echo "<TD>$row_gname\n";
 
-			$QUERY="SELECT s_shablon_id, s_name FROM ".$SAMSConf->SAMSDB.".shablon WHERE s_name='$row_nick'";
+			$QUERY="SELECT s_shablon_id, s_name FROM shablon WHERE s_name='$row_nick'";
 			$num_rows_shablon=$this->DB->samsdb_query_value($QUERY);
 			while($row2=$this->DB->samsdb_fetch_array())
 			{
 				$shablonid=$row2['s_shablon_id'];
 			}
-			$QUERY="SELECT s_redirect_id, s_name FROM ".$SAMSConf->SAMSDB.".redirect WHERE s_name='$row_gname'";
+			$QUERY="SELECT s_redirect_id, s_name FROM redirect WHERE s_name='$row_gname'";
 			$num_rows_redirect=$this->DB->samsdb_query_value($QUERY);
 			while($row2=$this->DB->samsdb_fetch_array())
 			{
@@ -281,7 +281,7 @@ function seturllists()
 			}
 			if($num_rows_shablon>0 && $num_rows_redirect>0)
 			{
-				$QUERY="INSERT INTO ".$SAMSConf->SAMSDB.".sconfig ( s_shablon_id, s_redirect_id ) VALUES ('$shablonid', '$redirectid') ";
+				$QUERY="INSERT INTO sconfig ( s_shablon_id, s_redirect_id ) VALUES ('$shablonid', '$redirectid') ";
 				$num_rows=$this->DB->samsdb_query($QUERY);
 			}
 		}
@@ -362,7 +362,6 @@ function importsamsusers()
 		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
 		$this->DB->samsdb_query("INSERT INTO squiduser $str VALUES $values ");
 		echo "<TD>added\n";
-		$count++;
 	}
   $this->oldDB->free_samsdb_query();
   echo "</TABLE>\n";
@@ -540,7 +539,7 @@ function IMPORTUSERS($hostname, $username, $pass)
 	$this->sams1charset="utf-8";
 
  $this->sams2charset="koi8-r";
- $QUERY="SELECT * FROM samsdb.websettings";
+ $QUERY="SELECT * FROM websettings";
  $num_rows=$this->DB->samsdb_query_value($QUERY);
  $row2=$this->DB->samsdb_fetch_array();
  $this->sams2charset=$row2['s_lang'];
@@ -633,7 +632,7 @@ function importdataform()
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"configbuttom_3_import.php\">\n");
 			print("<TABLE WIDTH=\"90%\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB Hostname: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
-			print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
+			print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\" CHECKED>\n");
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\" CHECKED>\n");

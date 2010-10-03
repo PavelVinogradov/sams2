@@ -228,7 +228,7 @@ function importcacheform()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" value=\"configbuttom_3_importcache.php\">\n");
   print("<TABLE WIDTH=\"90%\">\n");
   print("<TR><TD ALIGN=RIGHT>DB Hostname: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
-  print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" value=\"$dbadmin\">\n");
+  print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\" >\n");
   print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
   print("</TABLE>\n");
 

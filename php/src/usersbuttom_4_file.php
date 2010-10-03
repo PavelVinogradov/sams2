@@ -79,13 +79,14 @@ function UsersTrafficStat()
 			print("<TR>\n");
 			print("<TD>$count");
 			if($SAMSConf->SHOWNAME=="fam")
-				$name="$row[s_family]";
+				$name=$row['s_family'];
 			else if($SAMSConf->SHOWNAME=="famn")
-				$name="$row[s_family] $row[s_name]";
+				$name=$row['s_family']." ".$row['s_name'];
 			else if($SAMSConf->SHOWNAME=="nickd")
-				$name="$row[s_nick] / $row[s_domain]";
+				$name=$row['s_nick']." / ".$row['s_domain'];
 			else 
-				$name="$row[s_nick]";
+				$name=$row['s_user'];
+
 			LTableCell($name,15);
 			LTableCell($row['s_date'],10);
 			LTableCell($row['s_url'],16);

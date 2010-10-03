@@ -16,8 +16,6 @@ function UsersTrafficPeriodGB()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-   if(isset($_GET["sort"])) $sort=$_GET["sort"];
-   if(isset($_GET["desc"])) $desc=$_GET["desc"];
   $sdate=$DATE->sdate();
   $edate=$DATE->edate();
   $bdate=$DATE->BeginDate();
@@ -57,8 +55,6 @@ function UsersTrafficPeriod()
   $eddate=$DATE->EndDate();
    $size="";
    if(isset($_GET["size"])) $size=$_GET["size"];
-   if(isset($_GET["sort"])) $sort=$_GET["sort"];
-   if(isset($_GET["desc"])) $desc=$_GET["desc"];
 
   require("reportsclass.php");
   $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
@@ -80,7 +76,7 @@ function UsersTrafficPeriod()
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-    printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate&sort=$sort&desc=$desc \"><P>");
+    printf("<P><IMG SRC=\"main.php?show=exe&function=userstrafficperiodgb&filename=usersbuttom_2_traffic.php&gb=1&sdate=$sdate&edate=$edate\"><P>");
   
   $count=1;
   $size2=0;
@@ -192,7 +188,7 @@ function UsersTrafficPeriod()
   print("<TFOOT><TR>\n");
   print("<TD>");
   RBTableCell("$vsego",16);
-  if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$_GET["size"]=="On")
+  if((($SAMSConf->AUTH="ntlm"||$SAMSConf->AUTH="adld")&&$SAMSConf->NTLMDOMAIN=="Y")||$size=="On")
     print("<TD>");
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
