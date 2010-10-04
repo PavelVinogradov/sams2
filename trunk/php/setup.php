@@ -170,6 +170,28 @@ function step_2($lang)
 	{
 		echo "<TD><font color=GREEN>on</b></font>";
 	}
+	if (function_exists('ini_get'))
+	{
+		$safe_mode_exec_dir = @ini_get("safe_mode_exec_dir") ? 1 : 0;
+		$safe_mode_exec_dir_path=@ini_get("safe_mode_exec_dir");
+	}
+	$real_path = realpath(".");
+	echo "<TR>";
+	echo "<TD WIDTH=50%><B>safe_mode_exec_dir</B>";
+	echo "<TD>$real_path/bin";
+	if($safe_mode_exec_dir==0)
+	{
+		echo "<TD><font color=RED>$setup_28</b></font>";
+	}
+	else
+	{
+		if($safe_mode_exec_dir_path == "$real_path/bin" )
+			echo "<TD><font color=GREEN>$safe_mode_exec_dir_path</b></font>";
+		else
+			echo "<TD><font color=RED>$safe_mode_exec_dir_path</b></font>";
+	}
+	echo "<TR>";
+	echo "<TD><TD COLSPAN=2>$setup_40";
 	echo "</TABLE>\n";
 
 }

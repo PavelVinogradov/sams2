@@ -1080,5 +1080,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $configbuttom_3_import_importdataform_6="Import SAMS settings from a database SAMS 1.x";
    $adldtest_1_authldaptray="Groups of the domain ";
    $adldtest_2_authldaptray="Users of the domain ";
+   $setup_40="When safe_mode is on, only executables located in the safe_mode_exec_dir will be allowed to be executed via the exec family of functions.";
 
 ?>
