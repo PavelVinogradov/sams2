@@ -76,10 +76,10 @@ function AddUsersFromAdLDAP()
        if($num_rows==0)
           {
  		$userinfo=$ldap->user_info( $user, $fields=NULL);
-		$aaa2 = $userinfo[0]["givenname"][0];
-		$aaa3 = $userinfo[0]["sn"][0];
+		$givenname = $userinfo[0]["givenname"][0];
+		$sn = $userinfo[0]["sn"][0];
 
-		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled, s_quote) VALUES('$usergroup', '$usershablon', '$username', '$domain', '$enabled', '$s_quote')";
+		$QUERY="INSERT INTO squiduser (s_group_id, s_shablon_id, s_nick, s_domain, s_enabled, s_quote, s_family, s_name) VALUES('$usergroup', '$usershablon', '$username', '$domain', '$enabled', '$s_quote', '$sn', '$givenname')";
 		$num_rows=$DB->samsdb_query($QUERY);
 
           }

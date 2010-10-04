@@ -205,26 +205,37 @@ echo " add group: $addgroupname[$i]<BR>";
 	$row=$DB->samsdb_fetch_array();
 	$shablonid=$row['s_shablon_id'];
 
-	$a=$ldap->group_users($addgroupname[$i]);
+	$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
 	$acount=count($a);
-	for($j=0;$j<$acount;$j++)
+	foreach ($a as $user) 
 	{
-		$user=$a[$j];
-		$username=$a[$j];
+		$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+		$displayname = UTF8ToSAMSLang($user["displayname"]);
+		$givenname = UTF8ToSAMSLang($user["givenname"]);
+		$sn = UTF8ToSAMSLang($user["sn"]);
+		$memberof = UTF8ToSAMSLang($user["memberof"]);
+		$adldgroups=explode ( "|", $memberof );
+		$cadldgroups=count($adldgroups);
+		$memberofgroup="Users";
+		for($j=0;$j<$cadldgroups;$j++)
+		{
+			$adldgroupname=explode ( "=", $adldgroups[$j] );
+			if(strlen($adldgroupname[1])>3)
+				$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
+		}
 
-		$userinfo=$ldap->user_info( $user, $fields=NULL);
-		$username2 = UTF8ToSAMSLang($user);
-		$displayname = UTF8ToSAMSLang($userinfo[0]["displayname"][0]);
-		$name=explode(" ",$displayname);
-		$cname=count($name);
-		echo " $user $username $name[0] ".$name[$cname-1]." $cname<BR>";
+		if(strstr($memberofgroup,"|".$addgroupname[$i]))
+		{
+echo " add user: $samaccountname ( $givenname $sn )<BR>";
 
-		if($enabled=="")
-			$enabled=1;
+			if($enabled=="")
+				$enabled=1;
 
-		$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
-		$DB->samsdb_query($QUERY);
-//      $DB->samsdb_query("INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote, s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$user', '$userdomain', '$name[0]', '".$name[$cname-1]."', '$shablonid', '$userquote', '0', '$enabled', $groupid, '$usersoname', '$userip', '$pass', '0', '0', '0') ");
+			$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$samaccountname', '$basedn', '$givenname', '$sn', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+			$DB->samsdb_query($QUERY);
+
+		}
+
 
 	}
 
