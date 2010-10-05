@@ -150,11 +150,11 @@ function step_2($lang)
 
 
 	echo "<H3><FONT COLOR=BLUE>$setup_20:</FONT></H3>";
-	echo "<TABLE WIDTH=80%>";
+	echo "<TABLE WIDTH=90%>";
 	echo "<TR>";
-	echo "<TD WIDTH=50%><B>$setup_31</B>";
-	echo "<TD WIDTH=25%><B>$setup_29</B>";
-	echo "<TD WIDTH=25%><B>$setup_30</B>";
+	echo "<TD WIDTH=30%><B>$setup_31</B>";
+	echo "<TD WIDTH=35%><B>$setup_29</B>";
+	echo "<TD WIDTH=35%><B>$setup_30</B>";
 	echo "<TR>";
 	echo "<TD WIDTH=50%><B>safe_mode</B>";
 	echo "<TD>on";
@@ -169,29 +169,45 @@ function step_2($lang)
 	else
 	{
 		echo "<TD><font color=GREEN>on</b></font>";
-	}
-	if (function_exists('ini_get'))
-	{
 		$safe_mode_exec_dir = @ini_get("safe_mode_exec_dir") ? 1 : 0;
 		$safe_mode_exec_dir_path=@ini_get("safe_mode_exec_dir");
-	}
-	$real_path = realpath(".");
-	echo "<TR>";
-	echo "<TD WIDTH=50%><B>safe_mode_exec_dir</B>";
-	echo "<TD>$real_path/bin";
-	if($safe_mode_exec_dir==0)
-	{
-		echo "<TD><font color=RED>$setup_28</b></font>";
-	}
-	else
-	{
-		if($safe_mode_exec_dir_path == "$real_path/bin" )
-			echo "<TD><font color=GREEN>$safe_mode_exec_dir_path</b></font>";
+		$real_path = realpath(".");
+		echo "<TR>";
+		echo "<TD WIDTH=50%><B>safe_mode_exec_dir</B>";
+		echo "<TD>$real_path/bin";
+		if($safe_mode_exec_dir==0)
+		{
+			echo "<TD><font color=RED>$setup_28</b></font>";
+		}
 		else
-			echo "<TD><font color=RED>$safe_mode_exec_dir_path</b></font>";
+		{
+			if($safe_mode_exec_dir_path == "$real_path/bin" )
+				echo "<TD><font color=GREEN>$safe_mode_exec_dir_path</b></font>";
+			else
+				echo "<TD><font color=RED>$safe_mode_exec_dir_path</b></font>";
+		}
+		echo "<TR>";
+		echo "<TD><TD COLSPAN=2>$setup_40";
+
+		echo "<TD><font color=GREEN>on</b></font>";
+		$disable_functions = @ini_get("disable_functions") ? 1 : 0;
+		$disable_functions_names=@ini_get("disable_functions");
+		echo "<TR>";
+		echo "<TD WIDTH=50%><B>disable_functions</B>";
+		echo "<TD>$setup_41 <B>exec</B>";
+		if(strstr($disable_functions_names,",exec"))
+		{
+			echo "<TD><font color=RED>disable_functions= ".str_replace ( ",", ", ", $disable_functions_names )."</b></font>";
+		}
+		else
+		{
+			echo "<TD><font color=GREEN>disable_functions= ".str_replace ( ",", ", ", $disable_functions_names )."</b></font>";
+		}
+//		echo "<TR>";
+//		echo "<TD><TD COLSPAN=2>$setup_40";	
 	}
-	echo "<TR>";
-	echo "<TD><TD COLSPAN=2>$setup_40";
+
+
 	echo "</TABLE>\n";
 
 }
