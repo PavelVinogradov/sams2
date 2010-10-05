@@ -1081,5 +1081,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $adldtest_1_authldaptray="Groups of the domain ";
    $adldtest_2_authldaptray="Users of the domain ";
    $setup_40="When safe_mode is on, only executables located in the safe_mode_exec_dir will be allowed to be executed via the exec family of functions.";
+   $setup_41="This directive doesn't contain function:";
 
 ?>
