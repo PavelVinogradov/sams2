@@ -189,7 +189,6 @@ function step_2($lang)
 		echo "<TR>";
 		echo "<TD><TD COLSPAN=2>$setup_40";
 
-		echo "<TD><font color=GREEN>on</b></font>";
 		$disable_functions = @ini_get("disable_functions") ? 1 : 0;
 		$disable_functions_names=@ini_get("disable_functions");
 		echo "<TR>";

@@ -34,9 +34,20 @@ function ChangeAdminPasswd()
 		}
 	else
 		{
-				$QUERY="UPDATE passwd SET s_pass='$passwd' WHERE s_user='$username' AND s_pass='$oldpasswd2' ";
-				$num_rows=$DB->samsdb_query($QUERY);
-				PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
+			$QUERY="UPDATE passwd SET s_pass='$passwd' WHERE s_user='$username' AND s_pass='$oldpasswd2' ";
+			$num_rows=$DB->samsdb_query($QUERY);
+			PageTop("user_48.jpg","$adminbuttom_4_chpasswd_ChangeAdminPasswd_1 $username $adminbuttom_4_chpasswd_ChangeAdminPasswd_2");
+			setcookie("user","");
+			setcookie("passwd","");
+			setcookie("domainuser","");
+			setcookie("gauditor","");
+			setcookie("userid","");
+			setcookie("webaccess","");
+			setcookie("samsadmin","0");
+			print("<SCRIPT>\n");
+			print("        parent.basefrm.location.href=\"main.php?show=exe&function=setcookie&username=$username&userid=$newpasswd\";\n");
+			print("        parent.lframe.location.href=\"lframe.php\";\n");
+			print("</SCRIPT> \n");
 		}
 
 }
