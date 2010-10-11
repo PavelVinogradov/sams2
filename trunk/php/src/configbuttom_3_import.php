@@ -81,7 +81,8 @@ function importurllists()
 	$this->oldDB->samsdb_query_value($QUERY);
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
-		$index=array_search($row['rname'], $this->urllistname);
+		$group_nick=iconv($this->sams1charset,$this->sams2charset,$row['rname']);
+		$index=array_search($group_nick, $this->urllistname);
 			$this->DB->samsdb_query("INSERT INTO url ( s_redirect_id , s_url ) VALUES ( '".$this->urllistid2[$index]."', '$row[url]' )");
 	}
 	$this->oldDB->free_samsdb_query();
@@ -357,9 +358,11 @@ function importsamsusers()
 			$s_ip = $row['ip'];
 		else
 			$s_ip = "....";
+
 		echo "<TR><TD><B>$row_nick</B><TD> $s_family $s_name <BR>";
-		$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_gauditor, s_autherrorc, s_autherrort )";
-		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]', '$row[gauditor]',  '$row[autherrorc]', '$row[autherrort]' )";
+		$str="(  s_group_id, s_shablon_id, s_nick, s_family, s_name, s_soname, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd, s_autherrorc, s_autherrort )";
+		$values="( '".$this->groupid2[$gindex]."', '".$this->shablonid2[$sindex]."', '$row_nick', '$s_family', '$s_name', '$s_soname', '$row[domain]', '$row[quotes]', '$row[size]', '$row[hit]', '$row[enabled]', '$s_ip', '$row[passwd]',  '$row[autherrorc]', '$row[autherrort]' )";
+
 		$this->DB->samsdb_query("INSERT INTO squiduser $str VALUES $values ");
 		echo "<TD>added\n";
 	}
