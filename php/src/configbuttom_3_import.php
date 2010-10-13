@@ -300,6 +300,7 @@ function importsamsusers()
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
+  if(isset($_GET["nametransform"])) $nametransform=$_GET["nametransform"];
 
 	$DBNAME="$SAMSConf->SAMSDB.";
 
@@ -335,6 +336,10 @@ function importsamsusers()
 	while($row=$this->oldDB->samsdb_fetch_array())
 	{
 		$row_nick=iconv($this->sams1charset,$this->sams2charset,$row['nick']);
+		if($nametransform=="tolower")
+			$row_nick=strtolower($row_nick);
+		if($nametransform=="toupper")
+			$row_nick==strtoupper($row_nick);
 		$row_family=iconv($this->sams1charset,$this->sams2charset,$row['family']);
 		$row_name=iconv($this->sams1charset,$this->sams2charset,$row['name']);
 		$row_soname=iconv($this->sams1charset,$this->sams2charset,$row['soname']);
@@ -629,6 +634,21 @@ function importdataform()
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/importfromsams1.html\">$documentation</A>");
   print("<P>\n");
 
+  print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+  print("function EnableUserNameTransform(formname) \n");
+  print("{\n");
+  print("  var transformenabled=formname.importusers.checked; \n");
+  print("  if(transformenabled==true) \n");
+  print("    {\n");
+  print("  	formname.nametransform.disabled=false; \n");
+  print("    }\n");
+  print("  if(transformenabled==false) \n");
+  print("    {\n");
+  print("  	formname.nametransform.disabled=true; \n");
+  print("    }\n");
+  print("}\n");
+  print("</SCRIPT>\n");
+
 			print("<FORM NAME=\"createdatabase\" ACTION=\"main.php\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
 			print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"importdata\">\n");
@@ -637,7 +657,15 @@ function importdataform()
 			print("<TR><TD ALIGN=RIGHT>DB Hostname: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"hostname\" value=\"localhost\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB login: <TD ALIGN=LEFT><INPUT TYPE=\"TEXT\" NAME=\"username\">\n");
 			print("<TR><TD ALIGN=RIGHT>DB password: <TD ALIGN=LEFT><INPUT TYPE=\"PASSWORD\" NAME=\"pass\">\n");
-			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\" CHECKED>\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_2: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importusers\" CHECKED  onchange=EnableUserNameTransform(createdatabase)>\n");
+//			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_7\n");
+			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_7\n");
+			print("<SELECT NAME=\"nametransform\">\n");
+			print("<OPTION VALUE=\"nochange\" SELECTED> $configbuttom_3_import_importdataform_8");
+			print("<OPTION VALUE=\"tolower\"> $configbuttom_3_import_importdataform_9");
+			print("<OPTION VALUE=\"toupper\"> $configbuttom_3_import_importdataform_10");
+			print("</SELECT>\n");
+
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_3: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importurllists\" CHECKED>\n");
 			print("<TR><TD ALIGN=RIGHT>$configbuttom_3_import_importdataform_4: <TD ALIGN=LEFT><INPUT TYPE=\"CHECKBOX\" NAME=\"importproxy\" CHECKED>\n");
 			print("</TABLE>\n");

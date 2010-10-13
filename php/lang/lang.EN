@@ -1082,5 +1082,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $adldtest_2_authldaptray="Users of the domain ";
    $setup_40="When safe_mode is on, only executables located in the safe_mode_exec_dir will be allowed to be executed via the exec family of functions.";
    $setup_41="This directive doesn't contain function:";
+   $configbuttom_3_import_importdataform_7="Import names of users:";
+   $configbuttom_3_import_importdataform_8="without change";
+   $configbuttom_3_import_importdataform_9="with transformation to lower case letters";
+   $configbuttom_3_import_importdataform_10="with transformation to UPPER case letters";
+   $adminbuttom_1_prop_SamsReConfigForm_54="Displacement from the file beginning access.log (byte)";
 
 ?>

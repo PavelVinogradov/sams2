@@ -1094,5 +1094,10 @@
    $adldtest_2_authldaptray="Пользователи домена ";
    $setup_40="Если PHP работает в защищенном режиме (safe_mode), функция system() и другие функции для выполнения системных команд и программ отклоняют выполнение программ, находящихся вне данной директории.";
    $setup_41="Эта директива не должна содержать функцию:";
+   $configbuttom_3_import_importdataform_7="импортировать имена пользователей:";
+   $configbuttom_3_import_importdataform_8="без изменения";
+   $configbuttom_3_import_importdataform_9="преобразовывать в строчные буквы";
+   $configbuttom_3_import_importdataform_10="преобразовывать в ЗАГЛАВНЫЕ буквы";
+   $adminbuttom_1_prop_SamsReConfigForm_54="Смещение с начала файла access.log (byte)";
 
 ?>
