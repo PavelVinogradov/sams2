@@ -178,20 +178,22 @@ function UsersSitesPeriod()
       print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_4");
    }   
   print("<TH WIDTH=15%>$userbuttom_4_site_UserSitesPeriod_5");
-  $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_date>='$sdate'AND s_date<='$edate' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
 
-  $num_rows=$DB->samsdb_query_value("$query");
+  $URL=array("url_domain"=>array(),
+		"norm_url"=>array(),
+		"url_size"=>array(),
+		"hit_size"=>array(),
+		"sum_size"=>array());
+
+  $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
+
+  $num_rows=$DB->samsdb_query_value($query);
 
   $count=0;
   $cache=0; 
   $counter=0;
   $url_domain="";
 
-	$URL=array("url_domain"=>array(),
-			"norm_url"=>array(),
-			"url_size"=>array(),
-			"hit_size"=>array(),
-			"sum_size"=>array());
 	while($row=$DB->samsdb_fetch_array())
 	{
 		if(strlen($row['url_domain'])>0)
@@ -210,6 +212,27 @@ function UsersSitesPeriod()
 		}
        }
 
+  $query="SELECT substring( s_url from 0 for position(':' in s_url) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_date>='$sdate'AND s_date<='$edate' AND s_method='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
+
+  $num_rows=$DB->samsdb_query_value($query);
+
+	while($row=$DB->samsdb_fetch_array())
+	{
+		if(strlen($row['url_domain'])>0)
+		{
+			$url_domain=explode( ".",str_replace("/","",$row['url_domain']));
+			$ucount=count($url_domain);
+			$URL["url_domain"][$count]=$url_domain[$ucount-2].".".$url_domain[$ucount-1];
+			$URL["norm_url"][$count]=str_replace("/","",$row['url_domain']);
+			$URL["url_size"][$count]=$row['url_size'];
+			$URL["hit_size"][$count]=$row['hit_size'];
+			if($SAMSConf->realtraffic=="real")
+				$URL["sum_size"][$count]=$row['url_size']-$row['hit_size'];
+			else
+				$URL["sum_size"][$count]=$row['url_size'];
+			$count++;
+		}
+       }
 
 	asort($URL["url_domain"]);
 	reset($URL["url_domain"]);
@@ -222,7 +245,8 @@ function UsersSitesPeriod()
 		print("<TR>");
 		if($url_domain!=$val)
 		{
-			print("<TD>$count\n");
+			$q=$count+1;
+			echo "<TD>$q\n";
 			if (ctype_alpha($val[strlen($val)-1])==TRUE)
 				print("<TD  colspan=5><A HREF=\"http://$val\" TARGET=\"BLANK\"><B>$val</B></A>\n");
 			else
