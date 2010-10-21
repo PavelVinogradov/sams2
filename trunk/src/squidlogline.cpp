@@ -255,7 +255,10 @@ void SquidLogLine::parseLine ()
 
   _url = fields[6];
 
-  _ident = fields[7];
+  char* unesc_usr = url_decode(fields[7].c_str());
+  _ident.assign(unesc_usr);
+  free(unesc_usr);
+
 //1) 1192923767.512
 //   UNIX time stamp as Coordinated Universal Time (UTC) seconds with a millisecond resolution.
 //2) 215
