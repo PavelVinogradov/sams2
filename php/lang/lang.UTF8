@@ -1099,5 +1099,6 @@
    $configbuttom_3_import_importdataform_9="преобразовывать в строчные буквы";
    $configbuttom_3_import_importdataform_10="преобразовывать в ЗАГЛАВНЫЕ буквы";
    $adminbuttom_1_prop_SamsReConfigForm_54="Смещение с начала файла access.log (byte)";
+   $configbuttom_3_import_ImportProxySettings_1="Импорт настроек прокси сервера";
 
 ?>
