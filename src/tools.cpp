@@ -426,18 +426,19 @@ string CryptPassword (const string &pass)
 */
 
 /* Converts a hex character to its integer value */
-char from_hex(char ch) {
+char from_hex(char ch)
+{
   return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
 }
 
-/* Converts an integer value to its hex character*/
+/*
 char to_hex(char code) {
   static char hex[] = "0123456789abcdef";
   return hex[code & 15];
 }
+*/
 
-/* Returns a url-encoded version of str */
-/* IMPORTANT: be sure to free() the returned string after use */
+/*
 char *url_encode(const char *str) {
   const char *pstr = str;
   char *buf = (char*) malloc(strlen(str) * 3 + 1), *pbuf = buf;
@@ -454,26 +455,35 @@ char *url_encode(const char *str) {
   *pbuf = '\0';
   return buf;
 }
+*/
 
-/* Returns a url-decoded version of str */
-/* IMPORTANT: be sure to free() the returned string after use */
-char *url_decode(const char *str) {
-  const char *pstr = str;
-  char *buf = (char*) malloc(strlen(str) + 1), *pbuf = buf;
+string url_decode(const string & str)
+{
+  const char *pstr = str.c_str();
 
-  while (*pstr) {
-    if (*pstr == '%') {
-      if (pstr[1] && pstr[2]) {
-        *pbuf++ = from_hex(pstr[1]) << 4 | from_hex(pstr[2]);
-        pstr += 2;
-      }
-    } else if (*pstr == '+') {
-      *pbuf++ = ' ';
-    } else {
-      *pbuf++ = *pstr;
+  string res;
+
+  while (*pstr)
+    {
+      if (*pstr == '%')
+        {
+          if (pstr[1] && pstr[2])
+            {
+              res += (from_hex(pstr[1]) << 4 | from_hex(pstr[2]));
+              pstr += 2;
+            }
+        }
+      else if (*pstr == '+')
+        {
+          res += ' ';
+        }
+      else
+        {
+          res += *pstr;
+        }
+      pstr++;
     }
-    pstr++;
-  }
-  *pbuf = '\0';
-  return buf;
+
+  return res;
 }
+
