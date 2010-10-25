@@ -256,9 +256,7 @@ int main (int argc, char *argv[])
           continue;
         }
 
-      char* unesc_usr = url_decode(fields[2].c_str());
-      usr = Proxy::findUser (source[0], string(unesc_usr));
-      free(unesc_usr);
+      usr = Proxy::findUser (source[0], url_decode(fields[2]));
 
       // Пользователь не найден, блокируем доступ
       if (!usr)
