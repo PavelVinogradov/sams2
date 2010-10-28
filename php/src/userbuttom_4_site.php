@@ -192,11 +192,22 @@ function UserSitesPeriod()
 	$url_size_value=0;
 	$hit_size_value=0;
 	$sum_size_value=0;
+	$url_domain_size_value=0;
+	$hit_domain_size_value=0;
+	$sum_domain_size_value=0;
 	while (list($key, $val) = each($URL["url_domain"])) 
 	{
 		print("<TR>");
 		if($url_domain!=$val)
 		{
+			echo "<TD colspan=3> ";
+			RBTableCell(FormattedString($url_domain_size_value),15);
+			RBTableCell(FormattedString($hit_domain_size_value),15);
+			RBTableCell(FormattedString($sum_domain_size_value),15);
+			$url_domain_size_value=0;
+			$hit_domain_size_value=0;
+			$sum_domain_size_value=0;
+			echo "<TR>";
 			$q=$count+1;
 			echo "<TD>$q\n";
 			if (ctype_alpha($val[strlen($val)-1])==TRUE)
@@ -216,6 +227,9 @@ function UserSitesPeriod()
 			$url_size_value+=$URL["url_size"][$key];
 			$hit_size_value+=$URL["hit_size"][$key];
 			$sum_size_value+=$URL["sum_size"][$key];
+			$url_domain_size_value+=$URL["url_size"][$key];
+			$hit_domain_size_value+=$URL["hit_size"][$key];
+			$sum_domain_size_value+=$URL["sum_size"][$key];
 
 		}
 		else
@@ -228,13 +242,25 @@ function UserSitesPeriod()
 			$url_size_value+=$URL["url_size"][$key];
 			$hit_size_value+=$URL["hit_size"][$key];
 			$sum_size_value+=$URL["sum_size"][$key];
+			$url_domain_size_value+=$URL["url_size"][$key];
+			$hit_domain_size_value+=$URL["hit_size"][$key];
+			$sum_domain_size_value+=$URL["sum_size"][$key];
 		}
 	}
+	print("<TR>");
+	echo "<TD colspan=3> ";
+	RBTableCell(FormattedString($url_domain_size_value),15);
+	RBTableCell(FormattedString($hit_domain_size_value),15);
+	RBTableCell(FormattedString($sum_domain_size_value),15);
 	print("<TR>");
 	print("<TD colspan=3>\n");
 	RBTableCell(FormattedString($url_size_value),15);
 	RBTableCell(FormattedString($hit_size_value),15);
-	RBTableCell(FormattedString($sum_size_value),15);
+//	RBTableCell(FormattedString($sum_size_value),15);
+	if($SAMSConf->realtraffic=="real")
+		PrintFormattedSize($url_size_value - $hit_size_value);
+	else
+		PrintFormattedSize($url_size_value);
 	print("</TABLE>");
 
 
