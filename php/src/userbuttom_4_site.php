@@ -200,14 +200,17 @@ function UserSitesPeriod()
 		print("<TR>");
 		if($url_domain!=$val)
 		{
-			echo "<TD colspan=3> ";
-			RBTableCell(FormattedString($url_domain_size_value),15);
-			RBTableCell(FormattedString($hit_domain_size_value),15);
-			RBTableCell(FormattedString($sum_domain_size_value),15);
-			$url_domain_size_value=0;
-			$hit_domain_size_value=0;
-			$sum_domain_size_value=0;
-			echo "<TR>";
+			if ($count!=0)
+			{
+				echo "<TD colspan=3> ";
+				RBTableCell(FormattedString($url_domain_size_value),15);
+				RBTableCell(FormattedString($hit_domain_size_value),15);
+				RBTableCell(FormattedString($sum_domain_size_value),15);
+				$url_domain_size_value=0;
+				$hit_domain_size_value=0;
+				$sum_domain_size_value=0;
+				echo "<TR>";
+			}
 			$q=$count+1;
 			echo "<TD>$q\n";
 			if (ctype_alpha($val[strlen($val)-1])==TRUE)
