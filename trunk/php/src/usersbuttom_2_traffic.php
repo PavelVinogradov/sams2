@@ -154,8 +154,8 @@ function UsersTrafficPeriod()
 		else if($SAMSConf->SHOWNAME=="nickd")
 			$name="$row[s_nick] / $row[s_domain]";
 		else 
-			$name="$row[s_nick]";
-		$str="<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\" TARGET=\"tray\">$name</A>\n";
+			$name=$row['s_nick'];
+		$str="<A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\" TARGET=\"tray\">$name </A>\n";
 		LTableCell($str,16);
 	 
 		if($size=="On")
