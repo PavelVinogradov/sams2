@@ -141,7 +141,6 @@ function UserSitesPeriod()
 		"sum_size"=>array());
 
   $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_user='$SquidUSERConf->s_nick' AND  s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
-
   $num_rows=$DB->samsdb_query_value($query);
   $count=0;
   $cache=0; 
@@ -158,10 +157,10 @@ function UserSitesPeriod()
 			$URL["norm_url"][$count]=str_replace("/","",$row['url_domain']);
 			$URL["url_size"][$count]=$row['url_size'];
 			$URL["hit_size"][$count]=$row['hit_size'];
-			if($SAMSConf->realtraffic=="real")
+//			if($SAMSConf->realtraffic=="real")
 				$URL["sum_size"][$count]=$row['url_size']-$row['hit_size'];
-			else
-				$URL["sum_size"][$count]=$row['url_size'];
+//			else
+//				$URL["sum_size"][$count]=$row['url_size'];
 			$count++;
 		}
        }
@@ -178,10 +177,10 @@ function UserSitesPeriod()
 			$URL["norm_url"][$count]=str_replace("/","",$row['url_domain']);
 			$URL["url_size"][$count]=$row['url_size'];
 			$URL["hit_size"][$count]=$row['hit_size'];
-			if($SAMSConf->realtraffic=="real")
+//			if($SAMSConf->realtraffic=="real")
 				$URL["sum_size"][$count]=$row['url_size']-$row['hit_size'];
-			else
-				$URL["sum_size"][$count]=$row['url_size'];
+//			else
+//				$URL["sum_size"][$count]=$row['url_size'];
 			$count++;
 		}
        }
@@ -257,13 +256,15 @@ function UserSitesPeriod()
 	RBTableCell(FormattedString($sum_domain_size_value),15);
 	print("<TR>");
 	print("<TD colspan=3>\n");
-	RBTableCell(FormattedString($url_size_value),15);
-	RBTableCell(FormattedString($hit_size_value),15);
+//	RBTableCell(FormattedString($url_size_value),15);
+	PrintFormattedSize($url_size_value);
+//	RBTableCell(FormattedString($hit_size_value),15);
+	PrintFormattedSize($hit_size_value);
 //	RBTableCell(FormattedString($sum_size_value),15);
-	if($SAMSConf->realtraffic=="real")
+//	if($SAMSConf->realtraffic=="real")
 		PrintFormattedSize($url_size_value - $hit_size_value);
-	else
-		PrintFormattedSize($url_size_value);
+//	else
+//		PrintFormattedSize($url_size_value);
 	print("</TABLE>");
 
 

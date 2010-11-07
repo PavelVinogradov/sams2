@@ -174,10 +174,10 @@ function UserTrafficPeriod()
              $aaa=FormattedString("$row[4]");
 	     RTableCell($aaa,25);
 	   }   
-         if($SAMSConf->realtraffic=="real")
+//         if($SAMSConf->realtraffic=="real")
 	   PrintFormattedSize($row[0]-$row[4]);
-	 else
-	   PrintFormattedSize($row[0]);
+//	 else
+//	   PrintFormattedSize($row[0]);
 	 
          print("</TR>");
          $count=$count+1;
@@ -190,16 +190,18 @@ function UserTrafficPeriod()
   RBTableCell("$vsego",25);
   if($USERConf->ToWebInterfaceAccess("C")==1)
     {
-      $aaa=FormattedString("$size");
-      RBTableCell("$aaa",25);
-      $aaa=FormattedString("$cache");
-      RBTableCell("$aaa",25);
+//      $aaa=FormattedString("$size");
+//      RBTableCell("$aaa",25);
+	PrintFormattedSize($size);
+//      $aaa=FormattedString("$cache");
+//      RBTableCell("$aaa",25);
+	PrintFormattedSize($cache);
    }
-  if($SAMSConf->realtraffic=="real")
+//  if($SAMSConf->realtraffic=="real")
     PrintFormattedSize($size-$cache);
-  else
-    PrintFormattedSize($size);
-  
+//  else
+//    PrintFormattedSize($size);
+//  echo "$SAMSConf->realtraffic";
   print("</TABLE>");
 }
 

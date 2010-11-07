@@ -67,7 +67,8 @@ function RecalcUsersTraffic()
 	while($row=$DB->samsdb_fetch_array())
 	{
 		$key = array_search($row['s_shablon_id'], $shablonid);
-		$QUERY="SELECT sum(s_size) as size, sum(s_hit) as hit FROM cachesum WHERE s_user='$row[s_nick]' and s_date >='$sdate[$key]' and s_date <'$edate[$key]' ";
+		$QUERY="SELECT sum(s_size) as size, sum(s_hit) as hit FROM cachesum WHERE s_user='$row[s_nick]' and s_date >='$sdate[$key]' and s_date <='$edate[$key]' ";
+
 		$DB2->samsdb_query($QUERY);
 		$row2=$DB2->samsdb_fetch_array();
 		$sumsize=$row2['size']+0;
@@ -78,7 +79,7 @@ function RecalcUsersTraffic()
 		$DB2->samsdb_query($QUERY);
 	}
 	$DB->free_samsdb_query();
-	PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1  $usersbuttom_5_recalc_RecalcUsersTraffic_2");
+	PageTop("usergroup_48.jpg","$usersbuttom_5_recalc_RecalcUsersTraffic_1 $sdate[$key] - $edate[$key] $usersbuttom_5_recalc_RecalcUsersTraffic_2");
 	print("<SCRIPT>\n");
 	print("        parent.basefrm.location.href=\"main.php?show=exe&filename=userstray.php&function=AllUsersForm&type=all\";\n");
 	print("        parent.lframe.location.href=\"lframe.php\";\n");
