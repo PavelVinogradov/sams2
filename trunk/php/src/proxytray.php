@@ -82,6 +82,7 @@ function JSProxyInfo()
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_38<TD>$parser
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_6<TD>$redirector
   <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_46<TD>$traffic
+  <TR><TD><B>$adminbuttom_1_prop_SamsReConfigForm_54<TD>$PROXYConf->s_endvalue 
   </TABLE>";
 
   $htmlcode=$htmlcode.$extrainfo;

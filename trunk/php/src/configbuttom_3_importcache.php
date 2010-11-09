@@ -137,7 +137,7 @@ function importcachetable()
 	while($row=$oldDB->samsdb_fetch_array())
 	{ 
 		// Заносим данные о трафике пользователей в базу SAMS 2
-		$QUERY="INSERT INTO squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_url) VALUES ('1', '$row[date]', '$row[time]', '$row[user]', '$row[domain]', '$row[size]', '$row[hit]', '$row[url]' )";
+		$QUERY="INSERT INTO squidcache (s_proxy_id, s_date, s_time, s_user, s_domain, s_size, s_hit, s_url, s_method) VALUES ('1', '$row[date]', '$row[time]', '$row[user]', '$row[domain]', '$row[size]', '$row[hit]', '$row[url]', 'GET' )";
  		$DB->samsdb_query($QUERY);
 		$count++;
 	}
