@@ -5,8 +5,9 @@
 
 %define webuser apache
 %define webgroup apache
-%define squidgroup squid
 %define apacheconf /httpd/conf.d
+%define squidgroup squid
+%define is_ALTLinux_p5 %(grep -qi  "ALT Linux 5" /etc/altlinux-release &>/dev/null && echo 1 || echo 0)
 %define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
 %define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
 %define is_Mandriva_2009 %(grep -qi  "mandriva.*2009" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
@@ -14,6 +15,11 @@
 %define is_CentOS %(rpm -q filesystem |grep -qi "centos"&>/dev/null && echo 1 || echo 0)
 #define is_RHEL %(grep -qi  "^red hat" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
 
+%if %{is_ALTLinux_p5}
+%define dist altlinux5
+%define disttag .alt
+%define apacheconf /httpd2/conf/sites-enabled
+%endif
 %if %{is_Mandriva_2008}
 %define dist mandriva8
 %define disttag .mdv2008
@@ -52,6 +58,10 @@ URL:           http://sams.perm.ru
 Packager:      SAMS Development Group
 BuildRoot:     %{_tmppath}/%{name}-buildroot
 
+%if %dist == "altlinux5"
+Requires:      libMySQL-common, libpcrecpp, squid
+BuildRequires: libMySQL-devel, gcc-c++, libpcrecpp-devel, autoconf, automake, libtool
+%endif
 %if %{dist} == "suse"
 Requires:      mysql, postgresql-server, unixODBC, pcre, squid
 BuildRequires: mysql-devel, postgresql-devel, unixODBC-devel, gcc-c++, pcre-devel, autoconf, automake, libtool
@@ -79,6 +89,9 @@ authorization mode.
 %package web
 Summary:       SAMS2 web administration tool
 Group:         Applications/System
+%if %{dist} == "altlinux5"
+Requires:      apache2, apache2-mod_php5, php5, php5-mysql, php5-gd2, php5-ldap, php5-zlib, /usr/bin/wbinfo
+%endif
 %if %{dist} == "mandriva9"
 Requires:      apache-base, php, php-mysql, php-gd, php-ldap, php-zlib, squid,  /usr/bin/wbinfo
 %endif
