@@ -7,6 +7,7 @@
 %define webgroup apache
 %define apacheconf /httpd/conf.d
 %define squidgroup squid
+%define is_ALTLinux4 %(grep -qi  "ALT Linux 4" /etc/altlinux-release &>/dev/null && echo 1 || echo 0)
 %define is_ALTLinux_p5 %(grep -qi  "ALT Linux 5" /etc/altlinux-release &>/dev/null && echo 1 || echo 0)
 %define is_suse     %(echo %{_target_platform}| grep -qi suse && echo 1 || echo 0)
 %define is_Mandriva_2008 %(grep -qi  "mandriva.*2008" /etc/mandriva-release &>/dev/null && echo 1 || echo 0)
@@ -15,6 +16,11 @@
 %define is_CentOS %(rpm -q filesystem |grep -qi "centos"&>/dev/null && echo 1 || echo 0)
 #define is_RHEL %(grep -qi  "^red hat" /etc/redhat-release &>/dev/null && echo 1 || echo 0)
 
+%if %{is_ALTLinux4}
+%define dist altlinux4
+%define disttag .alt
+%define apacheconf /httpd2/conf/sites-enabled
+%endif
 %if %{is_ALTLinux_p5}
 %define dist altlinux5
 %define disttag .alt
@@ -58,8 +64,12 @@ URL:           http://sams.perm.ru
 Packager:      SAMS Development Group
 BuildRoot:     %{_tmppath}/%{name}-buildroot
 
-%if %dist == "altlinux5"
+%if %dist == "altlinux4"
 Requires:      libMySQL-common, libpcrecpp, squid
+BuildRequires: libMySQL-devel, gcc-c++, libpcrecpp-devel, postgresql8.2-devel, autoconf, automake, libtool
+%endif
+%if %dist == "altlinux5"
+Requires:      libpcrecpp, squid
 BuildRequires: libMySQL-devel, gcc-c++, libpcrecpp-devel, autoconf, automake, libtool
 %endif
 %if %{dist} == "suse"
