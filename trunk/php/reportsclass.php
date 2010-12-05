@@ -9,11 +9,25 @@ class DATESELECT
   var $e_month;
   var $e_year;
 
+function SetDate()
+{
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+	print("<TABLE>\n");
+	$this->StartDate($grptraffic_2);
+	print("</TABLE>\n");
+
+}
+
 function SetPeriod()
 {
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
 	print("<TABLE>\n");
-	$this->StartDate();
-	$this->EndDate();
+	$this->StartDate($mysqltools_dateselect1);
+	$this->EndDate($mysqltools_dateselect3);
 	print("</TABLE>\n");
 
 }
@@ -42,14 +56,14 @@ print("</SCRIPT>\n");
 
 }
 
-function StartDate()
+function StartDate($str)
 {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
 	print("  <TR>\n");
-	print("  <TD><B>$mysqltools_dateselect1:</B>\n");
+	print("  <TD><B>$str:</B>\n");
 	print("  <TD><SELECT NAME=\"SDay\"> \n");
 	for($i=1;$i<32;$i++)
    	{
@@ -80,14 +94,14 @@ function StartDate()
 	print("        <TD><INPUT TYPE=\"SUBMIT\" NAME=\"sbutton\" id=sbutton value=\"$mysqltools_dateselect2\" >\n");
 }
 
-function EndDate()
+function EndDate($str)
 {
   global $SAMSConf;
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
 	print("  <TR>\n");
-	print("  <TD><B>$mysqltools_dateselect3:</B>\n");
+	print("  <TD><B>$str:</B>\n");
 	print("  <TD><SELECT NAME=\"EDay\"> \n");
 	for($i=1;$i<32;$i++)
    	{
