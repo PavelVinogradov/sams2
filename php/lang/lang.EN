@@ -1088,5 +1088,7 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $configbuttom_3_import_importdataform_10="with transformation to UPPER case letters";
    $adminbuttom_1_prop_SamsReConfigForm_54="Displacement from the file beginning access.log (byte)";
    $configbuttom_3_import_ImportProxySettings_1="import proxy settings";
+   $usersbuttom_1_domain_AddUsersFromDomainForm_8="Create new group";
+   $usersbuttom_1_domain_AddUsersFromDomainForm_9="Group name";
 
 ?>

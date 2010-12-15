@@ -25,7 +25,16 @@ function DeleteShablon()
 	$DB->free_samsdb_query();
 	if($num_rows==0)
 		{
-        		$DB->samsdb_query("DELETE FROM shablon WHERE s_shablon_id='$id' ");
+			$QUERY="select s_name from shablon where s_shablon_id='$id'";
+			$DB->samsdb_query_value($QUERY);
+			$row=$DB->samsdb_fetch_array();
+			$s_name=$row['s_name'];
+			$DB->free_samsdb_query();
+
+			$QUERY="delete from auth_param where (s_param='adldgroup' OR s_param='ntlmgroup' OR s_param='ldapgroup') AND s_value='$s_name'";
+		        $DB->samsdb_query($QUERY);
+			$QUERY="DELETE FROM shablon WHERE s_shablon_id='$id'";
+        		$DB->samsdb_query($QUERY);
 		}
 	else
 		{
