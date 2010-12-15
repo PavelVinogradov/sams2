@@ -1100,5 +1100,7 @@
    $configbuttom_3_import_importdataform_10="преобразовывать в ЗАГЛАВНЫЕ буквы";
    $adminbuttom_1_prop_SamsReConfigForm_54="Смещение с начала файла access.log (byte)";
    $configbuttom_3_import_ImportProxySettings_1="Импорт настроек прокси сервера";
-
+   $usersbuttom_1_domain_AddUsersFromDomainForm_8="Создать новую группу";
+   $usersbuttom_1_domain_AddUsersFromDomainForm_9="Название группы";
+   $usersbuttom_1_domain_AddUsersFromDomainForm_10="Cоздать группы SAMS с именами групп AD";
 ?>

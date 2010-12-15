@@ -100,11 +100,13 @@ function ImportFromAD()
   if($USERConf->ToWebInterfaceAccess("UC")!=1 )
 	exit(0);
 
-echo "ImportFromAD<BR>";
+echo "<H3>ImportFromAD</H3>";
  
   if(isset($_GET["addtemplates"])) $addtemplates=$_GET["addtemplates"];
   if(isset($_GET["addgroups"])) $addgroups=$_GET["addgroups"];
   if(isset($_GET["addgroupname"])) $addgroupname=$_GET["addgroupname"];
+  if(isset($_GET["groupname"])) $idsamsgroup=$_GET["groupname"];
+  if(isset($_GET["newgroupname"])) $newgroupname=$_GET["newgroupname"];
 
   if(isset($_GET["defaulttraf"])) $defaulttraf=$_GET["defaulttraf"];
 
@@ -153,96 +155,220 @@ echo "ImportFromAD<BR>";
 
 	$ldap=new adLDAP($options);
 
-
-
-
-	$i=0;
-	while(strlen($addgroupname[$i])>0)
+/* Если выбрана одна из групп SAMS */
+	if($idsamsgroup>=0)
 	{
-echo "$i: $addgroupname[$i]<BR>";
-		if($addtemplates=="on")
+		$i=0;
+		while(strlen($addgroupname[$i])>0)
 		{
-echo " add template: $addgroupname[$i]<BR>";
-
-
 			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
 			if($result == 0) 
 			{
 				if($clrdate=="")
 					$clrdate="1980-01-01";
-
 				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'adld', '$period', '$clrdate', '0', '-1' ) ");
 				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
 				$row=$DB->samsdb_fetch_array();
 				$sid=$row['s_shablon_id'];
 				$DB->free_samsdb_query();
 				$DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
-				echo "create template $addgroupname[$i] "; 
-			}
-
-		}
-		if($addgroups=="on")
-		{
-echo " add group: $addgroupname[$i]<BR>";
-			$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$addgroupname[$i]'");
-			if($result == 0) 
-			{
-				$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$addgroupname[$i]') ");
-				echo "create group $addgroupname[$i] "; 
+				echo "create template $addgroupname[$i] <BR>"; 
 				$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('adld', 'adldgroup', '$addgroupname[$i]') ");
 			}
+			$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
+			$row=$DB->samsdb_fetch_array();
+			$shablonid=$row['s_shablon_id'];
 
+			$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+			$acount=count($a);
+			foreach ($a as $user) 
+			{
+				$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+				$displayname = UTF8ToSAMSLang($user["displayname"]);
+				$givenname = UTF8ToSAMSLang($user["givenname"]);
+				$sn = UTF8ToSAMSLang($user["sn"]);
+				$memberof = UTF8ToSAMSLang($user["memberof"]);
+				$adldgroups=explode ( "|", $memberof );
+				$cadldgroups=count($adldgroups);
+				$memberofgroup="Users";
+				for($j=0;$j<$cadldgroups;$j++)
+				{
+					$adldgroupname=explode ( "=", $adldgroups[$j] );
+					if(strlen($adldgroupname[1])>3)
+						$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
+				}
 
-
-//	$groupid=1;
-//	$shablonid=1;
-
-	$result=$DB->samsdb_query_value("SELECT s_name, s_group_id FROM sgroup where s_name = '$addgroupname[$i]'");
-	$row=$DB->samsdb_fetch_array();
-	$groupid=$row['s_group_id'];
-
-	$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
-	$row=$DB->samsdb_fetch_array();
-	$shablonid=$row['s_shablon_id'];
-
-	$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
-	$acount=count($a);
-	foreach ($a as $user) 
-	{
-		$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
-		$displayname = UTF8ToSAMSLang($user["displayname"]);
-		$givenname = UTF8ToSAMSLang($user["givenname"]);
-		$sn = UTF8ToSAMSLang($user["sn"]);
-		$memberof = UTF8ToSAMSLang($user["memberof"]);
-		$adldgroups=explode ( "|", $memberof );
-		$cadldgroups=count($adldgroups);
-		$memberofgroup="Users";
-		for($j=0;$j<$cadldgroups;$j++)
-		{
-			$adldgroupname=explode ( "=", $adldgroups[$j] );
-			if(strlen($adldgroupname[1])>3)
-				$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
-		}
-
-		if(strstr($memberofgroup,"|".$addgroupname[$i]))
-		{
+				if(strstr($memberofgroup,"|".$addgroupname[$i]))
+				{
 echo " add user: $samaccountname ( $givenname $sn )<BR>";
 
-			if($enabled=="")
-				$enabled=1;
+					if($enabled=="")
+						$enabled=1;
 
-			$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$samaccountname', '$basedn', '$givenname', '$sn', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
-			$DB->samsdb_query($QUERY);
+					$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$samaccountname', '$basedn', '$givenname', '$sn', '$shablonid', '$defaulttraf',  '0', '$enabled', '$idsamsgroup', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+					$DB->samsdb_query($QUERY);
 
-		}
+				}
 
 
-	}
+			}
 
-		}
 		print(" <BR>");
 		$i++;
+		}
 	}
+/* Если выбрано создание новой группы */
+echo "<B>idsamsgroup: $idsamsgroup</B><BR>";
+	if($idsamsgroup==-1)
+	{
+echo " add group: $addgroupname[$i]<BR>";
+		$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$newgroupname'");
+		if($result == 0) 
+		{
+			$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$newgroupname') ");
+echo "create group $addgroupname[$i] "; 
+		}
+		$result=$DB->samsdb_query_value("SELECT s_name, s_group_id FROM sgroup where s_name = '$newgroupname'");
+		$row=$DB->samsdb_fetch_array();
+		$groupid=$row['s_group_id'];
+
+		$i=0;
+		while(strlen($addgroupname[$i])>0)
+		{
+			$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
+			if($result == 0) 
+			{
+				if($clrdate=="")
+					$clrdate="1980-01-01";
+				$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'adld', '$period', '$clrdate', '0', '-1' ) ");
+				$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
+				$row=$DB->samsdb_fetch_array();
+				$sid=$row['s_shablon_id'];
+				$DB->free_samsdb_query();
+				$DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
+				echo "create template $addgroupname[$i] <BR>"; 
+				$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('adld', 'adldgroup', '$addgroupname[$i]') ");
+			}
+			$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
+			$row=$DB->samsdb_fetch_array();
+			$shablonid=$row['s_shablon_id'];
+
+			$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+			$acount=count($a);
+			foreach ($a as $user) 
+			{
+				$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+				$displayname = UTF8ToSAMSLang($user["displayname"]);
+				$givenname = UTF8ToSAMSLang($user["givenname"]);
+				$sn = UTF8ToSAMSLang($user["sn"]);
+				$memberof = UTF8ToSAMSLang($user["memberof"]);
+				$adldgroups=explode ( "|", $memberof );
+				$cadldgroups=count($adldgroups);
+				$memberofgroup="Users";
+				for($j=0;$j<$cadldgroups;$j++)
+				{
+					$adldgroupname=explode ( "=", $adldgroups[$j] );
+					if(strlen($adldgroupname[1])>3)
+						$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
+				}
+
+				if(strstr($memberofgroup,"|".$addgroupname[$i]))
+				{
+echo " add user: $samaccountname ( $givenname $sn )<BR>";
+
+					if($enabled=="")
+						$enabled=1;
+
+					$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$samaccountname', '$basedn', '$givenname', '$sn', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+					$DB->samsdb_query($QUERY);
+
+				}
+
+
+			}
+
+		print(" <BR>");
+		$i++;
+		}
+	}
+	if($idsamsgroup==-2)
+	{
+		$i=0;
+		while(strlen($addgroupname[$i])>0)
+		{
+echo "$i: $addgroupname[$i]<BR>";
+			if($addtemplates=="on")
+			{
+echo " add template: $addgroupname[$i]<BR>";
+
+				$result=$DB->samsdb_query_value("SELECT s_name FROM shablon where s_name = '$addgroupname[$i]'");
+				if($result == 0) 
+				{
+					if($clrdate=="")
+						$clrdate="1980-01-01";
+
+					$DB->samsdb_query("INSERT INTO shablon ( s_name, s_quote, s_auth, s_period, s_clrdate, s_alldenied, 	s_shablon_id2 ) VALUES ( '$addgroupname[$i]', '$defaulttraf', 'adld', '$period', '$clrdate', '0', '-1' ) ");
+					$DB->samsdb_query_value("SELECT s_shablon_id FROM shablon WHERE s_name='$addgroupname[$i]' ");
+					$row=$DB->samsdb_fetch_array();
+					$sid=$row['s_shablon_id'];
+					$DB->free_samsdb_query();
+					$DB->samsdb_query("INSERT INTO sconfig_time ( s_shablon_id, s_trange_id ) VALUES ( '$sid', '$trange' ) ");
+					echo "create template $addgroupname[$i] "; 
+					$result=$DB->samsdb_query("INSERT INTO auth_param (s_auth, s_param, s_value) VALUES('adld', 'adldgroup', '$addgroupname[$i]') ");
+				}
+
+			}
+			if($addgroups=="on")
+			{
+echo " add group: $addgroupname[$i]<BR>";
+				$result=$DB->samsdb_query_value("SELECT s_name FROM sgroup where s_name = '$addgroupname[$i]'");
+				if($result == 0) 
+				{
+					$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$addgroupname[$i]') ");
+					echo "create group $addgroupname[$i] "; 
+				}
+				$result=$DB->samsdb_query_value("SELECT s_name, s_group_id FROM sgroup where s_name = '$addgroupname[$i]'");
+				$row=$DB->samsdb_fetch_array();
+				$groupid=$row['s_group_id'];
+
+				$result=$DB->samsdb_query_value("SELECT s_name, s_shablon_id FROM shablon where s_name = '$addgroupname[$i]'");
+				$row=$DB->samsdb_fetch_array();
+				$shablonid=$row['s_shablon_id'];
+
+				$a=$ldap->all_users($include_desc = false, $search = "*", $sorted = true);
+				$acount=count($a);
+				foreach ($a as $user) 
+				{
+					$samaccountname = UTF8ToSAMSLang($user["samaccountname"]);
+					$displayname = UTF8ToSAMSLang($user["displayname"]);
+					$givenname = UTF8ToSAMSLang($user["givenname"]);
+					$sn = UTF8ToSAMSLang($user["sn"]);
+					$memberof = UTF8ToSAMSLang($user["memberof"]);
+					$adldgroups=explode ( "|", $memberof );
+					$cadldgroups=count($adldgroups);
+					$memberofgroup="Users";
+					for($j=0;$j<$cadldgroups;$j++)
+					{
+						$adldgroupname=explode ( "=", $adldgroups[$j] );
+						if(strlen($adldgroupname[1])>3)
+							$memberofgroup=$memberofgroup."|".substr($adldgroupname[1],0,strlen($adldgroupname[1])-3);
+					}
+					if(strstr($memberofgroup,"|".$addgroupname[$i]))
+					{
+echo " add user: $samaccountname ( $givenname $sn )<BR>";
+						if($enabled=="")
+							$enabled=1;
+						$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$samaccountname', '$basedn', '$givenname', '$sn', '$shablonid', '$defaulttraf',  '0', '$enabled', '$groupid', '$usersoname', '$userip', '$pass', '0', '0', '0') ";
+						$DB->samsdb_query($QUERY);
+					}
+				}
+			}
+			print(" <BR>");
+			$i++;
+		}
+	}
+/**/
+
 	print("<SCRIPT>\n");
 	print("  parent.lframe.location.href=\"lframe.php\"; \n");
 	print("  parent.tray.location.href=\"tray.php?show=usergrouptray&groupname=$groupname&groupnick=$groupnick\";\n");
@@ -265,7 +391,7 @@ function ImportFromADForm()
   
 	require_once("src/adldap.php");
 
-	print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
+//	print("<FORM NAME=\"AddDomainUsers\" ACTION=\"main.php\">\n");
 	$DB=new SAMSDB();
 
   	$adldserver=GetAuthParameter("adld","adldserver");
@@ -311,6 +437,25 @@ function ImportFromADForm()
 
 	print("</SELECT>\n");
 
+	print("<TR><TD>\n");
+	print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");
+	print("<TD>\n");
+	print("<SELECT NAME=\"groupname\" ID=\"groupname\" SIZE=1 TABINDEX=30   onchange=EnterNewGroupName(AddFromAD)>\n");
+
+	$num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup");
+	while($row2=$DB->samsdb_fetch_array())
+	{
+		print("<OPTION VALUE=\"$row2[s_group_id]\"> $row2[s_name] ");
+	}
+	print("<OPTION VALUE=\"-2\"> $usersbuttom_1_domain_AddUsersFromDomainForm_10");
+	print("<OPTION VALUE=\"-1\"> $usersbuttom_1_domain_AddUsersFromDomainForm_8 ");
+	print("</SELECT>\n");
+	print("<TR><TD ALIGN=RIGHT>\n");
+	print("$usersbuttom_1_domain_AddUsersFromDomainForm_9: \n");
+	print("<TD>\n");
+	print("<INPUT TYPE=\"TEXT\" NAME=\"newgroupname\" id=Newgroupname\" DISABLED>\n");
+	$DB->free_samsdb_query();
+
 	print("<TR><TD><B>$usersbuttom_1_domain_AddUsersFromDomainForm_6");
 	print("<TD><INPUT TYPE=\"CHECKBOX\" NAME=\"enabled\" CHECKED>");
 
@@ -353,6 +498,18 @@ function ImportFromADForm()
         print("      formname.clrday.disabled=true;  \n");
         print("    }\n");
         print("}\n");
+           print("function EnterNewGroupName(formname) \n");
+           print("{ \n");
+           print("  var groupname=formname.groupname.value; \n");
+           print("  if(groupname==\"-1\") \n");
+           print("    {\n");
+           print("      formname.newgroupname.disabled=false;  \n");
+           print("    }\n");
+           print("  else \n");
+           print("    {\n");
+           print("      formname.newgroupname.disabled=true;  \n");
+           print("    }\n");
+           print("}\n");
         print("</SCRIPT> \n");
 	$month=array(0,1,2,3,4,5,6,7,8,9,10,11,12); 
 	$days=array(0,31,28,31,30,31,30,31,31,30,31,30,31); 

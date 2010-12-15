@@ -52,11 +52,11 @@ function DeleteGroup()
 	$QUERY="DELETE FROM sgroup WHERE s_group_id='$id' ";
         $num_rows=$DB->samsdb_query($QUERY);
 
-	$QUERY="delete from auth_param where (s_param='adldgroup' OR s_param='ntlmgroup' OR s_param='ldapgroup') AND s_value='$gname'";
-        $num_rows=$DB->samsdb_query($QUERY);
+//	$QUERY="delete from auth_param where (s_param='adldgroup' OR s_param='ntlmgroup' OR s_param='ldapgroup') AND s_value='$gname'";
+//        $num_rows=$DB->samsdb_query($QUERY);
 
         print("<SCRIPT>\n");
-        print("  parent.tray.location.href=\"tray.php?show=exe&function=userstray\";\n");
+        print("  parent.tray.location.href = \"tray.php?show=exe&filename=userstray.php&function=userstray\";\n");
         print("  parent.lframe.location.href=\"lframe.php\"; \n");
         print("</SCRIPT> \n");
 

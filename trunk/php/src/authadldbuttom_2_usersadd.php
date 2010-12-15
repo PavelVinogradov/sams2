@@ -26,6 +26,7 @@ function AddUsersFromAdLDAP()
   if(isset($_GET["usershablon"])) $usershablon=$_GET["usershablon"];
   if(isset($_GET["enabled"])) $enabled=$_GET["enabled"];
   if(isset($_GET["domain"])) $domain=$_GET["domain"];
+  if(isset($_GET["newgroupname"])) $newgroupname=$_GET["newgroupname"];
 
   if($enabled=="on")
      $enabled=1;
@@ -35,8 +36,6 @@ function AddUsersFromAdLDAP()
        $domain=$domainname;    
 
   $i=0;
-
-
 
   	$adldserver=GetAuthParameter("adld","adldserver");
 	$basedn=GetAuthParameter("adld","basedn");
@@ -59,6 +58,19 @@ function AddUsersFromAdLDAP()
 
 	$ldap=new adLDAP($options);
 
+  if($usergroup==-1)
+  {
+	$QUERY="SELECT s_group_id FROM sgroup where s_name = '$newgroupname'";
+	$result=$DB->samsdb_query_value($QUERY);
+	if($result == 0) 
+	{
+		$result=$DB->samsdb_query("INSERT INTO sgroup (s_name) VALUES('$newgroupname') ");
+		$QUERY="SELECT s_group_id FROM sgroup where s_name = '$newgroupname'";
+		$result=$DB->samsdb_query_value($QUERY);
+	}
+	$row=$DB->samsdb_fetch_array();
+	$usergroup=$row['s_group_id'];
+  }
 
   $query="select s_quote from shablon where s_shablon_id='$usershablon'";
   $num_rows=$DB->samsdb_query_value($query);
@@ -88,6 +100,7 @@ function AddUsersFromAdLDAP()
 
   print("<SCRIPT>\n");
   print(" parent.lframe.location.href=\"lframe.php\"; \n");
+  print(" parent.tray.location.href = \"tray.php?show=exe&function=authadldtray&filename=authadldtray.php\"; \n");
   print("</SCRIPT> \n");
 
 }
@@ -247,6 +260,21 @@ function AddUsersFromADLDForm()
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"addusersfromadldap\">\n");
     print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"authadldbuttom_2_usersadd.php\">\n");
+           print("<SCRIPT LANGUAGE=JAVASCRIPT> \n");
+           print("function EnterNewGroupName(formname) \n");
+           print("{ \n");
+           print("  var groupname=formname.groupname.value; \n");
+           print("  if(groupname==\"-1\") \n");
+           print("    {\n");
+           print("      formname.newgroupname.disabled=false;  \n");
+           print("    }\n");
+           print("  else \n");
+           print("    {\n");
+           print("      formname.newgroupname.disabled=true;  \n");
+           print("    }\n");
+           print("}\n");
+           print("</SCRIPT> \n");
+
     print("<TABLE>\n");
   
     print("<TR><TD><P>\n");
@@ -258,15 +286,20 @@ function AddUsersFromADLDForm()
     print("<TR><TD>\n");
     print("<B>$usersbuttom_1_domain_AddUsersFromDomainForm_3 \n");
     print("<TD>\n");
-    print("<SELECT NAME=\"groupname\" ID=\"groupname\" SIZE=1 TABINDEX=30 >\n");
+    print("<SELECT NAME=\"groupname\" ID=\"groupname\" SIZE=1 TABINDEX=30   onchange=EnterNewGroupName(AddDomainUsers)>\n");
 
     $num_rows=$DB->samsdb_query_value("SELECT * FROM sgroup");
     while($row2=$DB->samsdb_fetch_array())
       {
        print("<OPTION VALUE=\"$row2[s_group_id]\"> $row2[s_name] ");
       }
-    $DB->free_samsdb_query();
+    print("<OPTION VALUE=\"-1\"> $usersbuttom_1_domain_AddUsersFromDomainForm_8 ");
     print("</SELECT>\n");
+    print("<TR><TD ALIGN=RIGHT>\n");
+    print("$usersbuttom_1_domain_AddUsersFromDomainForm_9: \n");
+    print("<TD>\n");
+    print("<INPUT TYPE=\"TEXT\" NAME=\"newgroupname\" id=Newgroupname\" DISABLED>\n");
+    $DB->free_samsdb_query();
 
     print("<TR>\n");
     print("<TD>\n");
