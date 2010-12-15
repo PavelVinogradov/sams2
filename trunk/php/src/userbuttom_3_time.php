@@ -135,9 +135,33 @@ function UserTimeTraffic()
   print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
 
-  $QUERY="SELECT * FROM (SELECT substring(s_time from 1 for 5) as time  , substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain FROM squidcache WHERE s_user='".$SquidUSERConf->s_nick."' AND s_date='$sdate' ORDER BY s_time) AS _cache GROUP BY _cache.time,_cache.url_domain ORDER BY _cache.time";
+  $URL=array("time"=>array(),
+	"url"=>array(),
+	"method"=>array());
+  $count=0;
+  $QUERY="SELECT * FROM (SELECT substring(s_time from 1 for 5) as time  , substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain, s_method FROM squidcache WHERE s_user='".$SquidUSERConf->s_nick."' AND s_date='$sdate' AND s_method!='CONNECT' ORDER BY s_time) AS _cache GROUP BY _cache.time,_cache.url_domain ORDER BY _cache.time";
 
   $num_rows=$DB->samsdb_query_value($QUERY);
+  while($row=$DB->samsdb_fetch_array())
+  {
+	$URL["time"][$count]=$row['time'];
+	$URL["url"][$count]=str_replace("/","",$row['url_domain']);
+	$URL["method"][$count]=$row['s_method'];
+
+	$count++;
+  }
+
+  $QUERY="SELECT * FROM (SELECT substring(s_time from 1 for 5) as time, s_url as url_domain,  s_method FROM squidcache WHERE s_user='".$SquidUSERConf->s_nick."' AND s_date='$sdate' AND s_method='CONNECT' ORDER BY s_time) AS _cache GROUP BY _cache.time,_cache.url_domain ORDER BY _cache.time";
+
+  $num_rows=$DB->samsdb_query_value($QUERY);
+  while($row=$DB->samsdb_fetch_array())
+  {
+	$URL["time"][$count]=$row['time'];
+	$URL["url"][$count]=str_replace("/","",$row['url_domain']);
+	$URL["method"][$count]=$row['s_method'];
+
+	$count++;
+  }
 
   print("<CENTER>\n");
   print("<script type=\"text/javascript\" src=\"lib/jquery-1.2.6.js\"></script>\n");
@@ -146,45 +170,51 @@ function UserTimeTraffic()
   print("$(document).ready(function(){\n");
   print("  $(\"#urltime\").dataTable({\n");
   print("	\"bInfo\": 0,\n");
-  print("	\"iDisplayLength\": $num_rows,\n");
+  print("	\"iDisplayLength\": $count,\n");
   print("	\"iDisplayStart\": 0,\n");
-  print("	\"iDisplayEnd\": $num_rows,\n");
+  print("	\"iDisplayEnd\": $count,\n");
   print("	\"oLanguage\": {\n");	
   print("		\"sSearch\": \"search\", \n");
   print("		\"sLengthMenu\": \"Show _MENU_ entries\"\n");
   print("		},\n");
   print("	\"aoColumns\": [ \n");
   print("		{ \"sType\": \"numeric\", \"sWidth\": \"15%\" },\n");
-  print("		{ \"sType\": \"html\", \"sWidth\": \"85%\"},\n");
+  print("		{ \"sType\": \"html\", \"sWidth\": \"75%\"},\n");
+  print("		{ \"sType\": \"html\", \"sWidth\": \"10%\"},\n");
   print("    ]\n");
   print("  });\n");
   print("});\n");
   print("</script>\n");
   print("</CENTER>\n");
 
+  asort($URL["time"]);
+  reset($URL["time"]);
 
-  $count=1;
   $cache=0;
   print("<TABLE CLASS=samstable id=\"urltime\" WIDTH=80%>");
   print("<THEAD>\n");
   print("<TH>Time");
   print("<TH>URL");
+  print("<TH>Method");
   print("</THEAD>\n");
   print("<TBODY>\n");
   $size=0;
 
-  while($row=$DB->samsdb_fetch_array())
-       {
-         print("<TR>");
-         LTableCell($row['time'],15);
-	 if($USERConf->ToWebInterfaceAccess("C")==1)
-           {
-		$str="<A HREF=\"main.php?show=exe&function=usertimecontent&filename=userbuttom_3_time.php&id=$SquidUSERConf->s_user_id&SDay=$sday&SMon=$smon&SYea=$syea&EDay=$eday&EMon=$emon&EYea=$eyea&url=".$row['url_domain']."\">".$row['url_domain']."</A>";
-		RTableCell($str,85);
-	   }   
-	 
-         print("</TR>");
-       }
+	asort($URL["time"]);
+	reset($URL["time"]);
+	while (list($key, $val) = each($URL["time"])) 
+	{
+		print("<TR>");
+		LTableCell($URL['time'][$key],15);
+		if($USERConf->ToWebInterfaceAccess("C")==1)
+		{
+			RTableCell($URL['url'][$key],75);
+		}
+		
+		RTableCell($URL['method'][$key],15);
+		print("</TR>\n");
+
+	}
  print("</TBODY>\n");
  print("</TABLE>");
 }
@@ -208,7 +238,7 @@ function UserTimeTrafficForm()
 
 	if($USERConf->ToWebInterfaceAccess("GSC")==1 || ($USERConf->s_user_id == $SquidUSERConf->s_user_id && $USERConf->ToWebInterfaceAccess("W")==1 ) )
 	{
-		PageTop("ttraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT> <BR>$userbuttom_2_traffic_UserTrafficForm_1");
+		PageTop("ttraffic_48.jpg","$traffic_1 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT> <BR>$URLTimeForm_userbuttom_4_time_1");
 
 		print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=UserName value=\"$SquidUSERConf->s_user_id\">\n");
