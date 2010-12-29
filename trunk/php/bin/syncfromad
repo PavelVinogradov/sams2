@@ -72,14 +72,7 @@ function ReturnUsersFromADGroup($groupname)
 
 	$adusers=$ldap->group_members($groupname);
 	$acount=count($adusers);
-//echo "acount=$acount\n";
-//	for($i=0;$i<$acount;$i++)
-//	{
-//		$username = $a[$i];
-//		echo "$i: $username\n";
-//	}
 	return($adusers);
-//exit();
 }
 
 
@@ -138,8 +131,6 @@ function SearchUserFromSAMSTemplate($username)
   require($lang);
 
 	$count=0;
-//	$QUERY="SELECT sgroup.s_name as groupname FROM auth_param LEFT JOIN sgroup ON auth_param.s_value=sgroup.s_name LEFT JOIN squiduser ON sgroup.s_group_id=squiduser.s_group_id WHERE s_auth='adld' AND s_param='adldgroup' AND squiduser.s_name='$username'";
-//	$QUERY="SELECT shablon.s_name as shablonname FROM auth_param LEFT JOIN shablon ON auth_param.s_value=shablon.s_name  LEFT JOIN squiduser ON shablon.s_shablon_id=squiduser.s_shablon_id  WHERE shablon.s_auth='adld' AND auth_param.s_param='adldgroup' AND squiduser.s_name='$username'";
 	$QUERY="SELECT auth_param.s_value, shablon.s_name as shablonname, squiduser.s_nick FROM auth_param LEFT JOIN shablon ON auth_param.s_value=shablon.s_name  LEFT JOIN squiduser ON shablon.s_shablon_id=squiduser.s_shablon_id WHERE shablon.s_auth='adld' AND auth_param.s_param='adldgroup' AND squiduser.s_nick='$username'";
 	$result=$DB->samsdb_query_value($QUERY);
 	if($result>0)
@@ -309,9 +300,8 @@ function DeleteUserToSAMSTemplate($username, $templatename)
   require('./dbclass.php');
   require('./samsclass.php');
   require('./tools.php');
-$DEBUG=1;
+//$DEBUG=1;
 
-echo "START\n";
 	$SAMSConf=new SAMSCONFIG();
 
 	$DB=new SAMSDB();
@@ -358,7 +348,7 @@ echo "START\n";
 		if($DEBUG!=0)
 		{
 			echo "\n";
-			echo "new users from AD group: ".count($unknownuserinadgroup)."\n";
+			echo "unknown users from AD group: ".count($unknownuserinadgroup)."\n";
 			for($i=0; $i<count($unknownuserinadgroup); $i++)
 			{
 				echo  $i+1 .":    $unknownuserinadgroup[$i]\n";
