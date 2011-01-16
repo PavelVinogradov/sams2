@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# sams2 rd.c startup script for FreeBSD 7.x
-# Author: Sergey Afanasyev
+# sams2 rc.d startup script for FreeBSD 7.x
+# Author: Sergey Afanasiev
 # 
 # PROVIDE: sams2
 # REQUIRE: mysql
