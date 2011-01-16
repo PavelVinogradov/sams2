@@ -126,11 +126,4 @@ function authldapbuttom_1_prop()
     }
 
 }
-
-
-
-
-
-
-
 ?>
