@@ -11,3 +11,7 @@ DISTCLEANFILES = Makefile.in
 INCLUDES = $(all_includes)
 
 AM_CXXFLAGS = -Wall
+
+distclean:
+	rm -f Makefile
+	rm -f $(DISTCLEANFILES)
