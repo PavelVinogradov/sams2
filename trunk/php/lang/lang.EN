@@ -345,8 +345,8 @@
   $shablonbuttom_1_prop_UpdateShablonForm_7=" Save changes "; 
   $shablonbuttom_1_prop_shablonbuttom_1_prop_1=" Change template "; 
 
-  $redirlisttray_RedirListForm_1=" Delete URL "; 
-  $redirlisttray_RedirListForm_2=" Add URL "; 
+  $redirlisttray_RedirListForm_1=" Delete "; 
+  $redirlisttray_RedirListForm_2=" Add "; 
   $redirlisttray_RedirListForm_3=" Clear the list "; 
   $redirlisttray_AddRedirListForm_1=" Demand redirection <BR> Set up new URL list "; 
   $redirlisttray_AddRedirListForm_2=" List name "; 
@@ -1002,10 +1002,10 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
   $setup_4="Finished";
   $setup_5="Requirements problem";
   $setup_6="The following errors must be resolved before you can continue the installation process:";
-   $setup_7="Web interface SAMS demands the right to record in the catalogue ./data";
-   $setup_8="The catalog./data is closed for record. To continue installation, adjust permissions manually.";
+   $setup_7="Web interface SAMS demands the right to record in the catalog ./data";
+   $setup_8="The catalog ./data is closed for record. To continue installation, adjust permissions manually.";
    $setup_9="Check up an error message and try again.";
-   $setup_10="Для создания вашей базы данных SAMS2 укажите следующую информацию.";
+   $setup_10="Please provide information required to create SAMS2 database.";
    $setup_11="database engine";
    $setup_12="database user";
    $setup_13="Password";

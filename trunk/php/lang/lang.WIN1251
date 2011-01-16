@@ -367,8 +367,8 @@
 
   $shablonbuttom_1_prop_shablonbuttom_1_prop_1="Изменить шаблон";
 
-  $redirlisttray_RedirListForm_1="Удалить URL";
-  $redirlisttray_RedirListForm_2="Добавить URL";
+  $redirlisttray_RedirListForm_1="Удалить";
+  $redirlisttray_RedirListForm_2="Добавить";
   $redirlisttray_RedirListForm_3="Очистить список";
   $redirlisttray_AddRedirListForm_1="Перенаправление запроса.<BR>Создание нового списка URL";
   $redirlisttray_AddRedirListForm_2="Название списка";
