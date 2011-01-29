@@ -34,6 +34,10 @@ function SetPeriod()
 
 function SetPeriod2($head, $select)
 {
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"desc\" id='desc' value=\"desc\" onclick=SetDescMode(descvalue)>\n");
 print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
 print("function SetDescMode(descvalue) \n");
@@ -43,8 +47,8 @@ print("}\n");
 print("</SCRIPT>\n");
 
 	print("<TABLE>\n");
-	$this->StartDate();
-	$this->EndDate();
+	$this->StartDate($mysqltools_dateselect1);
+	$this->EndDate($mysqltools_dateselect3);
 	print("  <TR><TD><FONT COLOR=\"BLUE\"><B>$head</B>\n");
 	for($i=0; $i<count($select); $i++)
 	{
