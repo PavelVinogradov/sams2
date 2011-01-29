@@ -351,7 +351,13 @@
   $redirlisttray_AddRedirListForm_1=" Demand redirection <BR> Set up new URL list "; 
   $redirlisttray_AddRedirListForm_2=" List name "; 
   $redirlisttray_AddRedirListForm_3=" Set up "; 
-  $redirlisttray_AddRedirListForm_4=" List contains URL, to which user's demands would be redirected "; 
+  $redirlisttray_AddRedirListForm_5=" List name has not been entered";
+  $redirlisttray_AddRedirListForm_file=" List contains file extensions, to which user's demands would be redirected "; 
+  $redirlisttray_AddRedirListForm_redir=" List contains URL's, to which user's demands would be redirected "; 
+  $redirlisttray_AddRedirListForm_regex=" List contains regular expressions, to which user's demands would be redirected "; 
+  $redirlisttray_AddRedirListForm_time=" List contains time ranges, which duration user's demands would be allowed "; 
+  $redirlisttray_AddRedirListForm_allow=" List contains URL's, to which user's demands would be allowed "; 
+  $redirlisttray_AddRedirListForm_deny=" List contains URL's, to which user's demands would be denyed "; 
   $redirlisttray_RedirListTray_1=" List"; 
   $redirlisttray_ReplaceListTray_1=" Substitute List";
 
@@ -883,7 +889,6 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
 
   $shablonnew_NewShablonForm_18="Automatically clear up the users traffic disabled in the SAMS settings";
   $shablonnew_NewShablonForm_19="Users template name has not been entered";
-  $redirlisttray_AddRedirListForm_5="List name has not been entered";
   $CacheForm_squidbuttom_4_addcache_1="Proxy servers registered in system"; 
   $CacheForm_squidbuttom_4_addcache_2="Number"; 
   $CacheForm_squidbuttom_4_addcache_3="Description"; 

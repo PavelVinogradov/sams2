@@ -373,7 +373,13 @@
   $redirlisttray_AddRedirListForm_1="Перенаправление запроса.<BR>Создание нового списка URL";
   $redirlisttray_AddRedirListForm_2="Название списка";
   $redirlisttray_AddRedirListForm_3="Создать";
-  $redirlisttray_AddRedirListForm_4="Список содержит URL, запросы пользователей к которым будет перенаправлены";
+  $redirlisttray_AddRedirListForm_5="Не задано имя списка";
+  $redirlisttray_AddRedirListForm_redir="Список содержит URL, запросы пользователей к которым будет перенаправлены";
+  $redirlisttray_AddRedirListForm_regex="Список содержит регулярные выражения, запросы пользователей к которым будет перенаправлены";
+  $redirlisttray_AddRedirListForm_file="Список содержит расширение файлов, запросы пользователей к которым будут перенаправлены";
+  $redirlisttray_AddRedirListForm_time="Список содержит временные диапазоны, в течении которых запросы пользователей разрешены";
+  $redirlisttray_AddRedirListForm_allow="Список содержит URL, запросы пользователей к которым разрешены";
+  $redirlisttray_AddRedirListForm_deny="Список содержит URL, запросы пользователей к которым запрещены";
   $redirlisttray_RedirListTray_1=" Перенаправление запроса <BR> Список ";
   $redirlisttray_ReplaceListTray_1=" Подстановка запроса <BR> Список ";
   $redirlisttray_ReplaceListTray_2="Адрес для подстановки";
@@ -907,7 +913,6 @@
 
   $shablonnew_NewShablonForm_18="Автоматическая очистка счётчиков трафика отключена в настройках SAMS";
   $shablonnew_NewShablonForm_19="Не задано имя шаблона пользователей";
-  $redirlisttray_AddRedirListForm_5="Не задано имя списка";
   $CacheForm_squidbuttom_4_addcache_9="Не задано описание прокси-сервера";
   $grouptray_NewGroupForm_12="Не задано имя группы пользователей";
   $usersbuttom_1_useradd_AddUser_1="Пользователь с IP-адресом ";
