@@ -142,7 +142,24 @@ function AddURLListForm()
 
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
-       print("<TD>$redirlisttray_AddRedirListForm_4");
+ 
+	switch($type)
+	{
+	case 'regex':  
+       		print("<TD>$redirlisttray_AddRedirListForm_regex");
+		break;
+	case 'files':  
+       		print("<TD>$redirlisttray_AddRedirListForm_file");
+		break;
+	case 'allow':  
+       		print("<TD>$redirlisttray_AddRedirListForm_allow");
+		break;
+	case 'denied':  
+       		print("<TD>$redirlisttray_AddRedirListForm_deny");
+		break;
+	default: 
+       		print("<TD>$redirlisttray_AddRedirListForm_redir");
+	}
 
 }
 
@@ -195,8 +212,23 @@ function AddRedirListForm()
 
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
-       print("<TD>$redirlisttray_AddRedirListForm_4");
-
+	switch($type)
+	{
+	case 'regex':  
+       		print("<TD>$redirlisttray_AddRedirListForm_regex");
+		break;
+	case 'files':  
+       		print("<TD>$redirlisttray_AddRedirListForm_file");
+		break;
+	case 'allow':  
+       		print("<TD>$redirlisttray_AddRedirListForm_allow");
+		break;
+	case 'denied':  
+       		print("<TD>$redirlisttray_AddRedirListForm_deny");
+		break;
+	default: 
+       		print("<TD>$redirlisttray_AddRedirListForm_redir");
+	}
 }
 
 function EkranChars($string)

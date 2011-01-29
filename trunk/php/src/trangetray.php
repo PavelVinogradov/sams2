@@ -144,7 +144,7 @@ function AddTRangeForm()
 
        print("<P><TABLE WIDTH=\"90%\"><TR><TD WIDTH=\"15%\"><A HREF=\"doc/$SAMSConf->LANGCODE/urllists.html\">");
        print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\" ALIGN=RIGHT>");
-       print("<TD>$redirlisttray_AddRedirListForm_4");
+       print("<TD>$redirlisttray_AddRedirListForm_time");
 
 }
 
