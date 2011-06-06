@@ -1,0 +1,42 @@
+#summary SAMS 1.0.5
+
+=== Улучшения ===
+ * исправление ошибок web-интерфейса
+ * исправление ошибок в демонах
+ * исправления ошибок в пакете для Debian
+ * исправления ошибок в RPM пакете
+
+== Скачать ==
+
+=== Исходные тексты ===
+ * оффициальный сайт [http://sams.perm.ru/index.php?option=com_doqment&task=files.download&cid=12 sams-1.0.5.tar.bz2]
+ * зеркало на nixdev.net [http://nixdev.net/release/sams/sams-1.0.5.tar.bz2 sams-1.0.5.tar.bz2]
+
+ * svn репозитарий:
+{{{  
+  svn co http://svn.nixdev.net/svn/sams/tags/1.0.5
+}}}
+
+=== Пакеты для Debian Lenny ===
+ * [http://www.nixdev.net/release/sams/debian/lenny/sams_1.0.5_amd64.deb Sams 1.0.5 для amd64]
+ * [http://www.nixdev.net/release/sams/debian/lenny/sams_1.0.5_i386.deb  Sams 1.0.5 для i386]
+
+ * [http://www.nixdev.net/release/sams/debian/lenny/sams-doc_1.0.5_all.deb Sams Doc 1.0.5]
+ * [http://www.nixdev.net/release/sams/debian/lenny/sams-web_1.0.5_all.deb Sams Web 1.0.5]
+
+=== Пакеты для Debian Squeeze ===
+ * [http://www.nixdev.net/release/sams/debian/squeeze/sams_1.0.5_amd64.deb Sams 1.0.5 для amd64]
+ * [http://www.nixdev.net/release/sams/debian/squeeze/sams_1.0.5_i386.deb  Sams 1.0.5 для i386]
+
+ * [http://www.nixdev.net/release/sams/debian/squeeze/sams-doc_1.0.5_all.deb Sams Doc 1.0.5]
+ * [http://www.nixdev.net/release/sams/debian/squeeze/sams-web_1.0.5_all.deb Sams Web 1.0.5]
+
+
+=== Собранные пакеты для rpm/deb-дистрибутивов ===
+ * [http://www.nixdev.net/release/sams/packages/ CentOS, Fedora, Mandriva, RHEL, SLE, xUbuntu]
+
+=== Ebuild для Gentoo ===
+ * [http://vi.net.ua/portage/app-admin/sams/ Sams 1.0.5]
+
+=== Порт для FreeBSD ===
+ * [http://gateway11.ath.cx/sams/port-sams-1.0.5.tar.bz2 Sams 1.0.5 от Grishin_U_S]
