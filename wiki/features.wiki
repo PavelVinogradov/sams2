@@ -1,4 +1,5 @@
-#summary озможности SAMS.
+#summary Возможности SAMS.
+#labels Featured
 
 = Возможности SAMS =
  * Администрирование системы через web интерфейс
