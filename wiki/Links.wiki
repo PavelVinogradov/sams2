@@ -1,0 +1,13 @@
+#summary Полезные ссылки.
+
+===Проект SAMS в сети===
+
+ * [http://sams.perm.ru Официальный сайт проекта]
+ * [http://www.ohloh.net/projects/7299 Проект Sams в социальной сети Open Source разработчиков OhLoH]
+ * [http://freshmeat.net/projects/sams/ Проект SAMS на Freshmeat]
+ * [http://www.opennet.ru/prog/info/1886.shtml Проект SAMS OpenNet]
+
+=== Полезное о Squid ===
+
+ * [http://www.squid-cache.org/ Оффициальный сайт Squid]
+ * [http://stc.nixdev.org/index.php?page=3 Extacclog патч для Squid]
