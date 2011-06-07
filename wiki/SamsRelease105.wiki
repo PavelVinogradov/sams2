@@ -14,7 +14,7 @@
 
  * svn репозитарий:
 {{{  
-  svn co http://svn.nixdev.net/svn/sams/tags/1.0.5
+  svn co https://sams2.googlecode.com/svn/tags/1.0.5
 }}}
 
 === Пакеты для Debian Lenny ===
