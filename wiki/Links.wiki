@@ -1,5 +1,8 @@
 #summary Полезные ссылки.
 
+===Статьи о SAMS в сети===
+ * [http://www.lissyara.su/articles/freebsd/traffic_count/squid+sams+rejik/ Установка Прокси сервера SQUID с веб мордой SAMS и редиректора Rejik, c авторизацией по NCSA] FreeBSD 6.2, Автор: Cancer.
+
 ===Проект SAMS в сети===
 
  * [http://sams.perm.ru Официальный сайт проекта]
