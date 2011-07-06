@@ -4,7 +4,7 @@
  USE squidctrl;
 
  DROP TABLE IF EXISTS `groups`;
- CREATE TABLE `groups` ( `count` int(11), `name` char(25), `nick` char(25), `value` char(10)) TYPE=MyISAM;
+ CREATE TABLE `groups` ( `count` int(11), `name` char(25), `nick` char(40), `value` char(10)) TYPE=MyISAM;
  INSERT INTO groups VALUES('0','user','Users','open');
  INSERT INTO groups VALUES('1','admin','Administrators','open');
  DROP TABLE IF EXISTS `ipreplace`;
