@@ -52,7 +52,7 @@ function UpdateGroupForm()
   print("<TABLE  BORDER=0>\n");
   print("<TR>\n");
   print("<TD><B>$groupbuttom_0_prop_UpdateGroupForm_2: </B>\n" );
-  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"nick\" SIZE=30 VALUE=$row2[nick]> \n" );
+  print("<TD><INPUT TYPE=\"TEXT\" NAME=\"nick\" SIZE=30 VALUE=\"$row2[nick]\"> \n" );
   print("</TABLE>\n");
 /* calendar */  
   
