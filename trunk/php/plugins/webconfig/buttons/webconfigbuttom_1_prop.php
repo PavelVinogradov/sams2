@@ -34,9 +34,8 @@ function WebInterfaceReConfig()
     $showutree="Y";
   if($showgraph=="on")
     $showgraph="Y";
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("UPDATE globalsettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
+  $DB=new SAMSDB();
+  $result=$DB->samsdb_query("UPDATE globalsettings SET createpdf=\"$createpdf\",showname=\"$showname\",showutree=\"$showutree\",iconset=\"$iconset\",lang=\"$lang\", urlaccess=\"$urlaccess\",useraccess=\"$useraccess\",kbsize=\"$kbsize\",mbsize=\"$mbsize\",showgraph=\"$showgraph\" ");
   $SAMSConf->LoadConfig();
 }
 
@@ -56,10 +55,9 @@ function WebInterfaceReConfigForm()
   PageTop("config_48.jpg","$webconfigbuttom_1_prop_webconfigbuttom_1_propadmintray_1");
   print("<P>\n");
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
-  $result=mysql_query("SELECT * FROM globalsettings");
-  $row=mysql_fetch_array($result);
+  $DB=new SAMSDB();
+  $result=$DB->samsdb_query("SELECT * FROM globalsettings");
+  $row=$DB->samsdb_fetch_array($result);
   print("<FORM NAME=\"samsreconfigform\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" value=\"exe\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" value=\"webinterfacereconfig\">\n");

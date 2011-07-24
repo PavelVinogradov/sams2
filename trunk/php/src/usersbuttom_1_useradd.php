@@ -14,8 +14,7 @@ function GetDomainUsersList()
   if($USERConf->ToWebInterfaceAccess("UC")!=1)
 	exit;
 
-  db_connect($SAMSConf->SAMSDB) or exit();
-  mysql_select_db($SAMSConf->SAMSDB);
+  $DB=new SAMSDB();
 
   if($SAMSConf->AUTH=="ntlm")
      {
@@ -71,8 +70,8 @@ function GetDomainUsersList()
            //$user=strtolower($user);
          }
 
-       $result=mysql_query("SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\" ");
-       $row=mysql_fetch_array($result);
+       $result=$DB->samsdb_query("SELECT * FROM squidusers WHERE domain=\"$domain\"&&nick=\"$user\" ");
+       $row=$DB->samsdb_fetch_array($result);
        if(strcmp($row['name'],$user)!=0&&strcmp($row['domain'],$domain)!=0)
           {
             if($SAMSConf->NTLMDOMAIN=="Y")
@@ -312,8 +311,8 @@ function NewUserForm()
        print("<SCRIPT language=JAVASCRIPT>\n");
        print("function SetQuote()\n");
        print("{\n");
-       $result=mysql_query("SELECT * FROM shablon");
-       while($row=mysql_fetch_array($result))
+       $result=$DB->samsdb_query("SELECT * FROM shablon");
+       while($row=$DB->samsdb_fetch_array($result))
            {
               print("if(document.forms[\"NEWUSER\"].elements[\"usershablon\"].value==\"$row[s_shablon_id]\" )\n");
               print("   document.forms[\"NEWUSER\"].elements[\"userquote\"].value=\"$row[s_quote]\" \n");
