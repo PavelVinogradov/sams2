@@ -58,10 +58,10 @@ void usage ()
 {
   cout << endl;
   cout << "NAME" << endl;
-  cout << "    samsdaemon - periodicaly parse squid log file and process user commands." << endl;
+  cout << "    sams2daemon - periodicaly parse squid log file and process user commands." << endl;
   cout << endl;
   cout << "SYNOPSIS" << endl;
-  cout << "    samsdaemon [COMMAND] [OPTION]..." << endl;
+  cout << "    sams2daemon [COMMAND] [OPTION]..." << endl;
   cout << endl;
   cout << "COMMANDS" << endl;
   cout << "    -s, --stop" << endl;
@@ -428,7 +428,7 @@ int main (int argc, char *argv[])
 
   ProcessManager process;
 
-  if (!process.start ("samsdaemon"))
+  if (!process.start ("sams2daemon"))
     {
       delete conn;
       exit (1);
