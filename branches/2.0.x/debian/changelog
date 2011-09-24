@@ -1,3 +1,9 @@
+sams (2.0.0-rc2) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Sat, 24 Sep 2011 19:52:41 +0400
+
 sams (2.0.0-a2) unstable; urgency=low
 
   * New upstream release
