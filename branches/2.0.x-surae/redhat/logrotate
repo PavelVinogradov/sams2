@@ -1,0 +1,8 @@
+/var/log/sams2/* {
+    rotate 5
+    copytruncate
+    compress
+    notifempty
+    missingok
+    size 100M
+}
