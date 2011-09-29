@@ -1,0 +1,3 @@
+etc/sams2.conf etc
+src/sams2daemon src/samsparser src/samsredir usr/bin
+#mysql usr/share/sams2

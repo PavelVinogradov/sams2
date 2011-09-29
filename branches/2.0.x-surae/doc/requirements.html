@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - Необходимые пакеты для корректной работы</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="90%" BORDER="0" CELLPADDING="0" CELLSPACING="0" ALIGN=CENTER>
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Требования</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="overview.html">Общ. сведения</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="install.html">Установка</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H1><A NAME="packages">2 Список дополнительных пакетов</A></H1>
+
+<H2><A NAME="requiredpackages">2.1 Обязательные пакеты</A></H2>
+
+<P>
+Несмотря на то что пакеты mysql, postgresql и unixODBC внесены в раздел необязательных,
+хотя-бы один из этих пакетов должен быть установлен, иначе не будет возможности использовать
+ни одну СУБД, а значит SAMS будет неработоспособен.
+</P>
+
+<TABLE WIDTH="90%" BORDER="1" CELLPADDING="3" CELLSPACING="0" ALIGN=CENTER>
+  <TR>
+    <TH WIDTH="10%">Модуль SAMS2</TH>
+    <TH WIDTH="10%">Наименование пакета</TH>
+    <TH WIDTH="80%">Описание пакета</TH>
+  </TR>
+  <TR>
+    <TD ROWSPAN="2" ALIGN="CENTER">sams2</TD>
+    <TD>squid</TD>
+    <TD>Кэширующий прокси-сервер Squid</TD>
+  </TR>
+  <TR>
+    <TD><BR></TD>
+    <TD><BR></TD>
+  </TR>
+
+  <TR>
+    <TD ROWSPAN="5" ALIGN="CENTER">sams2-web</TD>
+    <TD>httpd</TD>
+    <TD>HTTP сервер Apache</TD>
+  </TR>
+  <TR>
+    <TD>php</TD>
+    <TD>Встраиваемый в HTML cкриптовый язык PHP</TD>
+  </TR>
+  <TR>
+    <TD>mod_php</TD>
+    <TD>Встроенный интерпретатор PHP для Веб-сервера Apache</TD>
+  </TR>
+  <TR>
+    <TD>gd</TD>
+    <TD>Графическая библиотека для быстрого создания изображений формата PNG или JPEG</TD>
+  </TR>
+  <TR>
+    <TD>php-gd</TD>
+    <TD>Модуль для приложений PHP, использующих графическую библиотеку gd</TD>
+  </TR>
+</TABLE>
+
+<H2><A NAME="optionalpackages">2.2 Необязательные пакеты</A></H2>
+
+<TABLE WIDTH="90%" BORDER="1" CELLPADDING="3" CELLSPACING="0" ALIGN=CENTER>
+  <TR>
+    <TH WIDTH="10%">Модуль SAMS2</TH>
+    <TH WIDTH="10%">Наименование пакета</TH>
+    <TH WIDTH="30%">Описание пакета</TH>
+    <TH WIDTH="50%">Зачем может понадобится</TH>
+  </TR>
+  <TR>
+    <TD ROWSPAN="5" ALIGN="CENTER">sams2</TD>
+    <TD>pcre</TD>
+    <TD>Совместимая с Perl библиотека регулярных выражений</TD>
+    <TD>Для использования регулярных выражений при определении различных фильтров.</TD>
+  </TR>
+  <TR>
+    <TD>mysql</TD>
+    <TD>Клиент и разделяемые библиотеки MySQL</TD>
+    <TD>Для использования MySQL в качестве СУБД для работы SAMS2.</TD>
+  </TR>
+  <TR>
+    <TD>postgresql</TD>
+    <TD>Клиентские программы и библиотеки для PostgreSQL</TD>
+    <TD>Для использования PostgreSQL в качестве СУБД для работы SAMS2.</TD>
+  </TR>
+  <TR>
+    <TD>unixODBC</TD>
+    <TD>Менеджер всех драйверов ODBC для Linux</TD>
+    <TD>
+      Если планируется использование ODBC для подключения к СУБД, не поддерживаемой в SAMS2.
+      Не забывайте что еще понадобится драйвер ODBC для этой СУБД.
+    </TD>
+  </TR>
+  <TR>
+    <TD>doxygen</TD>
+    <TD>Система создания документации для C/C++</TD>
+    <TD>
+      Если необходима документация по исходным кодам.
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ROWSPAN="3" ALIGN="CENTER">sams2-web</TD>
+    <TD>php-ldap</TD>
+    <TD>Модуль для приложений PHP, использующих LDAP</TD>
+    <TD>Для авторизации в ActiveDirectory или OpenLDAP.</TD>
+  </TR>
+  <TR>
+    <TD> fpdf </TD>
+    <TD> <BR> </TD>
+    <TD>Для экспорта отчетов в pdf файл с использованием fpdf.</TD>
+  </TR>
+  <TR>
+    <TD> pdflib </TD>
+    <TD> <BR> </TD>
+    <TD>Для экспорта отчетов в pdf файл с использованием pdflib.</TD>
+  </TR>
+</TABLE>
+
+<H2><A NAME="develpackages">2.3 Пакеты, необходимые при установке из исходных текстов</A></H2>
+
+<P>
+Этот список является дополнением к <A HREF="#requiredpackages">обязательному</A> и
+<A HREF="#optionalpackages">необязательному</A> спискам.
+</P>
+
+<TABLE WIDTH="90%" BORDER="1" CELLPADDING="3" CELLSPACING="0" ALIGN=CENTER>
+  <TR>
+    <TH WIDTH="10%">Модуль SAMS2</TH>
+    <TH WIDTH="10%">Наименование пакета</TH>
+    <TH WIDTH="30%">Описание пакета</TH>
+    <TH WIDTH="50%">Зачем может понадобится</TH>
+  </TR>
+  <TR>
+    <TD ROWSPAN="3" ALIGN="CENTER">---</TD>
+    <TD>autoconf</TD>
+    <TD>Утилита GNU для автоматической конфигурации исходных текстов</TD>
+    <TD>Для автоматической конфигурации исходных текстов.</TD>
+  </TR>
+  <TR>
+    <TD>automake</TD>
+    <TD>Утилита GNU для автоматического создания файлов Makefile</TD>
+    <TD>Для автоматического создания файлов Makefile.</TD>
+  </TR>
+  <TR>
+    <TD>libtool</TD>
+    <TD>Средство GNU для создания переносимых библиотек</TD>
+    <TD>Для создания переносимых библиотек.</TD>
+  </TR>
+  <TR>
+    <TD ROWSPAN="6" ALIGN="CENTER">sams2</TD>
+    <TD>pcre-devel</TD>
+    <TD>Файлы разработки для pcre</TD>
+    <TD>Для использования регулярных выражений при определении различных фильтров.</TD>
+  </TR>
+  <TR>
+    <TD>mysql-devel</TD>
+    <TD>Файлы для разработки приложений MySQL</TD>
+    <TD>Для использования MySQL в качестве СУБД для работы SAMS2.</TD>
+  </TR>
+  <TR>
+    <TD>libstdc++-devel</TD>
+    <TD>Файлы заголовков и библиотеки для разработки на C++</TD>
+    <TD>Для компиляции исходных кодов.</TD>
+  </TR>
+  <TR>
+    <TD>gcc-c++</TD>
+    <TD>Поддержка C++ для GCC</TD>
+    <TD>Для компиляции исходных кодов.</TD>
+  </TR>
+  <TR>
+    <TD>postgresql-devel</TD>
+    <TD>Библиотеки и файлы заголовков PostgreSQL, необходимые для разработки приложений</TD>
+    <TD>Для использования PostgreSQL в качестве СУБД для работы SAMS2.</TD>
+  </TR>
+  <TR>
+    <TD>unixODBC-devel</TD>
+    <TD>Файлы разработчика для программ, использующих библиотеку unixODBC</TD>
+    <TD>
+      Если планируется использование ODBC для подключения к СУБД, не поддерживаемой в SAMS2.
+      Не забывайте что еще понадобится драйвер ODBC для этой СУБД.
+    </TD>
+  </TR>
+</TABLE>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="overview.html">Общ. сведения</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="install.html">Установка</A></TD>
+  </TR>
+</TABLE>
+
+</body>
+</html>

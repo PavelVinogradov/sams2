@@ -1,0 +1,2 @@
+export LANG=$1
+wbinfo -u 2>/dev/null | tr '\n' '|'

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# sams2 rc.d startup script for FreeBSD 7.x
+# Author: Sergey Afanasiev
+# 
+# PROVIDE: sams2
+# REQUIRE: mysql
+# REQUIRE: LOGIN cleanvar
+# KEYWORD: shutdown
+
+# Define these sams2_* variables in one of these files:
+#       /etc/rc.conf
+#       /etc/rc.conf.local
+#       /etc/rc.conf.d/sams2
+#
+# DO NOT CHANGE THESE DEFAULT VALUES HERE
+#
+sams_enable=${sams2_enable-"NO"}
+sams_flags=${sams2_flags-""}
+sams_pidfile=${sams2_pidfile-"/var/run/sams2daemon.pid"}
+
+. /etc/rc.subr
+
+name="sams2"
+rcvar=`set_rcvar`
+command="/usr/local/bin/sams2daemon"
+
+load_rc_config $name
+
+pidfile="${sams2_pidfile}"
+
+run_rc_command "$1"

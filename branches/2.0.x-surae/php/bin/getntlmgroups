@@ -1,0 +1,2 @@
+export LANG=$1
+wbinfo -g | tr '\n' '|'

@@ -1,0 +1,5 @@
+export LANG=$1
+GNAME=`echo $2 | tr '%' ' '`
+GID=`wbinfo --group-info="$GNAME" 
+#2>/dev/null`
+echo "${GID//$GNAME:*:/}"

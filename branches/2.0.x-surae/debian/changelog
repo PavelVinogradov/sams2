@@ -1,0 +1,52 @@
+sams2 (2.0.0-rc1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Sun, 31 Oct 2010 18:40:52 +0300
+
+sams2 (2.0.0-b3) unstable; urgency=low
+
+  * Change libmysqlclint dependency from libmysqlclient15-dev to
+    libmysqlclient-dev
+  * Add dependency to php5-gd for sams-web
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 13 Aug 2010 11:32:26 +0400
+
+sams2 (2.0.0-b2) unstable; urgency=low
+
+  * New version
+  * Delete watch file (Not needed in native package)
+  * Update standard version to 3.9.1 (No changes)
+
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Wed, 28 Jul 2010 19:40:00 +0400
+
+sams2 (2.0.0-b1) unstable; urgency=low
+
+  * New upstream release
+  * Fix sams2-doc and sams2-web packages.
+  * Move html documentation to /usr/share/sams2-doc/html
+  * Update standard version to 3.8.3 (No changes)
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 26 Feb 2010 22:37:38 +0400
+
+sams2 (2.0.0-a2) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 16 Nov 2008 10:57:04 +0500
+
+
+sams2 (2.0.0-a1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri, 29 Aug 2008 10:57:04 +0500
+
+sams2 (1.0.0-1) unstable; urgency=low
+
+  * Initial release 
+  * Fix some problems with Makefile
+
+ -- Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>  Fri,  3 Aug 2007 10:57:04 +0500
+

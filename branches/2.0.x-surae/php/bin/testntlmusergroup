@@ -1,0 +1,11 @@
+export LANG=$1
+#ru_RU.UTF-8|10005|ntlm_1
+#echo "$1|$2|$3"
+#rrr="onotole\\\|vasserman"
+#echo "'${rrr//\\/}'"
+#exit
+#echo $3
+GNAME=`echo $3 | tr '%' ' '`
+#GNAME=`echo "${3//\\/}"`
+#echo "${GNAME//\\/}"
+wbinfo --user-groups="$GNAME" | grep $2 | wc -l

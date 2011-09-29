@@ -1,0 +1,43 @@
+Source: sams2
+Section: net
+Priority: optional
+Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
+Build-Depends: debhelper (>= 5), automake, autotools-dev, libtool, libmysqlclient-dev, libpcre3-dev, quilt
+Standards-Version: 3.9.1
+Homepage: http://sams.nixdev.net
+Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
+Vcs-Browser: http://sams.nixdev.net/browser/trunk
+
+Package: sams2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: sams2-web, sams2-doc, mysql-client, squid
+Suggests: squidguard, mysql-server
+Description: Squid Account Management System (SAMS) - Deamons
+ This program basically used for administrative purposes of squid proxy.
+ There are access control for users by ntlm, ncsa, basic or ip
+ authorization mode.
+ .
+ This package contain deamons program to parse squid log files and 
+ generate squid conf-files.
+
+Package: sams2-web
+Section: web
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, apache2 | httpd, php5, php5-mysql, php5-gd
+Recommends: sams2-doc
+Suggests: php5-gd, php5-ldap
+Description: Squid Account Management System (SAMS) - Web interface
+ This program basically used for administrative purposes of squid proxy.
+ There are access control for users by ntlm, ncsa, basic or ip
+ authorization mode.
+ .
+ This package contain web-interface to access collected statistic and
+ manage user access to proxy server
+
+Package: sams2-doc
+Section: doc
+Architecture: all
+Depends: doxygen, debhelper (>=5)
+Description: Squid Account Management System 2 (SAMS) - Documentation
+ The sams2-doc package includes the HTML versions of the "Using SAMS2".

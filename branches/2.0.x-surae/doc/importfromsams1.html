@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML LANG="ru-RU">
+
+<HEAD>
+  <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+  <TITLE>SAMS2 - SQUID</TITLE>
+  <META NAME="GENERATOR" CONTENT="Andrey Ovcharov">
+  <META NAME="AUTHOR" CONTENT="Andrey Ovcharov">
+  <LINK REL="stylesheet" HREF="sams2.css" TYPE="text/css">
+</HEAD>
+
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+
+<TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TH COLSPAN="3" ALIGN="center">SAMS2 Администрирование</TH>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="webinterface.html">Настройки WEB интерфейса</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="samsbackup.html">Сохранение и восстановление конфигурации SAMS</A></TD>
+  </TR>
+</TABLE>
+<HR ALIGN="LEFT" WIDTH="100%">
+
+<H2><A NAME="configure.squid">5.2.2.1 Импорт настроек и пользователей из SAMS 1.X</H2>
+<P>
+Web интерфейс SAMS2 позволяет импортировать данные из базы SAMS 1.x.
+Обеспечивается импорт: 
+
+<UL>
+<LI>Групп пользователей
+<LI>Временных диапазонов
+<LI>Шаблонов
+<LI>Пользователей
+<LI>Списков URL
+<LI>Настроек прокси сервера
+</UL>
+
+<CENTER>
+<IMG SRC="images/importfromsams11.jpg" >
+</CENTER>
+</P>
+
+<P>
+Нажмите кнопку "Импорт настроек из базы данных SAMS 1.x". Откроется диалог настройки подключения к базе данных SAMS и выбора данных для импорта. 
+</P>
+<P>
+<CENTER>
+<IMG SRC="images/importfromsams12.jpg" >
+<BR>Рисунок 5.2.2.2. Диалог настройки подключения к базе данных SAMS и выбора данных для импорта
+</CENTER>
+</P>
+<P><B>Настройки подключения к базе данных SAMS1</B>
+</P>
+<UL>
+<LI><B>DB Hostname</B> - сервер на катором установлен MySQL.
+<BR>  localhost - если база данных установлена на этом же сервере.
+<BR>  hostname:port - если база данных установлена на другом сервере.
+
+<LI><B>DB Login</B> - логин, под которым будет установлено соединение с базой SAMS 1.x
+<LI><B>DB Password</B> - пароль
+</UL>
+<P><B>Настройки импорта данных</B>
+</P>
+<UL>
+<LI><B>Импортировать пользователей, группы пользователей и шаблоны из SAMS версии 1.0.x</B> - при активации этой функции производится импорт пользователей, групп пользователей и шаблонов из SAMS 1.x
+<LI><B>импортировать имена пользователей</B> - функция доступна при активной функции импорта пользователей из SAMS 1.x.  
+<UL>
+<LI><B>без изменения</B>
+<LI><B>преобразовывать в строчные буквы</B>
+<LI><B>преобразовывать в ЗАГЛАВНЫЕ буквы</B>
+<BR>преобразование логинов пользователей используется при использовании NTLM авторизации пользователей, если, например, на старом сервере wbinfo отдавал логины пользователей заглавными буквами, а на новом - строчными.
+</UL>
+<LI><B>Импортировать списки запрета доступа из SAMS версии 1.0.x</B> - В SAMS2 будут импортиоваы списки запрета доступа из SAMS 1.	
+<LI><B>Создать прокси сервер и импортировать настройки</B> - В SAMS2 будет создан новый прокси сервер с настройками, импортированными из SAMS1.	
+</UL>
+
+<H2><A NAME="configure.squid">5.2.2.2 Импорт данных о трафике пользователей из SAMS 1.X</H2>
+<P>
+Импорт данных из SAMS 1.x предназначен для более легкого перевода прокси сервера SQUID под управление SAMS2. Этой функцией обеспечивается импорт данных о трафике пользователей. 
+<P>
+<CENTER>
+<IMG SRC="images/importfromsams13.jpg" >
+</CENTER>
+</P>
+<P>
+Нажмите кнопку "Импорт данных о трафике пользователей из базы данных SAMS 1.x". Откроется диалог настройки подключения к базе данных SAMS и выбора данных для импорта. 
+</P>
+<P>
+<CENTER>
+<IMG SRC="images/importfromsams14.jpg" >
+<BR>Рисунок 5.2.2.4. Диалог настройки подключения к базе данных SAMS
+</CENTER>
+</P>
+<P><B>Настройки подключения к базе данных SAMS1</B>
+</P>
+<UL>
+<LI><B>DB Hostname</B> - сервер на катором установлен MySQL.
+<BR>  localhost - если база данных установлена на этом же сервере.
+<BR>  hostname:port - если база данных установлена на другом сервере.
+
+<LI><B>DB Login</B> - логин, под которым будет установлено соединение с базой SAMS 1.x
+<LI><B>DB Password</B> - пароль
+</UL>
+<P>Далее нажимаем кнопку "Импортировать". Веб интерфейсом будет произведен поиск данных о трафике в базе данных SAMS 1.x и выведен диалог выбора диапазона дат для импорта.
+</P>
+<P>
+<CENTER>
+<IMG SRC="images/importfromsams15.jpg" >
+<BR>Рисунок 5.2.2.4. Диалог выбора диапазона загрузки данных о трафике пользователей.
+</CENTER>
+</P>
+<P>Выберите диапазон и нажмите кнопку "Ok". 
+</P>
+<P>Если происходит импорт данных в СУБД PostgreSQL и данные о трафике в базе SAMS 1.x хранятся в кодировке KOI8-R то могут быть проблемы с импортом. В этом случае импортируйте данные небольшими диапазонами по несколько дней. 
+</P>
+
+<HR ALIGN="LEFT" WIDTH="100%">
+<TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="webinterface.html">Настройки WEB интерфейса</A></TD>
+    <TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="index.html">Оглавление</A></TD>
+    <TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="samsbackup.html">Сохранение и восстановление конфигурации SAMS</A></TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>

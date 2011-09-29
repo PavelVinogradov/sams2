@@ -1,0 +1,396 @@
+<?php
+/*  
+ * SAMS (Squid Account Management System)
+ * Author: Dmitry Chemerik chemerik@mail.ru
+ * (see the file 'main.php' for license details)
+ */
+
+
+/*
+ * Функция ReturnUsersFromSAMSTemplate($templatename)
+ * возвращает массив пользователей группы $templatename
+ */
+
+function ReturnUsersFromSAMSTemplate($templatename)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $count=0;
+  $result=$DB->samsdb_query_value("SELECT squiduser.s_nick, shablon.s_shablon_id, shablon.s_name FROM squiduser LEFT JOIN shablon ON squiduser.s_shablon_id=shablon.s_shablon_id WHERE shablon.s_name = '$templatename'");
+  while($row=$DB->samsdb_fetch_array())
+  {
+	$dbusers[$count++]=$row['s_nick'];
+  }
+
+  return($dbusers);
+}
+
+
+/*
+ * Функция ReturnUsersFromNTLMGroup($templatename)
+ * возвращает массив пользователей домена Windows группы $templatename
+ */
+function ReturnUsersFromNTLMGroup($templatename)
+{
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $adusers = array();
+  $count=0;
+
+	$DB=new SAMSDB();
+
+  	$ntlmserver=GetAuthParameter("ntlm","ntlmserver");
+	$ntlmadmin=GetAuthParameter("ntlm","ntlmadmin");
+	$ntlmadminpasswd=GetAuthParameter("ntlm","ntlmadminpasswd");
+	$ntlmusergroup=GetAuthParameter("ntlm","ntlmusergroup");
+
+	$e = escapeshellcmd("$LANG $templatename");
+	$GID=ExecuteShellScript("getntlmgroupid", $e);
+	$e = escapeshellcmd("$LANG");
+	$value=ExecuteShellScript("bin/getntlmusers", $e);
+	$a=explode("|",$value);
+	$acount=count($a);
+	$aflag=0;
+	for($k=1,$s=0;$k<$acount;$k++)
+	{
+		if(strlen($a[$k])>0)
+		{
+			$e = escapeshellcmd("$LANG $GID ".strtr($a[$k]," ","%"));
+			$value=ExecuteShellScript("bin/testntlmusergroup", $e);
+			if($value==1)
+			{
+				$adusers[$s++]=$a[$k];
+			}
+		}
+	}
+
+  return($adusers);
+}
+
+/*
+ * Функция SearchUserFromSAMSTemplate($username)
+ * возвращает название группы SAMS, синхронизируемой с группами AD, 
+ * в которой найден пользователь $username. 
+ * если пользователь не найден, возвращается NULL
+ */
+function SearchUserFromSAMSTemplate($username)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+	$count=0;
+
+	$QUERY="SELECT shablon.s_name as shablonname FROM auth_param LEFT JOIN shablon ON auth_param.s_value=shablon.s_name LEFT JOIN squiduser ON shablon.s_shablon_id=squiduser.s_shablon_id WHERE shablon.s_auth='ntlm' AND s_param='ntlmgroup' AND squiduser.s_nick='$username'";
+
+	$result=$DB->samsdb_query_value($QUERY);
+	if($result>0)
+	{
+		$row=$DB->samsdb_fetch_array();
+		return($row['shablonname']);
+	}
+  return(NULL);
+}
+
+/*
+ * Функция MoveUserToSAMSTemplate($username, $templatename)
+ * перемещает пользователя $username в группу $templatename
+ */
+function MoveUserToSAMSTemplate($username, $templatename)
+{
+  global $SAMSConf;
+  global $DEBUG;
+  $DB=new SAMSDB();
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $QUERY="SELECT shablon.s_shablon_id FROM shablon WHERE s_name='$templatename'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $shablonid=$row['s_shablon_id'];
+
+  $QUERY="UPDATE squiduser SET s_shablon_id='$shablonid' WHERE s_nick='$username' ";
+  $result=$DB->samsdb_query($QUERY);
+
+  if($DEBUG!=0)
+	echo "  Move user '$username' to SAMS Template '$templatename'\n";
+
+  return(NULL);
+}
+
+/*
+ * Функция AddUserToSAMSTemplate($username, $templatename)
+ * добавляет нового пользователя $username в группу $templatename
+ */
+function AddUserToSAMSTemplate($username, $templatename)
+{
+  require_once("src/adldap.php");
+  global $SAMSConf;
+  global $DEBUG;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+	$userdomain=GetAuthParameter("ntlm","ntlmdomain");
+
+  $QUERY="SELECT sgroup.s_group_id FROM sgroup WHERE s_name='$templatename'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $groupid=$row['s_group_id'];
+
+  $QUERY="SELECT shablon.s_shablon_id,shablon.s_quote FROM shablon WHERE s_name='$templatename'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $shablonid=$row['s_shablon_id'];
+  $userquote=$row['s_quote'];
+  if ( $userquote == "" )
+  {
+	$userquote=0;
+  }
+  $enabled=1;
+
+	$QUERY="INSERT INTO squiduser ( s_nick, s_domain, s_name, s_family, s_shablon_id, s_quote,  s_size, s_enabled, s_group_id, s_soname, s_ip, s_passwd, s_hit, s_autherrorc, s_autherrort ) VALUES ( '$username', '$userdomain', '', '', '$shablonid', '$userquote',  '0', '$enabled', '$groupid', '', '0.0.0.0', '', '0', '0', '0') ";
+	$DB->samsdb_query($QUERY);
+
+  return(NULL);
+}
+
+
+
+
+/*
+ * Функция DeleteUserToSAMSTemplate($username, $templatename)
+ * удаляет пользователя $username из группы $templatename
+ */
+function DeleteUserToSAMSTemplate($username, $templatename)
+{
+  global $SAMSConf;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+  
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+  $QUERY="SELECT shablon.s_shablon_id FROM shablon WHERE s_name='$templatename'";
+  $result=$DB->samsdb_query_value($QUERY);
+  $row=$DB->samsdb_fetch_array();
+  $shablonid=$row['s_shablon_id'];
+
+  $QUERY="DELETE FROM squiduser WHERE s_nick='$username' AND s_shablon_id='$shablonid' ";
+  $result=$DB->samsdb_query($QUERY);
+
+  return(NULL);
+}
+
+/*
+ * Функция SearchUserFromNTLMTemplates($username)
+ * возвращает название группы AD
+ * в которой найден пользователь $username. 
+ * если пользователь не найден, возвращается NULL
+ */
+function SearchUserFromNTLMTemplates($username)
+{
+  global $SAMSConf;
+  global $DEBUG;
+  $DB=new SAMSDB();
+
+  $dbusers = array();
+
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+	$count=0;
+
+	$QUERY="SELECT s_value FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup'";
+	$result=$DB->samsdb_query_value($QUERY);
+
+	while($row=$DB->samsdb_fetch_array())
+	{
+		$adgusers=ReturnUsersFromNTLMGroup($row['s_value']);
+		$adguserscount=count($adgusers);
+		for($i=0; $i<$adguserscount; $i++)
+		{
+			if($adgusers[$i]==$username)
+			{
+				return($row['s_value']);
+			}
+		}
+	}
+  return(NULL);
+}
+
+
+
+  global $DATE;
+  global $SAMSConf;
+  global $USERConf;
+  global $DEBUG;
+
+  $HELP=0;
+  if ($argc != 1)
+  {
+	for($i=1; $i<$argc; $i++)
+	{
+		if (in_array($argv[$i], array('--help', '-h', '-?')))
+		{
+			echo "NAME\n";
+			echo "    samssyncwithad - synchronize with домена Windows users\n\n";
+			echo "SYNOPSIS\n";
+			echo "    samssyncwithad [command]\n\n";
+			echo "COMMANDS\n";
+			echo "    -h, --help\n";
+			echo "                Show this help screen and exit.\n";
+			echo "    -d, --debug\n";
+			echo "                 Produce lots of debugging information.\n";
+			exit();
+		}
+		if (in_array($argv[$i], array('--debug', '-d')))
+		{
+			$DEBUG=1;
+		}
+	}
+  }
+
+
+  require('./dbclass.php');
+  require('./samsclass.php');
+  require('./tools.php');
+
+	$SAMSConf=new SAMSCONFIG();
+//$DEBUG=1;
+	$DB=new SAMSDB();
+
+	// Получаем список групп AD, синхронизируемых с группами SAMS
+	$result=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='ntlm' AND s_param='ntlmgroup' ORDER BY s_value");
+	while($row=$DB->samsdb_fetch_array())
+	{
+		if($DEBUG!=0)
+			echo "SAMS Template: ".$row['s_value']."\n";
+
+		// Получаем массив пользователей группы NTLM
+		$adgusers=ReturnUsersFromNTLMGroup($row['s_value']);
+		$adguserscount=count($adgusers);
+		if($DEBUG!=0)
+		{
+			echo "  Windows domain group '".$row['s_value']."' users:  $adguserscount\n";
+			for($i=0; $i<$adguserscount; $i++)
+			{
+				echo "    $adgusers[$i]\n";
+			}
+		}
+		// Получаем массив пользователей шаблона SAMS
+		$dbgusers=ReturnUsersFromSAMSTemplate($row['s_value']);
+		$dbguserscount=count($dbgusers);
+		if($DEBUG!=0)
+		{
+			echo "\n";
+			echo "  SAMS template '".$row['s_value']."' users: $dbguserscount \n";
+			for($i=0; $i<$dbguserscount; $i++)
+			{
+				echo "    $i: $dbgusers[$i]\n";
+			}
+		}
+		// получаем список пользователей, которые есть в группе AD,
+		// но отсутствуют в группе SAMS
+		$unknownuserinadgroup=array_diff ( $adgusers, $dbgusers );
+		// получаем список пользователей, которые есть в группе SAMS,
+		// но отсутствуют в группе AD
+		$unknownuserinsamstemplate=array_diff ( $dbgusers, $adgusers );
+		rsort($unknownuserinadgroup);
+		rsort($unknownuserinsamstemplate);
+
+		if($DEBUG!=0)
+		{
+			echo "\n";
+			echo "  unknown users from AD group: ".count($unknownuserinadgroup)."\n";
+			for($i=0; $i<count($unknownuserinadgroup); $i++)
+			{
+				echo "    $i: $unknownuserinadgroup[$i]\n";
+			}
+			echo "  unknown users from template: ".count($unknownuserinsamstemplate)."\n";
+			for($i=0; $i<count($unknownuserinsamstemplate); $i++)
+			{
+				echo "    $i: $unknownuserinsamstemplate[$i]\n";
+			}
+			echo "\n";
+		}
+
+		// если найдены новые пользователи в группе AD
+		if(count($unknownuserinadgroup)>0)
+		{
+			for($i=0; $i<count($unknownuserinadgroup); $i++)
+			{
+				if($DEBUG!=0)
+					echo "$i: $unknownuserinadgroup[$i]\n";
+				// Ищем пользователя в группах SAMS 
+				// (пользователя перевели в другую группу AD)
+				$templatename=SearchUserFromSAMSTemplate($unknownuserinadgroup[$i]);
+
+				if($templatename!=NULL)
+				{
+					if($DEBUG!=0)
+						echo "  user '$unknownuserinadgroup[$i]' found in the template: $templatename\n";
+					// Если пользователь найден в другом шаблоне SAMS, перемещаем
+					MoveUserToSAMSTemplate($unknownuserinadgroup[$i], $row['s_value']);
+				}
+				else
+				{
+					// Если пользователь не найден в другой группе SAMS
+					// добавляем пользователя
+					AddUserToSAMSTemplate($unknownuserinadgroup[$i], $row['s_value']);
+					if($DEBUG!=0)
+						echo "  added unknown user '".$unknownuserinadgroup[$i]."' ( template '".$row['s_value']."' )\n";					
+				}
+			}
+		}
+
+		// если найдены пользователи в группе SAMS, отсутствующие в группе AD
+		if(count($unknownuserinsamstemplate)>0)
+		{
+			for($i=0; $i<count($unknownuserinsamstemplate); $i++)
+			{
+				if($DEBUG!=0)
+					echo "\n";
+				// Ищем пользователя в группах AD, с которыми синхронизируются
+				// пользователи SAMS
+				$templatename=SearchUserFromNTLMTemplates($unknownuserinsamstemplate[$i]);
+
+				if($templatename!=NULL)
+				{
+					// Если пользователь найден в другой группе, перемещаем
+					MoveUserToSAMSTemplate($unknownuserinsamstemplate[$i], $templatename);
+					if($DEBUG!=0)
+						echo "user $unknownuserinsamstemplate[$i] found in the group $templatename. Move. \n";
+				}
+				else
+				{
+					// Если пользователь не найден, удаляем
+					DeleteUserToSAMSTemplate($unknownuserinsamstemplate[$i], $row['s_value']);
+					if($DEBUG!=0)
+						echo "  user $unknownuserinsamstemplate[$i] not found in NTLM group. delete\n";
+				}
+			}
+		}
+	}
+
+
+
+?>
