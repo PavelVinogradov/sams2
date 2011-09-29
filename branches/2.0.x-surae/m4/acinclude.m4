@@ -1,6 +1,0 @@
-m4_include([m4/findfile.m4])
-m4_include([m4/mysql.m4])
-m4_include([m4/unixodbc.m4])
-m4_include([m4/pq.m4])
-m4_include([m4/pcre.m4])
-m4_include([m4/srcdocs.m4])

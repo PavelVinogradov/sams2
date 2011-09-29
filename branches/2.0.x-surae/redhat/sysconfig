@@ -1,1 +1,0 @@
-OPTIONS="-v --fork -l syslog"
