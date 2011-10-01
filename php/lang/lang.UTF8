@@ -6,6 +6,9 @@
  $langtest="UTF-8";
  $LANG="ru_RU.UTF-8";
 
+//file admintray.php
+ $SAMS_management_interface="Интерфейс управления SAMS";
+
 //file usergroup.php
  $usergroup_add="Добавлена группа пользователей";
 
