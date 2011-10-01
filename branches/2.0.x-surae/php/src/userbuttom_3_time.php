@@ -206,10 +206,10 @@ function UserTimeTraffic()
 	{
 		print("<TR>");
 		LTableCell($URL['time'][$key],15);
-		if($USERConf->ToWebInterfaceAccess("C")==1)
+		if($USERConf->ToWebInterfaceAccess("W")==1)
 		{
 			RTableCell($URL['url'][$key],75);
-		}
+		} else { RTableCell(' ',75); }
 		
 		RTableCell($URL['method'][$key],15);
 		print("</TR>\n");

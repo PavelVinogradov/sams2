@@ -21,7 +21,7 @@ function ReconfigSquid()
   if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
 	PageTop("reconfig_48.jpg","$squidbuttom_0_reconfig_ReconfigSquid_1");
-	$QUERY="INSERT INTO reconfig (s_proxy_id, s_service, s_action)  VALUES('$cache', 'squid', 'reconfig'); ";
+	$QUERY="INSERT INTO reconfig (s_proxy_id, s_service, s_action)  VALUES ('$cache', 'squid', 'reconfig'); ";
 	$result=$DB->samsdb_query($QUERY);
 	for($j=0;$j<10;$j++)
 	{

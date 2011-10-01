@@ -220,11 +220,11 @@ echo "</style> \n";
   print("<THEAD><TR>\n");
   print("<TH>No\n");
   print("<TH>URL\n");
-  if($USERConf->ToWebInterfaceAccess("C")==1)
+  if($USERConf->ToWebInterfaceAccess("W")==1)
   {
       print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_3\n");
       print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_4\n");
-   }   
+   } else { print("<TH> \n<TH> \n"); }  
   print("<TH>$userbuttom_2_traffic_UserTrafficPeriod_5\n");
   print("</TR></THEAD>\n");
   print("<TBODY>\n");
