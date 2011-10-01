@@ -26,7 +26,7 @@ function AdminTray()
 
 	if($USERConf->ToWebInterfaceAccess("C")!=1 )
 	{
-		print("<TD WIDTH=34 HEIGH=34><IMAGE src=\"$SAMSConf->ICONSET/config_32.jpg\" BORDER=0 ALT=$SAMS_management_interface\n ");
+		print("<TD WIDTH=34 HEIGH=34><A HREF=\"main.php?show=exe&function=changeuser&filename=adminbuttom_2_chuser.php\" TARGET=basefrm><IMAGE src=\"$SAMSConf->ICONSET/config_32.jpg\" BORDER=0 ALT=$SAMS_management_interface></A>\n");
 		print("<TD><A HREF=\"main.php?show=exe&function=changeuser&filename=adminbuttom_2_chuser.php\" TARGET=basefrm>$SAMS_management_interface</A>");
 	}
 	else
