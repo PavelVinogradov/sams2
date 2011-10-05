@@ -60,6 +60,7 @@ function LoadUserVariables($request)
     {
 	$row=$DB->samsdb_fetch_array();
 	$this->UserName=$row['s_nick'];
+	$this->DomainName=$row['s_domain'];
 	$this->UserGroup=$row['s_group_id'];
 	$this->gauditor=$row['s_gauditor'];
 	$this->autherrorc=$row['s_autherrorc'];
@@ -255,7 +256,7 @@ function UserAuthenticate($user, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-        $aaa=ntlm_auth ($this->UserName,$password,$SAMSConf->WBINFOPATH);
+        $aaa=ntlm_auth($this->DomainName."\\".$this->Username,$password,$SAMSConf->WBINFOPATH);
         if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	{ 
@@ -280,6 +281,7 @@ function UserAuthenticate($user, $password)
 	}		
 	else
             $username=$user;
+            $this->authOK=0;
 	}	
 
  return($this->authOk);
@@ -289,6 +291,7 @@ function UserAuthenticate($user, $password)
 function UserIDAuthenticate($userid, $password)
 {
 	global $SAMSConf; //added by DogEater
+        $this->authOK=0;
 	$this->userid=$userid;
 	$request="SELECT s_nick, s_domain, s_gauditor, squiduser.s_group_id, s_autherrorc, s_autherrort, s_user_id FROM squiduser WHERE s_user_id='$userid'";
 	$this->LoadUserVariables($request);
@@ -297,7 +300,7 @@ function UserIDAuthenticate($userid, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ntlm_auth($this->UserName,$password,$SAMSConf->WBINFOPATH);
+	$aaa=ntlm_auth($this->DomainName."\\".$this->UserName,$password,$SAMSConf->WBINFOPATH);
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 	{ 
@@ -407,10 +410,12 @@ echo "ADLD AUTHENTICATE user chemerik: $rrr\n";
 function ntlm_auth ($login, $password,$path){
 $descriptorspec = array(
    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-   1 => array("pipe", "w")  // stdout is a pipe that the child will write to
+//0=> array("file", "/tmp/stdin", "a"),
+   1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+   2 => array("file", "/tmp/error-output.txt", "a") 
 );
-//$ntlm_auth = proc_open("bin/ntlm_auth ".$path, $descriptorspec, $pipes);
-$ntlm_auth = proc_open("bin/testwbinfopasswd ".$path, $descriptorspec, $pipes);
+$ntlm_auth = proc_open("/usr/bin/ntlm_auth --helper-protocol=squid-2.5-basic ", $descriptorspec, $pipes);
+//$ntlm_auth = proc_open("bin/testwbinfopasswd ".$path, $descriptorspec, $pipes);
 if (is_resource($ntlm_auth)) {
     // $pipes now looks like this:
     // 0 => writeable handle connected to child stdin
