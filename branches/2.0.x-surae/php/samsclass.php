@@ -19,6 +19,7 @@ class MAINCONF
   var $LOGDB; 				//????    
   var $AUTH;
   var $WBINFOPATH;
+  var $NTLM_AUTHPATH;
   var $CHARSET;
   var $NTLMDOMAIN;
   var $ICONSET;
@@ -80,6 +81,7 @@ class MAINCONF
          if(!strcasecmp($str2,"DB_PASSWORD" ))         $this->DB_PASSWORD=trim(strtok("="));
 
 	 if(!strcasecmp($str2,"WBINFOPATH" ))            $this->WBINFOPATH=trim(strtok("="));
+	 if(!strcasecmp($str2,"NTLM_AUTHPATH" ))            $this->NTLM_AUTHPATH=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPUSER" ))              $this->LDAPUSER=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPUSERPASSWD" ))        $this->LDAPUSERPASSWD=trim(strtok("="));
          if(!strcasecmp($str2,"LDAPUSERSGROUP" ))        $this->LDAPUSERSGROUP=trim(strtok("="));
@@ -209,6 +211,7 @@ class SAMSCONFIG extends MAINCONF
       echo "USERACCESS = $this->USERACCESS<BR>";
       echo "AUTH = $this->AUTH<BR>";
       echo "WBINFOPATH = $this->WBINFOPATH<BR>";
+      echo "NTLM_AUTHPATH = $this->NTLM_AUTHPATH<BR>";
       echo "LANG = $this->LANG<BR>";
       echo "NTLMDOMAIN = $this->NTLMDOMAIN<BR>";
       echo "ICONSET = $this->ICONSET<BR>";
