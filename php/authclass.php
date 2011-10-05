@@ -256,7 +256,7 @@ function UserAuthenticate($user, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-        $aaa=ntlm_auth($this->DomainName."\\".$this->Username,$password,$SAMSConf->WBINFOPATH);
+        $aaa=ntlm_auth($this->DomainName."\\".$this->Username,$password,$SAMSConf->NTLM_AUTHPATH);
         if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	{ 
@@ -300,7 +300,7 @@ function UserIDAuthenticate($userid, $password)
 //	$e = escapeshellcmd( $STR );
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
-	$aaa=ntlm_auth($this->DomainName."\\".$this->UserName,$password,$SAMSConf->WBINFOPATH);
+	$aaa=ntlm_auth($this->DomainName."\\".$this->UserName,$password,$SAMSConf->NTLM_AUTHPATH);
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
 	{ 
@@ -414,7 +414,7 @@ $descriptorspec = array(
    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
    2 => array("file", "/tmp/error-output.txt", "a") 
 );
-$ntlm_auth = proc_open("/usr/bin/ntlm_auth --helper-protocol=squid-2.5-basic ", $descriptorspec, $pipes);
+$ntlm_auth = proc_open($path."/ntlm_auth --helper-protocol=squid-2.5-basic ", $descriptorspec, $pipes);
 //$ntlm_auth = proc_open("bin/testwbinfopasswd ".$path, $descriptorspec, $pipes);
 if (is_resource($ntlm_auth)) {
     // $pipes now looks like this:
