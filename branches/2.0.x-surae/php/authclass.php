@@ -257,7 +257,7 @@ function UserAuthenticate($user, $password)
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
         $aaa=ntlm_auth($this->DomainName."\\".$this->Username,$password,$SAMSConf->NTLM_AUTHPATH);
-        if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
+        if(stristr($aaa,"OK" )!=""&&stristr($aaa,"ERR" )=="")
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
 	{ 
 		$this->authOk=1;
@@ -302,7 +302,7 @@ function UserIDAuthenticate($userid, $password)
 //	$aaa=ExecuteShellScript("bin/testwbinfopasswd", $e);
 	$aaa=ntlm_auth($this->DomainName."\\".$this->UserName,$password,$SAMSConf->NTLM_AUTHPATH);
 //	if(stristr($aaa,"authentication succeeded" )!=false||stristr($aaa,"NT_STATUS_OK" )!=false)
-	if(stristr($aaa,"OK" )!=false||stristr($aaa,"ERR" )!=true)
+        if( stristr($aaa,"OK" )!="" && stristr($aaa,"ERR" )=="" )
 	{ 
 		$this->authOk=1;
 		if($SAMSConf->NTLMDOMAIN=="Y")
@@ -407,7 +407,7 @@ $rrr=$USERAUTH->UserAuthenticate("chemerik","qazwsx");
 $USERAUTH->ShowVariables();
 echo "ADLD AUTHENTICATE user chemerik: $rrr\n";
 */
-function ntlm_auth ($login, $password,$path){
+function ntlm_auth($login, $password,$path){
 $descriptorspec = array(
    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
 //0=> array("file", "/tmp/stdin", "a"),
@@ -434,7 +434,7 @@ if (is_resource($ntlm_auth)) {
 	return $ntlm_auth_says;
     }
     else {
-	die ("Error talking to ntlm_auth: ".$ntlm_auth_says.".\n");
+	die ("Error talking to ntlm_auth: ".$ntlm_auth_says.".\n"."Error code: ".$return_value);
     }
 }
 }
