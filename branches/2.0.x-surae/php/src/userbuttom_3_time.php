@@ -180,7 +180,7 @@ function UserTimeTraffic()
   print("	\"aoColumns\": [ \n");
   print("		{ \"sType\": \"numeric\", \"sWidth\": \"15%\" },\n");
   print("		{ \"sType\": \"html\", \"sWidth\": \"75%\"},\n");
-  print("		{ \"sType\": \"html\", \"sWidth\": \"10%\"},\n");
+  print("		{ \"sType\": \"html\", \"sWidth\": \"10%\"}\n");
   print("    ]\n");
   print("  });\n");
   print("});\n");
@@ -192,11 +192,11 @@ function UserTimeTraffic()
 
   $cache=0;
   print("<TABLE CLASS=samstable id=\"urltime\" WIDTH=80%>");
-  print("<THEAD>\n");
-  print("<TH>Time");
-  print("<TH>URL");
-  print("<TH>Method");
-  print("</THEAD>\n");
+  print("<THEAD><TR>\n");
+  print("<TH>Time</TH>");
+  print("<TH>URL</TH>");
+  print("<TH>Method</TH>");
+  print("</TR></THEAD>\n");
   print("<TBODY>\n");
   $size=0;
 
