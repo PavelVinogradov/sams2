@@ -58,6 +58,8 @@ bool MYSQLConn::connect ()
       return false;
     }
 
+   mysql_query(_mysql, "SET NAMES utf8");
+
   _connected = true;
 
   DEBUG (DEBUG6, "[" << this << "->" << __FUNCTION__ << "] " << "Connected.");

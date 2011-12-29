@@ -168,9 +168,54 @@ bool SAMSUserList::reload()
       return false;
     }
 
-  //string sqlcmd = "select s_user_id, s_group_id, s_shablon_id, s_nick, s_domain, s_quote, s_size, s_hit, s_enabled, s_ip, s_passwd from squiduser";
-  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
+  Proxy::reload ();
+  bool usedomain = Proxy::useDomain ();
+  Proxy::CharCase domain_case = Proxy::getDomainCase ();
+  Proxy::CharCase username_case = Proxy::getUsernameCase ();
+  bool auth_ntlm = Proxy::AUTH_NTLM;
+  bool auth_adld = Proxy::AUTH_ADLD;
+  string sqlcmd = "";
+    string s_domainsql = "a.s_domain";
+    string s_nicksql = "a.s_nick";
+      switch (username_case)
+      {
+        case Proxy::CASE_UPPER:
+	    s_nicksql = "upper(a.s_nick)";
+          break;
+        case Proxy::CASE_LOWER:
+	    s_nicksql = "lower(a.s_nick)";
+          break;
+        default:
+          break;
+      }
+      if (auth_ntlm == 1 || auth_adld == 1)
+      {
+	switch (domain_case)
+        {
+              case Proxy::CASE_UPPER:
+		    s_domainsql = "upper(a.s_domain)";
+                break;
+              case Proxy::CASE_LOWER:
+		    s_domainsql = "upper(a.s_domain)";
+                break;
+              default:
+	            s_domainsql = "a.s_domain";
+                break;
+        }
+      }
+/*
+//  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, a.s_nick, a.s_domain, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
+//                   from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id order by a.s_user_id";
+
+//  string sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, " << s_nicksql << ", " << s_domainsql << ", a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
+//                   from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id order by a.s_user_id";
+//          sprintf(&sqlcmd, "select a.s_user_id, a.s_group_id, a.s_shablon_id, %s, %s, a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id order by a.s_user_id",s_nicksql,s_domainsql);
+*/
+//s4 + "that" + 
+  sqlcmd = "select a.s_user_id, a.s_group_id, a.s_shablon_id, " + s_nicksql + ", " + s_domainsql + ", a.s_quote, a.s_size, a.s_hit, a.s_enabled, a.s_ip, a.s_passwd, b.s_shablon_id2, b.s_auth \
                    from squiduser a, shablon b where a.s_shablon_id=b.s_shablon_id order by a.s_user_id";
+
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "!!! SQL " << sqlcmd);
   if (!query->sendQueryDirect (sqlcmd.c_str()))
     {
       delete query;
@@ -183,12 +228,12 @@ bool SAMSUserList::reload()
   string s_tmp_nick;
   string s_tmp_auth;
   string s_tmp_passwd;
-  Proxy::reload ();
-  bool usedomain = Proxy::useDomain ();
-  Proxy::CharCase domain_case = Proxy::getDomainCase ();
-  Proxy::CharCase username_case = Proxy::getUsernameCase ();
-  bool auth_ntlm = Proxy::AUTH_NTLM;
-  bool auth_adld = Proxy::AUTH_ADLD;
+//  Proxy::reload ();
+//  bool usedomain = Proxy::useDomain ();
+//  Proxy::CharCase domain_case = Proxy::getDomainCase ();
+//  Proxy::CharCase username_case = Proxy::getUsernameCase ();
+//  bool auth_ntlm = Proxy::AUTH_NTLM;
+//  bool auth_adld = Proxy::AUTH_ADLD;
   while (query->fetch ())
     {
       s_tmp_domain = "";
@@ -197,9 +242,9 @@ bool SAMSUserList::reload()
       if (usedomain)
         {
           s_tmp_domain = TrimSpaces(s_domain);
+/*
           if (auth_ntlm == 1 || auth_adld == 1)
           {
-
             switch (domain_case)
             {
               case Proxy::CASE_UPPER:
@@ -211,13 +256,15 @@ bool SAMSUserList::reload()
               default:
                 break;
             }
-
           }
+*/
           usr->setDomain (s_tmp_domain);
         }
       s_tmp_nick = TrimSpaces(s_nick);
+/*
       switch (username_case)
       {
+
         case Proxy::CASE_UPPER:
           s_tmp_nick = ToUpper (s_tmp_nick);
           break;
@@ -227,12 +274,14 @@ bool SAMSUserList::reload()
         default:
           break;
       }
+*/
       usr->setNick (s_tmp_nick);
       s_tmp_ip = TrimSpaces(s_ip);
       usr->setIP (s_tmp_ip);
       s_tmp_auth = TrimSpaces(s_auth);
 
       string hash = Proxy::createUserHash (s_tmp_auth, s_tmp_ip, s_tmp_domain, s_tmp_nick);
+  DEBUG (DEBUG9, "[" << __FUNCTION__ << "] user:" << s_tmp_nick << " hash:" << hash );
 
       usr->setActiveTemplateId (s_shablon_id);
       usr->setId (s_user_id);
@@ -310,6 +359,7 @@ SAMSUser *SAMSUserList::findUser (const string & auth, const string & ip, const 
   SAMSUser *usr = NULL;
 
   string hash = Proxy::createUserHash (auth, ip, domain, nick);
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "] hash:" << hash );
   map < string, SAMSUser * >::iterator it;
   it = _users.find (hash);
   if (it != _users.end ())
@@ -422,6 +472,7 @@ bool SAMSUserList::addNewUser(const string & auth, SAMSUser *user)
   user->setId (s_user_id);
 
   string hash = Proxy::createUserHash (auth, user->getIP ().asString (), user->getDomain(), user->getNick());
+  DEBUG (DEBUG8, "[" << __FUNCTION__ << "] hash:" << hash );
   _users[hash] = user;
 
   basic_stringstream < char >mess;

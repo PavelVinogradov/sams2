@@ -364,10 +364,12 @@ exit(0);
 	if($this->db_name=="MySQL" && $this->db_odbc==0 && $this->db_pdo==0)
 	{
 		$this->link=$this->mysqldb_connect($host,$user,$passwd,$dbname);
+		$this->samsdb_query("SET NAMES utf8");
 	}
 	if($this->db_name=="PostgreSQL" && $this->db_odbc==0 && $this->db_pdo==0)
 	{
 		$this->link=$this->pgsqldb_connect($host,$user,$passwd,$dbname);
+		$this->samsdb_query("set client_encoding='UTF8'");
 	}
 	if($this->db_odbc==1 && $this->db_pdo==0)
 	{

@@ -27,16 +27,13 @@ function SAMSLangToUTF8($inp)
 
 function UTF8ToSAMSLang($inp)
 {
-	global $SAMSConf;
-	
-	$charset=explode(",",$_SERVER['HTTP_ACCEPT_CHARSET']);
+  global $SAMSConf;
+  $charset=explode(",",$_SERVER['HTTP_ACCEPT_CHARSET']);
 	$out=$inp;
-	
 	if($SAMSConf->LANG!="UTF8" && $SAMSConf->LANG!="EN")
 	{
 		$out=iconv("UTF-8", $SAMSConf->CHARSET, $inp);
 	}
-	
 	if($SAMSConf->LANG=="EN")
 	{
 		return($inp);
@@ -47,13 +44,11 @@ function UTF8ToSAMSLang($inp)
 
 function UpdateAuthParameter($auth,$parameter)
 {
-	global $SAMSConf;
-	
-	if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
-	//Allow to save emty values of auth parameters.
-	//Fix bug #394
-	//if($value!="")
-	//{
+  global $SAMSConf;
+
+  if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
+  if($value!="")
+  {
 	$DB=new SAMSDB();
 	$num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
 	if($num_rows>0)
@@ -69,24 +64,23 @@ function UpdateAuthParameter($auth,$parameter)
 		$query="INSERT INTO auth_param VALUES('$auth','$parameter','$value')";
 	}
 	$DB->samsdb_query($query);
-	//}
+  }
+
 }
 
 
 function GetAuthParameter($auth,$parameter)
 {
   global $SAMSConf;
-  
   $value="";
   $DB=new SAMSDB();
   $num_rows=$DB->samsdb_query_value("SELECT s_value FROM auth_param WHERE s_auth='$auth' AND s_param='$parameter' ");
-  
   if($num_rows>0)
   {
 	$row=$DB->samsdb_fetch_array();
-	$value = $row['s_value'];
+	return($row['s_value']);
   }
-  return($value);
+  return("");
 }
 
 
