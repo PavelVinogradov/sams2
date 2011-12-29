@@ -162,12 +162,17 @@ function ProxyReConfigForm()
   print("  else if(auth==\"adld\")\n");
   print("    {\n");
   print("      formname.usedomain.disabled=false; \n");
-  print("      formname.separator.disabled=false; \n");
   print("      if(domainenabled==true)\n");
+  print("      {\n");
+  print("        formname.separator.disabled=false; \n");
   print("        formname.bigdomain.disabled=false; \n");
+  print("      }\n");
   print("      else\n");
+  print("      {\n");
+  print("        formname.separator.disabled=true; \n");
   print("        formname.bigdomain.disabled=true; \n");
-//  print("      formname.bigusername.disabled=false; \n");
+  print("      }\n");
+  print("      formname.bigusername.disabled=false; \n");
   print("    }\n");
   print("  else if(auth==\"ntlm\")\n");
   print("    {\n");
@@ -193,13 +198,13 @@ function ProxyReConfigForm()
   print("  if(needdomain==true) \n");
   print("      {\n");
   print("        formname.bigdomain.disabled=false; \n");
-  print("        formname.bigusername.disabled=false; \n");
+//  print("        formname.bigusername.disabled=false; \n");
   print("        formname.separator.disabled=false; \n");
   print("      }\n");
   print("  else \n");
   print("      {\n");
   print("        formname.bigdomain.disabled=true; \n");
-  print("        formname.bigusername.disabled=true; \n");
+//  print("        formname.bigusername.disabled=true; \n");
   print("        formname.separator.disabled=true; \n");
   print("      }\n");
   print("}\n");
@@ -368,6 +373,23 @@ function ProxyReConfigForm()
 
   print("<TR>\n");
   print("<TD>\n");
+  
+  print("<BR>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
+  print("<SELECT NAME=\"bigusername\" $USERDISABLE onchange=EnableDomainName(samsreconfigform)>\n");
+  if($PROXYConf->s_bigu==0)
+            print("<OPTION VALUE=0 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+  else
+            print("<OPTION VALUE=0>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
+  if($PROXYConf->s_bigu==1)
+            print("<OPTION VALUE=1 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  else
+            print("<OPTION VALUE=1 >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
+  if($PROXYConf->s_bigu==2)
+            print("<OPTION VALUE=2 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+  else
+            print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
+  print("</SELECT>\n");
+  print("<BR>");
 
   if($PROXYConf->s_usedomain==1)
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"usedomain\" $DOMAINDISABLE CHECKED onchange=EnableDomainName(samsreconfigform)>$adminbuttom_1_prop_SamsReConfigForm_18\n");
@@ -390,22 +412,6 @@ function ProxyReConfigForm()
   else
             print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
   print("</SELECT >\n");
-  
-  print("<BR>$adminbuttom_1_prop_SamsReConfigForm_22 \n");
-  print("<SELECT NAME=\"bigusername\" $USERDISABLE onchange=EnableDomainName(samsreconfigform)>\n");
-  if($PROXYConf->s_bigu==0)
-            print("<OPTION VALUE=0 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-  else
-            print("<OPTION VALUE=0>$adminbuttom_1_prop_SamsReConfigForm_20a</OPTION>\n");
-  if($PROXYConf->s_bigu==1)
-            print("<OPTION VALUE=1 SELECTED >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-  else
-            print("<OPTION VALUE=1 >$adminbuttom_1_prop_SamsReConfigForm_20b</OPTION>\n");
-  if($PROXYConf->s_bigu==2)
-            print("<OPTION VALUE=2 SELECTED>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-  else
-            print("<OPTION VALUE=2>$adminbuttom_1_prop_SamsReConfigForm_20c</OPTION>\n");
-  print("</SELECT>\n");
 
 
   print("<P>$adminbuttom_1_prop_SamsReConfigForm_50: \n");
@@ -581,6 +587,10 @@ function ProxyReConfigForm()
   print("</TABLE>\n");
   print("<BR><INPUT TYPE=\"SUBMIT\" value=\"$adminbuttom_1_prop_SamsReConfigForm_12\">\n");
   print("</FORM>\n");
+
+  print("<SCRIPT LANGUAGE=JAVASCRIPT>\n");
+  print(" onload=EnableDomainName(samsreconfigform)");
+  print("</SCRIPT>\n");
 }
 
 
