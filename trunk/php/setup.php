@@ -387,7 +387,7 @@ $pgdb[27] = "CREATE INDEX idx_samslog on samslog ( s_code, s_issuer )";
 $pgdb[28] = "CREATE INDEX idx_url on url ( s_redirect_id, s_url )";
 $pgdb[29] = "CREATE TABLE sysinfo ( s_row_id SERIAL PRIMARY KEY, s_proxy_id INT NOT NULL , s_name VARCHAR( 50 ) NOT NULL , s_version VARCHAR( 10 ) NOT NULL , s_author VARCHAR( 30 ) NULL DEFAULT 'anonymous', s_info VARCHAR( 1024 ) NOT NULL DEFAULT 'not available', s_date TIMESTAMP, s_status INT NOT NULL)";
 
-$pgdb[30] = "create table auth_param (s_auth varchar(4) default '', s_param varchar(50) default '', s_value varchar(50) default '')";
+$pgdb[30] = "create table auth_param (s_auth varchar(4) default '', s_param varchar(50) default '', s_value varchar(100) default '')";
 $pgdb[31] = "INSERT INTO auth_param VALUES('ntlm', 'enabled', '0')";
 $pgdb[32] = "INSERT INTO auth_param VALUES('ldap', 'enabled', '0')";
 $pgdb[33] = "INSERT INTO auth_param VALUES('adld', 'enabled', '0')";
@@ -430,11 +430,12 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 
     if($db=="MySQL" && ($odbc==0 || $odbc == "No"))
       {
+	$charset="ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin";
 	$link=@mysql_connect($host,$user,$passwd) || die (mysql_error());
 	if($link && mysql_select_db($dbname)==FALSE)
 	  {
 		echo "Create database $dbname<BR>";
-		$result = mysql_query("CREATE DATABASE $dbname") or die("Invalid query: " . mysql_error());
+		$result = mysql_query("CREATE DATABASE $dbname  CHARACTER SET utf8 COLLATE utf8_general_ci") or die("Invalid query: " . mysql_error());
 		echo "Database $dbname Created<BR>";
 	  }
 	else
@@ -447,7 +448,11 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 	for( $i=0; $i<count($pgdb); $i++)
 	   {
 		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
-		$result=$sDB->samsdb_query("$pgdb[$i];");		
+		if(strstr($pgdb[$i], "CREATE TABLE")!=FALSE)
+		    $result=$sDB->samsdb_query("$pgdb[$i] $charset;");		
+		else
+		    $result=$sDB->samsdb_query("$pgdb[$i];");		
+
 		if($result>0)
 			echo "<TD VALIGN=TOP><B>Ok</B>\n";
 		else
@@ -463,7 +468,7 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
       {
 	$sDB=new CREATESAMSDB("PostgreSQL", "0", $host, $user, $passwd, $dbname, $odbcsource);
 	$sDB->pgsqldb_connect($host,$user,$passwd,$dbname);
-
+//ENCODING = 'UTF8'
 	echo "<TABLE WIDTH=95%>";
 	 for( $i=0; $i<count($pgdb); $i++)
 	  {
