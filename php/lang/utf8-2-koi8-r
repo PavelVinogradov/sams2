@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#iconv -f KOI8-R -t UTF-8 lang.KOI8-R | sed -e "s/KOI8-R/UTF-8/"> lang.UTF8
+iconv -f UTF-8 -t KOI8-R lang.UTF8 | sed -e "s/UTF-8/KOI8-R/"> lang.KOI8-R
+
