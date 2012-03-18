@@ -1,0 +1,4 @@
+#!/bin/sh
+
+iconv -f UTF-8 -t CP1251 lang.UTF8 | sed -e "s/UTF-8/WINDOWS-1251/"> lang.WIN1251
+

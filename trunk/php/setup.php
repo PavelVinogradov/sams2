@@ -409,7 +409,7 @@ $pgdb[45] = "INSERT INTO auth_param VALUES('ldap','usersfilter','(objectClass=Pe
 $pgdb[46] = "INSERT INTO auth_param VALUES('ldap','usernameattr','gecos')";
 $pgdb[47] = "INSERT INTO auth_param VALUES('ldap','groupsrdn','ou=Group')";
 $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=posixGroup)')";
-
+echo "<h2>db:$db</h2>";
     $crpasswd=crypt("qwerty","00");
     if($db=="unixODBC")
       {
@@ -418,12 +418,14 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 	echo "<TABLE WIDTH=95%>";
 	for( $i=0; $i<count($pgdb); $i++)
 	  {
-		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 		$result=$sDB->samsdb_query("$pgdb[$i];");	
-		if($result>0)
-			echo "<TD VALIGN=TOP><B>Ok</B>\n";
-		else
+		if($result==0)
+		{
+			echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
+		}
+//		else
+//			echo "<TD VALIGN=TOP><B>Ok</B>\n";
 	  }
 	echo "</TABLE>";
       }
@@ -447,16 +449,18 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 	echo "<TABLE WIDTH=95%>";
 	for( $i=0; $i<count($pgdb); $i++)
 	   {
-		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 		if(strstr($pgdb[$i], "CREATE TABLE")!=FALSE)
 		    $result=$sDB->samsdb_query("$pgdb[$i] $charset;");		
 		else
 		    $result=$sDB->samsdb_query("$pgdb[$i];");		
 
-		if($result>0)
-			echo "<TD VALIGN=TOP><B>Ok</B>\n";
-		else
+		if($result==0)
+		{
+			echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
+		}
+//		else
+//			echo "<TD VALIGN=TOP><B>Ok</B>\n";
 	   }
 	echo "</TABLE>";
 	$sDB->samsdb_query("UPDATE passwd SET s_pass='$crpasswd' WHERE s_user='admin' ");		
@@ -472,12 +476,14 @@ $pgdb[48] = "INSERT INTO auth_param VALUES('ldap','groupsfilter','(objectClass=p
 	echo "<TABLE WIDTH=95%>";
 	 for( $i=0; $i<count($pgdb); $i++)
 	  {
-		echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 		$result=$sDB->samsdb_query("$pgdb[$i];");		
-		if($result>0)
-			echo "<TD VALIGN=TOP><B>Ok</B>\n";
-		else
+		if($result==0)
+		{
+			echo "<TR><TD VALIGN=TOP WIDTH=5%>$i: <TD><FONT SIZE=-1>$pgdb[$i]</FONT>\n";
 			echo "<TD VALIGN=TOP><FONT COLOR=RED>ERROR</FONT>\n";
+		}
+//		else
+//			echo "<TD VALIGN=TOP><B>Ok</B>\n";
 	  }
 	echo "</TABLE>";
       }
@@ -544,6 +550,18 @@ function step_4($lang)
 	else
 		print("<FORM NAME=\"setupform\" ACTION=\"index.html\">\n");
 	mainfrm($step, $lang);
+	if($step==4)
+	{
+		require('./config.php');
+		echo "</CENTER>";
+		echo "<IMG SRC=\"icon/classic/warning.jpg\" ALIGN=LEFT STYLE=\"padding:30px 20px 30px 20px;\" >";
+		echo "$setup_step_4_1 $configfile $setup_step_4_2:<br>";
+		echo "$setup_step_4_3<br>";
+		echo "<b>DB_USER=username</b><br>";
+		echo "$setup_step_4_4<br>";
+		echo "<b>DB_PASSWORD=userpassword</b><br><br>";
+		echo "<CENTER>";
+	}
 	print(" <INPUT CLASS=\"button\" TYPE=\"BUTTON\" value=\"<< $setup_17\" onclick=PrevPage() >\n");
 	print(" <INPUT CLASS=\"button\" TYPE=\"SUBMIT\" value=\"$setup_16 >>\">\n");
 	print("</FORM>\n");

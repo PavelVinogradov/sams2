@@ -1108,4 +1108,10 @@
    $usersbuttom_1_domain_AddUsersFromDomainForm_8="Создать новую группу";
    $usersbuttom_1_domain_AddUsersFromDomainForm_9="Название группы";
    $usersbuttom_1_domain_AddUsersFromDomainForm_10="Cоздать группы SAMS с именами групп AD";
+
+   $setup_step_4_1="Незабудьте изменить в файле";
+   $setup_step_4_2="параметры подключения к базе данных";
+   $setup_step_4_3="имя пользователя для подключения к базе данных";
+   $setup_step_4_4="пароль";
+
 ?>
