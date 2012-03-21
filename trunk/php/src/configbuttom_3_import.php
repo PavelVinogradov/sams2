@@ -620,6 +620,7 @@ function importdata()
 		$IMP->importproxysettings();
 	}
 
+  echo "<br><font color=\"BLUE\">$configbuttom_3_import_importdata_1</font><br>";
   print("<SCRIPT>\n");
   print("        parent.lframe.location.href=\"lframe.php\";\n");
   print("</SCRIPT> \n");
