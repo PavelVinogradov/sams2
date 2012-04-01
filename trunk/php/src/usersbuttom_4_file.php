@@ -33,7 +33,7 @@ function UsersTrafficStat()
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
 
-  PageTop("usergroup_48.jpg","$usersbuttom_3_file_usersbuttom_3_file_1");
+  PageTop("filesize_48.jpg","$usersbuttom_3_file_usersbuttom_3_file_1");
   print("<BR>\n");
 
 	print("<TABLE WIDTH=\"90%\" ALIGN=CENTER><TR><TD>");
@@ -71,9 +71,9 @@ function UsersTrafficStat()
 		print("<TH>No\n");
 		print("<TH>$usersbuttom_3_file_UsersFileSizePeriod_4\n");
 		print("<TH>$usersbuttom_3_file_UsersFileSizePeriod_5\n");
-		print("<TH>URL\n");
 		print("<TH>$usersbuttom_3_file_UsersFileSizePeriod_6\n");
 		print("<TH>$squidbuttom_5_readcache_LoadFileForm_2\n");
+		print("<TH>URL\n");
 		while($row=$DB->samsdb_fetch_array())
 		{
 			print("<TR>\n");
@@ -89,11 +89,11 @@ function UsersTrafficStat()
 
 			LTableCell($name,15);
 			LTableCell($row['s_date'],10);
-			LTableCell($row['s_url'],16);
 			$aaa=FormattedString($row['s_size']);
 			LTableCell($aaa,10);
 			$aaa=FormattedString($row['s_hit']);
 			LTableCell($aaa,10);
+			LTableCell($row['s_url'],16);
 
 			$count++;
 		}
@@ -156,7 +156,7 @@ function UsersStatForm()
 	require($lang);
 	if(isset($_GET["userid"])) $userid=$_GET["userid"];
 
-	PageTop("traffic_48.jpg","$alltraffic_1<BR>files");
+	PageTop("filesize_48.jpg","$usersbuttom_3_file_usersbuttom_3_file_1");
 
 	print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
 	print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
@@ -184,7 +184,7 @@ function usersbuttom_4_file()
 	$lang="./lang/lang.$SAMSConf->LANG";
 	require($lang);
 
-       GraphButton("main.php?show=exe&function=usersstatform&filename=usersbuttom_4_file.php","basefrm","userstat_32.jpg","userstat_48.jpg","$usersbuttom_2_traffic_usersbuttom_2_traffic_1");
+       GraphButton("main.php?show=exe&function=usersstatform&filename=usersbuttom_4_file.php","basefrm","filesize_32.jpg","filesize_48.jpg","$usersbuttom_2_traffic_usersbuttom_2_traffic_1");
   }
 
 }
