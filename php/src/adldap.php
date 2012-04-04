@@ -109,6 +109,7 @@ class adLDAP {
 		//set some ldap options for talking to AD
 		ldap_set_option($this->_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->_conn, LDAP_OPT_REFERRALS, 0);
+		ldap_set_option($this->_conn, LDAP_OPT_SIZELIMIT, 500); 
 		
 		//bind as a domain admin if they've set it up
 		if ($this->_ad_username!=NULL && $this->_ad_password!=NULL)
