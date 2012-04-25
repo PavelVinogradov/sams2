@@ -109,7 +109,7 @@ class adLDAP {
 		//set some ldap options for talking to AD
 		ldap_set_option($this->_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->_conn, LDAP_OPT_REFERRALS, 0);
-		ldap_set_option($this->_conn, LDAP_OPT_SIZELIMIT, 500); 
+//		ldap_set_option($this->_conn, LDAP_OPT_SIZELIMIT, 1234); 
 		
 		//bind as a domain admin if they've set it up
 		if ($this->_ad_username!=NULL && $this->_ad_password!=NULL)
@@ -430,7 +430,8 @@ class adLDAP {
 		if (!$this->_bind){ return (false); }
 		$filter="samaccountname=".$username;
 //		if ($fields==NULL){ $fields=array("samaccountname","mail","memberof","department","displayname","telephonenumber","primarygroupid","username"); }
-		if ($fields==NULL){ $fields=array("samaccountname","displayname","givenname","sn"); }
+//		if ($fields==NULL){ $fields=array("samaccountname","displayname","givenname","sn","objectguid"); }
+		$fields=array("samaccountname","displayname","givenname","sn","objectguid");
 		$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
 		$entries = ldap_get_entries($this->_conn, $sr);
 // AD does not return the primary group in the ldap query, we may need to fudge it
@@ -529,29 +530,92 @@ class adLDAP {
 	}
 
 	// Returns all AD users
-	function all_users($include_desc = false, $search = "*", $sorted = true){
-		if (!$this->_bind){ return (false); }
+	function all_users($include_desc = false, $search = "*", $sorted = true)
+	{
+		if (!$this->_bind)
+		    { return (false); }
 		//perform the search and grab all their details
 		$filter = "(&(objectClass=user)(samaccounttype=". ADLDAP_NORMAL_ACCOUNT .")(objectCategory=person)(cn=".$search."))";
-		$fields=array("samaccountname","displayname","givenname","sn","memberof");
+		$fields=array("samaccountname","displayname","givenname","sn","memberof","objectguid");
 		$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
-		$entries = ldap_get_entries($this->_conn, $sr);
+		$countResult =ldap_count_entries($this->_conn,$sr); 
 		$users_array = array();
-		$acount=$entries["count"];
-		for ($i=0; $i<$entries["count"]; $i++)
+		if($countResult != 1000)
 		{
-			$users_array[$i]["samaccountname"] = $entries[$i]["samaccountname"][0];
-			$users_array[$i]["displayname"] = $entries[$i]["displayname"][0];
-			$users_array[$i]["givenname"] = $entries[$i]["givenname"][0];
-			$users_array[$i]["sn"] = $entries[$i]["sn"][0];
-			$mcount=count($entries[$i]["memberof"]);
-			for($j=0;$j<$mcount;$j++)
+		    $entries = ldap_get_entries($this->_conn, $sr);
+		    $acount=$entries["count"];
+		    for ($i=1, $ic=1000 ; $i<$entries["count"]; $i++, $ic++)
+		    {
+			$users_array[$ic]["samaccountname"] = $entries[$i]["samaccountname"][0];
+			$users_array[$ic]["displayname"] = $entries[$i]["displayname"][0];
+			$users_array[$ic]["givenname"] = $entries[$i]["givenname"][0];
+			if(isset($entries[$i]["sn"][0]))
+			    $users_array[$ic]["sn"] = $entries[$i]["sn"][0];
+			$users_array[$ic]["objectguid"] = bin2hex($entries[$i]["objectguid"][0]);
+			$users_array[$ic]["count"] = $i;
+			if(isset($entries[$i]["memberof"][0]))
 			{
-				$users_array[$i]["memberof"] = $users_array[$i]["memberof"]."|".$entries[$i]["memberof"][$j];
+			    $mcount=count($entries[$i]["memberof"]);
+			    if($mcount>0)
+			    {
+				for($j=0;$j<$mcount-1;$j++)
+				{
+				    $q2q=$users_array[$ic]["memberof"]."|".$entries[$i]["memberof"][$j];
+				    $users_array[$ic]["memberof"] = $q2q;
+				}
+			    }
 			}
+		    }
+//		    if ($sorted) { asort($users_array); }
+		    return ($users_array);
 		}
-		if ($sorted){ asort($users_array); }
+		else
+		{
+		    $i=1000;
+		    for($a=32;$a<255;$a++)
+    		    {
+    			$character = chr($a);
+			$filter = "(&(objectClass=user)(samaccounttype=". ADLDAP_NORMAL_ACCOUNT .")(objectGUID=".$character."*)(objectCategory=person))";
+			$fields=array("samaccountname","displayname","givenname","sn","memberof","objectguid");
+
+			$sr=ldap_search($this->_conn,$this->_base_dn,$filter,$fields);
+			$cR =ldap_count_entries($this->_conn,$sr); 
+			$entries = ldap_get_entries($this->_conn, $sr);
+			$acount=$entries["count"];
+			for ($v=0; $v<$acount; $v++)
+			{
+			    $objguid=bin2hex($entries[$v]["objectguid"][0]);
+			    if(strlen($objguid)>2)
+			    {
+				$samaccountname=$entries[$v]["samaccountname"][0];
+				$displayname=$entries[$v]["displayname"][0];
+				$givenname=$entries[$v]["givenname"][0];
+				$sn=$entries[$v]["sn"][0];
+				$users_array[$i]["samaccountname"] = $samaccountname;
+			        $users_array[$i]["displayname"] = $displayname;
+				$users_array[$i]["givenname"] = $givenname;
+				$users_array[$i]["sn"] = $sn;
+				$users_array[$i]["objectguid"] = $objguid;
+				$users_array[$i]["count"] = $i;
+				$users_array[$i]["character"] = $a;
+
+				$memberof="";
+				$mcount=count($entries[$v]["memberof"]);
+				for($j=0;$j<$mcount;$j++)
+				{
+				    if(strlen($entries[$v]["memberof"][$j])>2)
+				    {	
+					$memberof = "$memberof|".$entries[$v]["memberof"][$j];
+				    }
+				}
+				$users_array[$i]["memberof"]=$memberof;
+				$i++;
+			    }
+			}
+		    }
 		return ($users_array);
+		}
+		
 	}
 	
 	// Returns a complete list of the groups in AD
