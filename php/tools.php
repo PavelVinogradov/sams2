@@ -47,6 +47,7 @@ function UpdateAuthParameter($auth,$parameter)
   global $SAMSConf;
 
   if(isset($_GET["$parameter"])) $value=$_GET["$parameter"];
+  $value=str_replace ( "\\", "\\\\", $value );
   if($value!="")
   {
 	$DB=new SAMSDB();
