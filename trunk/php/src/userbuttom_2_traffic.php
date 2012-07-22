@@ -35,8 +35,8 @@ function UserTrafficPeriodGB()
 	$bdate=$DATE->BeginDate();
 	$eddate=$DATE->EndDate();
   
-
-	$num_rows=$DB->samsdb_query_value("SELECT sum(s_size) as s_size,s_date,s_user,s_domain,sum(s_hit) as s_hit FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date");
+	$QUERY="SELECT sum(s_size) as s_size,s_date,s_user,s_domain,sum(s_hit) as s_hit FROM cachesum WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date";
+	$num_rows=$DB->samsdb_query_value($QUERY);
 	while($row=$DB->samsdb_fetch_array())
 	{
 		$elemx[0][]=$row['s_date'];
@@ -158,7 +158,8 @@ function UserTrafficPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
   $size=0;
-  $num_rows=$DB->samsdb_query_value("SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date");
+  $QUERY="SELECT sum(s_size),s_date,s_user,s_domain,sum(s_hit) FROM cachesum WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND s_date>='$sdate' AND s_date<='$edate' GROUP BY s_date,s_user,s_domain ORDER BY s_date";
+  $num_rows=$DB->samsdb_query_value($QUERY);
 
 
   while($row=$DB->samsdb_fetch_array())
