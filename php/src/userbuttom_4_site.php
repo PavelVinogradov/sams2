@@ -49,7 +49,7 @@ function ShowLoadingFilesFromDomain()
   PageTop("straffic_48.jpg","$userbuttom_4_site_SiteUserList_1 $url <BR>$userbuttom_4_site_SiteUserList_6 <FONT COLOR=\"BLUE\">$SquidUSERConf->s_nick</FONT>");
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");
 
-  $QUERY="select * from squidcache where s_user='".$SquidUSERConf->s_nick."' AND s_url like '%$url%' AND s_date>='$sdate' AND s_date<='$edate' ORDER BY s_url";
+  $QUERY="select * from squidcache where lower(s_user)=lower('".$SquidUSERConf->s_nick."') AND s_url like '%$url%' AND s_date>='$sdate' AND s_date<='$edate' ORDER BY s_url";
   $num_rows=$DB->samsdb_query_value($QUERY);
   print("<TABLE CLASS=samstable>");
   print("<TH WIDTH=10%>Date");
@@ -115,9 +115,8 @@ function UserSitesPeriod()
   print("<TABLE WIDTH=\"90%\"><TR><TD>");
   print("<FORM NAME=\"UserIDForm\" ACTION=\"main.php\">\n");
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usersitesperiod\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_4_site.php\">\n");
-  print("<INPUT TYPE=\"HIDDEN\" NAME=\"id\" id=id value=\"$SquidUSERConf->s_user_id\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"userssitesperiod\">\n");
+  print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_3_site.php\">\n");
   $dateselect->SetPeriod();
   print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
   print("</FORM>\n");
@@ -136,7 +135,7 @@ function UserSitesPeriod()
 	$url_domain="";
 	$url_size_sum=0;
 	$hit_size_sum=0;
-	$query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_size desc limit 5000";
+	$query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_size desc limit 5000";
 	$num_rows=$DB->samsdb_query_value($query);
 	while($row=$DB->samsdb_fetch_array())
 	{
@@ -158,7 +157,7 @@ function UserSitesPeriod()
 		}
        }
 
-	$query="SELECT substring( s_url from 0 for position(':' in s_url) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_user='$SquidUSERConf->s_nick' AND s_date>='$sdate'AND s_date<='$edate' AND s_method='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 5000";
+	$query="SELECT substring( s_url from 0 for position(':' in s_url) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND s_date>='$sdate'AND s_date<='$edate' AND s_method='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 5000";
 	$num_rows=$DB->samsdb_query_value($query);
 	while($row=$DB->samsdb_fetch_array())
 	{
@@ -320,7 +319,7 @@ function UserSitesPeriod_new()
 		"hit_size"=>array(),
 		"sum_size"=>array());
 
-  $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_user='$SquidUSERConf->s_nick' AND  s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
+  $query="SELECT substring( s_url from position('//' in s_url)+2 for position('/' in substring(s_url from position('/' in s_url)+2 )) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND  s_date>='$sdate'AND s_date<='$edate' AND s_method!='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000";
   $num_rows=$DB->samsdb_query_value($query);
   $count=0;
   $cache=0; 
@@ -345,7 +344,7 @@ function UserSitesPeriod_new()
 		}
        }
 
-  $query="SELECT substring( s_url from 0 for position(':' in s_url) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE s_user='$SquidUSERConf->s_nick' AND  s_date>='$sdate'AND s_date<='$edate' AND s_method='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000;";
+  $query="SELECT substring( s_url from 0 for position(':' in s_url) ) as url_domain,sum(s_size) as url_size,sum(s_hit) as hit_size  FROM squidcache WHERE lower(s_user)=lower('". $SquidUSERConf->s_nick ."') AND  s_date>='$sdate'AND s_date<='$edate' AND s_method='CONNECT' GROUP BY url_domain ORDER BY url_domain desc limit 25000;";
   $num_rows=$DB->samsdb_query_value($query);
 	while($row=$DB->samsdb_fetch_array())
 	{
