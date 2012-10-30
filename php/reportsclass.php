@@ -19,6 +19,16 @@ function SetDate()
 	print("</TABLE>\n");
 
 }
+function ThisDate()
+{
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+	print("<TABLE>\n");
+	$this->TodayDate($grptraffic_2);
+	print("</TABLE>\n");
+
+}
 
 function SetPeriod()
 {
@@ -59,6 +69,47 @@ print("</SCRIPT>\n");
 	print("</TABLE>\n");
 
 }
+
+function TodayDate($str)
+{
+  global $SAMSConf;
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+    $today=date("j");
+    $thismonth=date("n");
+    $thisyear=date("Y");
+	print("  <TR>\n");
+	print("  <TD><B>$str:</B>\n");
+	print("  <TD><SELECT NAME=\"SDay\"> \n");
+	for($i=1;$i<32;$i++)
+   	{
+     		if($today==$i)
+        		print("	       <OPTION value=$i  SELECTED>$i\n");
+		else
+        		print("	       <OPTION value=$i>$i\n");
+	}
+	print("	       </SELECT> \n");
+	print("     <SELECT NAME=\"SMon\" size=1> \n");
+	for($i=1;$i<13;$i++)
+   	{
+		if($thismonth==$i)
+			print("	       <OPTION value=$i SELECTED>$month[$i]\n");
+		else
+			print("	       <OPTION value=$i>$month[$i]\n");
+	}
+	print("	       </SELECT> \n");
+	print("     <SELECT NAME=\"SYea\" size=1> \n");
+	for( $i=$this->s_year-5; $i<$this->s_year+5; $i++ )
+	{
+		if($thisyear==$i)
+			print("	       <OPTION value=$i SELECTED>$i\n");
+		else
+			print("	       <OPTION value=$i>$i\n");
+	}
+	print("     </SELECT> \n");
+	print("        <TD><INPUT TYPE=\"SUBMIT\" NAME=\"sbutton\" id=sbutton value=\"$mysqltools_dateselect2\" >\n");
+}
+
 
 function StartDate($str)
 {

@@ -245,7 +245,8 @@ function UserTimeTrafficForm()
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"show\" id=Show value=\"exe\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"function\" id=function value=\"usertimetraffic\">\n");
 		print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"userbuttom_3_time.php\">\n");
-		$dateselect->SetDate();
+//		$dateselect->SetDate();
+		$dateselect->ThisDate();
 		print("</FORM>\n");
 	}
 }
