@@ -412,7 +412,7 @@ $descriptorspec = array(
    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
 //0=> array("file", "/tmp/stdin", "a"),
    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-   2 => array("file", "/tmp/error-output.txt", "a") 
+   2 => array("pipe", "w") 
 );
 $ntlm_auth = proc_open($path."/ntlm_auth --helper-protocol=squid-2.5-basic ", $descriptorspec, $pipes);
 //$ntlm_auth = proc_open("bin/testwbinfopasswd ".$path, $descriptorspec, $pipes);
@@ -420,13 +420,22 @@ if (is_resource($ntlm_auth)) {
     // $pipes now looks like this:
     // 0 => writeable handle connected to child stdin
     // 1 => readable handle connected to child stdout
-    // Any error output will be appended to /tmp/error-output.txt
+    // 2 => readable handle connected to child stderr
 
     fwrite($pipes[0], "$login $password\n");
     fclose($pipes[0]);
 
     $ntlm_auth_says =  stream_get_contents($pipes[1]);
     fclose($pipes[1]);
+    
+     // Read StdErr
+    $StdErr = '';
+    while(!feof($pipes[2]))    {
+         $StdErr .= fgets($Pipes[2], 1024);
+    }
+    fclose($Pipes[2]);
+    error_log($StdErr);
+
     // It is important that you close any pipes before calling
     // proc_close in order to avoid a deadlock
     $return_value = proc_close($ntlm_auth);
