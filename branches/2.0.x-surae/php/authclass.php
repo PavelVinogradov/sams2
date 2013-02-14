@@ -431,9 +431,9 @@ if (is_resource($ntlm_auth)) {
      // Read StdErr
     $StdErr = '';
     while(!feof($pipes[2]))    {
-         $StdErr .= fgets($Pipes[2], 1024);
+         $StdErr .= fgets($pipes[2], 1024);
     }
-    fclose($Pipes[2]);
+    fclose($pipes[2]);
     error_log($StdErr);
 
     // It is important that you close any pipes before calling
