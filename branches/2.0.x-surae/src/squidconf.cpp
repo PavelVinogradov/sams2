@@ -108,7 +108,8 @@ bool SquidConf::defineACL ()
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
 
   ofstream fncsa;
-  string ncsafile = squidconfdir + "/sams2.ncsa"; Proxy::usrAuthType authType;
+  string ncsafile = squidconfdir + "/sams2.ncsa";
+  Proxy::usrAuthType authType;
 
   while (fin.good ())
     {
