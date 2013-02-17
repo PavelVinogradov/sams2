@@ -215,7 +215,7 @@ bool SquidConf::defineACL ()
                         {
                           // Блокируем пользователей в squid.conf только если никакой редиректор не используется.
                           haveBlockedUsers = true;
-                          fout << "acl Sams2BlockedUsers " << method << " " << *(*it) << endl;
+                          fout << "acl Sams2BlockedUsers_" << method << " " << method << " " << *(*it) << endl;
                         }
                       else
                         {
@@ -304,7 +304,10 @@ bool SquidConf::defineACL ()
                 fout << "http_access allow Sams2LocalAddr" << endl;
 
               if (haveBlockedUsers)
-                fout << "http_access deny Sams2BlockedUsers" << endl;
+              {
+                fout << "http_access deny Sams2BlockedUsers_src" << endl;
+                fout << "http_access deny Sams2BlockedUsers_proxy_auth" << endl;
+              }
 
               vector<SAMSUser *> users;
               for (tpls_it = tpls.begin (); tpls_it != tpls.end (); tpls_it++)
