@@ -113,6 +113,8 @@ int check_interval; //Интервал в секунах, через котор�
 long steptime;      //Интервал в минутах, через который нужно обрабатывать лог squid
 Proxy::ParserType parserType; // Тип обработки лог файла squid
 string cmdreconfiguresquid; // Команда для реконфигурирования squid
+string cmdparseconfigsquid; // Команда для реконфигурирования squid
+string squidconfdir;
 uint dbglevel_cmd = 0;
 
 void reload (int signal_number)
@@ -158,6 +160,7 @@ void reload (int signal_number)
 void reconfigureSQUID ()
 {
   int err;
+  int err1;
   basic_stringstream < char >msg;
 
   DEBUG (DEBUG2, "Reconfigure Squid...");
@@ -170,11 +173,21 @@ void reconfigureSQUID ()
   msg.str ("");
   if (SquidConf::defineAccessRules ())
     {
-      err = system (cmdreconfiguresquid.c_str ());
+      err1 = system (cmdparseconfigsquid.c_str ());
+      if (err1)
+        msg << "Failed to parse SQUID config: " << err1;
+      else
+	{
+      if(!fileCopy(squidconfdir + "/squid.conf_sams2_generated", squidconfdir + "/squid.conf"))
+        err = 1;
+      else
+        err = system (cmdreconfiguresquid.c_str ());
+      
       if (err)
         msg << "Failed to restart SQUID: " << err;
       else
         msg << "Reconfigure & restart SQUID: ok";
+	}
     }
   else
     msg << "Failed to change squid.conf";
@@ -447,6 +460,15 @@ int main (int argc, char *argv[])
   int seconds_to_parse = 0;
   int seconds_to_reconnect = reconnect_timeout;
 
+  string squidconfdir = SamsConfig::getString (defSQUIDCONFDIR, err);
+
+  if (squidconfdir.empty ())
+    {
+      ERROR (defSQUIDCONFDIR << " not defined. Check config file.");
+      return false;
+    }
+
+  cmdparseconfigsquid = squidbindir + "/squid -k parse -f " + squidconfdir + "/squid.conf_sams2_generated";
   cmdreconfiguresquid = squidbindir + "/squid -k reconfigure";
 
   time_t loop_start = time (NULL);

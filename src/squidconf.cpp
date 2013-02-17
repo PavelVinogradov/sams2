@@ -66,15 +66,16 @@ bool SquidConf::defineACL ()
 
   string squidconffile = squidconfdir + "/squid.conf";
   string squidbakfile = squidconfdir + "/squid.conf.bak";
+  string squidnewfile = squidconfdir + "/squid.conf_sams2_generated";
 
   if (!fileCopy (squidconffile, squidbakfile))
     return false;
 
   ofstream fout;
-  fout.open (squidconffile.c_str (), ios::out);
+  fout.open (squidnewfile.c_str (), ios::out);
   if (!fout.is_open ())
     {
-      ERROR ("Unable to create file " << squidconffile);
+      ERROR ("Unable to create file " << squidnewfile);
       return false;
     }
 
@@ -107,8 +108,7 @@ bool SquidConf::defineACL ()
   Proxy::RedirType redir_type = Proxy::getRedirectType ();
 
   ofstream fncsa;
-  string ncsafile = squidconfdir + "/sams2.ncsa";
-  Proxy::usrAuthType authType;
+  string ncsafile = squidconfdir + "/sams2.ncsa"; Proxy::usrAuthType authType;
 
   while (fin.good ())
     {
