@@ -114,6 +114,7 @@ long steptime;      //Интервал в минутах, через котор�
 Proxy::ParserType parserType; // Тип обработки лог файла squid
 string cmdreconfiguresquid; // Команда для реконфигурирования squid
 string cmdparseconfigsquid; // Команда для реконфигурирования squid
+string cmdmvsquidconffile; // Команда для реконфигурирования squid
 string squidconfdir;
 uint dbglevel_cmd = 0;
 
@@ -178,7 +179,7 @@ void reconfigureSQUID ()
         msg << "Failed to parse SQUID config: " << err1;
       else
 	{
-      if(!fileCopy(squidconfdir + "/squid.conf_sams2_generated", squidconfdir + "/squid.conf"))
+      if( system ( cmdmvsquidconffile.c_str ()) )
         err = 1;
       else
         err = system (cmdreconfiguresquid.c_str ());
@@ -470,6 +471,7 @@ int main (int argc, char *argv[])
 
   cmdparseconfigsquid = squidbindir + "/squid -k parse -f " + squidconfdir + "/squid.conf_sams2_generated";
   cmdreconfiguresquid = squidbindir + "/squid -k reconfigure";
+  cmdmvsquidconffile = "mv " + squidconfdir + "/squid.conf_sams2_generated " + squidconfdir + "/squid.conf";
 
   time_t loop_start = time (NULL);
   time_t loop_end = time (NULL);
