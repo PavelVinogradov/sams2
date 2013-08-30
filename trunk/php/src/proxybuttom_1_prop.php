@@ -370,9 +370,17 @@ function ProxyReConfigForm()
   print("<TD>\n");
 
   if($PROXYConf->s_usedomain==1)
+  {
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"usedomain\" $DOMAINDISABLE CHECKED onchange=EnableDomainName(samsreconfigform)>$adminbuttom_1_prop_SamsReConfigForm_18\n");
+     $DOMAINDISABLE="";
+     $USERDISABLE="";
+  }
   else
+  {
      print("<INPUT TYPE=\"CHECKBOX\" NAME=\"usedomain\" $DOMAINDISABLE onchange=EnableDomainName(samsreconfigform)>$adminbuttom_1_prop_SamsReConfigForm_19\n");
+     $DOMAINDISABLE="DISABLED";
+     $USERDISABLE="DISABLED";
+  }
  
 
   print("<BR>$adminbuttom_1_prop_SamsReConfigForm_20 \n");
