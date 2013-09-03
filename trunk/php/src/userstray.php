@@ -169,7 +169,7 @@ function AllUsersForm()
     }
   print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_2</B>\n");
   print("<TH WIDTH=\"10%\" bgcolor=beige> <B>$userstray_AllUsersForm_3</B>\n");
-  if($USERConf->ToWebInterfaceAccess("UC")==1)
+  if($USERConf->ToWebInterfaceAccess("UCS")==1)
     {
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_4</B>\n");
       print("<TH WIDTH=\"15%\" bgcolor=beige> <B>$userstray_AllUsersForm_5</B>\n");
@@ -251,7 +251,7 @@ function AllUsersForm()
 	 print("<TD WIDTH=\"15%\"> <B><A HREF=\"tray.php?show=exe&filename=usertray.php&function=usertray&id=$row[s_user_id]\"  TARGET=\"tray\">$row[s_nick] </A></B>");
 	 print("<TD WIDTH=\"15%\"> <B>$row[gnick] </B>");
              
-	if($USERConf->ToWebInterfaceAccess("UC")==1)
+	if($USERConf->ToWebInterfaceAccess("UCS")==1)
            {
 	     PrintFormattedSize($traffic);
              
