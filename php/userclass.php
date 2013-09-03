@@ -111,6 +111,24 @@ function sams_admin()
   $this->C_access = 1;
 
 }
+function sams_auditor()
+{
+  global $SAMSConf;
+  $this->s_samsadmin=2;
+  $this->s_user_id=-1;
+  $this->s_group_id=-1; 
+  $this->s_shablon_id=-1;
+  $this->s_webaccess="WGS";
+
+  $this->W_access = 1;
+  $this->G_access = 1;
+  $this->S_access = 1;
+  $this->A_access = 0;
+  $this->U_access = 0;
+  $this->L_access = 0;
+  $this->C_access = 0;
+
+}
 
 
 function sams_admin_authentication($username,$passwd)
@@ -141,7 +159,10 @@ function sams_admin_authentication($username,$passwd)
 			$SAMSConf->adminname=$username;
 			if( $autherror > 0 )
 				$DB->samsdb_query("UPDATE passwd SET s_autherrorc='0',s_autherrort='0'  WHERE s_user='$username' ");	        
-			setcookie("samsadmin","1");
+			if( $username=="Admin" || $username=="admin" )
+				setcookie("samsadmin","1");
+			if( $username=="Auditor" || $username=="auditor" )
+				setcookie("samsadmin","2");
 			setcookie("user","$username");
 			setcookie("passwd","$newpasswd");
 		  }

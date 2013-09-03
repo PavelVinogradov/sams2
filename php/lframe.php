@@ -48,10 +48,14 @@
      if(isset($_COOKIE['samsadmin']))  $samsadmin=$_COOKIE['samsadmin'];
    }  
 
-   if($samsadmin==1)
+       if($samsadmin==1)
 	{
 		$USERConf->sams_admin();
 
+	}
+	else if($samsadmin==2)
+	{
+		$USERConf->sams_auditor();
 	}
 	else
 	{

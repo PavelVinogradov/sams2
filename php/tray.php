@@ -71,9 +71,14 @@ $DB=new SAMSDB($SAMSConf->DB_ENGINE, $SAMSConf->ODBC, $SAMSConf->DB_SERVER,   		
 	if(isset($_COOKIE['webaccess']))  $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
 	if(isset($_COOKIE['samsadmin']))  $samsadmin=$_COOKIE['samsadmin'];
    }  
-   if($samsadmin==1)
+	if($samsadmin==1)
 	{
 		$USERConf->sams_admin();
+
+	}
+	else if($samsadmin==2)
+	{
+		$USERConf->sams_auditor();
 
 	}
 	else

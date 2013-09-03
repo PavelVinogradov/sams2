@@ -257,9 +257,8 @@ function UserTray()
   
   $SquidUSERConf=new SAMSUSER();
   $SquidUSERConf->sams_user($id);
-
-//echo "samsadmin=$USERConf->s_samsadmin userid=$USERConf->s_user_id=$id=$SAMSConf->USERID $USERConf->s_webaccess";
-	if($USERConf->s_samsadmin==1 || $USERConf->s_user_id==$id || $USERConf->ToGroupStatAccess("GS", $SquidUSERConf->s_group_id)==1 )
+#echo "samsadmin=$USERConf->s_samsadmin userid=$USERConf->s_user_id=$id=$SAMSConf->USERID $USERConf->s_webaccess";
+	if($USERConf->s_samsadmin>0 || $USERConf->s_user_id==$id || $USERConf->ToGroupStatAccess("GS", $SquidUSERConf->s_group_id)==1 )
 	{
 		print("<SCRIPT>\n");
 		JSUserInfo();
@@ -274,6 +273,7 @@ function UserTray()
 		print("<TD>\n");
 		print("</TABLE>\n");
 	}
+/*
 	else
 	{
 		print("<SCRIPT>\n");
@@ -281,7 +281,7 @@ function UserTray()
 		print("</SCRIPT> \n");
 		exit(0);
 	}
-
+*/
 }
 
 ?>
