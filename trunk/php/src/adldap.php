@@ -547,8 +547,10 @@ class adLDAP {
 		    for ($i=1, $ic=1000 ; $i<$entries["count"]; $i++, $ic++)
 		    {
 			$users_array[$ic]["samaccountname"] = $entries[$i]["samaccountname"][0];
-			$users_array[$ic]["displayname"] = $entries[$i]["displayname"][0];
-			$users_array[$ic]["givenname"] = $entries[$i]["givenname"][0];
+			if(isset($entries[$i]["displayname"][0]))
+			    $users_array[$ic]["displayname"] = $entries[$i]["displayname"][0];
+			if(isset($entries[$i]["givenname"][0]))
+			    $users_array[$ic]["givenname"] = $entries[$i]["givenname"][0];
 			if(isset($entries[$i]["sn"][0]))
 			    $users_array[$ic]["sn"] = $entries[$i]["sn"][0];
 			$users_array[$ic]["objectguid"] = bin2hex($entries[$i]["objectguid"][0]);
@@ -558,6 +560,7 @@ class adLDAP {
 			    $mcount=count($entries[$i]["memberof"]);
 			    if($mcount>0)
 			    {
+				$users_array[$ic]["memberof"]="";
 				for($j=0;$j<$mcount-1;$j++)
 				{
 				    $q2q=$users_array[$ic]["memberof"]."|".$entries[$i]["memberof"][$j];
