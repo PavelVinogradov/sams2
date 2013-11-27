@@ -81,7 +81,6 @@ function ReturnUsersFromADGroup($groupname)
 	    {
         	$samaccountname = $user['samaccountname'];
         	$memberof = $user['memberof'];
-//echo $user['samaccountname']." memberof: ".$user['memberof']."\n";
         	if(strstr($memberof,$groupname))
         	{
             	    $adusers[$count++]=$samaccountname;
@@ -148,7 +147,8 @@ function SearchUserFromDBGroup($username)
 
 	$count=0;
 
-	$QUERY="SELECT sgroup.s_name as groupname FROM auth_param LEFT JOIN sgroup ON auth_param.s_value=sgroup.s_name LEFT JOIN squiduser ON sgroup.s_group_id=squiduser.s_group_id WHERE s_auth='adld' AND s_param='adldgroup' AND squiduser.s_name='$username'";
+//	$QUERY="SELECT sgroup.s_name as groupname FROM auth_param LEFT JOIN sgroup ON auth_param.s_value=sgroup.s_name LEFT JOIN squiduser ON sgroup.s_group_id=squiduser.s_group_id WHERE s_auth='adld' AND s_param='adldgroup' AND squiduser.s_name='$username'";
+	$QUERY="SELECT sgroup.s_name as groupname FROM sgroup LEFT JOIN squiduser ON sgroup.s_group_id=squiduser.s_group_id WHERE squiduser.s_nick='$username'";
 	$result=$DB->samsdb_query_value($QUERY);
 	if($result>0)
 	{
@@ -291,7 +291,7 @@ function DeleteUserToDBGroup($username, $groupname)
   global $USERConf;
   global $DEBUG;
 
-//  $DEBUG=1;
+  $DEBUG=0;
   $HELP=0;
   if ($argc != 1)
   {
@@ -386,9 +386,11 @@ function DeleteUserToDBGroup($username, $groupname)
 				if($groupname!=NULL)
 				{
 					if($DEBUG!=0)
-						echo "user $newuserinadgroup[$i] found in the group $groupname\n";
+						echo "	user $newuserinadgroup[$i] found in the group '$groupname'\n";
 					// Если пользователь найден в другой группе SAMS, перемещаем
 					MoveUserToDBGroup($newuserinadgroup[$i], $row['s_value']);
+					if($DEBUG!=0)
+					    echo "	Move user ".$newuserinadgroup[$i]." to group '".$row['s_value']."'\n";
 				}
 				else
 				{
@@ -396,7 +398,7 @@ function DeleteUserToDBGroup($username, $groupname)
 					// добавляем пользователя
 					AddUserToDBGroup($newuserinadgroup[$i], $row['s_value']);
 					if($DEBUG!=0)
-						echo "new user ".$newuserinadgroup[$i]." in the group ".$row['s_value']."\n";					
+						echo "Add new user ".$newuserinadgroup[$i]." in the group ".$row['s_value']."\n";					
 				}
 			}
 		}
