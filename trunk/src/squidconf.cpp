@@ -139,7 +139,7 @@ bool SquidConf::defineACL ()
       if ( (line.find ("url_rewrite_program") == 0 || line.find ("redirect_program") == 0) &&
           Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
         {
-          if (line.find("/samsredir") != string::npos) // определен встроенный редиректор - не меняем ничего
+          if (line.find("/sams2redir") != string::npos) // определен встроенный редиректор - не меняем ничего
             fout << line << endl;
           continue; // определен сторонний редиректор, хотя нужно встроенный - стираем настройки
         }
@@ -426,7 +426,7 @@ bool SquidConf::defineACL ()
                 Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
             {
               // в следующей строке определен нужный редиректор, не меняем настройки
-              if (nextline.find (current_tag) == 0 && nextline.find("/samsredir") != string::npos)
+              if (nextline.find (current_tag) == 0 && nextline.find("/sams2redir") != string::npos)
                 {
                   fout << nextline << endl;
                   continue;
@@ -440,12 +440,12 @@ bool SquidConf::defineACL ()
                       ERROR (defSAMSHOME << " not defined. Check config file.");
                       continue;
                     }
-                  if (!fileExist(samspath+"/bin/samsredir"))
+                  if (!fileExist(samspath+"/bin/sams2redir"))
                     {
-                      ERROR (samspath << "/bin/samsredir" << " not found. (Wrong " << defSAMSHOME << " value in config file?).");
+                      ERROR (samspath << "/bin/sams2redir" << " not found. (Wrong " << defSAMSHOME << " value in config file?).");
                       continue;
                     }
-                  fout << current_tag << " " << samspath << "/bin/samsredir" << endl;
+                  fout << current_tag << " " << samspath << "/bin/sams2redir" << endl;
                 }
             }
           else if ( (current_tag == "url_rewrite_children" || current_tag == "redirector_children") &&
@@ -545,7 +545,7 @@ bool SquidConf::defineACL ()
           // Используется встроенный редиректор, и какой-то редиректор уже определен
           if (nextline.find ("url_rewrite_program") == 0 && Proxy::getRedirectType() == Proxy::REDIR_INTERNAL)
             {
-              if (nextline.find("/samsredir") != string::npos) // определен встроенный редиректор - не меняем ничего
+              if (nextline.find("/sams2redir") != string::npos) // определен встроенный редиректор - не меняем ничего
                 fout << nextline << endl;
               continue; // определен сторонний редиректор, стираем настройки
             }

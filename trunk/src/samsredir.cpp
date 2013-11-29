@@ -40,10 +40,10 @@ void usage ()
 {
   cout << endl;
   cout << "NAME" << endl;
-  cout << "    samsredir - redirector." << endl;
+  cout << "    sams2redir - redirector." << endl;
   cout << endl;
   cout << "SYNOPSIS" << endl;
-  cout << "    samsredir [COMMAND] [OPTION]..." << endl;
+  cout << "    sams2redir [COMMAND] [OPTION]..." << endl;
   cout << endl;
   cout << "COMMANDS" << endl;
   cout << "    -h, --help" << endl;
@@ -75,7 +75,7 @@ void usage ()
  */
 void version ()
 {
-  cout << "samsredir " << VERSION << endl;
+  cout << "sams2redir " << VERSION << endl;
   cout << "Written by anonymous." << endl;
   cout << endl;
   cout << "This program comes with NO WARRANTY; not even for MERCHANTABILITY" << endl;
@@ -144,7 +144,7 @@ int main (int argc, char *argv[])
         }
     }
 
-  Logger::setSender("samsredir");
+  Logger::setSender("sams2redir");
   SamsConfig::useFile (config_file);
 
   // Сначала прочитаем конфигурацию, параметры командной строки

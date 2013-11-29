@@ -54,13 +54,11 @@
 Name:          sams2
 Version:       2.0.0
 Epoch:         667
-#Release:       b2.%{epoch}%{disttag}
-Release:       %{disttag}
+Release:       b2.%{epoch}%{disttag}
 Summary:       SAMS2 (Squid Account Management System)
 Group:         Applications/Internet
 License:       GPL
-#Source:        %{name}-%{version}-%{epoch}.tar.bz2
-Source:        %{name}-%{version}.tar.bz2
+Source:        %{name}-%{version}-%{epoch}.tar.bz2
 #Source1:       doc_sams2_conf
 URL:           http://sams.perm.ru
 Packager:      SAMS Development Group
@@ -235,7 +233,7 @@ rm -rf "${RPM_BUILD_ROOT}"
 %defattr(-,root,root,-)
 %{_prefix}/bin/samsparser
 %{_prefix}/bin/sams2daemon
-%{_prefix}/bin/sams2redir
+%{_prefix}/bin/samsredir
 %{_prefix}/bin/sams_send_email
 %{_initrddir}/sams2
 %attr(640,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/sams2
