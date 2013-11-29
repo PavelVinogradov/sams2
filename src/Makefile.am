@@ -3,7 +3,7 @@ BUILT_SOURCES =
 CLEANFILES =
 DISTCLEANFILES = Makefile.in config.h.in
 
-bin_PROGRAMS = samsparser sams2daemon samsredir
+bin_PROGRAMS = samsparser sams2daemon sams2redir
 
 # set the include path found by configure
 INCLUDES = $(all_includes)
@@ -26,7 +26,7 @@ sams2daemon_SOURCES = \
 	squidconf.cpp timerange.cpp timerangelist.cpp pgconn.cpp pgquery.cpp dbexporter.cpp \
 	dbcleaner.cpp urlgrouplist.cpp urlgroup.cpp pluginlist.cpp dns.cpp userlist.cpp \
 	samsldap.cpp delaypool.cpp delaypoollist.cpp
-samsredir_SOURCES = \
+sams2redir_SOURCES = \
 	dbconn.cpp dbquery.cpp debug.cpp ip.cpp localnetworks.cpp \
 	logger.cpp mysqlconn.cpp mysqlquery.cpp odbcconn.cpp odbcquery.cpp \
 	processmanager.cpp proxy.cpp samsconfig.cpp samsuser.cpp samsuserlist.cpp template.cpp \
