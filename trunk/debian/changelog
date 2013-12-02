@@ -1,3 +1,9 @@
+sams2 (2.0.0) stable; urgency=low
+
+  * New upstream version
+
+ -- Dmitry Chemerik <chemerik@mail.ru>  Mon, 02 Dec 2013 16:52:52 +0300
+
 sams2 (2.0.0-rc2) unstable; urgency=low
 
   * New upstream version
