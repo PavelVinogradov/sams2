@@ -4,9 +4,9 @@ Priority: optional
 Maintainer: Pavel Vinogradov <Pavel.Vinogradov@nixdev.net>
 Build-Depends: debhelper (>= 5), automake, autotools-dev, libtool, libmysqlclient-dev, libpcre3-dev, quilt
 Standards-Version: 3.9.1
-Homepage: http://sams.nixdev.net
-Vcs-Svn: http://svn.nixdev.net/svn/sams/trunk
-Vcs-Browser: http://sams.nixdev.net/browser/trunk
+Homepage: http://sams.perm.ru/
+Vcs-Svn: http://sams2.googlecode.com/svn/
+Vcs-Browser: https://code.google.com/p/sams2/source/browse/
 
 Package: sams2
 Architecture: any
