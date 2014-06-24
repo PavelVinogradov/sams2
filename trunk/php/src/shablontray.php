@@ -48,7 +48,6 @@ function ShablonUsers()
 	exit;
   
   PageTop("shablon.jpg","$shablon_1<BR>$shablontray_ShablonUsers_1 <FONT COLOR=\"BLUE\">$SHABLONConf->s_name</FONT>");
-  print("<IMG SRC=\"$SAMSConf->ICONSET/help.jpg\">");
   print("<A HREF=\"http://sams.perm.ru/sams2/doc/".$SAMSConf->LANG."/templates.html\">$documentation</A>");
   print("<P>\n");
 
@@ -107,10 +106,32 @@ function ShablonUsers()
   print("<TR>\n");
   print("</TABLE>\n");
 
+//  $num_rows=$DB->samsdb_query_value("SELECT * FROM sconfig WHERE s_shablon_id='$id'");
+  $num_rows=$DB->samsdb_query_value("select sconfig.s_shablon_id,sconfig.s_redirect_id,redirect.s_name as s_name,redirect.s_type as s_type from sconfig left join redirect on sconfig.s_redirect_id=redirect.s_redirect_id where s_shablon_id='$id'");
+  if($num_rows>0)
+  {
+    print("<H2>$shablontray_ShablonUsers_5:</H2>\n");
+    print("<TABLE>\n");
+    while($row=$DB->samsdb_fetch_array())
+    {
+       print("<TR>\n");
+       print("<TD width=10%>");
+       if($row['s_type']=="denied")
+	    print("<IMG SRC=\"$SAMSConf->ICONSET/stop.gif\">");
+       if($row['s_type']=="redir")
+	    print("<IMG SRC=\"$SAMSConf->ICONSET/redirect.gif\">");
+       if($row['s_type']=="allow")
+	    print("<IMG SRC=\"$SAMSConf->ICONSET/adir.gif\">");
+       if($row['s_type']=="replace")
+	    print("<IMG SRC=\"$SAMSConf->ICONSET/subst_22.png\">");
+       print("<TD>");
+       print($row['s_name']);
+    }
+    print("</TABLE>\n");
+  }
 
   $num_rows=$DB->samsdb_query_value("SELECT * FROM squiduser WHERE squiduser.s_shablon_id='$id' ORDER BY s_nick");
-
- print("<H2>$shablontray_ShablonUsers_4: </H2>\n");
+  print("<H2>$shablontray_ShablonUsers_4:</H2>\n");
   print("<TABLE>\n");
   while($row=$DB->samsdb_fetch_array())
       {
