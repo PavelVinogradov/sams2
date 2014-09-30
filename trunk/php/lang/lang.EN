@@ -1095,6 +1095,12 @@ $adminbuttom_1_prop_SamsReConfigForm_28=" Recode the domain users names ";
    $configbuttom_3_import_ImportProxySettings_1="import proxy settings";
    $usersbuttom_1_domain_AddUsersFromDomainForm_8="Create new group";
    $usersbuttom_1_domain_AddUsersFromDomainForm_9="Group name";
-   $shablontray_ShablonUsers_5="Assigned to the template URL lists";
-   
+   $admintray_admintray_1="SAMS management interface";
+   $ configbuttom_7_log_1 = "View SAMS logs"; 
+   $ configbuttom_7_log_2 = "Item number"; 
+   $ configbuttom_7_log_3 = "Date"; 
+   $ configbuttom_7_log_4 = "Time"; 
+   $ configbuttom_7_log_5 = "Demon"; 
+   $ configbuttom_7_log_6 = "Value"; 
+   $ configbuttom_7_log_7 = "Return code";
 ?>
