@@ -152,6 +152,15 @@ class SAMSCONFIG extends MAINCONF
 	$this->ReadSAMSSettings();
   }
 
+  function AddLog($issuer,$value,$date,$time)
+  {
+    global $SAMSConf;
+    $DB=new SAMSDB();
+    $QUERY="INSERT INTO samslog (s_issuer, s_date, s_time, s_value, s_code)  VALUES('$issuer', '$date', '$time', '$value', '1')";
+    $num_rows=$DB->samsdb_query($QUERY);
+
+}
+
   function ReadSAMSSettings()
     {
       $dbadmin="root";

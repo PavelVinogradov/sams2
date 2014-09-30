@@ -168,7 +168,7 @@ function UpdateShablonForm()
 		$checked="";
 		if(in_array($s_id[$i], $s_selected))
 			$checked="CHECKED";
-		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"d$s_id[$i]\" $checked></TD>\n");
+		print("<INPUT TYPE=\"CHECKBOX\" NAME=\"$s_id[$i]\" $checked></TD>\n");
 		print("  <TD WIDTH=\"60%\">$s_name[$i]</TD>\n");
                 print("</TR>\n");
 	  }

@@ -68,7 +68,7 @@ function ShowLogPeriod()
   print("</THEAD>\n");
   print("<TBODY>\n");
   $size=0;
-  $QUERY="SELECT * FROM samslog WHERE s_date>='$sdate' AND s_date<='$edate' ORDER BY s_date DESC";
+  $QUERY="SELECT * FROM samslog WHERE s_date>='$sdate' AND s_date<='$edate' ORDER BY s_date, s_time";
   $num_rows=$DB->samsdb_query_value($QUERY);
 
   while($row=$DB->samsdb_fetch_array())

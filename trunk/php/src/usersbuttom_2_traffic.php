@@ -5,6 +5,52 @@
  * (see the file 'main.php' for license details)
  */
 
+function UsersTrafficPeriodPDF()
+{
+  //require('chart.php');
+  require('lib/fpdf.php');
+  
+  global $SAMSConf;
+  global $DATE;
+  $DB=new SAMSDB();
+  
+  $sdate=$DATE->sdate();
+  $edate=$DATE->edate();
+  $bdate=$DATE->BeginDate();
+  $eddate=$DATE->EndDate();
+   $size="";
+   if(isset($_GET["size"])) $size=$_GET["size"];
+
+  require("reportsclass.php");
+  $dateselect=new DATESELECT($DATE->sdate(),$DATE->edate());
+  $lang="./lang/lang.$SAMSConf->LANG";
+  require($lang);
+
+
+      define('FPDF_FONTPATH','lib/font/');
+      require('lib/fpdf.php');
+      $pdfFile = new FPDF();
+      $pdfFile->Open();
+
+
+      $pdfFile-> AddFont('Nimbus','','Nimbus.php');
+      $pdfFile->SetAuthor("SQUID Account Management System");
+      $pdfFile->SetCreator("Created by SAMS2");
+      $pdfFile->SetTitle("SAMS2 users statistic");
+//      UsersTrafficPeriodPDF();
+
+
+        $pdfFile->AddPage();
+        $pdfFile->SetFont('Nimbus','',15);
+        //$pdfFile->SetFont('SUSESerif-Roman','',16);
+        $pdfFile->SetXY(50, 15);
+echo " $usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2<br>";
+        $pdfFile->Write(0, " $usersbuttom_2_traffic_UsersTrafficPeriod_1<BR>$usersbuttom_2_traffic_UsersTrafficPeriod_2");
+
+      $pdfFile->Output();
+
+}
+
 function UsersTrafficPeriodGB()
 {
   require('lib/chart.php');
@@ -71,7 +117,8 @@ function UsersTrafficPeriod()
   print("<INPUT TYPE=\"HIDDEN\" NAME=\"filename\" id=filename value=\"usersbuttom_2_traffic.php\">\n");
   $dateselect->SetPeriod();
  
- print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\"></TABLE>\n");
+ print("<TD><IMG SRC=\"$SAMSConf->ICONSET/printer.gif\" TITLE=\"Print\" ALT=\"Print\" onClick=\"JavaScript:window.print();\">");
+ print("<A HREF=\"main.php?show=exe&function=userstrafficperiodpdf&filename=usersbuttom_2_traffic.php\"> pdf</a> </TABLE>\n");
   print("</FORM>\n");
 
   printf("<BR><B>$traffic_2 $bdate $traffic_3 $eddate</B> ");

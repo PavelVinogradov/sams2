@@ -99,7 +99,7 @@ function UserDoc()
   require($lang);
 
 
-  print("<H2>$admintray_UserDoc_2 </H2>\n");
+  print("<H2>$admintray_UserDoc_2</H2>\n");
   
   if($SAMSConf->SHOWUTREE=="Y")
     {
