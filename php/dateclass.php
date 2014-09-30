@@ -2,7 +2,7 @@
 
 class DATE
 {
-  var $sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou,$sdate,$edate;
+  var $sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou,$sdate,$edate,$today,$thistime;
   function DATE($mas, $sdate, $edate)
     {
        if(strlen($sdate)<=1&&strlen($edate)<=1)
@@ -20,7 +20,10 @@ class DATE
            $this->emon=strtok("-");
            $this->eday=strtok("-");
 	 }  
-          
+	$d = getdate(); 
+	foreach ( $d as $key => $val )
+	$this->today="$d[year]-$d[mon]-$d[mday]";
+	$this->thistime="$d[hours]:$d[minutes]:$d[seconds]";
     }
   function BeginDate()
     {

@@ -102,7 +102,6 @@ if($shou==0)
    $shou=0;
 $DATE=new DATE(Array($sday,$smon,$syea,$shou,$eday,$emon,$eyea,$ehou), $sdate, $edate);
 $SAMSConf=new SAMSCONFIG();
-
 $DB=new SAMSDB();
 
 require('./userclass.php');
@@ -122,6 +121,7 @@ if($function=="logoff")
 	setcookie("userid","");
 	setcookie("webaccess","");
 	setcookie("samsadmin","0");
+	$SAMSConf->AddLog("webinterface","user $username id=$userid logoff",$DATE->today,$DATE->thistime);
 	print("<SCRIPT>\n");
 	print("  parent.lframe.location.href=\"lframe.php\"; \n");
 	print("  parent.tray.location.href=\"tray.php?show=exe&filename=admintray.php&function=admintray\"; \n");
@@ -170,6 +170,8 @@ if($function=="nuserauth")
 		$SAMSConf->domainusername=$cookie_domainuser;
 		$SAMSConf->groupauditor=$cookie_gauditor;
 
+		if($username!="0")
+		    $SAMSConf->AddLog("webinterface","user $username logged in web interface",$DATE->today,$DATE->thistime);
 	  }  
 	else
 	  {
@@ -179,6 +181,8 @@ if($function=="nuserauth")
 		if(isset($_COOKIE['userid']))     $SAMSConf->USERID=$_COOKIE['userid'];
 		if(isset($_COOKIE['webaccess']))  $SAMSConf->USERWEBACCESS=$_COOKIE['webaccess'];
 		if(isset($_COOKIE['samsadmin']))  $samsadmin=$_COOKIE['samsadmin'];
+		if($username!="0")
+		    $SAMSConf->AddLog("webinterface","user $username logged in web interface",$DATE->today,$DATE->thistime);
 	  }  
 	if($samsadmin==1)
 	{
@@ -275,6 +279,7 @@ if($function=="setcookie")
   }   
 if($function=="autherror")
   {
+    $SAMSConf->AddLog("webinterface","user $username authentication error",$DATE->today,$DATE->thistime);
      print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
      $time2=60 - ($time - $autherrort);
      if($autherrorc==0&&$time<$autherrort+60)

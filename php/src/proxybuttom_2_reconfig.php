@@ -10,6 +10,7 @@ function ReconfigSquid()
 
   global $SAMSConf;
   global $USERConf;
+  global $DATE;
 
   $lang="./lang/lang.$SAMSConf->LANG";
   require($lang);
@@ -20,6 +21,7 @@ function ReconfigSquid()
   $reconfigureOK=0;
   if($USERConf->ToWebInterfaceAccess("C")==1 )
   {
+	$SAMSConf->AddLog("webinterface","Sent a command to reconfigure proxy server id=$cache",$DATE->today,$DATE->thistime);
 	PageTop("reconfig_48.jpg","$squidbuttom_0_reconfig_ReconfigSquid_1");
 	$QUERY="INSERT INTO reconfig (s_proxy_id, s_service, s_action)  VALUES('$cache', 'squid', 'reconfig'); ";
 	$result=$DB->samsdb_query($QUERY);

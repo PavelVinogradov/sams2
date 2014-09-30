@@ -134,12 +134,14 @@ function sams_auditor()
 function sams_admin_authentication($username,$passwd)
   {
      global $SAMSConf;
+     global $DATE;
      $DB=new SAMSDB();
 
      $time=time();
      $num_rows=$DB->samsdb_query_value("SELECT * FROM passwd WHERE s_user='$username' ");
      if($num_rows==0)
      {
+	$SAMSConf->AddLog("webinterface","user $username authentication error",$DATE->today,$DATE->thistime);
 	echo "<H2><FONT COLOR=\"RED\">Authorisation ERROR</FONT></H2>";
 	exit;
      }
@@ -168,6 +170,7 @@ function sams_admin_authentication($username,$passwd)
 		  }
 		else
 		  {
+			$SAMSConf->AddLog("webinterface","user $username authentication error",$DATE->today,$DATE->thistime);
 			echo "<H2><FONT COLOR=\"RED\">Authorisation ERROR</FONT></H2>";
 			if($autherrorc>=2)
 			{
@@ -181,6 +184,7 @@ function sams_admin_authentication($username,$passwd)
 	    }   
          else
            {  
+		$SAMSConf->AddLog("webinterface","user $username authentication error",$DATE->today,$DATE->thistime);
 		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 		$time2 = 60 - ($time - $autherrort);
 		print("<h2>next logon after $time2 second</h2> \n");
@@ -196,6 +200,8 @@ function sams_admin_authentication($username,$passwd)
 
 function sams_user_id_authentication()
   {   
+	global $SAMSConf;
+	global $DATE;
 	if(isset($_POST["id"])) $id=$_POST["id"];
 	if(isset($_POST["userid"])) $password=$_POST["userid"];
 	if(isset($_POST["usernick"])) $user=$_POST["usernick"];
@@ -233,6 +239,7 @@ function sams_user_id_authentication()
 			}
 			else
 			{  
+				$SAMSConf->AddLog("webinterface","user id=$id authentication error",$DATE->today,$DATE->thistime);
 				print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 				$time2=60 - ($time - $USERAUTH->autherrort);
 				if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
@@ -245,6 +252,7 @@ function sams_user_id_authentication()
 		}
 		else
 		{  
+			$SAMSConf->AddLog("webinterface","user id=$id authentication error",$DATE->today,$DATE->thistime);
 			print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 			$time2=60 - ($time - $autherrort);
 			if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
@@ -257,6 +265,7 @@ function sams_user_id_authentication()
 	}
 	else
 	{
+		$SAMSConf->AddLog("webinterface","user id=$id authentication error",$DATE->today,$DATE->thistime);
 		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1>\n");
 		$time2=60 - ($time - $USERAUTH->autherrort);
 		if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
@@ -274,6 +283,7 @@ function sams_user_id_authentication()
 function sams_user_name_authentication()
 {   
      global $SAMSConf;
+     global $DATE;
      $DB=new SAMSDB();
 
 	if(isset($_POST["id"])) $id=$_POST["id"];
@@ -313,6 +323,7 @@ function sams_user_name_authentication()
 		}
 		else
 		{  
+			$SAMSConf->AddLog("webinterface","user $user id=$id authentication error",$DATE->today,$DATE->thistime);
 			print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 			$time2=60 - ($time - $USERAUTH->autherrort);
 			if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
@@ -325,6 +336,7 @@ function sams_user_name_authentication()
 	}
 	else
 	{  
+		$SAMSConf->AddLog("webinterface","user $user id=$id authentication error",$DATE->today,$DATE->thistime);
 		print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 		$time2=60 - ($time - $USERAUTH->autherrort);
 		if($USERAUTH->autherrorc==0&&$time<$USERAUTH->autherrort+60)
@@ -338,6 +350,7 @@ function sams_user_name_authentication()
       }
       else
       {
+	$SAMSConf->AddLog("webinterface","user $user id=$id authentication error",$DATE->today,$DATE->thistime);
 	print("<h1><FONT COLOR=\"RED\">Authentication ERROR</FONT></h1> \n");
 	exit(0);
 
