@@ -1114,6 +1114,13 @@
    $setup_step_4_3="имя пользователя для подключения к базе данных";
    $setup_step_4_4="пароль";
    $configbuttom_3_import_importdata_1="Импорт данных завершен";
-   $shablontray_ShablonUsers_5="Шаблону присвоены списки URL";
+   $admintray_admintray_1="Авторизация администратора SAMS";
+   $configbuttom_7_log_1="Просмотр логов SAMS";
+   $configbuttom_7_log_2="Номер записи";
+   $configbuttom_7_log_3="Дата";
+   $configbuttom_7_log_4="Время";
+   $configbuttom_7_log_5="Демон";
+   $configbuttom_7_log_6="Значение";
+   $configbuttom_7_log_7="Код возврата";         
 
 ?>
