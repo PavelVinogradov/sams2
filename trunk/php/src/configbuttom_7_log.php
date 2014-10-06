@@ -61,9 +61,9 @@ function ShowLogPeriod()
       print("<TH>$configbuttom_7_log_3");
       print("<TH>$configbuttom_7_log_4");
       print("<TH>$configbuttom_7_log_5");
-      print("<TH>Значение $configbuttom_7_log_6");
+      print("<TH>$configbuttom_7_log_6");
 //    }   
-  print("<TH>Код $configbuttom_7_log_7");
+  print("<TH>$configbuttom_7_log_7");
 
   print("</THEAD>\n");
   print("<TBODY>\n");

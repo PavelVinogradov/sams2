@@ -35,6 +35,7 @@
 #include "delaypoollist.h"
 #include "delaypool.h"
 #include "tools.h"
+#include "logger.h"
 
 SquidConf::SquidConf()
 {
@@ -55,6 +56,7 @@ bool SquidConf::defineAccessRules()
 bool SquidConf::defineACL ()
 {
   int err;
+  Logger::setSender("samsdaemon");
 
   string squidconfdir = SamsConfig::getString (defSQUIDCONFDIR, err);
 
@@ -74,6 +76,7 @@ bool SquidConf::defineACL ()
   fout.open (squidconffile.c_str (), ios::out);
   if (!fout.is_open ())
     {
+      Logger::addLog (Logger::LK_DAEMON, "Unabe to create file squid.conf");
       ERROR ("Unable to create file " << squidconffile);
       return false;
     }
@@ -83,6 +86,7 @@ bool SquidConf::defineACL ()
   if (!fin.is_open ())
     {
       ERROR ("Unable to open file " << squidbakfile);
+      Logger::addLog (Logger::LK_DAEMON, "Unabe to open file squid.conf");
       fout.close();
       return false;
     }
@@ -201,8 +205,15 @@ bool SquidConf::defineACL ()
                       fncsa.open (ncsafile.c_str (), ios::out | ios::trunc);
                       if (!fncsa.is_open ())
                         {
+			  Logger::addLog (Logger::LK_DAEMON, "Unable to open ncsa password file: ");
+			  Logger::addLog (Logger::LK_DAEMON, ncsafile);
                           ERROR ("Unable to open file " << ncsafile);
                         }
+		      else
+			{
+			  Logger::addLog (Logger::LK_DAEMON, "Open ncsa password file: ");
+			  Logger::addLog (Logger::LK_DAEMON, ncsafile);
+			}
                     }
 
                   /// TODO Пользователи могут быть заблокированы из разных шаблонов с разными типами авторизации
