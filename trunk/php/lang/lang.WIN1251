@@ -1122,5 +1122,21 @@
    $configbuttom_7_log_5="Демон";
    $configbuttom_7_log_6="Значение";
    $configbuttom_7_log_7="Код возврата";         
-
+   $configbuttom_7_log_8="Очистить логи за указанный период";
+   $configbuttom_7_log_9="Логи очищены";
+   $configbuttom_8_db_1="Обслуживание базы данных SAMS2";
+   $configbuttom_8_db_2="Количество записей о трафике в базе SAMS";
+   $configbuttom_8_db_3="начальная дата";
+   $configbuttom_8_db_4="конечная дата";
+   $configbuttom_8_db_5="Количество записей логов";
+   $configbuttom_8_db_6="Количество URL в спискех запрета доступа";
+   $configbuttom_8_db_7="Удаление данных в базе";
+   $configbuttom_8_db_8="Очистить данные";
+   $configbuttom_8_db_9="Ничего не очищать";
+   $configbuttom_8_db_10="Очистка данных о трафике пользователей";
+   $configbuttom_8_db_11="Очистка данных лога SAMS";
+   $configbuttom_8_db_12="Удаление данных о трафике пользоватеей";
+   $configbuttom_8_db_13="Данные удалены";
+   $configbuttom_8_db_14="Очистка данных в базе SAMS";
+   $configbuttom_8_db_15="Ничего не выбрано";
 ?>
