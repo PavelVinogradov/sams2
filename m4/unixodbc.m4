@@ -21,7 +21,7 @@ if test x"$ac_unixodbc_includes" = "x"; then
 fi
 
 if test x"$ac_unixodbc_libraries" = "x"; then
-  ac_unixodbc_libraries="/usr/lib64 /usr/local/lib /usr/lib"
+  ac_unixodbc_libraries="/usr/lib64 /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu"
 fi
 
 if test "$ac_use_unixodbc" = "no"; then
