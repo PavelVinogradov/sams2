@@ -21,7 +21,7 @@ if test "x$ac_pq_includes" = "x"; then
 fi
 
 if test "x$ac_pq_libraries" = "x"; then
-  ac_pq_libraries="/usr/local/lib /usr/lib64 /usr/lib"
+  ac_pq_libraries="/usr/local/lib /usr/lib64 /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu"
 fi
 
 if test "$ac_use_pq" = "no"; then
