@@ -21,7 +21,8 @@ if test "x$ac_mysql_includes" = "x"; then
 fi
 
 if test "x$ac_mysql_libraries" = "x"; then
-  ac_mysql_libraries="/usr/lib64/mysql /usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib"
+  ac_mysql_libraries="/usr/lib64/mysql /usr/local/mysql/lib/mysql /usr/local/lib/mysql /usr/lib/mysql /usr/local/lib /usr/lib \
+			/usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu"
 fi
 
 if test "$ac_use_mysql" = "no"; then
