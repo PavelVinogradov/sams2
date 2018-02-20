@@ -67,6 +67,8 @@ void usage ()
   cout << "                E.g. -l file:/path/to/file" << endl;
   cout << "    -C, --config=FILE" << endl;
   cout << "                Use config file FILE." << endl;
+  cout << "    -p, --oldproto" << endl;
+  cout << "                Old squid rewrite protocol." << endl;
   cout << endl;
 }
 
@@ -90,6 +92,7 @@ int main (int argc, char *argv[])
   uint dbglevel_cmd = 0;
   string optname = "";
   bool verbose = false;
+  bool oldproto = false;
   string log_engine = "";
   string config_file = SYSCONFDIR;
   config_file += "/sams2.conf";
@@ -101,6 +104,7 @@ int main (int argc, char *argv[])
     {"debug",    1, 0, 'd'},     // Устанавливает уровень отладки
     {"logger",   1, 0, 'l'},     // Устанавливает движок вывода сообщений
     {"config",   1, 0, 'C'},     // Использовать альтернативный конфигурационный файл
+    {"oldproto", 0, 0, 'p'},     // Использовать алгоритм для старых squid ( < 3.5)
     {0, 0, 0, 0}
   };
 
@@ -108,7 +112,7 @@ int main (int argc, char *argv[])
     {
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "hVvd:t:l:C:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVvpd:t:l:C:", long_options, &option_index);
       if (c == -1)              // no more options
         break;
       switch (c)
@@ -126,6 +130,9 @@ int main (int argc, char *argv[])
           break;
         case 'v':
           verbose = true;
+          break;
+        case 'p':
+          oldproto = true;
           break;
         case 'd':
           if (sscanf (optarg, "%d", &dbglevel_cmd) != 1)
@@ -221,6 +228,8 @@ int main (int argc, char *argv[])
   vector < string > fields;
   vector < string > source;
   string destination;
+  string c_id;
+  string redir_dest;
   SAMSUser *usr = NULL;
   Template *tpl = NULL;
   while (true)
@@ -234,14 +243,41 @@ int main (int argc, char *argv[])
       if (fields.size () == 0)
         break;
 
-      INFO ("Input: " << line);
+      if (!oldproto)
+        {
+//        // For concurrency>1
+//        if ( concurrency>1 )
+//          {
+//            c_id.assign(*fields.begin());
+//            c_id.append(" ");
+//            fields.erase(fields.begin());
+//          }
+//        else
+//          {
+              c_id.append("");
+//          }
+        }
+      else
+        {
+            c_id.append("");
+        }
+      INFO ("Input: " << c_id << line);
 
       // Мы незнаем что такое попалось, но на всякий случай ничего менять не будем
       if (fields.size () < 4)
         {
           INFO ("Reason: Invalid fields count: " << fields.size());
-          INFO ("Output: " << line);
-          cout << line << endl << flush;
+          if (oldproto) 
+            {
+              INFO ("Output: " << line);
+              cout << line;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK");
+              cout << c_id << "OK";
+            }
+          cout << endl << flush;
           continue;
         }
 
@@ -251,8 +287,17 @@ int main (int argc, char *argv[])
       if (LocalNetworks::isLocalUrl(fields[0]))
         {
           INFO ("Reason: Url is local");
-          INFO ("Output: " << line);
-	  cout << line << endl << flush;
+          if (oldproto) 
+            {
+              INFO ("Output: " << line);
+              cout << line;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK");
+              cout << c_id << "OK";
+            }
+          cout << endl << flush;
           continue;
         }
 
@@ -264,14 +309,30 @@ int main (int argc, char *argv[])
           INFO ("Reason: User not found");
           if (fields[2] != "-")
             {
-              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-              cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2];
+              if (oldproto)
+                {
+                  INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2];
+                }
+              else
+                {
+                  INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << fields[2] << "\"";
+                }
               cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
             }
           else
             {
-              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-              cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0];
+              if (oldproto)
+                {
+                  INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0];
+                }
+              else
+                {
+                  INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=usernotfound&id=" << source[0] << "\"";
+                }
               cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
             }
           continue;
@@ -282,8 +343,16 @@ int main (int argc, char *argv[])
       if ( (usr->getEnabled () != SAMSUser::STAT_ACTIVE) && (usr->getEnabled () != SAMSUser::STAT_LIMITED) )
         {
           INFO ("Reason: User not active (disabled or blocked)");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=userdisabled&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -293,8 +362,16 @@ int main (int argc, char *argv[])
       if (!tpl)
         {
           INFO ("Reason: User's template not found");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=templatenotfound&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -303,8 +380,17 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlWhitelisted (fields[0]) )
         {
           INFO ("Reason: In white list");
-          INFO ("Output: " << line);
-	  cout << line << endl << flush;
+          if (oldproto)
+            {
+              INFO ("Output: " << line);
+              cout << line;
+            }
+          else
+            {
+              INFO ("Output: " << "OK");
+              cout << c_id << "OK";
+            }
+          cout << endl << flush;
           continue;
         }
 
@@ -312,8 +398,16 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlBlacklisted (fields[0]) )
         {
           INFO ("Reason: In black list");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -322,8 +416,16 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlMatchRegex (fields[0]) )
         {
           INFO ("Reason: In regular expression list");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -332,8 +434,16 @@ int main (int argc, char *argv[])
       if ( tpl->isUrlHasFileExt (fields[0]) )
         {
           INFO ("Reason: Has disallowed file extension");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -342,8 +452,16 @@ int main (int argc, char *argv[])
       if ( tpl->isTimeDenied (fields[0]) )
         {
           INFO ("Reason: Denied due to time restrictions");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=timedenied&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -351,8 +469,16 @@ int main (int argc, char *argv[])
       if ( tpl->getAllDeny () )
         {
           INFO ("Reason: Denied to all and not whitelisted");
-          INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+          if (oldproto)
+            {
+              INFO ("Output: " << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr;
+            }
+          else
+            {
+              INFO ("Output: " << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << c_id << "OK rewrite-url=\"" << Proxy::getDenyAddr () << "/blocked.php?action=urldenied&id=" << *usr << "\"";
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
@@ -361,16 +487,44 @@ int main (int argc, char *argv[])
       if (!destination.empty ())
         {
           INFO ("Reason: Redirected to another location");
-          INFO ("Output: " << destination << " " << fields[1] << " " << fields[2] << " " << fields[3]);
-          cout << destination;
+          if (oldproto)
+            {
+              INFO ("Output: " << destination << " " << fields[1] << " " << fields[2] << " " << fields[3]);
+              cout << destination;
+            }
+          else
+            {
+              unsigned int c_pos = destination.find("301:");
+
+              if (c_pos != string::npos && c_pos == 0)
+                {
+                  redir_dest.assign(destination,4,destination.length() - 4);
+                  INFO ("Output: " << c_id << "OK status=301 url=\"" << redir_dest << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << c_id << "OK status=301 url=\"" << redir_dest << "\"";
+                }
+              else
+                {
+                  INFO ("Output: " << c_id << "OK rewrite-url=\"" << destination << "\" " << fields[1] << " " << fields[2] << " " << fields[3]);
+                  cout << c_id << "OK rewrite-url=\"" << destination << "\"";
+                }
+            }
           cout << " " << fields[1] << " " << fields[2] << " " << fields[3] << endl << flush;
           continue;
         }
 
       // Все проверки пройдены успешно, разрешаем доступ
       INFO ("Reason: Access granted");
-      INFO ("Output: " << line);
-      cout << line << endl << flush;
+      if (oldproto)
+        {
+          INFO ("Output: " << line);
+          cout << line;
+        }
+      else
+        {
+          INFO ("Output: " << c_id << "OK");
+          cout << c_id << "OK";
+        }
+      cout << endl << flush;
     }
 
   delete conn;
